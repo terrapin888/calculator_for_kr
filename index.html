@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>이미지 바꾸기</title>
+  <style>
+    body {
+      text-align: center;
+      padding: 50px;
+      background-color: #fafafa;
+      font-family: Arial, sans-serif;
+    }
+    img {
+      width: 300px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      background-color: #3498db;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>이미지 바꾸기 예제</h1>
+<img id="myImage" src="https://via.placeholder.com/300x200.png?text=첫번째+이미지">
+<br>
+<button onclick="changeImage()">이미지 바꾸기</button>
+
+<script>
+  let isFirst = true;
+
+  function changeImage() {
+    const img = document.getElementById("myImage");
+
+    if (isFirst) {
+      img.src = "https://via.placeholder.com/300x200.png?text=두번째+이미지";
+    } else {
+      img.src = "https://via.placeholder.com/300x200.png?text=첫번째+이미지";
+    }
+
+    isFirst = !isFirst;
+  }
+</script>
+
+
+</body>
+</html>
