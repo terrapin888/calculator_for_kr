@@ -1,1 +1,769 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>할인 계산기 - 할인가격 자동 계산 | 스마트 파싱</title>
+   <meta name="description" content="할인 계산기로 할인 금액과 최종 가격을 쉽게 계산하세요. 원가와 할인율을 자유 형식으로 입력하면 자동 인식합니다.">
+   <style>
+       * {
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+       }
+       
+       body {
+           font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+           min-height: 100vh;
+           padding: 20px;
+       }
+       
+       .container {
+           max-width: 1200px;
+           margin: 0 auto;
+           background: white;
+           border-radius: 20px;
+           box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+           overflow: hidden;
+           animation: slideUp 0.6s ease-out;
+       }
+       
+       @keyframes slideUp {
+           from { opacity: 0; transform: translateY(30px); }
+           to { opacity: 1; transform: translateY(0); }
+       }
+       
+       .header {
+           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+           color: white;
+           padding: 40px 30px;
+           text-align: center;
+           position: relative;
+           overflow: hidden;
+       }
+       
+       .header::before {
+           content: '';
+           position: absolute;
+           top: -50%;
+           left: -50%;
+           width: 200%;
+           height: 200%;
+           background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+           animation: pulse 4s ease-in-out infinite;
+       }
+       
+       @keyframes pulse {
+           0%, 100% { transform: scale(1); }
+           50% { transform: scale(1.1); }
+       }
+       
+       .header h1 {
+           font-size: 2.5rem;
+           margin-bottom: 10px;
+           position: relative;
+           z-index: 1;
+       }
+       
+       .header p {
+           font-size: 1.1rem;
+           opacity: 0.9;
+           position: relative;
+           z-index: 1;
+       }
+       
+       .content {
+           padding: 40px 30px;
+       }
+       
+       .calculator-tabs {
+           display: flex;
+           background: #f8f9fa;
+           border-radius: 15px;
+           padding: 5px;
+           margin-bottom: 30px;
+           gap: 5px;
+       }
+       
+       .tab-button {
+           flex: 1;
+           padding: 15px 20px;
+           border: none;
+           border-radius: 10px;
+           background: transparent;
+           cursor: pointer;
+           transition: all 0.3s ease;
+           font-weight: 600;
+           font-size: 14px;
+       }
+       
+       .tab-button.active {
+           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+           color: white;
+       }
+       
+       .tab-content {
+           display: none;
+       }
+       
+       .tab-content.active {
+           display: block;
+       }
+       
+       .input-section {
+           background: #f8f9fa;
+           border-radius: 15px;
+           padding: 30px;
+           margin-bottom: 30px;
+           border: 2px solid #e9ecef;
+       }
+       
+       .input-grid {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+           gap: 25px;
+       }
+       
+       .input-group {
+           background: white;
+           border-radius: 12px;
+           padding: 20px;
+           box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+       }
+       
+       .input-label {
+           font-size: 1.1rem;
+           font-weight: 600;
+           color: #333;
+           margin-bottom: 10px;
+           display: flex;
+           align-items: center;
+           gap: 8px;
+       }
+       
+       input[type="text"], input[type="number"] {
+           width: 100%;
+           padding: 15px;
+           border: 2px solid #e1e5e9;
+           border-radius: 8px;
+           font-size: 16px;
+           transition: all 0.3s ease;
+           background: #fafbfc;
+       }
+       
+       input:focus {
+           outline: none;
+           border-color: #667eea;
+           background: white;
+           box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+       }
+       
+       .parsed-result {
+           margin-top: 10px;
+           padding: 10px;
+           background: #e3f2fd;
+           border-radius: 6px;
+           font-size: 14px;
+           color: #1976d2;
+       }
+       
+       .controls {
+           display: flex;
+           gap: 15px;
+           flex-wrap: wrap;
+           justify-content: center;
+           margin: 25px 0;
+       }
+       
+       .btn {
+           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+           color: white;
+           border: none;
+           padding: 15px 30px;
+           border-radius: 25px;
+           font-size: 16px;
+           font-weight: 600;
+           cursor: pointer;
+           transition: all 0.3s ease;
+       }
+       
+       .btn:hover {
+           transform: translateY(-2px);
+           box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+       }
+       
+       .btn-secondary {
+           background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+       }
+       
+       .btn-danger {
+           background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+       }
+       
+       .result-section {
+           background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+           border-radius: 15px;
+           padding: 30px;
+           margin-top: 30px;
+           border: 2px solid #28a745;
+           display: none;
+           animation: fadeIn 0.5s ease-in;
+       }
+       
+       @keyframes fadeIn {
+           from { opacity: 0; transform: translateY(20px); }
+           to { opacity: 1; transform: translateY(0); }
+       }
+       
+       .result-title {
+           font-size: 1.5rem;
+           font-weight: bold;
+           color: #155724;
+           margin-bottom: 25px;
+           text-align: center;
+       }
+       
+       .discount-display {
+           background: white;
+           border-radius: 15px;
+           padding: 30px;
+           text-align: center;
+           margin-bottom: 25px;
+           box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+       }
+       
+       .discount-value {
+           font-size: 3rem;
+           font-weight: bold;
+           color: #28a745;
+           margin-bottom: 10px;
+       }
+       
+       .discount-description {
+           font-size: 1.2rem;
+           color: #666;
+       }
+       
+       .result-grid {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+           gap: 20px;
+       }
+       
+       .result-item {
+           background: white;
+           padding: 20px;
+           border-radius: 12px;
+           text-align: center;
+           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+       }
+       
+       .result-label {
+           font-size: 0.9rem;
+           color: #666;
+           margin-bottom: 8px;
+       }
+       
+       .result-value {
+           font-size: 1.3rem;
+           font-weight: bold;
+           color: #28a745;
+       }
+       
+       .preset-discounts {
+           background: white;
+           border-radius: 12px;
+           padding: 20px;
+           margin-top: 20px;
+           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+       }
+       
+       .preset-title {
+           font-size: 1.1rem;
+           font-weight: bold;
+           color: #333;
+           margin-bottom: 15px;
+           text-align: center;
+       }
+       
+       .preset-buttons {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+           gap: 10px;
+       }
+       
+       .preset-btn {
+           padding: 10px 15px;
+           border: 2px solid #e9ecef;
+           border-radius: 20px;
+           background: white;
+           cursor: pointer;
+           transition: all 0.3s ease;
+           text-align: center;
+           font-weight: 600;
+       }
+       
+       .preset-btn:hover {
+           border-color: #667eea;
+           background: rgba(102, 126, 234, 0.1);
+       }
+       
+       @media (max-width: 768px) {
+           .container {
+               margin: 10px;
+           }
+           
+           .header h1 {
+               font-size: 2rem;
+           }
+           
+           .calculator-tabs {
+               flex-direction: column;
+           }
+           
+           .input-grid {
+               grid-template-columns: 1fr;
+           }
+           
+           .controls {
+               flex-direction: column;
+           }
+           
+           .btn {
+               width: 100%;
+           }
+           
+           .discount-value {
+               font-size: 2.5rem;
+           }
+       }
+   </style>
+</head>
+<body>
+   <div class="container">
+       <div class="header">
+           <h1>🏷️ 할인 계산기</h1>
+           <p>할인 금액과 최종 가격을 쉽게 계산하세요</p>
+       </div>
+       
+       <div class="content">
+           <div class="calculator-tabs">
+               <button class="tab-button active" onclick="switchTab('percentage')">퍼센트 할인</button>
+               <button class="tab-button" onclick="switchTab('amount')">금액 할인</button>
+               <button class="tab-button" onclick="switchTab('reverse')">역산 계산</button>
+           </div>
+           
+           <!-- 퍼센트 할인 -->
+           <div id="percentage" class="tab-content active">
+               <div class="input-section">
+                   <div class="input-grid">
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>💰</span>
+                               원가
+                           </div>
+                           <input type="text" id="original-price" placeholder="예: 100000원, 10만원..." oninput="smartParsePercentage()">
+                           <div class="parsed-result" id="originalPriceParsed">입력 대기 중...</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>📊</span>
+                               할인율
+                           </div>
+                           <input type="text" id="discount-rate" placeholder="예: 20%, 0.2..." oninput="smartParsePercentage()">
+                           <div class="parsed-result" id="discountRateParsed">입력 대기 중...</div>
+                       </div>
+                   </div>
+                   
+                   <div class="preset-discounts">
+                       <div class="preset-title">🎯 빠른 할인율 선택</div>
+                       <div class="preset-buttons">
+                           <button class="preset-btn" onclick="setDiscountRate(10)">10%</button>
+                           <button class="preset-btn" onclick="setDiscountRate(20)">20%</button>
+                           <button class="preset-btn" onclick="setDiscountRate(30)">30%</button>
+                           <button class="preset-btn" onclick="setDiscountRate(40)">40%</button>
+                           <button class="preset-btn" onclick="setDiscountRate(50)">50%</button>
+                           <button class="preset-btn" onclick="setDiscountRate(70)">70%</button>
+                       </div>
+                   </div>
+               </div>
+               
+               <div class="controls">
+                   <button class="btn" onclick="calculatePercentageDiscount()">🏷️ 할인 계산</button>
+                   <button class="btn btn-secondary" onclick="showPercentageExample()">📝 예시</button>
+                   <button class="btn btn-danger" onclick="clearPercentage()">🗑️ 초기화</button>
+               </div>
+               
+               <div class="result-section" id="percentageResult"></div>
+           </div>
+           
+           <!-- 금액 할인 -->
+           <div id="amount" class="tab-content">
+               <div class="input-section">
+                   <div class="input-grid">
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>💰</span>
+                               원가
+                           </div>
+                           <input type="text" id="amount-original-price" placeholder="예: 100000원, 10만원..." oninput="smartParseAmount()">
+                           <div class="parsed-result" id="amountOriginalPriceParsed">입력 대기 중...</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>💸</span>
+                               할인 금액
+                           </div>
+                           <input type="text" id="discount-amount" placeholder="예: 20000원, 2만원..." oninput="smartParseAmount()">
+                           <div class="parsed-result" id="discountAmountParsed">입력 대기 중...</div>
+                       </div>
+                   </div>
+               </div>
+               
+               <div class="controls">
+                   <button class="btn" onclick="calculateAmountDiscount()">🏷️ 할인 계산</button>
+                   <button class="btn btn-secondary" onclick="showAmountExample()">📝 예시</button>
+                   <button class="btn btn-danger" onclick="clearAmount()">🗑️ 초기화</button>
+               </div>
+               
+               <div class="result-section" id="amountResult"></div>
+           </div>
+           
+           <!-- 역산 계산 -->
+           <div id="reverse" class="tab-content">
+               <div class="input-section">
+                   <div class="input-grid">
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>💰</span>
+                               원가
+                           </div>
+                           <input type="text" id="reverse-original-price" placeholder="예: 100000원, 10만원..." oninput="smartParseReverse()">
+                           <div class="parsed-result" id="reverseOriginalPriceParsed">입력 대기 중...</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>🎯</span>
+                               목표 가격
+                           </div>
+                           <input type="text" id="target-price" placeholder="예: 80000원, 8만원..." oninput="smartParseReverse()">
+                           <div class="parsed-result" id="targetPriceParsed">입력 대기 중...</div>
+                       </div>
+                   </div>
+               </div>
+               
+               <div class="controls">
+                   <button class="btn" onclick="calculateReverseDiscount()">🏷️ 필요 할인율 계산</button>
+                   <button class="btn btn-secondary" onclick="showReverseExample()">📝 예시</button>
+                   <button class="btn btn-danger" onclick="clearReverse()">🗑️ 초기화</button>
+               </div>
+               
+               <div class="result-section" id="reverseResult"></div>
+           </div>
+       </div>
+   </div>
 
+   <script>
+       let currentTab = 'percentage';
+       
+       class PriceParser {
+           constructor() {
+               this.koreanUnits = {
+                   '천': 1000,
+                   '만': 10000,
+                   '억': 100000000
+               };
+           }
+           
+           parseAmount(input) {
+               if (!input) return null;
+               
+               let cleaned = input.replace(/\s+/g, '');
+               
+               for (let [unit, multiplier] of Object.entries(this.koreanUnits)) {
+                   if (cleaned.includes(unit)) {
+                       let parts = cleaned.split(unit);
+                       if (parts[0]) {
+                           let num = parseFloat(parts[0].replace(/[^0-9.]/g, ''));
+                           if (!isNaN(num)) {
+                               return num * multiplier;
+                           }
+                       }
+                   }
+               }
+               
+               cleaned = cleaned.replace(/[^0-9.]/g, '');
+               let num = parseFloat(cleaned);
+               
+               return isNaN(num) ? null : num;
+           }
+           
+           parseRate(input) {
+               if (!input) return null;
+               
+               let cleaned = input.replace(/\s+/g, '');
+               
+               if (cleaned.includes('%')) {
+                   let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
+                   return isNaN(num) ? null : num;
+               }
+               
+               let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
+               
+               if (isNaN(num)) return null;
+               
+               return num > 1 ? num : num * 100;
+           }
+       }
+       
+       const parser = new PriceParser();
+       
+       function switchTab(tabName) {
+           document.querySelectorAll('.tab-button').forEach(btn => {
+               btn.classList.remove('active');
+           });
+           event.target.classList.add('active');
+           
+           document.querySelectorAll('.tab-content').forEach(content => {
+               content.classList.remove('active');
+           });
+           document.getElementById(tabName).classList.add('active');
+           
+           currentTab = tabName;
+       }
+       
+       // 퍼센트 할인 계산
+       function smartParsePercentage() {
+           const price = document.getElementById('original-price').value;
+           const rate = document.getElementById('discount-rate').value;
+           
+           const parsedPrice = parser.parseAmount(price);
+           const parsedRate = parser.parseRate(rate);
+           
+           document.getElementById('originalPriceParsed').textContent = 
+               parsedPrice ? `인식됨: ${parsedPrice.toLocaleString()}원` : '입력 대기 중...';
+           document.getElementById('discountRateParsed').textContent = 
+               parsedRate ? `인식됨: ${parsedRate}%` : '입력 대기 중...';
+       }
+       
+       function setDiscountRate(rate) {
+           document.getElementById('discount-rate').value = rate + '%';
+           smartParsePercentage();
+       }
+       
+       function calculatePercentageDiscount() {
+           const originalPrice = parser.parseAmount(document.getElementById('original-price').value);
+           const discountRate = parser.parseRate(document.getElementById('discount-rate').value);
+           
+           if (!originalPrice || !discountRate) {
+               alert('원가와 할인율을 모두 입력해주세요.');
+               return;
+           }
+           
+           const discountAmount = originalPrice * (discountRate / 100);
+           const finalPrice = originalPrice - discountAmount;
+           const savings = discountAmount;
+           
+           const resultHTML = `
+               <div class="result-title">📊 할인 계산 결과</div>
+               <div class="discount-display">
+                   <div class="discount-value">${Math.round(finalPrice).toLocaleString()}원</div>
+                   <div class="discount-description">할인 후 가격</div>
+               </div>
+               <div class="result-grid">
+                   <div class="result-item">
+                       <div class="result-label">원가</div>
+                       <div class="result-value">${originalPrice.toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">할인율</div>
+                       <div class="result-value">${discountRate}%</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">할인 금액</div>
+                       <div class="result-value">${Math.round(discountAmount).toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">절약 금액</div>
+                       <div class="result-value">${Math.round(savings).toLocaleString()}원</div>
+                   </div>
+               </div>
+           `;
+           
+           document.getElementById('percentageResult').innerHTML = resultHTML;
+           document.getElementById('percentageResult').style.display = 'block';
+           document.getElementById('percentageResult').scrollIntoView({ behavior: 'smooth' });
+       }
+       
+       function showPercentageExample() {
+           document.getElementById('original-price').value = '10만원';
+           document.getElementById('discount-rate').value = '20%';
+           smartParsePercentage();
+       }
+       
+       function clearPercentage() {
+           document.getElementById('original-price').value = '';
+           document.getElementById('discount-rate').value = '';
+           document.getElementById('originalPriceParsed').textContent = '입력 대기 중...';
+           document.getElementById('discountRateParsed').textContent = '입력 대기 중...';
+           document.getElementById('percentageResult').style.display = 'none';
+       }
+       
+       // 금액 할인 계산
+       function smartParseAmount() {
+           const price = document.getElementById('amount-original-price').value;
+           const amount = document.getElementById('discount-amount').value;
+           
+           const parsedPrice = parser.parseAmount(price);
+           const parsedAmount = parser.parseAmount(amount);
+           
+           document.getElementById('amountOriginalPriceParsed').textContent = 
+               parsedPrice ? `인식됨: ${parsedPrice.toLocaleString()}원` : '입력 대기 중...';
+           document.getElementById('discountAmountParsed').textContent = 
+               parsedAmount ? `인식됨: ${parsedAmount.toLocaleString()}원` : '입력 대기 중...';
+       }
+       
+       function calculateAmountDiscount() {
+           const originalPrice = parser.parseAmount(document.getElementById('amount-original-price').value);
+           const discountAmount = parser.parseAmount(document.getElementById('discount-amount').value);
+           
+           if (!originalPrice || !discountAmount) {
+               alert('원가와 할인 금액을 모두 입력해주세요.');
+               return;
+           }
+           
+           const finalPrice = originalPrice - discountAmount;
+           const discountRate = (discountAmount / originalPrice) * 100;
+           
+           const resultHTML = `
+               <div class="result-title">📊 할인 계산 결과</div>
+               <div class="discount-display">
+                   <div class="discount-value">${Math.round(finalPrice).toLocaleString()}원</div>
+                   <div class="discount-description">할인 후 가격</div>
+               </div>
+               <div class="result-grid">
+                   <div class="result-item">
+                       <div class="result-label">원가</div>
+                       <div class="result-value">${originalPrice.toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">할인 금액</div>
+                       <div class="result-value">${discountAmount.toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">할인율</div>
+                       <div class="result-value">${discountRate.toFixed(1)}%</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">절약 금액</div>
+                       <div class="result-value">${discountAmount.toLocaleString()}원</div>
+                   </div>
+               </div>
+           `;
+           
+           document.getElementById('amountResult').innerHTML = resultHTML;
+           document.getElementById('amountResult').style.display = 'block';
+           document.getElementById('amountResult').scrollIntoView({ behavior: 'smooth' });
+       }
+       
+       function showAmountExample() {
+           document.getElementById('amount-original-price').value = '10만원';
+           document.getElementById('discount-amount').value = '2만원';
+           smartParseAmount();
+       }
+       
+       function clearAmount() {
+           document.getElementById('amount-original-price').value = '';
+           document.getElementById('discount-amount').value = '';
+           document.getElementById('amountOriginalPriceParsed').textContent = '입력 대기 중...';
+           document.getElementById('discountAmountParsed').textContent = '입력 대기 중...';
+           document.getElementById('amountResult').style.display = 'none';
+       }
+       
+       // 역산 계산
+       function smartParseReverse() {
+           const originalPrice = document.getElementById('reverse-original-price').value;
+           const targetPrice = document.getElementById('target-price').value;
+           
+           const parsedOriginal = parser.parseAmount(originalPrice);
+           const parsedTarget = parser.parseAmount(targetPrice);
+           
+           document.getElementById('reverseOriginalPriceParsed').textContent = 
+               parsedOriginal ? `인식됨: ${parsedOriginal.toLocaleString()}원` : '입력 대기 중...';
+           document.getElementById('targetPriceParsed').textContent = 
+               parsedTarget ? `인식됨: ${parsedTarget.toLocaleString()}원` : '입력 대기 중...';
+       }
+       
+       function calculateReverseDiscount() {
+           const originalPrice = parser.parseAmount(document.getElementById('reverse-original-price').value);
+           const targetPrice = parser.parseAmount(document.getElementById('target-price').value);
+           
+           if (!originalPrice || !targetPrice) {
+               alert('원가와 목표 가격을 모두 입력해주세요.');
+               return;
+           }
+           
+           if (targetPrice >= originalPrice) {
+               alert('목표 가격이 원가보다 낮아야 합니다.');
+               return;
+           }
+           
+           const discountAmount = originalPrice - targetPrice;
+           const requiredRate = (discountAmount / originalPrice) * 100;
+           
+           const resultHTML = `
+               <div class="result-title">📊 필요 할인율 계산 결과</div>
+               <div class="discount-display">
+                   <div class="discount-value">${requiredRate.toFixed(1)}%</div>
+                   <div class="discount-description">필요한 할인율</div>
+               </div>
+               <div class="result-grid">
+                   <div class="result-item">
+                       <div class="result-label">원가</div>
+                       <div class="result-value">${originalPrice.toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">목표 가격</div>
+                       <div class="result-value">${targetPrice.toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">할인 금액</div>
+                       <div class="result-value">${discountAmount.toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">절약 금액</div>
+                       <div class="result-value">${discountAmount.toLocaleString()}원</div>
+                   </div>
+               </div>
+           `;
+           
+           document.getElementById('reverseResult').innerHTML = resultHTML;
+           document.getElementById('reverseResult').style.display = 'block';
+           document.getElementById('reverseResult').scrollIntoView({ behavior: 'smooth' });
+       }
+       
+       function showReverseExample() {
+           document.getElementById('reverse-original-price').value = '10만원';
+           document.getElementById('target-price').value = '8만원';
+           smartParseReverse();
+       }
+       
+       function clearReverse() {
+           document.getElementById('reverse-original-price').value = '';
+           document.getElementById('target-price').value = '';
+           document.getElementById('reverseOriginalPriceParsed').textContent = '입력 대기 중...';
+           document.getElementById('targetPriceParsed').textContent = '입력 대기 중...';
+           document.getElementById('reverseResult').style.display = 'none';
+       }
+       
+       window.addEventListener('load', function() {
+           showPercentageExample();
+           setTimeout(() => calculatePercentageDiscount(), 1500);
+       });
+   </script>
+</body>
+</html>
