@@ -1,1 +1,793 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>과학계산기 - 고급 수학 계산 | 스마트 파싱</title>
+    <meta name="description" content="과학계산기로 삼각함수, 로그, 지수, 통계 등 고급 수학 계산을 하세요. 수식을 자유 형식으로 입력하면 자동 인식해서 정확한 결과를 계산합니다.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .calculator-display {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .display-screen {
+            background: #000;
+            border-radius: 10px;
+            padding: 20px;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            border: 2px solid #333;
+        }
+        
+        .expression {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+        
+        .result {
+            font-size: 32px;
+            font-weight: bold;
+            color: #00ff00;
+            text-align: right;
+            word-break: break-all;
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .input-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .expression-input {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 18px;
+            font-family: 'Courier New', monospace;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        
+        .expression-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .calc-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .calc-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .calc-btn:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+        
+        .calc-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn-number {
+            background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
+        }
+        
+        .btn-operator {
+            background: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%);
+        }
+        
+        .btn-function {
+            background: linear-gradient(135deg, #6f42c1 0%, #563d7c 100%);
+        }
+        
+        .btn-special {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+        
+        .btn-equals {
+            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+            grid-column: span 2;
+        }
+        
+        .examples {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffeaa7 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .examples h4 {
+            color: #d68910;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .example-item {
+            background: rgba(255,255,255,0.7);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .example-title {
+            font-weight: bold;
+            color: #d68910;
+            margin-bottom: 8px;
+        }
+        
+        .example-formula {
+            font-family: 'Courier New', monospace;
+            background: rgba(0,0,0,0.1);
+            padding: 5px;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+        
+        .functions-reference {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+        
+        .reference-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .function-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .function-category {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .category-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 5px;
+        }
+        
+        .function-list {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .function-item {
+            font-family: 'Courier New', monospace;
+            color: #666;
+            margin: 3px 0;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 25px 0;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .button-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .calc-btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .display-screen {
+                font-size: 18px;
+            }
+            
+            .result {
+                font-size: 24px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔬 과학계산기</h1>
+            <p>고급 수학 함수와 공학 계산을 지원하는 스마트 계산기</p>
+        </div>
+        
+        <div class="content">
+            <div class="calculator-display">
+                <div class="display-screen">
+                    <div class="expression" id="expressionDisplay">수식을 입력하세요</div>
+                    <div class="result" id="resultDisplay">0</div>
+                </div>
+            </div>
+            
+            <div class="input-section">
+                <div class="input-label">
+                    <span>📝</span>
+                    수식 입력 (자유 형식)
+                </div>
+                <input type="text" class="expression-input" id="expressionInput" 
+                       placeholder="예: sin(30°), log(100), sqrt(16), 2^3, 3*pi..." 
+                       oninput="updateExpression()" onkeydown="handleKeyPress(event)">
+                
+                <div class="button-grid">
+                    <!-- 숫자 및 기본 연산 -->
+                    <button class="calc-btn btn-special" onclick="clearAll()">C</button>
+                    <button class="calc-btn btn-special" onclick="clearEntry()">CE</button>
+                    <button class="calc-btn btn-special" onclick="backspace()">⌫</button>
+                    <button class="calc-btn btn-operator" onclick="appendToExpression('/')">/</button>
+                    <button class="calc-btn btn-function" onclick="appendToExpression('sqrt(')">√</button>
+                    <button class="calc-btn btn-function" onclick="appendToExpression('^')"">x^y</button>
+                    
+                    <button class="calc-btn btn-number" onclick="appendToExpression('7')">7</button>
+                    <button class="calc-btn btn-number" onclick="appendToExpression('8')">8</button>
+                    <button class="calc-btn btn-number" onclick="appendToExpression('9')">9</button>
+                    <button class="calc-btn btn-operator" onclick="appendToExpression('*')">×</button>
+                    <button class="calc-btn btn-function" onclick="appendToExpression('sin(')">sin</button>
+                    <button class="calc-btn btn-function" onclick="appendToExpression('cos(')">cos</button>
+                    
+                    <button class="calc-btn btn-number" onclick="appendToExpression('4')">4</button>
+                    <button class="calc-btn btn-number" onclick="appendToExpression('5')">5</button>
+                    <button class="calc-btn btn-number" onclick="appendToExpression('6')">6</button>
+                    <button class="calc-btn btn-operator" onclick="appendToExpression('-')">-</button>
+                    <button class="calc-btn btn-function" onclick="appendToExpression('tan(')">tan</button>
+                    <button class="calc-btn btn-function" onclick="appendToExpression('log(')">log</button>
+                    
+                    <button class="calc-btn btn-number" onclick="appendToExpression('1')">1</button>
+                    <button class="calc-btn btn-number" onclick="appendToExpression('2')">2</button>
+                    <button class="calc-btn btn-number" onclick="appendToExpression('3')">3</button>
+                    <button class="calc-btn btn-operator" onclick="appendToExpression('+')">+</button>
+                    <button class="calc-btn btn-function" onclick="appendToExpression('ln(')">ln</button>
+                    <button class="calc-btn btn-function" onclick="appendToExpression('!')">n!</button>
+                    
+                    <button class="calc-btn btn-number" onclick="appendToExpression('0')">0</button>
+                    <button class="calc-btn btn-number" onclick="appendToExpression('.')">.</button>
+                    <button class="calc-btn btn-function" onclick="appendToExpression('pi')">π</button>
+                    <button class="calc-btn btn-function" onclick="appendToExpression('e')">e</button>
+                    <button class="calc-btn btn-function" onclick="appendToExpression('(')">(</button>
+                    <button class="calc-btn btn-function" onclick="appendToExpression(')')">)</button>
+                    
+                    <button class="calc-btn btn-equals" onclick="calculateExpression()">=</button>
+                    <button class="calc-btn btn-function" onclick="appendToExpression('abs(')">|x|</button>
+                    <button class="calc-btn btn-function" onclick="appendToExpression('mod')"">mod</button>
+                    <button class="calc-btn btn-function" onclick="appendToExpression('°')">°</button>
+                </div>
+            </div>
 
+            <div class="examples">
+                <h4>💡 수식 입력 예시</h4>
+                <div class="examples-grid">
+                    <div class="example-item">
+                        <div class="example-title">삼각함수</div>
+                        <div class="example-formula">sin(30°), cos(π/4)</div>
+                        <div class="example-formula">tan(45), asin(0.5)</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-title">로그 및 지수</div>
+                        <div class="example-formula">log(100), ln(e)</div>
+                        <div class="example-formula">2^3, sqrt(16)</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-title">복합 계산</div>
+                        <div class="example-formula">sin(30°) + cos(60°)</div>
+                        <div class="example-formula">(2+3)*sqrt(25)</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-title">상수 및 팩토리얼</div>
+                        <div class="example-formula">pi * r^2</div>
+                        <div class="example-formula">5!, e^2</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn" onclick="calculateExpression()">🔬 계산하기</button>
+                <button class="btn btn-secondary" onclick="showExampleExpression()">📝 예시 입력</button>
+                <button class="btn btn-danger" onclick="clearAll()">🗑️ 전체 지우기</button>
+            </div>
+
+            <div class="functions-reference">
+                <div class="reference-title">📚 지원하는 함수 목록</div>
+                <div class="function-categories">
+                    <div class="function-category">
+                        <div class="category-title">삼각함수</div>
+                        <div class="function-list">
+                            <div class="function-item">sin(x), cos(x), tan(x)</div>
+                            <div class="function-item">asin(x), acos(x), atan(x)</div>
+                            <div class="function-item">sinh(x), cosh(x), tanh(x)</div>
+                        </div>
+                    </div>
+                    <div class="function-category">
+                        <div class="category-title">로그 및 지수</div>
+                        <div class="function-list">
+                            <div class="function-item">log(x) - 상용로그</div>
+                            <div class="function-item">ln(x) - 자연로그</div>
+                            <div class="function-item">exp(x) - e^x</div>
+                            <div class="function-item">x^y - 거듭제곱</div>
+                        </div>
+                    </div>
+                    <div class="function-category">
+                        <div class="category-title">기본 함수</div>
+                        <div class="function-list">
+                            <div class="function-item">sqrt(x) - 제곱근</div>
+                            <div class="function-item">abs(x) - 절댓값</div>
+                            <div class="function-item">ceil(x) - 올림</div>
+                            <div class="function-item">floor(x) - 내림</div>
+                            <div class="function-item">round(x) - 반올림</div>
+                        </div>
+                    </div>
+                    <div class="function-category">
+                        <div class="category-title">상수 및 기타</div>
+                        <div class="function-list">
+                            <div class="function-item">pi (π) - 원주율</div>
+                            <div class="function-item">e - 자연상수</div>
+                            <div class="function-item">x! - 팩토리얼</div>
+                            <div class="function-item">x mod y - 나머지</div>
+                            <div class="function-item">° - 도 단위</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ScientificCalculator {
+            constructor() {
+                this.currentExpression = '';
+                this.lastResult = 0;
+                this.angleMode = 'degree'; // 'degree' or 'radian'
+            }
+            
+            // 수식 정규화 및 변환
+            normalizeExpression(expr) {
+                let normalized = expr.toString();
+                
+                // 한글 함수명 변환
+                normalized = normalized.replace(/사인/g, 'sin');
+                normalized = normalized.replace(/코사인/g, 'cos');
+                normalized = normalized.replace(/탄젠트/g, 'tan');
+                normalized = normalized.replace(/로그/g, 'log');
+                normalized = normalized.replace(/자연로그/g, 'ln');
+                normalized = normalized.replace(/제곱근/g, 'sqrt');
+                normalized = normalized.replace(/절댓값/g, 'abs');
+                
+                // 곱셈 기호 정규화
+                normalized = normalized.replace(/×/g, '*');
+                normalized = normalized.replace(/÷/g, '/');
+                
+                // 거듭제곱 기호 변환
+                normalized = normalized.replace(/\^/g, '**');
+                
+                // 상수 변환
+                normalized = normalized.replace(/π|파이/g, Math.PI.toString());
+                normalized = normalized.replace(/(?<![\w])e(?![a-zA-Z])/g, Math.E.toString());
+                
+                // 암시적 곱셈 추가 (예: 2pi -> 2*pi, 3(4+5) -> 3*(4+5))
+                normalized = normalized.replace(/(\d)\(/g, '$1*(');
+                normalized = normalized.replace(/(\))(\d)/g, '$1*$2');
+                normalized = normalized.replace(/(\d)(sin|cos|tan|log|ln|sqrt|abs)/g, '$1*$2');
+                
+                return normalized;
+            }
+            
+            // 각도를 라디안으로 변환
+            toRadians(degrees) {
+                return degrees * (Math.PI / 180);
+            }
+            
+            // 팩토리얼 계산
+            factorial(n) {
+                if (n < 0) return NaN;
+                if (n === 0 || n === 1) return 1;
+                let result = 1;
+                for (let i = 2; i <= n; i++) {
+                    result *= i;
+                }
+                return result;
+            }
+            
+            // 삼각함수 처리 (도 단위 지원)
+            processTrigFunctions(expr) {
+                // sin, cos, tan 함수에서 도 단위 처리
+                expr = expr.replace(/sin\(([^)]+)°\)/g, (match, angle) => {
+                    return `Math.sin(${this.toRadians(parseFloat(angle))})`;
+                });
+                expr = expr.replace(/cos\(([^)]+)°\)/g, (match, angle) => {
+                    return `Math.cos(${this.toRadians(parseFloat(angle))})`;
+                });
+                expr = expr.replace(/tan\(([^)]+)°\)/g, (match, angle) => {
+                    return `Math.tan(${this.toRadians(parseFloat(angle))})`;
+                });
+                
+                // 라디안 단위 삼각함수
+                expr = expr.replace(/sin\(/g, 'Math.sin(');
+                expr = expr.replace(/cos\(/g, 'Math.cos(');
+                expr = expr.replace(/tan\(/g, 'Math.tan(');
+                expr = expr.replace(/asin\(/g, 'Math.asin(');
+                expr = expr.replace(/acos\(/g, 'Math.acos(');
+                expr = expr.replace(/atan\(/g, 'Math.atan(');
+                
+                return expr;
+            }
+            
+            // 수학 함수 처리
+            processMathFunctions(expr) {
+                // 로그 함수
+                expr = expr.replace(/log\(/g, 'Math.log10(');
+                expr = expr.replace(/ln\(/g, 'Math.log(');
+                expr = expr.replace(/exp\(/g, 'Math.exp(');
+                
+                // 제곱근 및 기타
+                expr = expr.replace(/sqrt\(/g, 'Math.sqrt(');
+                expr = expr.replace(/abs\(/g, 'Math.abs(');
+                expr = expr.replace(/ceil\(/g, 'Math.ceil(');
+                expr = expr.replace(/floor\(/g, 'Math.floor(');
+                expr = expr.replace(/round\(/g, 'Math.round(');
+                
+                // 팩토리얼 처리
+                expr = expr.replace(/(\d+)!/g, (match, num) => {
+                    return this.factorial(parseInt(num));
+                });
+                
+                // 나머지 연산
+                expr = expr.replace(/(\d+)\s*mod\s*(\d+)/g, '($1 % $2)');
+                
+                return expr;
+            }
+            
+            // 수식 계산
+            calculate(expression) {
+                try {
+                    if (!expression || expression.trim() === '') {
+                        return '0';
+                    }
+                    
+                    // 수식 정규화
+                    let normalized = this.normalizeExpression(expression);
+                    
+                    // 삼각함수 처리
+                    normalized = this.processTrigFunctions(normalized);
+                    
+                    // 수학 함수 처리
+                    normalized = this.processMathFunctions(normalized);
+                    
+                    // 안전한 계산을 위한 검증
+                    if (this.containsDangerousCode(normalized)) {
+                        throw new Error('잘못된 수식입니다.');
+                    }
+                    
+                    // 계산 실행
+                    const result = Function('"use strict"; return (' + normalized + ')')();
+                    
+                    if (isNaN(result)) {
+                        return 'Error: 정의되지 않음';
+                    }
+                    
+                    if (!isFinite(result)) {
+                        return result > 0 ? '∞' : '-∞';
+                    }
+                    
+                    // 결과 포맷팅
+                    return this.formatResult(result);
+                    
+                } catch (error) {
+                    return 'Error: ' + error.message;
+                }
+            }
+            
+            // 위험한 코드 검증
+            containsDangerousCode(expr) {
+                const dangerousPatterns = [
+                    /eval/i,
+                    /function/i,
+                    /window/i,
+                    /document/i,
+                    /alert/i,
+                    /console/i,
+                    /setTimeout/i,
+                    /setInterval/i
+                ];
+                
+                return dangerousPatterns.some(pattern => pattern.test(expr));
+            }
+            
+            // 결과 포맷팅
+            formatResult(result) {
+                // 매우 작은 수는 0으로 처리 (부동소수점 오차 제거)
+                if (Math.abs(result) < 1e-10) {
+                    return '0';
+                }
+                
+                // 정수인 경우
+                if (Number.isInteger(result)) {
+                    return result.toLocaleString();
+                }
+                
+                // 소수인 경우 (최대 10자리)
+                const rounded = parseFloat(result.toPrecision(10));
+                return rounded.toString();
+            }
+        }
+
+        const calculator = new ScientificCalculator();
+
+        function updateExpression() {
+            const input = document.getElementById('expressionInput');
+            const expressionDisplay = document.getElementById('expressionDisplay');
+            
+            calculator.currentExpression = input.value;
+            expressionDisplay.textContent = input.value || '수식을 입력하세요';
+        }
+
+        function appendToExpression(value) {
+            const input = document.getElementById('expressionInput');
+            input.value += value;
+            updateExpression();
+            input.focus();
+        }
+
+        function calculateExpression() {
+            const expression = calculator.currentExpression;
+            const result = calculator.calculate(expression);
+            
+            document.getElementById('resultDisplay').textContent = result;
+            
+            // 결과가 숫자인 경우 마지막 결과로 저장
+            if (!result.startsWith('Error') && !isNaN(parseFloat(result.replace(/,/g, '')))) {
+                calculator.lastResult = parseFloat(result.replace(/,/g, ''));
+            }
+        }
+
+        function clearAll() {
+            calculator.currentExpression = '';
+            document.getElementById('expressionInput').value = '';
+            document.getElementById('expressionDisplay').textContent = '수식을 입력하세요';
+            document.getElementById('resultDisplay').textContent = '0';
+        }
+
+        function clearEntry() {
+            const input = document.getElementById('expressionInput');
+            input.value = '';
+            updateExpression();
+            document.getElementById('resultDisplay').textContent = '0';
+        }
+
+        function backspace() {
+            const input = document.getElementById('expressionInput');
+            input.value = input.value.slice(0, -1);
+            updateExpression();
+        }
+
+        function showExampleExpression() {
+            const examples = [
+                'sin(30°) + cos(60°)',
+                'sqrt(16) + log(100)',
+                '2^3 * pi',
+                'ln(e) + 5!',
+                '(2+3) * sqrt(25)',
+                'abs(-10) + ceil(4.2)'
+            ];
+            
+            const randomExample = examples[Math.floor(Math.random() * examples.length)];
+            document.getElementById('expressionInput').value = randomExample;
+            updateExpression();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                calculateExpression();
+            } else if (event.key === 'Escape') {
+                clearAll();
+            }
+        }
+
+        // 페이지 로드 시 예시 수식
+        window.addEventListener('load', function() {
+            showExampleExpression();
+            
+            // 2초 후 자동 계산
+            setTimeout(() => {
+                calculateExpression();
+            }, 2000);
+        });
+
+        // 입력창에 포커스
+        document.getElementById('expressionInput').focus();
+    </script>
+</body>
+</html>
