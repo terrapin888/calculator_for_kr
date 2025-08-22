@@ -1,1 +1,719 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>세금 계산기 - 소득세/부가세 자동 계산 | 스마트 파싱</title>
+   <meta name="description" content="세금 계산기로 소득세, 부가세, 종합소득세를 쉽게 계산하세요. 소득과 세율을 자유 형식으로 입력하면 자동 인식합니다.">
+   <style>
+       * {
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+       }
+       
+       body {
+           font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+           min-height: 100vh;
+           padding: 20px;
+       }
+       
+       .container {
+           max-width: 1200px;
+           margin: 0 auto;
+           background: white;
+           border-radius: 20px;
+           box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+           overflow: hidden;
+           animation: slideUp 0.6s ease-out;
+       }
+       
+       @keyframes slideUp {
+           from { opacity: 0; transform: translateY(30px); }
+           to { opacity: 1; transform: translateY(0); }
+       }
+       
+       .header {
+           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+           color: white;
+           padding: 40px 30px;
+           text-align: center;
+           position: relative;
+           overflow: hidden;
+       }
+       
+       .header::before {
+           content: '';
+           position: absolute;
+           top: -50%;
+           left: -50%;
+           width: 200%;
+           height: 200%;
+           background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+           animation: pulse 4s ease-in-out infinite;
+       }
+       
+       @keyframes pulse {
+           0%, 100% { transform: scale(1); }
+           50% { transform: scale(1.1); }
+       }
+       
+       .header h1 {
+           font-size: 2.5rem;
+           margin-bottom: 10px;
+           position: relative;
+           z-index: 1;
+       }
+       
+       .header p {
+           font-size: 1.1rem;
+           opacity: 0.9;
+           position: relative;
+           z-index: 1;
+       }
+       
+       .content {
+           padding: 40px 30px;
+       }
+       
+       .calculator-tabs {
+           display: flex;
+           background: #f8f9fa;
+           border-radius: 15px;
+           padding: 5px;
+           margin-bottom: 30px;
+           gap: 5px;
+       }
+       
+       .tab-button {
+           flex: 1;
+           padding: 15px 20px;
+           border: none;
+           border-radius: 10px;
+           background: transparent;
+           cursor: pointer;
+           transition: all 0.3s ease;
+           font-weight: 600;
+           font-size: 14px;
+       }
+       
+       .tab-button.active {
+           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+           color: white;
+       }
+       
+       .tab-content {
+           display: none;
+       }
+       
+       .tab-content.active {
+           display: block;
+       }
+       
+       .input-section {
+           background: #f8f9fa;
+           border-radius: 15px;
+           padding: 30px;
+           margin-bottom: 30px;
+           border: 2px solid #e9ecef;
+       }
+       
+       .input-grid {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+           gap: 25px;
+       }
+       
+       .input-group {
+           background: white;
+           border-radius: 12px;
+           padding: 20px;
+           box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+       }
+       
+       .input-label {
+           font-size: 1.1rem;
+           font-weight: 600;
+           color: #333;
+           margin-bottom: 10px;
+           display: flex;
+           align-items: center;
+           gap: 8px;
+       }
+       
+       input[type="text"], input[type="number"], select {
+           width: 100%;
+           padding: 15px;
+           border: 2px solid #e1e5e9;
+           border-radius: 8px;
+           font-size: 16px;
+           transition: all 0.3s ease;
+           background: #fafbfc;
+       }
+       
+       input:focus, select:focus {
+           outline: none;
+           border-color: #667eea;
+           background: white;
+           box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+       }
+       
+       .parsed-result {
+           margin-top: 10px;
+           padding: 10px;
+           background: #e3f2fd;
+           border-radius: 6px;
+           font-size: 14px;
+           color: #1976d2;
+       }
+       
+       .controls {
+           display: flex;
+           gap: 15px;
+           flex-wrap: wrap;
+           justify-content: center;
+           margin: 25px 0;
+       }
+       
+       .btn {
+           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+           color: white;
+           border: none;
+           padding: 15px 30px;
+           border-radius: 25px;
+           font-size: 16px;
+           font-weight: 600;
+           cursor: pointer;
+           transition: all 0.3s ease;
+       }
+       
+       .btn:hover {
+           transform: translateY(-2px);
+           box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+       }
+       
+       .btn-secondary {
+           background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+       }
+       
+       .btn-danger {
+           background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+       }
+       
+       .result-section {
+           background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+           border-radius: 15px;
+           padding: 30px;
+           margin-top: 30px;
+           border: 2px solid #ff9800;
+           display: none;
+           animation: fadeIn 0.5s ease-in;
+       }
+       
+       @keyframes fadeIn {
+           from { opacity: 0; transform: translateY(20px); }
+           to { opacity: 1; transform: translateY(0); }
+       }
+       
+       .result-title {
+           font-size: 1.5rem;
+           font-weight: bold;
+           color: #e65100;
+           margin-bottom: 25px;
+           text-align: center;
+       }
+       
+       .tax-display {
+           background: white;
+           border-radius: 15px;
+           padding: 30px;
+           text-align: center;
+           margin-bottom: 25px;
+           box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+       }
+       
+       .tax-value {
+           font-size: 3rem;
+           font-weight: bold;
+           color: #ff9800;
+           margin-bottom: 10px;
+       }
+       
+       .tax-description {
+           font-size: 1.2rem;
+           color: #666;
+       }
+       
+       .result-grid {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+           gap: 20px;
+       }
+       
+       .result-item {
+           background: white;
+           padding: 20px;
+           border-radius: 12px;
+           text-align: center;
+           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+       }
+       
+       .result-label {
+           font-size: 0.9rem;
+           color: #666;
+           margin-bottom: 8px;
+       }
+       
+       .result-value {
+           font-size: 1.3rem;
+           font-weight: bold;
+           color: #ff9800;
+       }
+       
+       .tax-brackets {
+           background: white;
+           border-radius: 12px;
+           padding: 20px;
+           margin-top: 20px;
+           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+       }
+       
+       .brackets-title {
+           font-size: 1.1rem;
+           font-weight: bold;
+           color: #333;
+           margin-bottom: 15px;
+           text-align: center;
+       }
+       
+       .bracket-table {
+           width: 100%;
+           border-collapse: collapse;
+           font-size: 14px;
+       }
+       
+       .bracket-table th, .bracket-table td {
+           padding: 10px;
+           text-align: center;
+           border-bottom: 1px solid #e9ecef;
+       }
+       
+       .bracket-table th {
+           background: #f8f9fa;
+           font-weight: bold;
+       }
+       
+       @media (max-width: 768px) {
+           .container {
+               margin: 10px;
+           }
+           
+           .header h1 {
+               font-size: 2rem;
+           }
+           
+           .calculator-tabs {
+               flex-direction: column;
+           }
+           
+           .input-grid {
+               grid-template-columns: 1fr;
+           }
+           
+           .controls {
+               flex-direction: column;
+           }
+           
+           .btn {
+               width: 100%;
+           }
+           
+           .tax-value {
+               font-size: 2.5rem;
+           }
+       }
+   </style>
+</head>
+<body>
+   <div class="container">
+       <div class="header">
+           <h1>📋 세금 계산기</h1>
+           <p>소득세, 부가세, 종합소득세를 쉽게 계산하세요</p>
+       </div>
+       
+       <div class="content">
+           <div class="calculator-tabs">
+               <button class="tab-button active" onclick="switchTab('income')">소득세</button>
+               <button class="tab-button" onclick="switchTab('vat')">부가세</button>
+               <button class="tab-button" onclick="switchTab('comprehensive')">종합소득세</button>
+           </div>
+           
+           <!-- 소득세 계산 -->
+           <div id="income" class="tab-content active">
+               <div class="input-section">
+                   <div class="input-grid">
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>💰</span>
+                               연소득 (세전)
+                           </div>
+                           <input type="text" id="annual-income" placeholder="예: 5000만원, 50000000원..." oninput="smartParseIncome()">
+                           <div class="parsed-result" id="annualIncomeParsed">입력 대기 중...</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>👥</span>
+                               부양가족 수
+                           </div>
+                           <select id="dependents" onchange="smartParseIncome()">
+                               <option value="0">없음</option>
+                               <option value="1">1명</option>
+                               <option value="2">2명</option>
+                               <option value="3">3명</option>
+                               <option value="4">4명</option>
+                               <option value="5">5명 이상</option>
+                           </select>
+                       </div>
+                   </div>
+                   
+                   <div class="tax-brackets">
+                       <div class="brackets-title">📊 2024년 소득세 세율표</div>
+                       <table class="bracket-table">
+                           <tr>
+                               <th>과세표준</th>
+                               <th>세율</th>
+                               <th>누진공제</th>
+                           </tr>
+                           <tr>
+                               <td>1,400만원 이하</td>
+                               <td>6%</td>
+                               <td>-</td>
+                           </tr>
+                           <tr>
+                               <td>1,400만원 ~ 5,000만원</td>
+                               <td>15%</td>
+                               <td>126만원</td>
+                           </tr>
+                           <tr>
+                               <td>5,000만원 ~ 8,800만원</td>
+                               <td>24%</td>
+                               <td>576만원</td>
+                           </tr>
+                           <tr>
+                               <td>8,800만원 ~ 1.5억원</td>
+                               <td>35%</td>
+                               <td>1,544만원</td>
+                           </tr>
+                           <tr>
+                               <td>1.5억원 ~ 3억원</td>
+                               <td>38%</td>
+                               <td>1,994만원</td>
+                           </tr>
+                           <tr>
+                               <td>3억원 ~ 5억원</td>
+                               <td>40%</td>
+                               <td>2,594만원</td>
+                           </tr>
+                           <tr>
+                               <td>5억원 ~ 10억원</td>
+                               <td>42%</td>
+                               <td>3,594만원</td>
+                           </tr>
+                           <tr>
+                               <td>10억원 초과</td>
+                               <td>45%</td>
+                               <td>6,594만원</td>
+                           </tr>
+                       </table>
+                   </div>
+               </div>
+               
+               <div class="controls">
+                   <button class="btn" onclick="calculateIncomeTax()">📋 소득세 계산</button>
+                   <button class="btn btn-secondary" onclick="showIncomeExample()">📝 예시</button>
+                   <button class="btn btn-danger" onclick="clearIncome()">🗑️ 초기화</button>
+               </div>
+               
+               <div class="result-section" id="incomeResult"></div>
+           </div>
+           
+           <!-- 부가세 계산 -->
+           <div id="vat" class="tab-content">
+               <div class="input-section">
+                   <div class="input-grid">
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>💰</span>
+                               공급가액 (부가세 제외)
+                           </div>
+                           <input type="text" id="supply-price" placeholder="예: 1000만원, 10000000원..." oninput="smartParseVAT()">
+                           <div class="parsed-result" id="supplyPriceParsed">입력 대기 중...</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>📊</span>
+                               부가세율
+                           </div>
+                           <select id="vat-rate" onchange="smartParseVAT()">
+                               <option value="10">일반 (10%)</option>
+                               <option value="0">면세 (0%)</option>
+                           </select>
+                       </div>
+                   </div>
+               </div>
+               
+               <div class="controls">
+                   <button class="btn" onclick="calculateVAT()">📋 부가세 계산</button>
+                   <button class="btn btn-secondary" onclick="showVATExample()">📝 예시</button>
+                   <button class="btn btn-danger" onclick="clearVAT()">🗑️ 초기화</button>
+               </div>
+               
+               <div class="result-section" id="vatResult"></div>
+           </div>
+           
+           <!-- 종합소득세 계산 -->
+           <div id="comprehensive" class="tab-content">
+               <div class="input-section">
+                   <div class="input-grid">
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>💰</span>
+                               종합소득 (연간)
+                           </div>
+                           <input type="text" id="comprehensive-income" placeholder="예: 8000만원, 80000000원..." oninput="smartParseComprehensive()">
+                           <div class="parsed-result" id="comprehensiveIncomeParsed">입력 대기 중...</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>📝</span>
+                               소득공제 합계
+                           </div>
+                           <input type="text" id="deductions" placeholder="예: 1500만원, 15000000원..." oninput="smartParseComprehensive()">
+                           <div class="parsed-result" id="deductionsParsed">입력 대기 중...</div>
+                       </div>
+                   </div>
+               </div>
+               
+               <div class="controls">
+                   <button class="btn" onclick="calculateComprehensiveTax()">📋 종합소득세 계산</button>
+                   <button class="btn btn-secondary" onclick="showComprehensiveExample()">📝 예시</button>
+                   <button class="btn btn-danger" onclick="clearComprehensive()">🗑️ 초기화</button>
+               </div>
+               
+               <div class="result-section" id="comprehensiveResult"></div>
+           </div>
+       </div>
+   </div>
 
+   <script>
+       let currentTab = 'income';
+       
+       class PriceParser {
+           constructor() {
+               this.koreanUnits = {
+                   '천': 1000,
+                   '만': 10000,
+                   '억': 100000000
+               };
+           }
+           
+           parseAmount(input) {
+               if (!input) return null;
+               
+               let cleaned = input.replace(/\s+/g, '');
+               
+               for (let [unit, multiplier] of Object.entries(this.koreanUnits)) {
+                   if (cleaned.includes(unit)) {
+                       let parts = cleaned.split(unit);
+                       if (parts[0]) {
+                           let num = parseFloat(parts[0].replace(/[^0-9.]/g, ''));
+                           if (!isNaN(num)) {
+                               return num * multiplier;
+                           }
+                       }
+                   }
+               }
+               
+               cleaned = cleaned.replace(/[^0-9.]/g, '');
+               let num = parseFloat(cleaned);
+               
+               return isNaN(num) ? null : num;
+           }
+       }
+       
+       const parser = new PriceParser();
+       
+       function switchTab(tabName) {
+           document.querySelectorAll('.tab-button').forEach(btn => {
+               btn.classList.remove('active');
+           });
+           event.target.classList.add('active');
+           
+           document.querySelectorAll('.tab-content').forEach(content => {
+               content.classList.remove('active');
+           });
+           document.getElementById(tabName).classList.add('active');
+           
+           currentTab = tabName;
+       }
+       
+       // 소득세 계산
+       function smartParseIncome() {
+           const income = document.getElementById('annual-income').value;
+           const parsedIncome = parser.parseAmount(income);
+           
+           document.getElementById('annualIncomeParsed').textContent = 
+               parsedIncome ? `인식됨: ${parsedIncome.toLocaleString()}원` : '입력 대기 중...';
+       }
+       
+       function calculateIncomeTax() {
+           const annualIncome = parser.parseAmount(document.getElementById('annual-income').value);
+           const dependents = parseInt(document.getElementById('dependents').value);
+           
+           if (!annualIncome) {
+               alert('연소득을 입력해주세요.');
+               return;
+           }
+           
+           // 기본공제 (본인 150만원 + 부양가족 150만원씩)
+           const basicDeduction = 1500000 + (dependents * 1500000);
+           
+           // 과세표준 = 연소득 - 기본공제
+           const taxableIncome = Math.max(0, annualIncome - basicDeduction);
+           
+           // 소득세 계산 (누진세율 적용)
+           let incomeTax = 0;
+           if (taxableIncome <= 14000000) {
+               incomeTax = taxableIncome * 0.06;
+           } else if (taxableIncome <= 50000000) {
+               incomeTax = taxableIncome * 0.15 - 1260000;
+           } else if (taxableIncome <= 88000000) {
+               incomeTax = taxableIncome * 0.24 - 5760000;
+           } else if (taxableIncome <= 150000000) {
+               incomeTax = taxableIncome * 0.35 - 15440000;
+           } else if (taxableIncome <= 300000000) {
+               incomeTax = taxableIncome * 0.38 - 19940000;
+           } else if (taxableIncome <= 500000000) {
+               incomeTax = taxableIncome * 0.40 - 25940000;
+           } else if (taxableIncome <= 1000000000) {
+               incomeTax = taxableIncome * 0.42 - 35940000;
+           } else {
+               incomeTax = taxableIncome * 0.45 - 65940000;
+           }
+           
+           // 지방소득세 (소득세의 10%)
+           const localTax = incomeTax * 0.1;
+           const totalTax = incomeTax + localTax;
+           const netIncome = annualIncome - totalTax;
+           const monthlyNet = netIncome / 12;
+           
+           const resultHTML = `
+               <div class="result-title">📋 소득세 계산 결과</div>
+               <div class="tax-display">
+                   <div class="tax-value">${Math.round(totalTax).toLocaleString()}원</div>
+                   <div class="tax-description">총 세금 (연간)</div>
+               </div>
+               <div class="result-grid">
+                   <div class="result-item">
+                       <div class="result-label">연소득 (세전)</div>
+                       <div class="result-value">${annualIncome.toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">과세표준</div>
+                       <div class="result-value">${taxableIncome.toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">소득세</div>
+                       <div class="result-value">${Math.round(incomeTax).toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">지방소득세</div>
+                       <div class="result-value">${Math.round(localTax).toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">실수령액 (연간)</div>
+                       <div class="result-value">${Math.round(netIncome).toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">실수령액 (월간)</div>
+                       <div class="result-value">${Math.round(monthlyNet).toLocaleString()}원</div>
+                   </div>
+               </div>
+           `;
+           
+           document.getElementById('incomeResult').innerHTML = resultHTML;
+           document.getElementById('incomeResult').style.display = 'block';
+           document.getElementById('incomeResult').scrollIntoView({ behavior: 'smooth' });
+       }
+       
+       function showIncomeExample() {
+           document.getElementById('annual-income').value = '5000만원';
+           document.getElementById('dependents').value = '2';
+           smartParseIncome();
+       }
+       
+       function clearIncome() {
+           document.getElementById('annual-income').value = '';
+           document.getElementById('dependents').value = '0';
+           document.getElementById('annualIncomeParsed').textContent = '입력 대기 중...';
+           document.getElementById('incomeResult').style.display = 'none';
+       }
+       
+       // 부가세 계산
+       function smartParseVAT() {
+           const price = document.getElementById('supply-price').value;
+           const parsedPrice = parser.parseAmount(price);
+           
+           document.getElementById('supplyPriceParsed').textContent = 
+               parsedPrice ? `인식됨: ${parsedPrice.toLocaleString()}원` : '입력 대기 중...';
+       }
+       
+       function calculateVAT() {
+           const supplyPrice = parser.parseAmount(document.getElementById('supply-price').value);
+           const vatRate = parseFloat(document.getElementById('vat-rate').value);
+           
+           if (!supplyPrice) {
+               alert('공급가액을 입력해주세요.');
+               return;
+           }
+           
+           const vatAmount = supplyPrice * (vatRate / 100);
+           const totalPrice = supplyPrice + vatAmount;
+           
+           const resultHTML = `
+               <div class="result-title">📋 부가세 계산 결과</div>
+               <div class="tax-display">
+                   <div class="tax-value">${Math.round(vatAmount).toLocaleString()}원</div>
+                   <div class="tax-description">부가세</div>
+               </div>
+               <div class="result-grid">
+                   <div class="result-item">
+                       <div class="result-label">공급가액</div>
+                       <div class="result-value">${supplyPrice.toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">부가세율</div>
+                       <div class="result-value">${vatRate}%</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">부가세</div>
+                       <div class="result-value">${Math.round(vatAmount).toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">총액 (부가세 포함)</div>
+                       <div class="result-value">${Math.round(totalPrice).toLocaleString()}원</div>
+                   </div>
+               </div>
+           `;
+           
+           document.getElementById('vatResult').innerHTML = resultHTML;
+           document.getElementById('vatResult').style.display = 'block';
+           document.getElementById('vatResult').scrollIntoView({ behavior: 'smooth' });
+       }
+       
+       function showVATExample() {
+           document.getElementById('supply-price').value = '1000
