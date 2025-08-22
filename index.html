@@ -1,57 +1,726 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-  <title>이미지 바꾸기</title>
-  <style>
-    body {
-      text-align: center;
-      padding: 50px;
-      background-color: #fafafa;
-      font-family: Arial, sans-serif;
-    }
-    img {
-      width: 300px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 18px;
-      border: none;
-      border-radius: 8px;
-      background-color: #3498db;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #2980b9;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CalcHub - 스마트 계산기 포털</title>
+    <meta name="description" content="한국 최고의 스마트 계산기 포털. 금융, 건강, 시간, 임신 계산기 26개를 한 곳에서. 어떤 형식으로 입력해도 자동 인식!">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #2563eb;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #2563eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: #2563eb;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 80px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.025em;
+        }
+        
+        .hero p {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+        
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            margin-top: 48px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .features {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #1e293b;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: #64748b;
+            margin-bottom: 64px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+        }
+        
+        .feature-card {
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: #c7d2fe;
+        }
+        
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: #eef2ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1e293b;
+        }
+        
+        .feature-desc {
+            color: #64748b;
+            line-height: 1.6;
+        }
+        
+        .calculators {
+            padding: 80px 0;
+            background: #f8fafc;
+        }
+        
+        .category {
+            margin-bottom: 64px;
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .category-icon {
+            width: 48px;
+            height: 48px;
+            background: #2563eb;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .category-info h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        
+        .category-count {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        
+        .calculator-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .calculator-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #c7d2fe;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .calculator-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .calculator-icon {
+            width: 40px;
+            height: 40px;
+            background: #eef2ff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .calculator-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+        }
+        
+        .calculator-desc {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+
+        
+        .cta {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .cta h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .cta p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 16px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .container {
+                padding: 0 16px;
+            }
+            
+            .hero {
+                padding: 60px 0;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .hero-stats {
+                gap: 32px;
+                flex-wrap: wrap;
+            }
+            
+            .features,
+            .calculators,
+            .cta {
+                padding: 60px 0;
+            }
+            
+            .section-title {
+                font-size: 28px;
+            }
+            
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="#calculators" class="nav-link">계산기</a>
+                <a href="#about" class="nav-link">소개</a>
+                <a href="#contact" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
 
-  <h1>이미지 바꾸기 예제</h1>
-<img id="myImage" src="https://via.placeholder.com/300x200.png?text=첫번째+이미지">
-<br>
-<button onclick="changeImage()">이미지 바꾸기</button>
+    <section class="hero">
+        <div class="container">
+            <h1>스마트 계산기 포털</h1>
+            <p>
+                어떤 형식으로 입력해도 자동으로 인식하는 26개의 지능형 계산기.<br>
+                금융부터 건강까지, 모든 계산을 한 곳에서.
+            </p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">26</span>
+                    <span class="stat-label">계산기</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">6</span>
+                    <span class="stat-label">카테고리</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">무료</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<script>
-  let isFirst = true;
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">왜 CalcHub인가요?</h2>
+            <p class="section-subtitle">
+                복잡한 계산을 간단하게. 직관적인 인터페이스로 누구나 쉽게 사용할 수 있습니다.
+            </p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3 class="feature-title">지능형 입력 인식</h3>
+                    <p class="feature-desc">
+                        "1000만원", "천만원", "10,000,000" 어떻게 입력해도 자동으로 인식합니다.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🇰🇷</div>
+                    <h3 class="feature-title">한국 맞춤 서비스</h3>
+                    <p class="feature-desc">
+                        한국의 세법, 금리, 건강 기준에 완벽하게 맞춘 현지화된 계산기입니다.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">모든 기기 지원</h3>
+                    <p class="feature-desc">
+                        PC, 모바일, 태블릿 어디서든 완벽하게 작동하는 반응형 디자인입니다.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">즉시 계산</h3>
+                    <p class="feature-desc">
+                        입력과 동시에 실시간으로 계산 결과를 확인할 수 있습니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  function changeImage() {
-    const img = document.getElementById("myImage");
+    <section class="calculators" id="calculators">
+        <div class="container">
+            <h2 class="section-title">26개 스마트 계산기</h2>
+            <p class="section-subtitle">
+                필요한 계산기를 빠르게 찾아 바로 사용해보세요.
+            </p>
 
-    if (isFirst) {
-      img.src = "https://via.placeholder.com/300x200.png?text=두번째+이미지";
-    } else {
-      img.src = "https://via.placeholder.com/300x200.png?text=첫번째+이미지";
-    }
+            <!-- 금융 계산기 -->
+            <div class="category">
+                <div class="category-header">
+                    <div class="category-icon">💰</div>
+                    <div class="category-info">
+                        <h3>금융 계산기</h3>
+                        <span class="category-count">8개 계산기</span>
+                    </div>
+                </div>
+                <div class="calculator-grid">
+                    <a href="calculators/finance/percent-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">📊</div>
+                            <h4 class="calculator-name">퍼센트 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">백분율, 할인율, 증가율을 쉽게 계산합니다</p>
+                    </a>
+                    <a href="calculators/finance/discount-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">🏷️</div>
+                            <h4 class="calculator-name">할인 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">할인가격, 중복할인, 쿠폰 적용을 계산합니다</p>
+                    </a>
+                    <a href="calculators/finance/interest-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">📈</div>
+                            <h4 class="calculator-name">이자 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">단리, 복리, 적금 이자를 정확하게 계산합니다</p>
+                    </a>
+                    <a href="calculators/finance/loan-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">🏦</div>
+                            <h4 class="calculator-name">대출 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">대출 상환액, 이자, 원리금을 계산합니다</p>
+                    </a>
+                    <a href="calculators/finance/savings-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">💰</div>
+                            <h4 class="calculator-name">적금 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">적금 만기액, 이자, 세금을 계산합니다</p>
+                    </a>
+                    <a href="calculators/finance/stock-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">📈</div>
+                            <h4 class="calculator-name">주식 수익률 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">주식 투자 수익률과 손익을 계산합니다</p>
+                    </a>
+                    <a href="calculators/finance/exchange-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">💱</div>
+                            <h4 class="calculator-name">환율 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">실시간 환율로 환전 금액을 계산합니다</p>
+                    </a>
+                    <a href="calculators/finance/installment-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">💳</div>
+                            <h4 class="calculator-name">할부 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">할부 금액과 수수료를 계산합니다</p>
+                    </a>
+                </div>
+            </div>
 
-    isFirst = !isFirst;
-  }
-</script>
+            <!-- 비즈니스 계산기 -->
+            <div class="category">
+                <div class="category-header">
+                    <div class="category-icon">💼</div>
+                    <div class="category-info">
+                        <h3>비즈니스 계산기</h3>
+                        <span class="category-count">3개 계산기</span>
+                    </div>
+                </div>
+                <div class="calculator-grid">
+                    <a href="calculators/business/tip-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">🍽️</div>
+                            <h4 class="calculator-name">팁 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">팁 금액과 더치페이를 계산합니다</p>
+                    </a>
+                    <a href="calculators/business/fee-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">💼</div>
+                            <h4 class="calculator-name">수수료 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">온라인마켓, 부동산, 신용카드 수수료를 계산합니다</p>
+                    </a>
+                    <a href="calculators/business/tax-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">🧾</div>
+                            <h4 class="calculator-name">세금 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">월급 실수령액, 퇴직금, 부가세, 소득세를 계산합니다</p>
+                    </a>
+                </div>
+            </div>
 
+            <!-- 건강 계산기 -->
+            <div class="category">
+                <div class="category-header">
+                    <div class="category-icon">💪</div>
+                    <div class="category-info">
+                        <h3>건강 계산기</h3>
+                        <span class="category-count">5개 계산기</span>
+                    </div>
+                </div>
+                <div class="calculator-grid">
+                    <a href="calculators/health/bmi-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">⚖️</div>
+                            <h4 class="calculator-name">BMI 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">체질량지수와 비만도를 계산합니다</p>
+                    </a>
+                    <a href="calculators/health/ideal-weight-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">🎯</div>
+                            <h4 class="calculator-name">표준체중 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">이상체중과 건강체중을 계산합니다</p>
+                    </a>
+                    <a href="calculators/health/calorie-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">🔥</div>
+                            <h4 class="calculator-name">칼로리 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">기초대사량, 활동대사량, 다이어트를 계산합니다</p>
+                    </a>
+                    <a href="calculators/health/exercise-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">🏃</div>
+                            <h4 class="calculator-name">운동 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">칼로리 소모량과 운동 강도를 계산합니다</p>
+                    </a>
+                    <a href="calculators/health/body-fat-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">📏</div>
+                            <h4 class="calculator-name">체지방률 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">체지방률과 근육량을 계산합니다</p>
+                    </a>
+                </div>
+            </div>
 
+            <!-- 날짜/시간 계산기 -->
+            <div class="category">
+                <div class="category-header">
+                    <div class="category-icon">⏰</div>
+                    <div class="category-info">
+                        <h3>날짜/시간 계산기</h3>
+                        <span class="category-count">4개 계산기</span>
+                    </div>
+                </div>
+                <div class="calculator-grid">
+                    <a href="calculators/datetime/date-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">📅</div>
+                            <h4 class="calculator-name">날짜 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">날짜 간격과 D-Day를 계산합니다</p>
+                    </a>
+                    <a href="calculators/datetime/age-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">🎂</div>
+                            <h4 class="calculator-name">나이 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">만 나이와 한국 나이를 계산합니다</p>
+                    </a>
+                    <a href="calculators/datetime/timer-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">⏱️</div>
+                            <h4 class="calculator-name">타이머 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">스톱워치, 카운트다운, 인터벌 타이머</p>
+                    </a>
+                    <a href="calculators/datetime/time-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">🕐</div>
+                            <h4 class="calculator-name">시간 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">시간 더하기/빼기, 근무시간을 계산합니다</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 임신/출산 계산기 -->
+            <div class="category">
+                <div class="category-header">
+                    <div class="category-icon">🤱</div>
+                    <div class="category-info">
+                        <h3>임신/출산 계산기</h3>
+                        <span class="category-count">3개 계산기</span>
+                    </div>
+                </div>
+                <div class="calculator-grid">
+                    <a href="calculators/pregnancy/pregnancy-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">🤰</div>
+                            <h4 class="calculator-name">임신 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">임신 주수와 출산 예정일을 계산합니다</p>
+                    </a>
+                    <a href="calculators/pregnancy/ovulation-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">💝</div>
+                            <h4 class="calculator-name">배란일 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">가임기와 배란일을 계산합니다</p>
+                    </a>
+                    <a href="calculators/pregnancy/due-date-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">👶</div>
+                            <h4 class="calculator-name">출산예정일 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">LMP, 초음파, IVF 기준 분만 예정일 계산</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 유틸리티 계산기 -->
+            <div class="category">
+                <div class="category-header">
+                    <div class="category-icon">🛠️</div>
+                    <div class="category-info">
+                        <h3>유틸리티 계산기</h3>
+                        <span class="category-count">3개 계산기</span>
+                    </div>
+                </div>
+                <div class="calculator-grid">
+                    <a href="calculators/utility/unit-converter.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">🔄</div>
+                            <h4 class="calculator-name">단위 변환 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">길이, 무게, 부피, 온도를 변환합니다</p>
+                    </a>
+                    <a href="calculators/utility/gpa-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">🎓</div>
+                            <h4 class="calculator-name">GPA 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">학점 평균과 평점을 계산합니다</p>
+                    </a>
+                    <a href="calculators/utility/running-pace-calculator.html" class="calculator-card">
+                        <div class="calculator-header">
+                            <div class="calculator-icon">🏃‍♂️</div>
+                            <h4 class="calculator-name">러닝 페이스 계산기</h4>
+                        </div>
+                        <p class="calculator-desc">달리기 속도와 완주 시간을 계산합니다</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h2>지금 바로 시작하세요</h2>
+            <p>
+                필요한 계산을 빠르고 정확하게. CalcHub의 26개 스마트 계산기로<br>
+                복잡한 계산도 몇 초 만에 해결하세요.
+            </p>
+        </div>
+    </section>
 </body>
 </html>
