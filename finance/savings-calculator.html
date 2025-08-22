@@ -1,1 +1,1081 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>적금 계산기 - 적금 자동 계산 | 스마트 파싱</title>
+   <meta name="description" content="적금 계산기로 적금과 예금을 쉽게 계산하세요. 월 납입액과 이율을 입력하면 자동으로 만기금액을 계산합니다.">
+   <style>
+       * {
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+       }
+       
+       body {
+           font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+           background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+           min-height: 100vh;
+           padding: 20px;
+       }
+       
+       .container {
+           max-width: 1200px;
+           margin: 0 auto;
+           background: white;
+           border-radius: 20px;
+           box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+           overflow: hidden;
+           animation: slideUp 0.6s ease-out;
+       }
+       
+       @keyframes slideUp {
+           from { opacity: 0; transform: translateY(30px); }
+           to { opacity: 1; transform: translateY(0); }
+       }
+       
+       .header {
+           background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+           color: white;
+           padding: 40px 30px;
+           text-align: center;
+           position: relative;
+           overflow: hidden;
+       }
+       
+       .header::before {
+           content: '';
+           position: absolute;
+           top: -50%;
+           left: -50%;
+           width: 200%;
+           height: 200%;
+           background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+           animation: pulse 4s ease-in-out infinite;
+       }
+       
+       @keyframes pulse {
+           0%, 100% { transform: scale(1); }
+           50% { transform: scale(1.1); }
+       }
+       
+       .header h1 {
+           font-size: 2.5rem;
+           margin-bottom: 10px;
+           position: relative;
+           z-index: 1;
+       }
+       
+       .header p {
+           font-size: 1.1rem;
+           opacity: 0.9;
+           position: relative;
+           z-index: 1;
+       }
+       
+       .content {
+           padding: 40px 30px;
+       }
+       
+       .calculator-tabs {
+           display: flex;
+           background: #f8f9fa;
+           border-radius: 15px;
+           padding: 5px;
+           margin-bottom: 30px;
+           gap: 5px;
+       }
+       
+       .tab-button {
+           flex: 1;
+           padding: 15px 20px;
+           border: none;
+           border-radius: 10px;
+           background: transparent;
+           cursor: pointer;
+           transition: all 0.3s ease;
+           font-weight: 600;
+           font-size: 14px;
+       }
+       
+       .tab-button.active {
+           background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+           color: white;
+       }
+       
+       .tab-content {
+           display: none;
+       }
+       
+       .tab-content.active {
+           display: block;
+       }
+       
+       .input-section {
+           background: #f8f9fa;
+           border-radius: 15px;
+           padding: 30px;
+           margin-bottom: 30px;
+           border: 2px solid #e9ecef;
+       }
+       
+       .input-grid {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+           gap: 25px;
+       }
+       
+       .input-group {
+           background: white;
+           border-radius: 12px;
+           padding: 20px;
+           box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+       }
+       
+       .input-label {
+           font-size: 1.1rem;
+           font-weight: 600;
+           color: #333;
+           margin-bottom: 10px;
+           display: flex;
+           align-items: center;
+           gap: 8px;
+       }
+       
+       input[type="text"], input[type="number"], select {
+           width: 100%;
+           padding: 15px;
+           border: 2px solid #e1e5e9;
+           border-radius: 8px;
+           font-size: 16px;
+           transition: all 0.3s ease;
+           background: #fafbfc;
+       }
+       
+       input:focus, select:focus {
+           outline: none;
+           border-color: #84fab0;
+           background: white;
+           box-shadow: 0 0 0 3px rgba(132, 250, 176, 0.1);
+       }
+       
+       .parsed-result {
+           margin-top: 10px;
+           padding: 10px;
+           background: #e8f5e8;
+           border-radius: 6px;
+           font-size: 14px;
+           color: #2e7d32;
+       }
+       
+       .controls {
+           display: flex;
+           gap: 15px;
+           flex-wrap: wrap;
+           justify-content: center;
+           margin: 25px 0;
+       }
+       
+       .btn {
+           background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+           color: white;
+           border: none;
+           padding: 15px 30px;
+           border-radius: 25px;
+           font-size: 16px;
+           font-weight: 600;
+           cursor: pointer;
+           transition: all 0.3s ease;
+       }
+       
+       .btn:hover {
+           transform: translateY(-2px);
+           box-shadow: 0 8px 25px rgba(132, 250, 176, 0.3);
+       }
+       
+       .btn-secondary {
+           background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+       }
+       
+       .btn-danger {
+           background: linear-gradient(135deg, #ff8a80 0%, #ff5722 100%);
+       }
+       
+       .result-section {
+           background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+           border-radius: 15px;
+           padding: 30px;
+           margin-top: 30px;
+           border: 2px solid #4caf50;
+           display: none;
+           animation: fadeIn 0.5s ease-in;
+       }
+       
+       @keyframes fadeIn {
+           from { opacity: 0; transform: translateY(20px); }
+           to { opacity: 1; transform: translateY(0); }
+       }
+       
+       .result-title {
+           font-size: 1.5rem;
+           font-weight: bold;
+           color: #2e7d32;
+           margin-bottom: 25px;
+           text-align: center;
+       }
+       
+       .savings-display {
+           background: white;
+           border-radius: 15px;
+           padding: 30px;
+           text-align: center;
+           margin-bottom: 25px;
+           box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+       }
+       
+       .savings-value {
+           font-size: 3rem;
+           font-weight: bold;
+           color: #4caf50;
+           margin-bottom: 10px;
+           font-family: 'Courier New', monospace;
+       }
+       
+       .savings-description {
+           font-size: 1.2rem;
+           color: #666;
+       }
+       
+       .result-grid {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+           gap: 20px;
+       }
+       
+       .result-item {
+           background: white;
+           padding: 20px;
+           border-radius: 12px;
+           text-align: center;
+           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+       }
+       
+       .result-label {
+           font-size: 0.9rem;
+           color: #666;
+           margin-bottom: 8px;
+       }
+       
+       .result-value {
+           font-size: 1.3rem;
+           font-weight: bold;
+           color: #4caf50;
+       }
+       
+       .savings-schedule {
+           background: white;
+           border-radius: 12px;
+           padding: 20px;
+           margin-top: 20px;
+           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+           max-height: 400px;
+           overflow-y: auto;
+       }
+       
+       .schedule-title {
+           font-size: 1.1rem;
+           font-weight: bold;
+           color: #333;
+           margin-bottom: 15px;
+           text-align: center;
+       }
+       
+       .schedule-table {
+           width: 100%;
+           border-collapse: collapse;
+           font-size: 14px;
+       }
+       
+       .schedule-table th, .schedule-table td {
+           padding: 8px 12px;
+           text-align: center;
+           border-bottom: 1px solid #e9ecef;
+       }
+       
+       .schedule-table th {
+           background: #f8f9fa;
+           font-weight: bold;
+           color: #333;
+           position: sticky;
+           top: 0;
+       }
+       
+       .preset-amounts {
+           background: white;
+           border-radius: 12px;
+           padding: 20px;
+           margin-top: 20px;
+           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+       }
+       
+       .preset-title {
+           font-size: 1.1rem;
+           font-weight: bold;
+           color: #333;
+           margin-bottom: 15px;
+           text-align: center;
+       }
+       
+       .preset-grid {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+           gap: 10px;
+       }
+       
+       .preset-btn {
+           padding: 12px 15px;
+           border: 2px solid #e9ecef;
+           border-radius: 20px;
+           background: white;
+           cursor: pointer;
+           transition: all 0.3s ease;
+           text-align: center;
+           font-weight: 600;
+           font-size: 13px;
+       }
+       
+       .preset-btn:hover {
+           border-color: #84fab0;
+           background: rgba(132, 250, 176, 0.1);
+       }
+       
+       @media (max-width: 768px) {
+           .container {
+               margin: 10px;
+           }
+           
+           .header h1 {
+               font-size: 2rem;
+           }
+           
+           .calculator-tabs {
+               flex-direction: column;
+           }
+           
+           .input-grid {
+               grid-template-columns: 1fr;
+           }
+           
+           .controls {
+               flex-direction: column;
+           }
+           
+           .btn {
+               width: 100%;
+           }
+           
+           .savings-value {
+               font-size: 2.5rem;
+           }
+       }
+   </style>
+</head>
+<body>
+   <div class="container">
+       <div class="header">
+           <h1>🏦 적금 계산기</h1>
+           <p>적금과 예금을 쉽게 계산하고 저축 계획을 세우세요</p>
+       </div>
+       
+       <div class="content">
+           <div class="calculator-tabs">
+               <button class="tab-button active" onclick="switchTab('savings')">적금 계산</button>
+               <button class="tab-button" onclick="switchTab('deposit')">예금 계산</button>
+               <button class="tab-button" onclick="switchTab('goal')">목표 저축</button>
+           </div>
+           
+           <!-- 적금 계산 -->
+           <div id="savings" class="tab-content active">
+               <div class="input-section">
+                   <div class="input-grid">
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>💰</span>
+                               월 납입액
+                           </div>
+                           <input type="text" id="monthly-payment" placeholder="예: 50만원, 500000원..." oninput="smartParseSavings()">
+                           <div class="parsed-result" id="monthlyPaymentParsed">월 납입액을 입력해주세요</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>📊</span>
+                               연이율 (%)
+                           </div>
+                           <input type="number" id="savings-rate" placeholder="예: 3.5" step="0.1" oninput="smartParseSavings()">
+                           <div class="parsed-result" id="savingsRateParsed">이율을 입력해주세요</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>📅</span>
+                               적금 기간
+                           </div>
+                           <select id="savings-period" onchange="smartParseSavings()">
+                               <option value="">기간 선택</option>
+                               <option value="6">6개월</option>
+                               <option value="12">12개월 (1년)</option>
+                               <option value="18">18개월</option>
+                               <option value="24">24개월 (2년)</option>
+                               <option value="36">36개월 (3년)</option>
+                               <option value="48">48개월 (4년)</option>
+                               <option value="60">60개월 (5년)</option>
+                               <option value="72">72개월 (6년)</option>
+                           </select>
+                           <div class="parsed-result" id="savingsPeriodParsed">기간을 선택해주세요</div>
+                       </div>
+                   </div>
+                   
+                   <div class="preset-amounts">
+                       <div class="preset-title">🎯 빠른 납입액 선택</div>
+                       <div class="preset-grid">
+                           <button class="preset-btn" onclick="setMonthlyPayment(100000)">10만원</button>
+                           <button class="preset-btn" onclick="setMonthlyPayment(200000)">20만원</button>
+                           <button class="preset-btn" onclick="setMonthlyPayment(300000)">30만원</button>
+                           <button class="preset-btn" onclick="setMonthlyPayment(500000)">50만원</button>
+                           <button class="preset-btn" onclick="setMonthlyPayment(1000000)">100만원</button>
+                           <button class="preset-btn" onclick="setMonthlyPayment(2000000)">200만원</button>
+                       </div>
+                   </div>
+               </div>
+               
+               <div class="controls">
+                   <button class="btn" onclick="calculateSavings()">🏦 적금 계산</button>
+                   <button class="btn btn-secondary" onclick="showSavingsExample()">📝 예시</button>
+                   <button class="btn btn-danger" onclick="clearSavings()">🗑️ 초기화</button>
+               </div>
+               
+               <div class="result-section" id="savingsResult"></div>
+           </div>
+           
+           <!-- 예금 계산 -->
+           <div id="deposit" class="tab-content">
+               <div class="input-section">
+                   <div class="input-grid">
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>💰</span>
+                               예금 원금
+                           </div>
+                           <input type="text" id="deposit-principal" placeholder="예: 5000만원, 50000000원..." oninput="smartParseDeposit()">
+                           <div class="parsed-result" id="depositPrincipalParsed">예금 원금을 입력해주세요</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>📊</span>
+                               연이율 (%)
+                           </div>
+                           <input type="number" id="deposit-rate" placeholder="예: 4.2" step="0.1" oninput="smartParseDeposit()">
+                           <div class="parsed-result" id="depositRateParsed">이율을 입력해주세요</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>📅</span>
+                               예금 기간
+                           </div>
+                           <select id="deposit-period" onchange="smartParseDeposit()">
+                               <option value="">기간 선택</option>
+                               <option value="3">3개월</option>
+                               <option value="6">6개월</option>
+                               <option value="12">12개월 (1년)</option>
+                               <option value="24">24개월 (2년)</option>
+                               <option value="36">36개월 (3년)</option>
+                               <option value="60">60개월 (5년)</option>
+                           </select>
+                           <div class="parsed-result" id="depositPeriodParsed">기간을 선택해주세요</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>🔄</span>
+                               이자 지급 방식
+                           </div>
+                           <select id="interest-payment" onchange="smartParseDeposit()">
+                               <option value="compound">복리 (이자재투자)</option>
+                               <option value="simple">단리 (만기지급)</option>
+                               <option value="monthly">월 지급</option>
+                           </select>
+                           <div class="parsed-result" id="interestPaymentParsed">복리 방식이 선택되었습니다</div>
+                       </div>
+                   </div>
+               </div>
+               
+               <div class="controls">
+                   <button class="btn" onclick="calculateDeposit()">🏦 예금 계산</button>
+                   <button class="btn btn-secondary" onclick="showDepositExample()">📝 예시</button>
+                   <button class="btn btn-danger" onclick="clearDeposit()">🗑️ 초기화</button>
+               </div>
+               
+               <div class="result-section" id="depositResult"></div>
+           </div>
+           
+           <!-- 목표 저축 -->
+           <div id="goal" class="tab-content">
+               <div class="input-section">
+                   <div class="input-grid">
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>🎯</span>
+                               목표 금액
+                           </div>
+                           <input type="text" id="target-amount" placeholder="예: 1억원, 100000000원..." oninput="smartParseGoal()">
+                           <div class="parsed-result" id="targetAmountParsed">목표 금액을 입력해주세요</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>📅</span>
+                               저축 기간 (년)
+                           </div>
+                           <input type="number" id="goal-years" placeholder="예: 10" min="1" max="50" oninput="smartParseGoal()">
+                           <div class="parsed-result" id="goalYearsParsed">저축 기간을 입력해주세요</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>📊</span>
+                               예상 연이율 (%)
+                           </div>
+                           <input type="number" id="goal-rate" placeholder="예: 4.0" step="0.1" oninput="smartParseGoal()">
+                           <div class="parsed-result" id="goalRateParsed">예상 이율을 입력해주세요</div>
+                       </div>
+                   </div>
+               </div>
+               
+               <div class="controls">
+                   <button class="btn" onclick="calculateGoal()">🎯 목표 저축 계산</button>
+                   <button class="btn btn-secondary" onclick="showGoalExample()">📝 예시</button>
+                   <button class="btn btn-danger" onclick="clearGoal()">🗑️ 초기화</button>
+               </div>
+               
+               <div class="result-section" id="goalResult"></div>
+           </div>
+       </div>
+   </div>
 
+   <script>
+       let currentTab = 'savings';
+       
+       class PriceParser {
+           constructor() {
+               this.koreanUnits = {
+                   '천': 1000,
+                   '만': 10000,
+                   '억': 100000000
+               };
+           }
+           
+           parseAmount(input) {
+               if (!input) return null;
+               
+               let cleaned = input.replace(/\s+/g, '');
+               
+               for (let [unit, multiplier] of Object.entries(this.koreanUnits)) {
+                   if (cleaned.includes(unit)) {
+                       let parts = cleaned.split(unit);
+                       if (parts[0]) {
+                           let num = parseFloat(parts[0].replace(/[^0-9.]/g, ''));
+                           if (!isNaN(num)) {
+                               return num * multiplier;
+                           }
+                       }
+                   }
+               }
+               
+               cleaned = cleaned.replace(/[^0-9.]/g, '');
+               let num = parseFloat(cleaned);
+               
+               return isNaN(num) ? null : num;
+           }
+       }
+       
+       const parser = new PriceParser();
+       
+       function switchTab(tabName) {
+           document.querySelectorAll('.tab-button').forEach(btn => {
+               btn.classList.remove('active');
+           });
+           event.target.classList.add('active');
+           
+           document.querySelectorAll('.tab-content').forEach(content => {
+               content.classList.remove('active');
+           });
+           document.getElementById(tabName).classList.add('active');
+           
+           currentTab = tabName;
+       }
+       
+       // 적금 계산
+       function smartParseSavings() {
+           const payment = document.getElementById('monthly-payment').value;
+           const rate = document.getElementById('savings-rate').value;
+           const period = document.getElementById('savings-period').value;
+           
+           const parsedPayment = parser.parseAmount(payment);
+           
+           if (parsedPayment) {
+               document.getElementById('monthlyPaymentParsed').textContent = `인식됨: ${parsedPayment.toLocaleString()}원`;
+           } else {
+               document.getElementById('monthlyPaymentParsed').textContent = '월 납입액을 입력해주세요';
+           }
+           
+           if (rate) {
+               document.getElementById('savingsRateParsed').textContent = `연이율: ${rate}%`;
+           } else {
+               document.getElementById('savingsRateParsed').textContent = '이율을 입력해주세요';
+           }
+           
+           if (period) {
+               const years = Math.floor(period / 12);
+               const months = period % 12;
+               document.getElementById('savingsPeriodParsed').textContent = `적금 기간: ${years > 0 ? years + '년 ' : ''}${months}개월`;
+           } else {
+               document.getElementById('savingsPeriodParsed').textContent = '기간을 선택해주세요';
+           }
+       }
+       
+       function setMonthlyPayment(amount) {
+           document.getElementById('monthly-payment').value = amount.toLocaleString() + '원';
+           smartParseSavings();
+       }
+       
+       function calculateSavings() {
+           const monthlyPayment = parser.parseAmount(document.getElementById('monthly-payment').value);
+           const annualRate = parseFloat(document.getElementById('savings-rate').value);
+           const months = parseInt(document.getElementById('savings-period').value);
+           
+           if (!monthlyPayment || !annualRate || !months) {
+               alert('모든 항목을 입력해주세요.');
+               return;
+           }
+           
+           const monthlyRate = annualRate / 100 / 12;
+           
+           // 적금 계산: 매월 납입하는 연금의 미래가치
+           // FV = PMT × [((1 + r)^n - 1) / r]
+           const futureValue = monthlyPayment * (Math.pow(1 + monthlyRate, months) - 1) / monthlyRate;
+           const totalPayment = monthlyPayment * months;
+           const totalInterest = futureValue - totalPayment;
+           const effectiveRate = ((futureValue / totalPayment) - 1) * 100;
+           
+           // 월별 적금 스케줄 생성
+           let schedule = [];
+           let accumulatedAmount = 0;
+           
+           for (let month = 1; month <= Math.min(months, 12); month++) {
+               accumulatedAmount = monthlyPayment * month;
+               const interestAmount = monthlyPayment * (Math.pow(1 + monthlyRate, month) - 1) / monthlyRate - accumulatedAmount;
+               const totalAmount = accumulatedAmount + interestAmount;
+               
+               schedule.push({
+                   month: month,
+                   payment: monthlyPayment,
+                   accumulated: accumulatedAmount,
+                   interest: interestAmount,
+                   total: totalAmount
+               });
+           }
+           
+           const resultHTML = `
+               <div class="result-title">🏦 적금 계산 결과</div>
+               <div class="savings-display">
+                   <div class="savings-value">${Math.round(futureValue).toLocaleString()}원</div>
+                   <div class="savings-description">만기 수령액</div>
+               </div>
+               <div class="result-grid">
+                   <div class="result-item">
+                       <div class="result-label">월 납입액</div>
+                       <div class="result-value">${monthlyPayment.toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">연이율</div>
+                       <div class="result-value">${annualRate}%</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">적금 기간</div>
+                       <div class="result-value">${months}개월</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">총 납입액</div>
+                       <div class="result-value">${totalPayment.toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">총 이자</div>
+                       <div class="result-value">${Math.round(totalInterest).toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">만기 수령액</div>
+                       <div class="result-value">${Math.round(futureValue).toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">실효 수익률</div>
+                       <div class="result-value">${effectiveRate.toFixed(2)}%</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">월평균 이자</div>
+                       <div class="result-value">${Math.round(totalInterest / months).toLocaleString()}원</div>
+                   </div>
+               </div>
+               <div class="savings-schedule">
+                   <div class="schedule-title">📅 적금 스케줄 (처음 12개월)</div>
+                   <table class="schedule-table">
+                       <thead>
+                           <tr>
+                               <th>회차</th>
+                               <th>납입액</th>
+                               <th>누적 납입</th>
+                               <th>누적 이자</th>
+                               <th>총 잔액</th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           ${schedule.map(item => `
+                               <tr>
+                                   <td>${item.month}회</td>
+                                   <td>${Math.round(item.payment).toLocaleString()}원</td>
+                                   <td>${Math.round(item.accumulated).toLocaleString()}원</td>
+                                   <td>${Math.round(item.interest).toLocaleString()}원</td>
+                                   <td>${Math.round(item.total).toLocaleString()}원</td>
+                               </tr>
+                           `).join('')}
+                       </tbody>
+                   </table>
+               </div>
+           `;
+           
+           document.getElementById('savingsResult').innerHTML = resultHTML;
+           document.getElementById('savingsResult').style.display = 'block';
+           document.getElementById('savingsResult').scrollIntoView({ behavior: 'smooth' });
+       }
+       
+       function showSavingsExample() {
+           document.getElementById('monthly-payment').value = '50만원';
+           document.getElementById('savings-rate').value = '3.5';
+           document.getElementById('savings-period').value = '36';
+           smartParseSavings();
+       }
+       
+       function clearSavings() {
+           document.getElementById('monthly-payment').value = '';
+           document.getElementById('savings-rate').value = '';
+           document.getElementById('savings-period').value = '';
+           smartParseSavings();
+           document.getElementById('savingsResult').style.display = 'none';
+       }
+       
+       // 예금 계산
+       function smartParseDeposit() {
+           const principal = document.getElementById('deposit-principal').value;
+           const rate = document.getElementById('deposit-rate').value;
+           const period = document.getElementById('deposit-period').value;
+           const payment = document.getElementById('interest-payment').value;
+           
+           const parsedPrincipal = parser.parseAmount(principal);
+           
+           if (parsedPrincipal) {
+               document.getElementById('depositPrincipalParsed').textContent = `인식됨: ${parsedPrincipal.toLocaleString()}원`;
+           } else {
+               document.getElementById('depositPrincipalParsed').textContent = '예금 원금을 입력해주세요';
+           }
+           
+           if (rate) {
+               document.getElementById('depositRateParsed').textContent = `연이율: ${rate}%`;
+           } else {
+               document.getElementById('depositRateParsed').textContent = '이율을 입력해주세요';
+           }
+           
+           if (period) {
+               const years = Math.floor(period / 12);
+               const months = period % 12;
+               document.getElementById('depositPeriodParsed').textContent = `예금 기간: ${years > 0 ? years + '년 ' : ''}${months}개월`;
+           } else {
+               document.getElementById('depositPeriodParsed').textContent = '기간을 선택해주세요';
+           }
+           
+           const paymentTypes = {
+               'compound': '복리 방식이 선택되었습니다',
+               'simple': '단리 방식이 선택되었습니다',
+               'monthly': '월 지급 방식이 선택되었습니다'
+           };
+           
+           document.getElementById('interestPaymentParsed').textContent = paymentTypes[payment];
+       }
+       
+       function calculateDeposit() {
+           const principal = parser.parseAmount(document.getElementById('deposit-principal').value);
+           const annualRate = parseFloat(document.getElementById('deposit-rate').value);
+           const months = parseInt(document.getElementById('deposit-period').value);
+           const paymentType = document.getElementById('interest-payment').value;
+           
+           if (!principal || !annualRate || !months) {
+               alert('모든 항목을 입력해주세요.');
+               return;
+           }
+           
+           const years = months / 12;
+           const rate = annualRate / 100;
+           let maturityAmount, totalInterest;
+           
+           if (paymentType === 'compound') {
+               // 복리 계산
+               maturityAmount = principal * Math.pow(1 + rate, years);
+               totalInterest = maturityAmount - principal;
+           } else if (paymentType === 'simple') {
+               // 단리 계산
+               totalInterest = principal * rate * years;
+               maturityAmount = principal + totalInterest;
+           } else { // monthly
+               // 월 지급 (단리)
+               totalInterest = principal * rate * years;
+               maturityAmount = principal; // 원금만 반환 (이자는 매월 지급)
+           }
+           
+           const monthlyInterest = paymentType === 'monthly' ? (principal * rate / 12) : 0;
+           const effectiveRate = ((maturityAmount / principal) - 1) * 100;
+           
+           let resultHTML = `
+               <div class="result-title">🏦 예금 계산 결과</div>
+               <div class="savings-display">
+                   <div class="savings-value">${Math.round(maturityAmount).toLocaleString()}원</div>
+                   <div class="savings-description">${paymentType === 'monthly' ? '만기 원금' : '만기 수령액'}</div>
+               </div>
+               <div class="result-grid">
+                   <div class="result-item">
+                       <div class="result-label">예금 원금</div>
+                       <div class="result-value">${principal.toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">연이율</div>
+                       <div class="result-value">${annualRate}%</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">예금 기간</div>
+                       <div class="result-value">${months}개월</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">이자 지급</div>
+                       <div class="result-value" style="font-size: 1rem;">
+                           ${paymentType === 'compound' ? '복리' : paymentType === 'simple' ? '만기지급' : '월지급'}
+                       </div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">${paymentType === 'monthly' ? '총 이자 지급액' : '총 이자'}</div>
+                       <div class="result-value">${Math.round(totalInterest).toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">${paymentType === 'monthly' ? '만기 원금' : '만기 수령액'}</div>
+                       <div class="result-value">${Math.round(maturityAmount).toLocaleString()}원</div>
+                   </div>
+           `;
+           
+           if (paymentType === 'monthly') {
+               resultHTML += `
+                   <div class="result-item">
+                       <div class="result-label">월 이자 지급액</div>
+                       <div class="result-value">${Math.round(monthlyInterest).toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">총 수령액</div>
+                       <div class="result-value">${Math.round(principal + totalInterest).toLocaleString()}원</div>
+                   </div>
+               `;
+           } else {
+               resultHTML += `
+                   <div class="result-item">
+                       <div class="result-label">실효 수익률</div>
+                       <div class="result-value">${effectiveRate.toFixed(2)}%</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">연평균 이자</div>
+                       <div class="result-value">${Math.round(totalInterest / years).toLocaleString()}원</div>
+                   </div>
+               `;
+           }
+           
+           resultHTML += `</div>`;
+           
+           document.getElementById('depositResult').innerHTML = resultHTML;
+           document.getElementById('depositResult').style.display = 'block';
+           document.getElementById('depositResult').scrollIntoView({ behavior: 'smooth' });
+       }
+       
+       function showDepositExample() {
+           document.getElementById('deposit-principal').value = '1000만원';
+           document.getElementById('deposit-rate').value = '4.2';
+           document.getElementById('deposit-period').value = '24';
+           document.getElementById('interest-payment').value = 'compound';
+           smartParseDeposit();
+       }
+       
+       function clearDeposit() {
+           document.getElementById('deposit-principal').value = '';
+           document.getElementById('deposit-rate').value = '';
+           document.getElementById('deposit-period').value = '';
+           document.getElementById('interest-payment').value = 'compound';
+           smartParseDeposit();
+           document.getElementById('depositResult').style.display = 'none';
+       }
+       
+       // 목표 저축 계산
+       function smartParseGoal() {
+           const amount = document.getElementById('target-amount').value;
+           const years = document.getElementById('goal-years').value;
+           const rate = document.getElementById('goal-rate').value;
+           
+           const parsedAmount = parser.parseAmount(amount);
+           
+           if (parsedAmount) {
+               document.getElementById('targetAmountParsed').textContent = `인식됨: ${parsedAmount.toLocaleString()}원`;
+           } else {
+               document.getElementById('targetAmountParsed').textContent = '목표 금액을 입력해주세요';
+           }
+           
+           if (years) {
+               document.getElementById('goalYearsParsed').textContent = `저축 기간: ${years}년`;
+           } else {
+               document.getElementById('goalYearsParsed').textContent = '저축 기간을 입력해주세요';
+           }
+           
+           if (rate) {
+               document.getElementById('goalRateParsed').textContent = `예상 연이율: ${rate}%`;
+           } else {
+               document.getElementById('goalRateParsed').textContent = '예상 이율을 입력해주세요';
+           }
+       }
+       
+       function calculateGoal() {
+           const targetAmount = parser.parseAmount(document.getElementById('target-amount').value);
+           const years = parseFloat(document.getElementById('goal-years').value);
+           const annualRate = parseFloat(document.getElementById('goal-rate').value);
+           
+           if (!targetAmount || !years || !annualRate) {
+               alert('모든 항목을 입력해주세요.');
+               return;
+           }
+           
+           const months = years * 12;
+           const monthlyRate = annualRate / 100 / 12;
+           
+           // 목표 금액 달성을 위한 월 납입액 계산
+           // PMT = FV × r / ((1 + r)^n - 1)
+           const requiredMonthlyPayment = targetAmount * monthlyRate / (Math.pow(1 + monthlyRate, months) - 1);
+           const totalPayment = requiredMonthlyPayment * months;
+           const totalInterest = targetAmount - totalPayment;
+           
+           // 다양한 시나리오 제시
+           const scenarios = [
+               { rate: annualRate - 1, name: '보수적' },
+               { rate: annualRate, name: '기본' },
+               { rate: annualRate + 1, name: '적극적' }
+           ];
+           
+           const resultHTML = `
+               <div class="result-title">🎯 목표 저축 계산 결과</div>
+               <div class="savings-display">
+                   <div class="savings-value">${Math.round(requiredMonthlyPayment).toLocaleString()}원</div>
+                   <div class="savings-description">필요 월 납입액</div>
+               </div>
+               <div class="result-grid">
+                   <div class="result-item">
+                       <div class="result-label">목표 금액</div>
+                       <div class="result-value">${targetAmount.toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">저축 기간</div>
+                       <div class="result-value">${years}년</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">예상 연이율</div>
+                       <div class="result-value">${annualRate}%</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">월 납입액</div>
+                       <div class="result-value">${Math.round(requiredMonthlyPayment).toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">총 납입액</div>
+                       <div class="result-value">${Math.round(totalPayment).toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">예상 이자</div>
+                       <div class="result-value">${Math.round(totalInterest).toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">연 납입액</div>
+                       <div class="result-value">${Math.round(requiredMonthlyPayment * 12).toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">이자 비율</div>
+                       <div class="result-value">${((totalInterest / targetAmount) * 100).toFixed(2)}%</div>
+                   </div>
+               </div>
+               <div class="savings-schedule">
+                   <div class="schedule-title">📊 시나리오별 월 납입액</div>
+                   <table class="schedule-table">
+                       <thead>
+                           <tr>
+                               <th>시나리오</th>
+                               <th>연이율</th>
+                               <th>월 납입액</th>
+                               <th>총 납입액</th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           ${scenarios.map(scenario => {
+                               const monthlyRateScenario = scenario.rate / 100 / 12;
+                               const monthlyPaymentScenario = targetAmount * monthlyRateScenario / (Math.pow(1 + monthlyRateScenario, months) - 1);
+                               const totalPaymentScenario = monthlyPaymentScenario * months;
+                               
+                               return `
+                                   <tr>
+                                       <td>${scenario.name}</td>
+                                       <td>${scenario.rate}%</td>
+                                       <td>${Math.round(monthlyPaymentScenario).toLocaleString()}원</td>
+                                       <td>${Math.round(totalPaymentScenario).toLocaleString()}원</td>
+                                   </tr>
+                               `;
+                           }).join('')}
+                       </tbody>
+                   </table>
+               </div>
+           `;
+           
+           document.getElementById('goalResult').innerHTML = resultHTML;
+           document.getElementById('goalResult').style.display = 'block';
+           document.getElementById('goalResult').scrollIntoView({ behavior: 'smooth' });
+       }
+       
+       function showGoalExample() {
+           document.getElementById('target-amount').value = '1억원';
+           document.getElementById('goal-years').value = '10';
+           document.getElementById('goal-rate').value = '4.0';
+           smartParseGoal();
+       }
+       
+       function clearGoal() {
+           document.getElementById('target-amount').value = '';
+           document.getElementById('goal-years').value = '';
+           document.getElementById('goal-rate').value = '';
+           smartParseGoal();
+           document.getElementById('goalResult').style.display = 'none';
+       }
+       
+       window.addEventListener('load', function() {
+           showSavingsExample();
+           setTimeout(() => calculateSavings(), 1500);
+       });
+   </script>
+</body>
+</html>
