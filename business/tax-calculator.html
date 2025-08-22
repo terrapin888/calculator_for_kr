@@ -716,4 +716,127 @@
        }
        
        function showVATExample() {
-           document.getElementById('supply-price').value = '1000
+           document.getElementById('supply-price').value = '1000만원';
+           document.getElementById('vat-rate').value = '10';
+           smartParseVAT();
+       }
+       
+       function clearVAT() {
+           document.getElementById('supply-price').value = '';
+           document.getElementById('vat-rate').value = '10';
+           document.getElementById('supplyPriceParsed').textContent = '입력 대기 중...';
+           document.getElementById('vatResult').style.display = 'none';
+       }
+       
+       // 종합소득세 계산
+       function smartParseComprehensive() {
+           const income = document.getElementById('comprehensive-income').value;
+           const deductions = document.getElementById('deductions').value;
+           
+           const parsedIncome = parser.parseAmount(income);
+           const parsedDeductions = parser.parseAmount(deductions);
+           
+           document.getElementById('comprehensiveIncomeParsed').textContent = 
+               parsedIncome ? `인식됨: ${parsedIncome.toLocaleString()}원` : '입력 대기 중...';
+           document.getElementById('deductionsParsed').textContent = 
+               parsedDeductions ? `인식됨: ${parsedDeductions.toLocaleString()}원` : '입력 대기 중...';
+       }
+       
+       function calculateComprehensiveTax() {
+           const comprehensiveIncome = parser.parseAmount(document.getElementById('comprehensive-income').value);
+           const deductions = parser.parseAmount(document.getElementById('deductions').value) || 0;
+           
+           if (!comprehensiveIncome) {
+               alert('종합소득을 입력해주세요.');
+               return;
+           }
+           
+           // 과세표준 = 종합소득 - 소득공제
+           const taxableIncome = Math.max(0, comprehensiveIncome - deductions);
+           
+           // 종합소득세 계산 (누진세율 적용)
+           let incomeTax = 0;
+           if (taxableIncome <= 14000000) {
+               incomeTax = taxableIncome * 0.06;
+           } else if (taxableIncome <= 50000000) {
+               incomeTax = taxableIncome * 0.15 - 1260000;
+           } else if (taxableIncome <= 88000000) {
+               incomeTax = taxableIncome * 0.24 - 5760000;
+           } else if (taxableIncome <= 150000000) {
+               incomeTax = taxableIncome * 0.35 - 15440000;
+           } else if (taxableIncome <= 300000000) {
+               incomeTax = taxableIncome * 0.38 - 19940000;
+           } else if (taxableIncome <= 500000000) {
+               incomeTax = taxableIncome * 0.40 - 25940000;
+           } else if (taxableIncome <= 1000000000) {
+               incomeTax = taxableIncome * 0.42 - 35940000;
+           } else {
+               incomeTax = taxableIncome * 0.45 - 65940000;
+           }
+           
+           // 지방소득세 (소득세의 10%)
+           const localTax = incomeTax * 0.1;
+           const totalTax = incomeTax + localTax;
+           const netIncome = comprehensiveIncome - totalTax;
+           const effectiveRate = (totalTax / comprehensiveIncome) * 100;
+           
+           const resultHTML = `
+               <div class="result-title">📋 종합소득세 계산 결과</div>
+               <div class="tax-display">
+                   <div class="tax-value">${Math.round(totalTax).toLocaleString()}원</div>
+                   <div class="tax-description">총 세금 (연간)</div>
+               </div>
+               <div class="result-grid">
+                   <div class="result-item">
+                       <div class="result-label">종합소득</div>
+                       <div class="result-value">${comprehensiveIncome.toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">소득공제</div>
+                       <div class="result-value">${deductions.toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">과세표준</div>
+                       <div class="result-value">${taxableIncome.toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">종합소득세</div>
+                       <div class="result-value">${Math.round(incomeTax).toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">지방소득세</div>
+                       <div class="result-value">${Math.round(localTax).toLocaleString()}원</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">실효세율</div>
+                       <div class="result-value">${effectiveRate.toFixed(2)}%</div>
+                   </div>
+               </div>
+           `;
+           
+           document.getElementById('comprehensiveResult').innerHTML = resultHTML;
+           document.getElementById('comprehensiveResult').style.display = 'block';
+           document.getElementById('comprehensiveResult').scrollIntoView({ behavior: 'smooth' });
+       }
+       
+       function showComprehensiveExample() {
+           document.getElementById('comprehensive-income').value = '8000만원';
+           document.getElementById('deductions').value = '1500만원';
+           smartParseComprehensive();
+       }
+       
+       function clearComprehensive() {
+           document.getElementById('comprehensive-income').value = '';
+           document.getElementById('deductions').value = '';
+           document.getElementById('comprehensiveIncomeParsed').textContent = '입력 대기 중...';
+           document.getElementById('deductionsParsed').textContent = '입력 대기 중...';
+           document.getElementById('comprehensiveResult').style.display = 'none';
+       }
+       
+       window.addEventListener('load', function() {
+           showIncomeExample();
+           setTimeout(() => calculateIncomeTax(), 1500);
+       });
+   </script>
+</body>
+</html>
