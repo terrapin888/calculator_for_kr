@@ -1,1 +1,857 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>나이 계산기 - 만나이/한국나이 자동 계산 | 스마트 파싱</title>
+   <meta name="description" content="나이 계산기로 만나이, 한국나이, 생일까지 남은 일수를 쉽게 계산하세요. 생년월일을 자유 형식으로 입력하면 자동 인식합니다.">
+   <style>
+       * {
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+       }
+       
+       body {
+           font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+           background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+           min-height: 100vh;
+           padding: 20px;
+       }
+       
+       .container {
+           max-width: 1200px;
+           margin: 0 auto;
+           background: white;
+           border-radius: 20px;
+           box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+           overflow: hidden;
+           animation: slideUp 0.6s ease-out;
+       }
+       
+       @keyframes slideUp {
+           from { opacity: 0; transform: translateY(30px); }
+           to { opacity: 1; transform: translateY(0); }
+       }
+       
+       .header {
+           background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+           color: white;
+           padding: 40px 30px;
+           text-align: center;
+           position: relative;
+           overflow: hidden;
+       }
+       
+       .header::before {
+           content: '';
+           position: absolute;
+           top: -50%;
+           left: -50%;
+           width: 200%;
+           height: 200%;
+           background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+           animation: pulse 4s ease-in-out infinite;
+       }
+       
+       @keyframes pulse {
+           0%, 100% { transform: scale(1); }
+           50% { transform: scale(1.1); }
+       }
+       
+       .header h1 {
+           font-size: 2.5rem;
+           margin-bottom: 10px;
+           position: relative;
+           z-index: 1;
+       }
+       
+       .header p {
+           font-size: 1.1rem;
+           opacity: 0.9;
+           position: relative;
+           z-index: 1;
+       }
+       
+       .content {
+           padding: 40px 30px;
+       }
+       
+       .calculator-tabs {
+           display: flex;
+           background: #f8f9fa;
+           border-radius: 15px;
+           padding: 5px;
+           margin-bottom: 30px;
+           gap: 5px;
+       }
+       
+       .tab-button {
+           flex: 1;
+           padding: 15px 20px;
+           border: none;
+           border-radius: 10px;
+           background: transparent;
+           cursor: pointer;
+           transition: all 0.3s ease;
+           font-weight: 600;
+           font-size: 14px;
+       }
+       
+       .tab-button.active {
+           background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+           color: white;
+       }
+       
+       .tab-content {
+           display: none;
+       }
+       
+       .tab-content.active {
+           display: block;
+       }
+       
+       .input-section {
+           background: #f8f9fa;
+           border-radius: 15px;
+           padding: 30px;
+           margin-bottom: 30px;
+           border: 2px solid #e9ecef;
+       }
+       
+       .input-grid {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+           gap: 25px;
+       }
+       
+       .input-group {
+           background: white;
+           border-radius: 12px;
+           padding: 20px;
+           box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+       }
+       
+       .input-label {
+           font-size: 1.1rem;
+           font-weight: 600;
+           color: #333;
+           margin-bottom: 10px;
+           display: flex;
+           align-items: center;
+           gap: 8px;
+       }
+       
+       input[type="text"], input[type="date"], select {
+           width: 100%;
+           padding: 15px;
+           border: 2px solid #e1e5e9;
+           border-radius: 8px;
+           font-size: 16px;
+           transition: all 0.3s ease;
+           background: #fafbfc;
+       }
+       
+       input:focus, select:focus {
+           outline: none;
+           border-color: #fcb69f;
+           background: white;
+           box-shadow: 0 0 0 3px rgba(252, 182, 159, 0.1);
+       }
+       
+       .parsed-result {
+           margin-top: 10px;
+           padding: 10px;
+           background: #fff8e1;
+           border-radius: 6px;
+           font-size: 14px;
+           color: #f57f17;
+       }
+       
+       .controls {
+           display: flex;
+           gap: 15px;
+           flex-wrap: wrap;
+           justify-content: center;
+           margin: 25px 0;
+       }
+       
+       .btn {
+           background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+           color: white;
+           border: none;
+           padding: 15px 30px;
+           border-radius: 25px;
+           font-size: 16px;
+           font-weight: 600;
+           cursor: pointer;
+           transition: all 0.3s ease;
+       }
+       
+       .btn:hover {
+           transform: translateY(-2px);
+           box-shadow: 0 8px 25px rgba(252, 182, 159, 0.3);
+       }
+       
+       .btn-secondary {
+           background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+       }
+       
+       .btn-danger {
+           background: linear-gradient(135deg, #ff8a80 0%, #ff5722 100%);
+       }
+       
+       .result-section {
+           background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+           border-radius: 15px;
+           padding: 30px;
+           margin-top: 30px;
+           border: 2px solid #4caf50;
+           display: none;
+           animation: fadeIn 0.5s ease-in;
+       }
+       
+       @keyframes fadeIn {
+           from { opacity: 0; transform: translateY(20px); }
+           to { opacity: 1; transform: translateY(0); }
+       }
+       
+       .result-title {
+           font-size: 1.5rem;
+           font-weight: bold;
+           color: #2e7d32;
+           margin-bottom: 25px;
+           text-align: center;
+       }
+       
+       .age-display {
+           background: white;
+           border-radius: 15px;
+           padding: 30px;
+           text-align: center;
+           margin-bottom: 25px;
+           box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+       }
+       
+       .age-value {
+           font-size: 3rem;
+           font-weight: bold;
+           color: #4caf50;
+           margin-bottom: 10px;
+       }
+       
+       .age-description {
+           font-size: 1.2rem;
+           color: #666;
+       }
+       
+       .result-grid {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+           gap: 20px;
+       }
+       
+       .result-item {
+           background: white;
+           padding: 20px;
+           border-radius: 12px;
+           text-align: center;
+           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+       }
+       
+       .result-label {
+           font-size: 0.9rem;
+           color: #666;
+           margin-bottom: 8px;
+       }
+       
+       .result-value {
+           font-size: 1.3rem;
+           font-weight: bold;
+           color: #4caf50;
+       }
+       
+       .zodiac-section {
+           background: white;
+           border-radius: 12px;
+           padding: 20px;
+           margin-top: 20px;
+           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+           text-align: center;
+       }
+       
+       .zodiac-title {
+           font-size: 1.1rem;
+           font-weight: bold;
+           color: #333;
+           margin-bottom: 15px;
+       }
+       
+       .zodiac-info {
+           display: flex;
+           justify-content: center;
+           gap: 30px;
+           flex-wrap: wrap;
+       }
+       
+       .zodiac-item {
+           text-align: center;
+       }
+       
+       .zodiac-emoji {
+           font-size: 2rem;
+           margin-bottom: 8px;
+       }
+       
+       .zodiac-name {
+           font-weight: bold;
+           color: #666;
+       }
+       
+       @media (max-width: 768px) {
+           .container {
+               margin: 10px;
+           }
+           
+           .header h1 {
+               font-size: 2rem;
+           }
+           
+           .calculator-tabs {
+               flex-direction: column;
+           }
+           
+           .input-grid {
+               grid-template-columns: 1fr;
+           }
+           
+           .controls {
+               flex-direction: column;
+           }
+           
+           .btn {
+               width: 100%;
+           }
+           
+           .age-value {
+               font-size: 2.5rem;
+           }
+       }
+   </style>
+</head>
+<body>
+   <div class="container">
+       <div class="header">
+           <h1>🎂 나이 계산기</h1>
+           <p>만나이, 한국나이, 생일까지 남은 일수를 쉽게 계산하세요</p>
+       </div>
+       
+       <div class="content">
+           <div class="calculator-tabs">
+               <button class="tab-button active" onclick="switchTab('age')">나이 계산</button>
+               <button class="tab-button" onclick="switchTab('birthday')">생일 계산</button>
+               <button class="tab-button" onclick="switchTab('compare')">나이 비교</button>
+           </div>
+           
+           <!-- 나이 계산 -->
+           <div id="age" class="tab-content active">
+               <div class="input-section">
+                   <div class="input-grid">
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>📅</span>
+                               생년월일
+                           </div>
+                           <input type="date" id="birth-date" onchange="smartParseAge()">
+                           <div class="parsed-result" id="birthDateParsed">날짜를 선택해주세요</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>📍</span>
+                               기준일
+                           </div>
+                           <input type="date" id="target-date" onchange="smartParseAge()">
+                           <div class="parsed-result" id="targetDateParsed">기본값: 오늘</div>
+                       </div>
+                   </div>
+               </div>
+               
+               <div class="controls">
+                   <button class="btn" onclick="calculateAge()">🎂 나이 계산</button>
+                   <button class="btn btn-secondary" onclick="showAgeExample()">📝 예시</button>
+                   <button class="btn btn-danger" onclick="clearAge()">🗑️ 초기화</button>
+               </div>
+               
+               <div class="result-section" id="ageResult"></div>
+           </div>
+           
+           <!-- 생일 계산 -->
+           <div id="birthday" class="tab-content">
+               <div class="input-section">
+                   <div class="input-grid">
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>📅</span>
+                               생년월일
+                           </div>
+                           <input type="date" id="birthday-date" onchange="smartParseBirthday()">
+                           <div class="parsed-result" id="birthdayDateParsed">날짜를 선택해주세요</div>
+                       </div>
+                   </div>
+               </div>
+               
+               <div class="controls">
+                   <button class="btn" onclick="calculateBirthday()">🎉 생일 계산</button>
+                   <button class="btn btn-secondary" onclick="showBirthdayExample()">📝 예시</button>
+                   <button class="btn btn-danger" onclick="clearBirthday()">🗑️ 초기화</button>
+               </div>
+               
+               <div class="result-section" id="birthdayResult"></div>
+           </div>
+           
+           <!-- 나이 비교 -->
+           <div id="compare" class="tab-content">
+               <div class="input-section">
+                   <div class="input-grid">
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>👤</span>
+                               첫 번째 사람 생년월일
+                           </div>
+                           <input type="date" id="person1-date" onchange="smartParseCompare()">
+                           <div class="parsed-result" id="person1DateParsed">날짜를 선택해주세요</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>👤</span>
+                               두 번째 사람 생년월일
+                           </div>
+                           <input type="date" id="person2-date" onchange="smartParseCompare()">
+                           <div class="parsed-result" id="person2DateParsed">날짜를 선택해주세요</div>
+                       </div>
+                   </div>
+               </div>
+               
+               <div class="controls">
+                   <button class="btn" onclick="compareAges()">👥 나이 비교</button>
+                   <button class="btn btn-secondary" onclick="showCompareExample()">📝 예시</button>
+                   <button class="btn btn-danger" onclick="clearCompare()">🗑️ 초기화</button>
+               </div>
+               
+               <div class="result-section" id="compareResult"></div>
+           </div>
+       </div>
+   </div>
 
+   <script>
+       let currentTab = 'age';
+       
+       function switchTab(tabName) {
+           document.querySelectorAll('.tab-button').forEach(btn => {
+               btn.classList.remove('active');
+           });
+           event.target.classList.add('active');
+           
+           document.querySelectorAll('.tab-content').forEach(content => {
+               content.classList.remove('active');
+           });
+           document.getElementById(tabName).classList.add('active');
+           
+           currentTab = tabName;
+       }
+       
+       function formatDate(dateString) {
+           const date = new Date(dateString);
+           return date.toLocaleDateString('ko-KR', { 
+               year: 'numeric', 
+               month: 'long', 
+               day: 'numeric' 
+           });
+       }
+       
+       function getZodiacSign(month, day) {
+           const zodiacSigns = [
+               { name: '염소자리', emoji: '♑', start: [12, 22], end: [1, 19] },
+               { name: '물병자리', emoji: '♒', start: [1, 20], end: [2, 18] },
+               { name: '물고기자리', emoji: '♓', start: [2, 19], end: [3, 20] },
+               { name: '양자리', emoji: '♈', start: [3, 21], end: [4, 19] },
+               { name: '황소자리', emoji: '♉', start: [4, 20], end: [5, 20] },
+               { name: '쌍둥이자리', emoji: '♊', start: [5, 21], end: [6, 21] },
+               { name: '게자리', emoji: '♋', start: [6, 22], end: [7, 22] },
+               { name: '사자자리', emoji: '♌', start: [7, 23], end: [8, 22] },
+               { name: '처녀자리', emoji: '♍', start: [8, 23], end: [9, 22] },
+               { name: '천칭자리', emoji: '♎', start: [9, 23], end: [10, 22] },
+               { name: '전갈자리', emoji: '♏', start: [10, 23], end: [11, 21] },
+               { name: '사수자리', emoji: '♐', start: [11, 22], end: [12, 21] }
+           ];
+           
+           for (let sign of zodiacSigns) {
+               if (sign.name === '염소자리') {
+                   if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) {
+                       return sign;
+                   }
+               } else {
+                   const [startMonth, startDay] = sign.start;
+                   const [endMonth, endDay] = sign.end;
+                   if ((month === startMonth && day >= startDay) || (month === endMonth && day <= endDay)) {
+                       return sign;
+                   }
+               }
+           }
+           return { name: '알 수 없음', emoji: '❓' };
+       }
+       
+       function getChineseZodiac(year) {
+           const animals = ['원숭이', '닭', '개', '돼지', '쥐', '소', '호랑이', '토끼', '용', '뱀', '말', '양'];
+           const emojis = ['🐵', '🐔', '🐶', '🐷', '🐭', '🐮', '🐯', '🐰', '🐲', '🐍', '🐴', '🐑'];
+           const index = year % 12;
+           return { name: animals[index], emoji: emojis[index] };
+       }
+       
+       // 나이 계산
+       function smartParseAge() {
+           const birthDate = document.getElementById('birth-date').value;
+           const targetDate = document.getElementById('target-date').value;
+           
+           if (birthDate) {
+               document.getElementById('birthDateParsed').textContent = `선택됨: ${formatDate(birthDate)}`;
+           }
+           
+           if (targetDate) {
+               document.getElementById('targetDateParsed').textContent = `기준일: ${formatDate(targetDate)}`;
+           } else {
+               document.getElementById('targetDateParsed').textContent = '기본값: 오늘';
+           }
+       }
+       
+       function calculateAge() {
+           const birthDate = new Date(document.getElementById('birth-date').value);
+           const targetDate = new Date(document.getElementById('target-date').value || new Date());
+           
+           if (!document.getElementById('birth-date').value) {
+               alert('생년월일을 선택해주세요.');
+               return;
+           }
+           
+           // 만나이 계산
+           let age = targetDate.getFullYear() - birthDate.getFullYear();
+           const monthDiff = targetDate.getMonth() - birthDate.getMonth();
+           
+           if (monthDiff < 0 || (monthDiff === 0 && targetDate.getDate() < birthDate.getDate())) {
+               age--;
+           }
+           
+           // 한국나이 계산
+           const koreanAge = targetDate.getFullYear() - birthDate.getFullYear() + 1;
+           
+           // 살아온 일수 계산
+           const timeDiff = targetDate.getTime() - birthDate.getTime();
+           const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+           
+           // 살아온 시간 계산
+           const hoursDiff = Math.floor(timeDiff / (1000 * 60 * 60));
+           const minutesDiff = Math.floor(timeDiff / (1000 * 60));
+           
+           // 띠와 별자리 계산
+           const zodiac = getZodiacSign(birthDate.getMonth() + 1, birthDate.getDate());
+           const chineseZodiac = getChineseZodiac(birthDate.getFullYear());
+           
+           const resultHTML = `
+               <div class="result-title">🎂 나이 계산 결과</div>
+               <div class="age-display">
+                   <div class="age-value">${age}세</div>
+                   <div class="age-description">만나이</div>
+               </div>
+               <div class="result-grid">
+                   <div class="result-item">
+                       <div class="result-label">만나이</div>
+                       <div class="result-value">${age}세</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">한국나이</div>
+                       <div class="result-value">${koreanAge}세</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">살아온 일수</div>
+                       <div class="result-value">${daysDiff.toLocaleString()}일</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">살아온 시간</div>
+                       <div class="result-value">${hoursDiff.toLocaleString()}시간</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">태어난 년도</div>
+                       <div class="result-value">${birthDate.getFullYear()}년</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">태어난 요일</div>
+                       <div class="result-value">${birthDate.toLocaleDateString('ko-KR', { weekday: 'long' })}</div>
+                   </div>
+               </div>
+               <div class="zodiac-section">
+                   <div class="zodiac-title">🌟 띠와 별자리</div>
+                   <div class="zodiac-info">
+                       <div class="zodiac-item">
+                           <div class="zodiac-emoji">${zodiac.emoji}</div>
+                           <div class="zodiac-name">${zodiac.name}</div>
+                       </div>
+                       <div class="zodiac-item">
+                           <div class="zodiac-emoji">${chineseZodiac.emoji}</div>
+                           <div class="zodiac-name">${chineseZodiac.name}띠</div>
+                       </div>
+                   </div>
+               </div>
+           `;
+           
+           document.getElementById('ageResult').innerHTML = resultHTML;
+           document.getElementById('ageResult').style.display = 'block';
+           document.getElementById('ageResult').scrollIntoView({ behavior: 'smooth' });
+       }
+       
+       function showAgeExample() {
+           const today = new Date();
+           const exampleBirth = new Date(today.getFullYear() - 25, 5, 15); // 25년 전 6월 15일
+           
+           document.getElementById('birth-date').value = exampleBirth.toISOString().split('T')[0];
+           document.getElementById('target-date').value = today.toISOString().split('T')[0];
+           smartParseAge();
+       }
+       
+       function clearAge() {
+           document.getElementById('birth-date').value = '';
+           document.getElementById('target-date').value = '';
+           document.getElementById('birthDateParsed').textContent = '날짜를 선택해주세요';
+           document.getElementById('targetDateParsed').textContent = '기본값: 오늘';
+           document.getElementById('ageResult').style.display = 'none';
+       }
+       
+       // 생일 계산
+       function smartParseBirthday() {
+           const birthdayDate = document.getElementById('birthday-date').value;
+           
+           if (birthdayDate) {
+               document.getElementById('birthdayDateParsed').textContent = `선택됨: ${formatDate(birthdayDate)}`;
+           }
+       }
+       
+       function calculateBirthday() {
+           const birthDate = new Date(document.getElementById('birthday-date').value);
+           
+           if (!document.getElementById('birthday-date').value) {
+               alert('생년월일을 선택해주세요.');
+               return;
+           }
+           
+           const today = new Date();
+           const thisYear = today.getFullYear();
+           const nextYear = thisYear + 1;
+           
+           // 올해 생일
+           const thisYearBirthday = new Date(thisYear, birthDate.getMonth(), birthDate.getDate());
+           // 내년 생일
+           const nextYearBirthday = new Date(nextYear, birthDate.getMonth(), birthDate.getDate());
+           
+           let nextBirthday;
+           let daysUntilBirthday;
+           
+           if (thisYearBirthday >= today) {
+               nextBirthday = thisYearBirthday;
+           } else {
+               nextBirthday = nextYearBirthday;
+           }
+           
+           daysUntilBirthday = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
+           
+           // 다음 생일 나이
+           const nextAge = nextBirthday.getFullYear() - birthDate.getFullYear();
+           
+           // 생일이 지났는지 확인
+           const isBirthdayToday = thisYearBirthday.toDateString() === today.toDateString();
+           const hasPassedThisYear = thisYearBirthday < today;
+           
+           let statusMessage = '';
+           if (isBirthdayToday) {
+               statusMessage = '🎉 오늘이 생일입니다!';
+               daysUntilBirthday = 0;
+           } else if (hasPassedThisYear) {
+               statusMessage = `올해 생일이 ${Math.abs(Math.ceil((today - thisYearBirthday) / (1000 * 60 * 60 * 24)))}일 전에 지났습니다.`;
+           } else {
+               statusMessage = `올해 생일까지 ${daysUntilBirthday}일 남았습니다.`;
+           }
+           
+           const resultHTML = `
+               <div class="result-title">🎉 생일 계산 결과</div>
+               <div class="age-display">
+                   <div class="age-value">${daysUntilBirthday}일</div>
+                   <div class="age-description">다음 생일까지</div>
+               </div>
+               <div class="result-grid">
+                   <div class="result-item">
+                       <div class="result-label">생일 상태</div>
+                       <div class="result-value" style="font-size: 1rem;">${statusMessage}</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">다음 생일</div>
+                       <div class="result-value" style="font-size: 1rem;">${formatDate(nextBirthday)}</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">다음 생일 나이</div>
+                       <div class="result-value">${nextAge}세</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">생일 요일</div>
+                       <div class="result-value">${nextBirthday.toLocaleDateString('ko-KR', { weekday: 'long' })}</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">남은 주</div>
+                       <div class="result-value">${Math.ceil(daysUntilBirthday / 7)}주</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">남은 시간</div>
+                       <div class="result-value">${(daysUntilBirthday * 24).toLocaleString()}시간</div>
+                   </div>
+               </div>
+           `;
+           
+           document.getElementById('birthdayResult').innerHTML = resultHTML;
+           document.getElementById('birthdayResult').style.display = 'block';
+           document.getElementById('birthdayResult').scrollIntoView({ behavior: 'smooth' });
+       }
+       
+       function showBirthdayExample() {
+           const today = new Date();
+           const exampleBirth = new Date(today.getFullYear() - 30, 11, 25); // 30년 전 12월 25일
+           
+           document.getElementById('birthday-date').value = exampleBirth.toISOString().split('T')[0];
+           smartParseBirthday();
+       }
+       
+       function clearBirthday() {
+           document.getElementById('birthday-date').value = '';
+           document.getElementById('birthdayDateParsed').textContent = '날짜를 선택해주세요';
+           document.getElementById('birthdayResult').style.display = 'none';
+       }
+       
+       // 나이 비교
+       function smartParseCompare() {
+           const person1Date = document.getElementById('person1-date').value;
+           const person2Date = document.getElementById('person2-date').value;
+           
+           if (person1Date) {
+               document.getElementById('person1DateParsed').textContent = `선택됨: ${formatDate(person1Date)}`;
+           }
+           
+           if (person2Date) {
+               document.getElementById('person2DateParsed').textContent = `선택됨: ${formatDate(person2Date)}`;
+           }
+       }
+       
+       function compareAges() {
+           const person1Date = new Date(document.getElementById('person1-date').value);
+           const person2Date = new Date(document.getElementById('person2-date').value);
+           
+           if (!document.getElementById('person1-date').value || !document.getElementById('person2-date').value) {
+               alert('두 사람의 생년월일을 모두 선택해주세요.');
+               return;
+           }
+           
+           const today = new Date();
+           
+           // 각각의 나이 계산
+           let age1 = today.getFullYear() - person1Date.getFullYear();
+           let age2 = today.getFullYear() - person2Date.getFullYear();
+           
+           const monthDiff1 = today.getMonth() - person1Date.getMonth();
+           const monthDiff2 = today.getMonth() - person2Date.getMonth();
+           
+           if (monthDiff1 < 0 || (monthDiff1 === 0 && today.getDate() < person1Date.getDate())) {
+               age1--;
+           }
+           
+           if (monthDiff2 < 0 || (monthDiff2 === 0 && today.getDate() < person2Date.getDate())) {
+               age2--;
+           }
+           
+           // 나이 차이 계산
+           const ageDiff = Math.abs(age1 - age2);
+           
+           // 날짜 차이 계산
+           const timeDiff = Math.abs(person1Date.getTime() - person2Date.getTime());
+           const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+           
+           // 누가 더 나이가 많은지
+           let olderPerson = '';
+           if (age1 > age2) {
+               olderPerson = '첫 번째 사람이 더 많습니다';
+           } else if (age2 > age1) {
+               olderPerson = '두 번째 사람이 더 많습니다';
+           } else {
+               olderPerson = '두 사람의 나이가 같습니다';
+           }
+           
+           const resultHTML = `
+               <div class="result-title">👥 나이 비교 결과</div>
+               <div class="age-display">
+                   <div class="age-value">${ageDiff}세</div>
+                   <div class="age-description">나이 차이</div>
+               </div>
+               <div class="result-grid">
+                   <div class="result-item">
+                       <div class="result-label">첫 번째 사람</div>
+                       <div class="result-value">${age1}세</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">두 번째 사람</div>
+                       <div class="result-value">${age2}세</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">나이 차이</div>
+                       <div class="result-value">${ageDiff}세</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">일수 차이</div>
+                       <div class="result-value">${daysDiff.toLocaleString()}일</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">비교 결과</div>
+                       <div class="result-value" style="font-size: 1rem;">${olderPerson}</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">년수 차이</div>
+                       <div class="result-value">${Math.abs(person1Date.getFullYear() - person2Date.getFullYear())}년</div>
+                   </div>
+               </div>
+           `;
+           
+           document.getElementById('compareResult').innerHTML = resultHTML;
+           document.getElementById('compareResult').style.display = 'block';
+           document.getElementById('compareResult').scrollIntoView({ behavior: 'smooth' });
+       }
+       
+       function showCompareExample() {
+           const today = new Date();
+           const person1Birth = new Date(today.getFullYear() - 25, 3, 10); // 25년 전 4월 10일
+           const person2Birth = new Date(today.getFullYear() - 28, 8, 22); // 28년 전 9월 22일
+           
+           document.getElementById('person1-date').value = person1Birth.toISOString().split('T')[0];
+           document.getElementById('person2-date').value = person2Birth.toISOString().split('T')[0];
+           smartParseCompare();
+       }
+       
+       function clearCompare() {
+           document.getElementById('person1-date').value = '';
+           document.getElementById('person2-date').value = '';
+           document.getElementById('person1DateParsed').textContent = '날짜를 선택해주세요';
+           document.getElementById('person2DateParsed').textContent = '날짜를 선택해주세요';
+           document.getElementById('compareResult').style.display = 'none';
+       }
+       
+       window.addEventListener('load', function() {
+           showAgeExample();
+           setTimeout(() => calculateAge(), 1500);
+       });
+   </script>
+</body>
+</html>
