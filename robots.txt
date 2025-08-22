@@ -1,1 +1,40 @@
+# CalcHub - 스마트 계산기 포털
+# https://your-domain.github.io/calculator_for_kr/
 
+User-agent: *
+Allow: /
+
+# 허용할 디렉토리들
+Allow: /calculators/
+Allow: /css/
+Allow: /js/
+Allow: /images/
+
+# 금지할 파일들 (없음 - 모든 페이지 허용)
+# Disallow: 
+
+# 사이트맵 위치
+Sitemap: https://your-domain.github.io/calculator_for_kr/sitemap.xml
+
+# 크롤링 지연 시간 (초) - 서버 부하 방지
+Crawl-delay: 1
+
+# 주요 검색엔진별 특별 지시사항
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: NaverBot
+Allow: /
+Crawl-delay: 1
+
+# 메타 정보
+# 사이트: CalcHub
+# 목적: 26개 스마트 계산기 포털
+# 언어: 한국어
+# 대상: 한국 사용자
+# 업데이트: 2025-08-23
