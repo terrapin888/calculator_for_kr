@@ -1,1 +1,430 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문의하기 | CalcHub</title>
+    <meta name="description" content="CalcHub에 문의사항이나 제안사항이 있으시면 언제든 연락주세요.">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/common.css">
+    
+    <style>
+        .contact-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .contact-intro {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .contact-intro h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+        
+        .contact-intro p {
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .contact-method {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 32px 24px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        
+        .contact-method:hover {
+            border-color: #c7d2fe;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .method-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+            display: block;
+        }
+        
+        .method-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        
+        .method-desc {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        
+        .method-contact {
+            color: #2563eb;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        
+        .method-contact:hover {
+            text-decoration: underline;
+        }
+        
+        .contact-form {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 32px;
+        }
+        
+        .form-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .form-note {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #92400e;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .submit-button {
+            width: 100%;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        
+        .submit-button:hover {
+            background: #1d4ed8;
+        }
+        
+        .submit-button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+        
+        .faq-section {
+            margin-top: 40px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 32px;
+        }
+        
+        .faq-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .faq-question {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        
+        .faq-answer {
+            color: #64748b;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .contact-methods {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-form,
+            .faq-section {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">홈</a>
+                <a href="about.html" class="nav-link">소개</a>
+                <a href="contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
 
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">문의하기</h1>
+                <p class="page-subtitle">
+                    CalcHub에 대한 문의사항이나 제안사항이 있으시면 언제든 연락주세요.
+                </p>
+            </div>
+
+            <div class="contact-content">
+                <div class="contact-intro">
+                    <h2>어떻게 도와드릴까요?</h2>
+                    <p>
+                        CalcHub를 이용해주셔서 감사합니다. 
+                        서비스 이용 중 문의사항이나 개선 제안이 있으시면 아래 방법으로 연락주세요.
+                    </p>
+                </div>
+
+                <div class="contact-methods">
+                    <div class="contact-method">
+                        <span class="method-icon">📧</span>
+                        <h3 class="method-title">이메일 문의</h3>
+                        <p class="method-desc">가장 빠른 응답을 받으실 수 있습니다</p>
+                        <a href="mailto:contact@calchub.kr" class="method-contact">contact@calchub.kr</a>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <span class="method-icon">💬</span>
+                        <h3 class="method-title">온라인 문의</h3>
+                        <p class="method-desc">아래 폼을 통해 문의해주세요</p>
+                        <span class="method-contact">24시간 접수 가능</span>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <h3 class="form-title">온라인 문의 폼</h3>
+                    
+                    <div class="form-note">
+                        <strong>참고:</strong> 현재 이 폼은 데모용입니다. 실제 메시지는 전송되지 않습니다. 
+                        실제 문의는 contact@calchub.kr로 이메일을 보내주세요.
+                    </div>
+                    
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="inquiryType" class="form-label">문의 유형</label>
+                            <select id="inquiryType" class="form-select" required>
+                                <option value="">문의 유형을 선택해주세요</option>
+                                <option value="bug">버그 신고</option>
+                                <option value="feature">기능 제안</option>
+                                <option value="calculator">새로운 계산기 요청</option>
+                                <option value="support">사용법 문의</option>
+                                <option value="business">비즈니스 문의</option>
+                                <option value="other">기타</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">이메일 주소</label>
+                            <input type="email" id="email" class="form-input" placeholder="your@email.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject" class="form-label">제목</label>
+                            <input type="text" id="subject" class="form-input" placeholder="문의 제목을 입력해주세요" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message" class="form-label">내용</label>
+                            <textarea id="message" class="form-input form-textarea" placeholder="문의 내용을 자세히 작성해주세요" required></textarea>
+                        </div>
+
+                        <button type="submit" class="submit-button">문의 보내기</button>
+                    </form>
+                </div>
+
+                <div class="faq-section">
+                    <h3 class="faq-title">자주 묻는 질문</h3>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">Q. CalcHub는 무료로 사용할 수 있나요?</div>
+                        <div class="faq-answer">
+                            네, CalcHub의 모든 계산기는 완전히 무료로 이용하실 수 있습니다. 
+                            회원가입도 필요하지 않으며, 언제든지 자유롭게 사용하세요.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Q. 계산 결과가 정확한가요?</div>
+                        <div class="faq-answer">
+                            CalcHub의 모든 계산기는 정확한 공식과 최신 기준을 바탕으로 제작되었습니다. 
+                            하지만 중요한 금융 결정이나 의료 결정에는 반드시 전문가의 조언을 구하시기 바랍니다.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Q. 모바일에서도 사용할 수 있나요?</div>
+                        <div class="faq-answer">
+                            네, CalcHub는 반응형 디자인으로 제작되어 PC, 모바일, 태블릿 등 
+                            모든 기기에서 최적화된 경험을 제공합니다.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Q. 새로운 계산기를 요청할 수 있나요?</div>
+                        <div class="faq-answer">
+                            물론입니다! 필요한 계산기가 있으시면 위의 문의 폼이나 이메일을 통해 
+                            언제든 제안해주세요. 검토 후 서비스에 추가하도록 하겠습니다.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Q. 개인정보는 수집하나요?</div>
+                        <div class="faq-answer">
+                            CalcHub는 계산기 서비스 제공을 위한 최소한의 정보만 수집합니다. 
+                            자세한 내용은 개인정보처리방침을 참고해주세요.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 폼 데이터 수집
+            const formData = {
+                inquiryType: document.getElementById('inquiryType').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            };
+            
+            // 유효성 검사
+            if (!formData.inquiryType || !formData.email || !formData.subject || !formData.message) {
+                alert('모든 필드를 입력해주세요.');
+                return;
+            }
+            
+            // 이메일 형식 검사
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                alert('올바른 이메일 주소를 입력해주세요.');
+                return;
+            }
+            
+            // 버튼 비활성화
+            const submitButton = document.querySelector('.submit-button');
+            submitButton.disabled = true;
+            submitButton.textContent = '전송 중...';
+            
+            // 실제 서비스에서는 여기서 서버로 데이터를 전송
+            setTimeout(() => {
+                alert('문의가 접수되었습니다. 빠른 시일 내에 답변드리겠습니다.\n\n' +
+                      '현재는 데모 버전이므로 실제 메시지는 전송되지 않습니다.\n' +
+                      '실제 문의는 contact@calchub.kr로 이메일을 보내주세요.');
+                
+                // 폼 초기화
+                document.getElementById('contactForm').reset();
+                
+                // 버튼 복구
+                submitButton.disabled = false;
+                submitButton.textContent = '문의 보내기';
+            }, 1000);
+        });
+        
+        // 문의 유형에 따른 제목 자동 설정
+        document.getElementById('inquiryType').addEventListener('change', function() {
+            const subjectField = document.getElementById('subject');
+            const selectedType = this.value;
+            
+            const typeTexts = {
+                'bug': '[버그 신고] ',
+                'feature': '[기능 제안] ',
+                'calculator': '[계산기 요청] ',
+                'support': '[사용법 문의] ',
+                'business': '[비즈니스 문의] ',
+                'other': '[기타 문의] '
+            };
+            
+            if (selectedType && typeTexts[selectedType]) {
+                if (!subjectField.value.startsWith('[')) {
+                    subjectField.value = typeTexts[selectedType] + subjectField.value;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
