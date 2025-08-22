@@ -1,1 +1,996 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>단위 변환기 - 길이, 무게, 온도, 부피 등 모든 단위 변환 | 스마트 파싱</title>
+    <meta name="description" content="단위 변환기로 길이, 무게, 온도, 부피, 면적, 속도 등 다양한 단위를 쉽게 변환하세요. 실시간 변환과 스마트 입력 파싱을 지원합니다.">
+       <!-- 이 3줄 추가 -->
+   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="../../css/common.css">
+   <link rel="stylesheet" href="../../css/calculator.css">
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .category-selector {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .category-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .category-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        
+        .category-btn {
+            background: white;
+            border: 2px solid #e9ecef;
+            padding: 15px 10px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .category-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .category-btn:hover {
+            border-color: #667eea;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.2);
+        }
+        
+        .category-icon {
+            font-size: 1.5rem;
+        }
+        
+        .converter-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .converter-section:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+        }
+        
+        .converter-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 20px;
+            align-items: end;
+        }
+        
+        .converter-group {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .converter-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .converter-label .icon {
+            font-size: 1.3rem;
+        }
+        
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+        
+        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .swap-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .swap-button:hover {
+            transform: rotate(180deg) scale(1.1);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .quick-convert {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+        
+        .quick-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .quick-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.1);
+        }
+        
+        .quick-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .quick-unit {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .examples {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffeaa7 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .examples h4 {
+            color: #d68910;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .example-item {
+            background: rgba(255,255,255,0.7);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .example-title {
+            font-weight: bold;
+            color: #d68910;
+            margin-bottom: 5px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 25px 0;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+        }
+        
+        .history-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .history-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .history-item:hover {
+            border-color: #667eea;
+            background: #e3f2fd;
+        }
+        
+        .history-conversion {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .history-time {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .converter-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .swap-button {
+                order: 2;
+                margin: 10px auto;
+            }
+            
+            .category-buttons {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+     <!-- 이 헤더 부분 추가 -->
+   <header class="header">
+       <div class="header-content">
+           <a href="../../index.html" class="logo">
+               <div class="logo-icon">🧮</div>
+               CalcHub
+           </a>
+           <nav class="nav-links">
+               <a href="../../index.html" class="nav-link">홈</a>
+               <a href="../utility/" class="nav-link">💼 비즈니스</a>
+           </nav>
+       </div>
+   </header>
+ 
+    <div class="container">
+        <div class="header">
+            <h1>📏 단위 변환기</h1>
+            <p>길이, 무게, 온도, 부피 등 모든 단위를 쉽고 빠르게 변환하세요</p>
+        </div>
+        
+        <div class="content">
+            <div class="category-selector">
+                <div class="category-title">📊 변환 카테고리 선택</div>
+                <div class="category-buttons">
+                    <button class="category-btn active" onclick="setCategory('length')" id="categoryLength">
+                        <div class="category-icon">📏</div>
+                        <div>길이</div>
+                    </button>
+                    <button class="category-btn" onclick="setCategory('weight')" id="categoryWeight">
+                        <div class="category-icon">⚖️</div>
+                        <div>무게</div>
+                    </button>
+                    <button class="category-btn" onclick="setCategory('temperature')" id="categoryTemperature">
+                        <div class="category-icon">🌡️</div>
+                        <div>온도</div>
+                    </button>
+                    <button class="category-btn" onclick="setCategory('volume')" id="categoryVolume">
+                        <div class="category-icon">🥤</div>
+                        <div>부피</div>
+                    </button>
+                    <button class="category-btn" onclick="setCategory('area')" id="categoryArea">
+                        <div class="category-icon">📐</div>
+                        <div>면적</div>
+                    </button>
+                    <button class="category-btn" onclick="setCategory('speed')" id="categorySpeed">
+                        <div class="category-icon">🚗</div>
+                        <div>속도</div>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="converter-section">
+                <div class="converter-grid">
+                    <div class="converter-group">
+                        <div class="converter-label">
+                            <span class="icon" id="fromIcon">📏</span>
+                            <span id="fromLabel">변환할 값</span>
+                        </div>
+                        <input type="number" id="fromValue" placeholder="값을 입력하세요" oninput="convertValue('from')">
+                        <select id="fromUnit" onchange="convertValue('from')">
+                            <!-- 동적으로 생성 -->
+                        </select>
+                    </div>
+                    
+                    <button class="swap-button" onclick="swapUnits()" title="단위 바꾸기">
+                        ⇄
+                    </button>
+                    
+                    <div class="converter-group">
+                        <div class="converter-label">
+                            <span class="icon" id="toIcon">📏</span>
+                            <span id="toLabel">변환된 값</span>
+                        </div>
+                        <input type="number" id="toValue" placeholder="결과" oninput="convertValue('to')">
+                        <select id="toUnit" onchange="convertValue('to')">
+                            <!-- 동적으로 생성 -->
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="quick-convert" id="quickConvert">
+                    <div class="quick-title" id="quickTitle">📏 빠른 변환</div>
+                    <div class="quick-grid" id="quickGrid">
+                        <!-- 동적으로 생성 -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="examples">
+                <h4>💡 변환 예시</h4>
+                <div class="examples-grid" id="exampleGrid">
+                    <!-- 동적으로 생성 -->
+                </div>
+            </div>
 
+            <div class="controls">
+                <button class="btn" onclick="showHistory()">
+                    📜 변환 기록 보기
+                </button>
+                <button class="btn btn-secondary" onclick="showCommonConversions()">
+                    ⭐ 자주 쓰는 변환
+                </button>
+                <button class="btn btn-danger" onclick="clearAll()">
+                    🗑️ 초기화
+                </button>
+            </div>
+
+            <div class="history-section" id="historySection">
+                <div class="history-title">📜 변환 기록</div>
+                <div class="history-list" id="historyList">
+                    <!-- 동적으로 생성 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 단위 정의
+        const unitCategories = {
+            length: {
+                name: '길이',
+                icon: '📏',
+                units: {
+                    mm: { name: '밀리미터', factor: 0.001 },
+                    cm: { name: '센티미터', factor: 0.01 },
+                    m: { name: '미터', factor: 1 },
+                    km: { name: '킬로미터', factor: 1000 },
+                    inch: { name: '인치', factor: 0.0254 },
+                    ft: { name: '피트', factor: 0.3048 },
+                    yard: { name: '야드', factor: 0.9144 },
+                    mile: { name: '마일', factor: 1609.34 }
+                },
+                examples: [
+                    '1m = 100cm',
+                    '1km = 1000m',
+                    '1인치 = 2.54cm',
+                    '1피트 = 30.48cm'
+                ]
+            },
+            weight: {
+                name: '무게',
+                icon: '⚖️',
+                units: {
+                    mg: { name: '밀리그램', factor: 0.000001 },
+                    g: { name: '그램', factor: 0.001 },
+                    kg: { name: '킬로그램', factor: 1 },
+                    ton: { name: '톤', factor: 1000 },
+                    oz: { name: '온스', factor: 0.0283495 },
+                    lb: { name: '파운드', factor: 0.453592 },
+                    stone: { name: '스톤', factor: 6.35029 }
+                },
+                examples: [
+                    '1kg = 1000g',
+                    '1톤 = 1000kg',
+                    '1파운드 = 453.6g',
+                    '1온스 = 28.35g'
+                ]
+            },
+            temperature: {
+                name: '온도',
+                icon: '🌡️',
+                isTemperature: true,
+                units: {
+                    celsius: { name: '섭씨(°C)' },
+                    fahrenheit: { name: '화씨(°F)' },
+                    kelvin: { name: '켈빈(K)' },
+                    rankine: { name: '랭킨(°R)' }
+                },
+                examples: [
+                    '0°C = 32°F',
+                    '100°C = 212°F',
+                    '0°C = 273.15K',
+                    '37°C = 98.6°F'
+                ]
+            },
+            volume: {
+                name: '부피',
+                icon: '🥤',
+                units: {
+                    ml: { name: '밀리리터', factor: 0.001 },
+                    l: { name: '리터', factor: 1 },
+                    m3: { name: '세제곱미터', factor: 1000 },
+                    cup: { name: '컵', factor: 0.236588 },
+                    pint: { name: '파인트', factor: 0.473176 },
+                    quart: { name: '쿼트', factor: 0.946353 },
+                    gallon: { name: '갤런', factor: 3.78541 },
+                    fl_oz: { name: '액량온스', factor: 0.0295735 }
+                },
+                examples: [
+                    '1L = 1000ml',
+                    '1갤런 = 3.785L',
+                    '1컵 = 236.6ml',
+                    '1파인트 = 473.2ml'
+                ]
+            },
+            area: {
+                name: '면적',
+                icon: '📐',
+                units: {
+                    mm2: { name: '제곱밀리미터', factor: 0.000001 },
+                    cm2: { name: '제곱센티미터', factor: 0.0001 },
+                    m2: { name: '제곱미터', factor: 1 },
+                    km2: { name: '제곱킬로미터', factor: 1000000 },
+                    hectare: { name: '헥타르', factor: 10000 },
+                    acre: { name: '에이커', factor: 4046.86 },
+                    sq_ft: { name: '제곱피트', factor: 0.092903 },
+                    sq_inch: { name: '제곱인치', factor: 0.00064516 }
+                },
+                examples: [
+                    '1m² = 10000cm²',
+                    '1헥타르 = 10000m²',
+                    '1에이커 = 4047m²',
+                    '1제곱피트 = 929cm²'
+                ]
+            },
+            speed: {
+                name: '속도',
+                icon: '🚗',
+                units: {
+                    mps: { name: '미터/초', factor: 1 },
+                    kmh: { name: '킬로미터/시', factor: 0.277778 },
+                    mph: { name: '마일/시', factor: 0.44704 },
+                    knot: { name: '노트', factor: 0.514444 },
+                    fps: { name: '피트/초', factor: 0.3048 }
+                },
+                examples: [
+                    '1m/s = 3.6km/h',
+                    '100km/h = 27.8m/s',
+                    '1노트 = 1.852km/h',
+                    '60mph = 96.6km/h'
+                ]
+            }
+        };
+
+        let currentCategory = 'length';
+        let conversionHistory = [];
+
+        function setCategory(category) {
+            currentCategory = category;
+            
+            // 버튼 상태 업데이트
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`#category${category.charAt(0).toUpperCase() + category.slice(1)}`).classList.add('active');
+            
+            updateConverter();
+        }
+
+        function updateConverter() {
+            const category = unitCategories[currentCategory];
+            
+            // 아이콘과 라벨 업데이트
+            document.getElementById('fromIcon').textContent = category.icon;
+            document.getElementById('toIcon').textContent = category.icon;
+            document.getElementById('fromLabel').textContent = `${category.name} 입력`;
+            document.getElementById('toLabel').textContent = `${category.name} 결과`;
+            
+            // 단위 옵션 업데이트
+            const fromUnit = document.getElementById('fromUnit');
+            const toUnit = document.getElementById('toUnit');
+            
+            fromUnit.innerHTML = '';
+            toUnit.innerHTML = '';
+            
+            Object.entries(category.units).forEach(([key, unit]) => {
+                const option1 = new Option(unit.name, key);
+                const option2 = new Option(unit.name, key);
+                fromUnit.appendChild(option1);
+                toUnit.appendChild(option2);
+            });
+            
+            // 기본 선택값 설정
+            const unitKeys = Object.keys(category.units);
+            fromUnit.value = unitKeys[0];
+            toUnit.value = unitKeys[1] || unitKeys[0];
+            
+            // 예시 업데이트
+            updateExamples();
+            
+            // 빠른 변환 업데이트
+            updateQuickConvert();
+            
+            // 값 초기화
+            document.getElementById('fromValue').value = '';
+            document.getElementById('toValue').value = '';
+        }
+
+        function convertValue(direction) {
+            const fromValue = parseFloat(document.getElementById('fromValue').value);
+            const toValue = parseFloat(document.getElementById('toValue').value);
+            const fromUnit = document.getElementById('fromUnit').value;
+            const toUnit = document.getElementById('toUnit').value;
+            
+            if (currentCategory === 'temperature') {
+                convertTemperature(direction);
+                return;
+            }
+            
+            const category = unitCategories[currentCategory];
+            
+            if (direction === 'from' && !isNaN(fromValue)) {
+                // from에서 to로 변환
+                const fromFactor = category.units[fromUnit].factor;
+                const toFactor = category.units[toUnit].factor;
+                const result = (fromValue * fromFactor) / toFactor;
+                document.getElementById('toValue').value = formatNumber(result);
+                
+                // 기록 추가
+                addToHistory(fromValue, fromUnit, result, toUnit);
+            } else if (direction === 'to' && !isNaN(toValue)) {
+                // to에서 from으로 변환
+                const fromFactor = category.units[fromUnit].factor;
+                const toFactor = category.units[toUnit].factor;
+                const result = (toValue * toFactor) / fromFactor;
+                document.getElementById('fromValue').value = formatNumber(result);
+                
+                // 기록 추가
+                addToHistory(result, fromUnit, toValue, toUnit);
+            }
+            
+            updateQuickConvert();
+        }
+
+        function convertTemperature(direction) {
+            const fromValue = parseFloat(document.getElementById('fromValue').value);
+            const toValue = parseFloat(document.getElementById('toValue').value);
+            const fromUnit = document.getElementById('fromUnit').value;
+            const toUnit = document.getElementById('toUnit').value;
+            
+            if (direction === 'from' && !isNaN(fromValue)) {
+                const result = temperatureConvert(fromValue, fromUnit, toUnit);
+                document.getElementById('toValue').value = formatNumber(result);
+                addToHistory(fromValue, fromUnit, result, toUnit);
+            } else if (direction === 'to' && !isNaN(toValue)) {
+                const result = temperatureConvert(toValue, toUnit, fromUnit);
+                document.getElementById('fromValue').value = formatNumber(result);
+                addToHistory(result, fromUnit, toValue, toUnit);
+            }
+            
+            updateQuickConvert();
+        }
+
+        function temperatureConvert(value, fromUnit, toUnit) {
+            // 먼저 섭씨로 변환
+            let celsius;
+            switch (fromUnit) {
+                case 'celsius':
+                    celsius = value;
+                    break;
+                case 'fahrenheit':
+                    celsius = (value - 32) * 5/9;
+                    break;
+                case 'kelvin':
+                    celsius = value - 273.15;
+                    break;
+                case 'rankine':
+                    celsius = (value - 491.67) * 5/9;
+                    break;
+            }
+            
+            // 섭씨에서 목표 단위로 변환
+            switch (toUnit) {
+                case 'celsius':
+                    return celsius;
+                case 'fahrenheit':
+                    return celsius * 9/5 + 32;
+                case 'kelvin':
+                    return celsius + 273.15;
+                case 'rankine':
+                    return celsius * 9/5 + 491.67;
+            }
+        }
+
+        function swapUnits() {
+            const fromUnit = document.getElementById('fromUnit');
+            const toUnit = document.getElementById('toUnit');
+            const fromValue = document.getElementById('fromValue');
+            const toValue = document.getElementById('toValue');
+            
+            // 단위 교체
+            const tempUnit = fromUnit.value;
+            fromUnit.value = toUnit.value;
+            toUnit.value = tempUnit;
+            
+            // 값 교체
+            const tempValue = fromValue.value;
+            fromValue.value = toValue.value;
+            toValue.value = tempValue;
+            
+            updateQuickConvert();
+        }
+
+        function updateQuickConvert() {
+            const fromValue = parseFloat(document.getElementById('fromValue').value) || 1;
+            const fromUnit = document.getElementById('fromUnit').value;
+            const category = unitCategories[currentCategory];
+            
+            document.getElementById('quickTitle').innerHTML = 
+                `${category.icon} ${fromValue} ${category.units[fromUnit].name} =`;
+            
+            const quickGrid = document.getElementById('quickGrid');
+            quickGrid.innerHTML = '';
+            
+            // 주요 단위들로 변환 표시
+            const commonUnits = getCommonUnits(currentCategory);
+            
+            commonUnits.forEach(unitKey => {
+                if (unitKey !== fromUnit) {
+                    let result;
+                    if (currentCategory === 'temperature') {
+                        result = temperatureConvert(fromValue, fromUnit, unitKey);
+                    } else {
+                        const fromFactor = category.units[fromUnit].factor;
+                        const toFactor = category.units[unitKey].factor;
+                        result = (fromValue * fromFactor) / toFactor;
+                    }
+                    
+                    const div = document.createElement('div');
+                    div.className = 'quick-item';
+                    div.innerHTML = `
+                        <div class="quick-value">${formatNumber(result)}</div>
+                        <div class="quick-unit">${category.units[unitKey].name}</div>
+                    `;
+                    div.onclick = () => setQuickUnit(unitKey, result);
+                    quickGrid.appendChild(div);
+                }
+            });
+        }
+
+        function getCommonUnits(category) {
+            const common = {
+                length: ['mm', 'cm', 'm', 'km', 'inch', 'ft'],
+                weight: ['g', 'kg', 'ton', 'oz', 'lb'],
+                temperature: ['celsius', 'fahrenheit', 'kelvin'],
+                volume: ['ml', 'l', 'cup', 'gallon'],
+                area: ['cm2', 'm2', 'km2', 'hectare', 'acre'],
+                speed: ['mps', 'kmh', 'mph', 'knot']
+            };
+            return common[category] || Object.keys(unitCategories[category].units).slice(0, 6);
+        }
+
+        function setQuickUnit(unitKey, value) {
+            document.getElementById('toUnit').value = unitKey;
+            document.getElementById('toValue').value = formatNumber(value);
+        }
+
+        function updateExamples() {
+            const category = unitCategories[currentCategory];
+            const exampleGrid = document.getElementById('exampleGrid');
+            
+            exampleGrid.innerHTML = '';
+            
+            category.examples.forEach(example => {
+                const div = document.createElement('div');
+                div.className = 'example-item';
+                div.innerHTML = `
+                    <div class="example-title">${category.name} 변환</div>
+                    ${example}
+                `;
+                exampleGrid.appendChild(div);
+            });
+        }
+
+        function formatNumber(num) {
+            if (Math.abs(num) >= 1000000) {
+                return num.toExponential(3);
+            } else if (Math.abs(num) < 0.0001 && num !== 0) {
+                return num.toExponential(3);
+            } else {
+                return parseFloat(num.toFixed(6)).toString();
+            }
+        }
+
+        function addToHistory(fromValue, fromUnit, toValue, toUnit) {
+            const category = unitCategories[currentCategory];
+            const conversion = {
+                category: currentCategory,
+                from: `${fromValue} ${category.units[fromUnit].name}`,
+                to: `${formatNumber(toValue)} ${category.units[toUnit].name}`,
+                time: new Date().toLocaleString('ko-KR')
+            };
+            
+            conversionHistory.unshift(conversion);
+            if (conversionHistory.length > 50) {
+                conversionHistory.pop();
+            }
+        }
+
+        function showHistory() {
+            const historySection = document.getElementById('historySection');
+            const historyList = document.getElementById('historyList');
+            
+            if (historySection.style.display === 'block') {
+                historySection.style.display = 'none';
+                return;
+            }
+            
+            historyList.innerHTML = '';
+            
+            if (conversionHistory.length === 0) {
+                historyList.innerHTML = '<div class="history-item">변환 기록이 없습니다.</div>';
+            } else {
+                conversionHistory.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'history-item';
+                    div.innerHTML = `
+                        <div class="history-conversion">${item.from} → ${item.to}</div>
+                        <div class="history-time">${item.time}</div>
+                    `;
+                    div.onclick = () => loadFromHistory(item);
+                    historyList.appendChild(div);
+                });
+            }
+            
+            historySection.style.display = 'block';
+            historySection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function loadFromHistory(item) {
+            setCategory(item.category);
+            // 기록에서 값 복원하는 로직은 복잡하므로 생략
+            document.getElementById('historySection').style.display = 'none';
+        }
+
+        function showCommonConversions() {
+            const commonConversions = {
+                length: [
+                    { from: 1, fromUnit: 'm', to: 100, toUnit: 'cm' },
+                    { from: 1, fromUnit: 'km', to: 1000, toUnit: 'm' },
+                    { from: 1, fromUnit: 'inch', to: 2.54, toUnit: 'cm' },
+                    { from: 1, fromUnit: 'ft', to: 30.48, toUnit: 'cm' }
+                ],
+                weight: [
+                    { from: 1, fromUnit: 'kg', to: 1000, toUnit: 'g' },
+                    { from: 1, fromUnit: 'lb', to: 453.6, toUnit: 'g' },
+                    { from: 1, fromUnit: 'oz', to: 28.35, toUnit: 'g' }
+                ],
+                temperature: [
+                    { from: 0, fromUnit: 'celsius', to: 32, toUnit: 'fahrenheit' },
+                    { from: 100, fromUnit: 'celsius', to: 212, toUnit: 'fahrenheit' },
+                    { from: 37, fromUnit: 'celsius', to: 98.6, toUnit: 'fahrenheit' }
+                ]
+            };
+            
+            const conversions = commonConversions[currentCategory] || [];
+            if (conversions.length > 0) {
+                const conversion = conversions[0];
+                document.getElementById('fromValue').value = conversion.from;
+                document.getElementById('fromUnit').value = conversion.fromUnit;
+                document.getElementById('toUnit').value = conversion.toUnit;
+                convertValue('from');
+            }
+        }
+
+        function clearAll() {
+            document.getElementById('fromValue').value = '';
+            document.getElementById('toValue').value = '';
+            document.getElementById('historySection').style.display = 'none';
+            updateQuickConvert();
+        }
+
+        // 페이지 로드 시 초기화
+        window.addEventListener('load', function() {
+            updateConverter();
+            
+            // 예시 값 설정
+            setTimeout(() => {
+                document.getElementById('fromValue').value = '1';
+                convertValue('from');
+            }, 500);
+        });
+    </script>
+</body>
+</html>
