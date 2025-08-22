@@ -1,1 +1,948 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>시간 계산기 - 시간 더하기/빼기 자동 계산 | 스마트 파싱</title>
+   <meta name="description" content="시간 계산기로 시간 더하기, 빼기, 차이 계산을 쉽게 하세요. 시간을 자유 형식으로 입력하면 자동 인식합니다.">
+   <style>
+       * {
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+       }
+       
+       body {
+           font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+           min-height: 100vh;
+           padding: 20px;
+       }
+       
+       .container {
+           max-width: 1200px;
+           margin: 0 auto;
+           background: white;
+           border-radius: 20px;
+           box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+           overflow: hidden;
+           animation: slideUp 0.6s ease-out;
+       }
+       
+       @keyframes slideUp {
+           from { opacity: 0; transform: translateY(30px); }
+           to { opacity: 1; transform: translateY(0); }
+       }
+       
+       .header {
+           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+           color: white;
+           padding: 40px 30px;
+           text-align: center;
+           position: relative;
+           overflow: hidden;
+       }
+       
+       .header::before {
+           content: '';
+           position: absolute;
+           top: -50%;
+           left: -50%;
+           width: 200%;
+           height: 200%;
+           background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+           animation: pulse 4s ease-in-out infinite;
+       }
+       
+       @keyframes pulse {
+           0%, 100% { transform: scale(1); }
+           50% { transform: scale(1.1); }
+       }
+       
+       .header h1 {
+           font-size: 2.5rem;
+           margin-bottom: 10px;
+           position: relative;
+           z-index: 1;
+       }
+       
+       .header p {
+           font-size: 1.1rem;
+           opacity: 0.9;
+           position: relative;
+           z-index: 1;
+       }
+       
+       .content {
+           padding: 40px 30px;
+       }
+       
+       .calculator-tabs {
+           display: flex;
+           background: #f8f9fa;
+           border-radius: 15px;
+           padding: 5px;
+           margin-bottom: 30px;
+           gap: 5px;
+       }
+       
+       .tab-button {
+           flex: 1;
+           padding: 15px 20px;
+           border: none;
+           border-radius: 10px;
+           background: transparent;
+           cursor: pointer;
+           transition: all 0.3s ease;
+           font-weight: 600;
+           font-size: 14px;
+       }
+       
+       .tab-button.active {
+           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+           color: white;
+       }
+       
+       .tab-content {
+           display: none;
+       }
+       
+       .tab-content.active {
+           display: block;
+       }
+       
+       .input-section {
+           background: #f8f9fa;
+           border-radius: 15px;
+           padding: 30px;
+           margin-bottom: 30px;
+           border: 2px solid #e9ecef;
+       }
+       
+       .input-grid {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+           gap: 25px;
+       }
+       
+       .input-group {
+           background: white;
+           border-radius: 12px;
+           padding: 20px;
+           box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+       }
+       
+       .input-label {
+           font-size: 1.1rem;
+           font-weight: 600;
+           color: #333;
+           margin-bottom: 10px;
+           display: flex;
+           align-items: center;
+           gap: 8px;
+       }
+       
+       input[type="text"], input[type="time"], input[type="number"], select {
+           width: 100%;
+           padding: 15px;
+           border: 2px solid #e1e5e9;
+           border-radius: 8px;
+           font-size: 16px;
+           transition: all 0.3s ease;
+           background: #fafbfc;
+       }
+       
+       input:focus, select:focus {
+           outline: none;
+           border-color: #667eea;
+           background: white;
+           box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+       }
+       
+       .parsed-result {
+           margin-top: 10px;
+           padding: 10px;
+           background: #e3f2fd;
+           border-radius: 6px;
+           font-size: 14px;
+           color: #1976d2;
+       }
+       
+       .controls {
+           display: flex;
+           gap: 15px;
+           flex-wrap: wrap;
+           justify-content: center;
+           margin: 25px 0;
+       }
+       
+       .btn {
+           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+           color: white;
+           border: none;
+           padding: 15px 30px;
+           border-radius: 25px;
+           font-size: 16px;
+           font-weight: 600;
+           cursor: pointer;
+           transition: all 0.3s ease;
+       }
+       
+       .btn:hover {
+           transform: translateY(-2px);
+           box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+       }
+       
+       .btn-secondary {
+           background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+       }
+       
+       .btn-danger {
+           background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+       }
+       
+       .result-section {
+           background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+           border-radius: 15px;
+           padding: 30px;
+           margin-top: 30px;
+           border: 2px solid #4caf50;
+           display: none;
+           animation: fadeIn 0.5s ease-in;
+       }
+       
+       @keyframes fadeIn {
+           from { opacity: 0; transform: translateY(20px); }
+           to { opacity: 1; transform: translateY(0); }
+       }
+       
+       .result-title {
+           font-size: 1.5rem;
+           font-weight: bold;
+           color: #2e7d32;
+           margin-bottom: 25px;
+           text-align: center;
+       }
+       
+       .time-display {
+           background: white;
+           border-radius: 15px;
+           padding: 30px;
+           text-align: center;
+           margin-bottom: 25px;
+           box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+       }
+       
+       .time-value {
+           font-size: 3rem;
+           font-weight: bold;
+           color: #4caf50;
+           margin-bottom: 10px;
+           font-family: 'Courier New', monospace;
+       }
+       
+       .time-description {
+           font-size: 1.2rem;
+           color: #666;
+       }
+       
+       .result-grid {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+           gap: 20px;
+       }
+       
+       .result-item {
+           background: white;
+           padding: 20px;
+           border-radius: 12px;
+           text-align: center;
+           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+       }
+       
+       .result-label {
+           font-size: 0.9rem;
+           color: #666;
+           margin-bottom: 8px;
+       }
+       
+       .result-value {
+           font-size: 1.3rem;
+           font-weight: bold;
+           color: #4caf50;
+       }
+       
+       .time-presets {
+           background: white;
+           border-radius: 12px;
+           padding: 20px;
+           margin-top: 20px;
+           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+       }
+       
+       .preset-title {
+           font-size: 1.1rem;
+           font-weight: bold;
+           color: #333;
+           margin-bottom: 15px;
+           text-align: center;
+       }
+       
+       .preset-grid {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+           gap: 10px;
+       }
+       
+       .preset-btn {
+           padding: 12px 15px;
+           border: 2px solid #e9ecef;
+           border-radius: 20px;
+           background: white;
+           cursor: pointer;
+           transition: all 0.3s ease;
+           text-align: center;
+           font-weight: 600;
+           font-size: 13px;
+       }
+       
+       .preset-btn:hover {
+           border-color: #667eea;
+           background: rgba(102, 126, 234, 0.1);
+       }
+       
+       .time-inputs {
+           display: grid;
+           grid-template-columns: 1fr 1fr 1fr;
+           gap: 10px;
+           align-items: end;
+       }
+       
+       .time-unit {
+           text-align: center;
+       }
+       
+       .time-unit label {
+           display: block;
+           font-size: 12px;
+           color: #666;
+           margin-bottom: 5px;
+       }
+       
+       .time-unit input {
+           text-align: center;
+           padding: 10px;
+       }
+       
+       @media (max-width: 768px) {
+           .container {
+               margin: 10px;
+           }
+           
+           .header h1 {
+               font-size: 2rem;
+           }
+           
+           .calculator-tabs {
+               flex-direction: column;
+           }
+           
+           .input-grid {
+               grid-template-columns: 1fr;
+           }
+           
+           .controls {
+               flex-direction: column;
+           }
+           
+           .btn {
+               width: 100%;
+           }
+           
+           .time-value {
+               font-size: 2.5rem;
+           }
+       }
+   </style>
+</head>
+<body>
+   <div class="container">
+       <div class="header">
+           <h1>⏰ 시간 계산기</h1>
+           <p>시간 더하기, 빼기, 차이 계산을 쉽게 하세요</p>
+       </div>
+       
+       <div class="content">
+           <div class="calculator-tabs">
+               <button class="tab-button active" onclick="switchTab('add')">시간 더하기</button>
+               <button class="tab-button" onclick="switchTab('subtract')">시간 빼기</button>
+               <button class="tab-button" onclick="switchTab('difference')">시간 차이</button>
+           </div>
+           
+           <!-- 시간 더하기 -->
+           <div id="add" class="tab-content active">
+               <div class="input-section">
+                   <div class="input-grid">
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>⏰</span>
+                               기준 시간
+                           </div>
+                           <input type="time" id="add-base-time" onchange="smartParseAdd()">
+                           <div class="parsed-result" id="addBaseTimeParsed">시간을 선택해주세요</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>➕</span>
+                               더할 시간
+                           </div>
+                           <div class="time-inputs">
+                               <div class="time-unit">
+                                   <label>시간</label>
+                                   <input type="number" id="add-hours" min="0" max="23" placeholder="0" oninput="smartParseAdd()">
+                               </div>
+                               <div class="time-unit">
+                                   <label>분</label>
+                                   <input type="number" id="add-minutes" min="0" max="59" placeholder="0" oninput="smartParseAdd()">
+                               </div>
+                               <div class="time-unit">
+                                   <label>초</label>
+                                   <input type="number" id="add-seconds" min="0" max="59" placeholder="0" oninput="smartParseAdd()">
+                               </div>
+                           </div>
+                           <div class="parsed-result" id="addTimeParsed">더할 시간을 입력해주세요</div>
+                       </div>
+                   </div>
+                   
+                   <div class="time-presets">
+                       <div class="preset-title">🎯 빠른 시간 선택</div>
+                       <div class="preset-grid">
+                           <button class="preset-btn" onclick="setAddTime(0, 15, 0)">15분</button>
+                           <button class="preset-btn" onclick="setAddTime(0, 30, 0)">30분</button>
+                           <button class="preset-btn" onclick="setAddTime(1, 0, 0)">1시간</button>
+                           <button class="preset-btn" onclick="setAddTime(2, 0, 0)">2시간</button>
+                           <button class="preset-btn" onclick="setAddTime(8, 0, 0)">8시간</button>
+                           <button class="preset-btn" onclick="setAddTime(24, 0, 0)">24시간</button>
+                       </div>
+                   </div>
+               </div>
+               
+               <div class="controls">
+                   <button class="btn" onclick="calculateTimeAdd()">⏰ 시간 더하기</button>
+                   <button class="btn btn-secondary" onclick="showAddExample()">📝 예시</button>
+                   <button class="btn btn-danger" onclick="clearAdd()">🗑️ 초기화</button>
+               </div>
+               
+               <div class="result-section" id="addResult"></div>
+           </div>
+           
+           <!-- 시간 빼기 -->
+           <div id="subtract" class="tab-content">
+               <div class="input-section">
+                   <div class="input-grid">
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>⏰</span>
+                               기준 시간
+                           </div>
+                           <input type="time" id="subtract-base-time" onchange="smartParseSubtract()">
+                           <div class="parsed-result" id="subtractBaseTimeParsed">시간을 선택해주세요</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>➖</span>
+                               뺄 시간
+                           </div>
+                           <div class="time-inputs">
+                               <div class="time-unit">
+                                   <label>시간</label>
+                                   <input type="number" id="subtract-hours" min="0" max="23" placeholder="0" oninput="smartParseSubtract()">
+                               </div>
+                               <div class="time-unit">
+                                   <label>분</label>
+                                   <input type="number" id="subtract-minutes" min="0" max="59" placeholder="0" oninput="smartParseSubtract()">
+                               </div>
+                               <div class="time-unit">
+                                   <label>초</label>
+                                   <input type="number" id="subtract-seconds" min="0" max="59" placeholder="0" oninput="smartParseSubtract()">
+                               </div>
+                           </div>
+                           <div class="parsed-result" id="subtractTimeParsed">뺄 시간을 입력해주세요</div>
+                       </div>
+                   </div>
+                   
+                   <div class="time-presets">
+                       <div class="preset-title">🎯 빠른 시간 선택</div>
+                       <div class="preset-grid">
+                           <button class="preset-btn" onclick="setSubtractTime(0, 15, 0)">15분</button>
+                           <button class="preset-btn" onclick="setSubtractTime(0, 30, 0)">30분</button>
+                           <button class="preset-btn" onclick="setSubtractTime(1, 0, 0)">1시간</button>
+                           <button class="preset-btn" onclick="setSubtractTime(2, 0, 0)">2시간</button>
+                           <button class="preset-btn" onclick="setSubtractTime(8, 0, 0)">8시간</button>
+                           <button class="preset-btn" onclick="setSubtractTime(12, 0, 0)">12시간</button>
+                       </div>
+                   </div>
+               </div>
+               
+               <div class="controls">
+                   <button class="btn" onclick="calculateTimeSubtract()">⏰ 시간 빼기</button>
+                   <button class="btn btn-secondary" onclick="showSubtractExample()">📝 예시</button>
+                   <button class="btn btn-danger" onclick="clearSubtract()">🗑️ 초기화</button>
+               </div>
+               
+               <div class="result-section" id="subtractResult"></div>
+           </div>
+           
+           <!-- 시간 차이 -->
+           <div id="difference" class="tab-content">
+               <div class="input-section">
+                   <div class="input-grid">
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>⏰</span>
+                               시작 시간
+                           </div>
+                           <input type="time" id="start-time" onchange="smartParseDifference()">
+                           <div class="parsed-result" id="startTimeParsed">시간을 선택해주세요</div>
+                       </div>
+                       
+                       <div class="input-group">
+                           <div class="input-label">
+                               <span>⏰</span>
+                               끝 시간
+                           </div>
+                           <input type="time" id="end-time" onchange="smartParseDifference()">
+                           <div class="parsed-result" id="endTimeParsed">시간을 선택해주세요</div>
+                       </div>
+                   </div>
+                   
+                   <div class="input-group">
+                       <div class="input-label">
+                           <span>📅</span>
+                           날짜 옵션
+                       </div>
+                       <select id="day-option" onchange="smartParseDifference()">
+                           <option value="same">같은 날</option>
+                           <option value="next">다음 날</option>
+                           <option value="previous">전날</option>
+                       </select>
+                       <div class="parsed-result" id="dayOptionParsed">같은 날 기준으로 계산</div>
+                   </div>
+               </div>
+               
+               <div class="controls">
+                   <button class="btn" onclick="calculateTimeDifference()">⏰ 시간 차이 계산</button>
+                   <button class="btn btn-secondary" onclick="showDifferenceExample()">📝 예시</button>
+                   <button class="btn btn-danger" onclick="clearDifference()">🗑️ 초기화</button>
+               </div>
+               
+               <div class="result-section" id="differenceResult"></div>
+           </div>
+       </div>
+   </div>
 
+   <script>
+       let currentTab = 'add';
+       
+       function switchTab(tabName) {
+           document.querySelectorAll('.tab-button').forEach(btn => {
+               btn.classList.remove('active');
+           });
+           event.target.classList.add('active');
+           
+           document.querySelectorAll('.tab-content').forEach(content => {
+               content.classList.remove('active');
+           });
+           document.getElementById(tabName).classList.add('active');
+           
+           currentTab = tabName;
+       }
+       
+       function formatTime(hours, minutes, seconds = 0) {
+           return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+       }
+       
+       function parseTimeToMinutes(timeString) {
+           if (!timeString) return 0;
+           const [hours, minutes] = timeString.split(':').map(Number);
+           return hours * 60 + minutes;
+       }
+       
+       function minutesToTime(totalMinutes) {
+           const hours = Math.floor(totalMinutes / 60);
+           const minutes = totalMinutes % 60;
+           return { hours, minutes };
+       }
+       
+       // 시간 더하기
+       function smartParseAdd() {
+           const baseTime = document.getElementById('add-base-time').value;
+           const hours = parseInt(document.getElementById('add-hours').value) || 0;
+           const minutes = parseInt(document.getElementById('add-minutes').value) || 0;
+           const seconds = parseInt(document.getElementById('add-seconds').value) || 0;
+           
+           if (baseTime) {
+               document.getElementById('addBaseTimeParsed').textContent = `선택됨: ${baseTime}`;
+           }
+           
+           if (hours || minutes || seconds) {
+               document.getElementById('addTimeParsed').textContent = `더할 시간: ${formatTime(hours, minutes, seconds)}`;
+           } else {
+               document.getElementById('addTimeParsed').textContent = '더할 시간을 입력해주세요';
+           }
+       }
+       
+       function setAddTime(hours, minutes, seconds) {
+           document.getElementById('add-hours').value = hours;
+           document.getElementById('add-minutes').value = minutes;
+           document.getElementById('add-seconds').value = seconds;
+           smartParseAdd();
+       }
+       
+       function calculateTimeAdd() {
+           const baseTime = document.getElementById('add-base-time').value;
+           const addHours = parseInt(document.getElementById('add-hours').value) || 0;
+           const addMinutes = parseInt(document.getElementById('add-minutes').value) || 0;
+           const addSeconds = parseInt(document.getElementById('add-seconds').value) || 0;
+           
+           if (!baseTime) {
+               alert('기준 시간을 선택해주세요.');
+               return;
+           }
+           
+           if (addHours === 0 && addMinutes === 0 && addSeconds === 0) {
+               alert('더할 시간을 입력해주세요.');
+               return;
+           }
+           
+           // 기준 시간을 Date 객체로 변환
+           const today = new Date();
+           const [baseHours, baseMinutesStr] = baseTime.split(':');
+           const baseMinutes = parseInt(baseMinutesStr);
+           
+           const baseDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), parseInt(baseHours), baseMinutes, 0);
+           
+           // 시간 더하기
+           const resultDate = new Date(baseDate);
+           resultDate.setHours(resultDate.getHours() + addHours);
+           resultDate.setMinutes(resultDate.getMinutes() + addMinutes);
+           resultDate.setSeconds(resultDate.getSeconds() + addSeconds);
+           
+           // 날짜가 바뀌었는지 확인
+           const dayChanged = resultDate.getDate() !== baseDate.getDate();
+           const dayDifference = Math.floor((resultDate - baseDate) / (1000 * 60 * 60 * 24));
+           
+           // 총 시간 계산
+           const totalAddedSeconds = addHours * 3600 + addMinutes * 60 + addSeconds;
+           const totalAddedMinutes = Math.floor(totalAddedSeconds / 60);
+           const totalAddedHours = Math.floor(totalAddedMinutes / 60);
+           
+           const resultHTML = `
+               <div class="result-title">⏰ 시간 더하기 결과</div>
+               <div class="time-display">
+                   <div class="time-value">${resultDate.toTimeString().slice(0, 8)}</div>
+                   <div class="time-description">결과 시간${dayChanged ? ` (${dayDifference > 0 ? '+' : ''}${dayDifference}일)` : ''}</div>
+               </div>
+               <div class="result-grid">
+                   <div class="result-item">
+                       <div class="result-label">기준 시간</div>
+                       <div class="result-value">${baseTime}</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">더한 시간</div>
+                       <div class="result-value">${formatTime(addHours, addMinutes, addSeconds)}</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">결과 시간</div>
+                       <div class="result-value">${resultDate.toTimeString().slice(0, 8)}</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">총 더한 시간</div>
+                       <div class="result-value">${totalAddedHours}시간 ${totalAddedMinutes % 60}분</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">총 더한 분</div>
+                       <div class="result-value">${totalAddedMinutes}분</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">날짜 변화</div>
+                       <div class="result-value">${dayChanged ? `${dayDifference > 0 ? '+' : ''}${dayDifference}일` : '없음'}</div>
+                   </div>
+               </div>
+           `;
+           
+           document.getElementById('addResult').innerHTML = resultHTML;
+           document.getElementById('addResult').style.display = 'block';
+           document.getElementById('addResult').scrollIntoView({ behavior: 'smooth' });
+       }
+       
+       function showAddExample() {
+           document.getElementById('add-base-time').value = '09:00';
+           document.getElementById('add-hours').value = '8';
+           document.getElementById('add-minutes').value = '30';
+           document.getElementById('add-seconds').value = '0';
+           smartParseAdd();
+       }
+       
+       function clearAdd() {
+           document.getElementById('add-base-time').value = '';
+           document.getElementById('add-hours').value = '';
+           document.getElementById('add-minutes').value = '';
+           document.getElementById('add-seconds').value = '';
+           document.getElementById('addBaseTimeParsed').textContent = '시간을 선택해주세요';
+           document.getElementById('addTimeParsed').textContent = '더할 시간을 입력해주세요';
+           document.getElementById('addResult').style.display = 'none';
+       }
+       
+       // 시간 빼기
+       function smartParseSubtract() {
+           const baseTime = document.getElementById('subtract-base-time').value;
+           const hours = parseInt(document.getElementById('subtract-hours').value) || 0;
+           const minutes = parseInt(document.getElementById('subtract-minutes').value) || 0;
+           const seconds = parseInt(document.getElementById('subtract-seconds').value) || 0;
+           
+           if (baseTime) {
+               document.getElementById('subtractBaseTimeParsed').textContent = `선택됨: ${baseTime}`;
+           }
+           
+           if (hours || minutes || seconds) {
+               document.getElementById('subtractTimeParsed').textContent = `뺄 시간: ${formatTime(hours, minutes, seconds)}`;
+           } else {
+               document.getElementById('subtractTimeParsed').textContent = '뺄 시간을 입력해주세요';
+           }
+       }
+       
+       function setSubtractTime(hours, minutes, seconds) {
+           document.getElementById('subtract-hours').value = hours;
+           document.getElementById('subtract-minutes').value = minutes;
+           document.getElementById('subtract-seconds').value = seconds;
+           smartParseSubtract();
+       }
+       
+       function calculateTimeSubtract() {
+           const baseTime = document.getElementById('subtract-base-time').value;
+           const subtractHours = parseInt(document.getElementById('subtract-hours').value) || 0;
+           const subtractMinutes = parseInt(document.getElementById('subtract-minutes').value) || 0;
+           const subtractSeconds = parseInt(document.getElementById('subtract-seconds').value) || 0;
+           
+           if (!baseTime) {
+               alert('기준 시간을 선택해주세요.');
+               return;
+           }
+           
+           if (subtractHours === 0 && subtractMinutes === 0 && subtractSeconds === 0) {
+               alert('뺄 시간을 입력해주세요.');
+               return;
+           }
+           
+           // 기준 시간을 Date 객체로 변환
+           const today = new Date();
+           const [baseHours, baseMinutesStr] = baseTime.split(':');
+           const baseMinutes = parseInt(baseMinutesStr);
+           
+           const baseDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), parseInt(baseHours), baseMinutes, 0);
+           
+           // 시간 빼기
+           const resultDate = new Date(baseDate);
+           resultDate.setHours(resultDate.getHours() - subtractHours);
+           resultDate.setMinutes(resultDate.getMinutes() - subtractMinutes);
+           resultDate.setSeconds(resultDate.getSeconds() - subtractSeconds);
+           
+           // 날짜가 바뀌었는지 확인
+           const dayChanged = resultDate.getDate() !== baseDate.getDate();
+           const dayDifference = Math.floor((resultDate - baseDate) / (1000 * 60 * 60 * 24));
+           
+           // 총 시간 계산
+           const totalSubtractedSeconds = subtractHours * 3600 + subtractMinutes * 60 + subtractSeconds;
+           const totalSubtractedMinutes = Math.floor(totalSubtractedSeconds / 60);
+           const totalSubtractedHours = Math.floor(totalSubtractedMinutes / 60);
+           
+           const resultHTML = `
+               <div class="result-title">⏰ 시간 빼기 결과</div>
+               <div class="time-display">
+                   <div class="time-value">${resultDate.toTimeString().slice(0, 8)}</div>
+                   <div class="time-description">결과 시간${dayChanged ? ` (${dayDifference}일)` : ''}</div>
+               </div>
+               <div class="result-grid">
+                   <div class="result-item">
+                       <div class="result-label">기준 시간</div>
+                       <div class="result-value">${baseTime}</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">뺀 시간</div>
+                       <div class="result-value">${formatTime(subtractHours, subtractMinutes, subtractSeconds)}</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">결과 시간</div>
+                       <div class="result-value">${resultDate.toTimeString().slice(0, 8)}</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">총 뺀 시간</div>
+                       <div class="result-value">${totalSubtractedHours}시간 ${totalSubtractedMinutes % 60}분</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">총 뺀 분</div>
+                       <div class="result-value">${totalSubtractedMinutes}분</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">날짜 변화</div>
+                       <div class="result-value">${dayChanged ? `${dayDifference}일` : '없음'}</div>
+                   </div>
+               </div>
+           `;
+           
+           document.getElementById('subtractResult').innerHTML = resultHTML;
+           document.getElementById('subtractResult').style.display = 'block';
+           document.getElementById('subtractResult').scrollIntoView({ behavior: 'smooth' });
+       }
+       
+       function showSubtractExample() {
+           document.getElementById('subtract-base-time').value = '18:00';
+           document.getElementById('subtract-hours').value = '2';
+           document.getElementById('subtract-minutes').value = '30';
+           document.getElementById('subtract-seconds').value = '0';
+           smartParseSubtract();
+       }
+       
+       function clearSubtract() {
+           document.getElementById('subtract-base-time').value = '';
+           document.getElementById('subtract-hours').value = '';
+           document.getElementById('subtract-minutes').value = '';
+           document.getElementById('subtract-seconds').value = '';
+           document.getElementById('subtractBaseTimeParsed').textContent = '시간을 선택해주세요';
+           document.getElementById('subtractTimeParsed').textContent = '뺄 시간을 입력해주세요';
+           document.getElementById('subtractResult').style.display = 'none';
+       }
+       
+       // 시간 차이
+       function smartParseDifference() {
+           const startTime = document.getElementById('start-time').value;
+           const endTime = document.getElementById('end-time').value;
+           const dayOption = document.getElementById('day-option').value;
+           
+           if (startTime) {
+               document.getElementById('startTimeParsed').textContent = `선택됨: ${startTime}`;
+           }
+           
+           if (endTime) {
+               document.getElementById('endTimeParsed').textContent = `선택됨: ${endTime}`;
+           }
+           
+           const dayOptions = {
+               'same': '같은 날 기준으로 계산',
+               'next': '끝 시간이 다음 날로 계산',
+               'previous': '시작 시간이 전날로 계산'
+           };
+           
+           document.getElementById('dayOptionParsed').textContent = dayOptions[dayOption];
+       }
+       
+       function calculateTimeDifference() {
+           const startTime = document.getElementById('start-time').value;
+           const endTime = document.getElementById('end-time').value;
+           const dayOption = document.getElementById('day-option').value;
+           
+           if (!startTime || !endTime) {
+               alert('시작 시간과 끝 시간을 모두 선택해주세요.');
+               return;
+           }
+           
+           // 시간을 Date 객체로 변환
+           const today = new Date();
+           const [startHours, startMinutes] = startTime.split(':').map(Number);
+           const [endHours, endMinutes] = endTime.split(':').map(Number);
+           
+           let startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), startHours, startMinutes, 0);
+           let endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), endHours, endMinutes, 0);
+           
+           // 날짜 옵션 적용
+           switch(dayOption) {
+               case 'next':
+                   endDate.setDate(endDate.getDate() + 1);
+                   break;
+               case 'previous':
+                   startDate.setDate(startDate.getDate() - 1);
+                   break;
+               case 'same':
+                   if (endDate < startDate) {
+                       endDate.setDate(endDate.getDate() + 1);
+                   }
+                   break;
+           }
+           
+           // 시간 차이 계산
+           const timeDiff = Math.abs(endDate - startDate);
+           const totalMinutes = Math.floor(timeDiff / (1000 * 60));
+           const totalHours = Math.floor(totalMinutes / 60);
+           const totalSeconds = Math.floor(timeDiff / 1000);
+           const days = Math.floor(totalHours / 24);
+           
+           const hours = totalHours % 24;
+           const minutes = totalMinutes % 60;
+           const seconds = totalSeconds % 60;
+           
+           const resultHTML = `
+               <div class="result-title">⏰ 시간 차이 계산 결과</div>
+               <div class="time-display">
+                   <div class="time-value">${formatTime(hours, minutes, seconds)}</div>
+                   <div class="time-description">시간 차이${days > 0 ? ` (${days}일 ${hours}시간)` : ''}</div>
+               </div>
+               <div class="result-grid">
+                   <div class="result-item">
+                       <div class="result-label">시작 시간</div>
+                       <div class="result-value">${startTime}</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">끝 시간</div>
+                       <div class="result-value">${endTime}</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">총 시간 차이</div>
+                       <div class="result-value">${totalHours}시간 ${minutes}분</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">총 분</div>
+                       <div class="result-value">${totalMinutes}분</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">총 초</div>
+                       <div class="result-value">${totalSeconds.toLocaleString()}초</div>
+                   </div>
+                   <div class="result-item">
+                       <div class="result-label">일수 포함</div>
+                       <div class="result-value">${days > 0 ? `${days}일 ${hours}시간` : '당일'}</div>
+                   </div>
+               </div>
+           `;
+           
+           document.getElementById('differenceResult').innerHTML = resultHTML;
+           document.getElementById('differenceResult').style.display = 'block';
+           document.getElementById('differenceResult').scrollIntoView({ behavior: 'smooth' });
+       }
+       
+       function showDifferenceExample() {
+           document.getElementById('start-time').value = '09:00';
+           document.getElementById('end-time').value = '17:30';
+           document.getElementById('day-option').value = 'same';
+           smartParseDifference();
+       }
+       
+       function clearDifference() {
+           document.getElementById('start-time').value = '';
+           document.getElementById('end-time').value = '';
+           document.getElementById('day-option').value = 'same';
+           document.getElementById('startTimeParsed').textContent = '시간을 선택해주세요';
+           document.getElementById('endTimeParsed').textContent = '시간을 선택해주세요';
+           document.getElementById('dayOptionParsed').textContent = '같은 날 기준으로 계산';
+           document.getElementById('differenceResult').style.display = 'none';
+       }
+       
+       window.addEventListener('load', function() {
+           showAddExample();
+           setTimeout(() => calculateTimeAdd(), 1500);
+       });
+   </script>
+</body>
+</html>
