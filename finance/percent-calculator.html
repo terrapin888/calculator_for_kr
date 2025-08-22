@@ -1,1 +1,1110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>백분율 계산기 - 퍼센트 자동 계산 | 스마트 파싱</title>
+    <meta name="description" content="백분율 계산기로 퍼센트, 증감률, 비율을 계산하세요. 다양한 형식으로 입력하면 자동 인식해서 정확한 백분율을 계산합니다.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .calculator-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 30px;
+            gap: 5px;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 10px;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .input-section:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .input-group {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .input-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .input-label .icon {
+            font-size: 1.3rem;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .parsed-result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e3f2fd;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #1976d2;
+            min-height: 20px;
+        }
+        
+        .examples {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffeaa7 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .examples h4 {
+            color: #d68910;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .example-item {
+            background: rgba(255,255,255,0.7);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .example-title {
+            font-weight: bold;
+            color: #d68910;
+            margin-bottom: 5px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 25px 0;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+        }
+        
+        .result-section {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            border: 2px solid #28a745;
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #155724;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .result-highlight {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .result-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        
+        .result-description {
+            font-size: 1.2rem;
+            color: #666;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .result-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .result-item-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .calculator-tabs {
+                flex-direction: column;
+            }
+            
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .result-value {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 백분율 계산기</h1>
+            <p>퍼센트, 증감률, 비율을 자유 형식으로 계산하세요</p>
+        </div>
+        
+        <div class="content">
+            <div class="calculator-tabs">
+                <button class="tab-button active" onclick="switchTab('basic')">기본 백분율</button>
+                <button class="tab-button" onclick="switchTab('change')">증감률</button>
+                <button class="tab-button" onclick="switchTab('ratio')">비율 계산</button>
+                <button class="tab-button" onclick="switchTab('discount')">할인/할증</button>
+            </div>
+            
+            <!-- 기본 백분율 계산 -->
+            <div id="basic" class="tab-content active">
+                <div class="input-section">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <div class="input-label">
+                                <span class="icon">🔢</span>
+                                전체 값
+                            </div>
+                            <input type="text" id="basic-total" placeholder="예: 200, 200개, 이백..." oninput="smartParseBasic()">
+                            <div class="parsed-result" id="basicTotalParsed">입력 대기 중...</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <div class="input-label">
+                                <span class="icon">📈</span>
+                                부분 값 또는 퍼센트
+                            </div>
+                            <input type="text" id="basic-part" placeholder="예: 50, 25%, 50개..." oninput="smartParseBasic()">
+                            <div class="parsed-result" id="basicPartParsed">입력 대기 중...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="examples">
+                        <h4>💡 계산 예시</h4>
+                        <div class="examples-grid">
+                            <div class="example-item">
+                                <div class="example-title">A의 B% 구하기</div>
+                                전체: 200<br>
+                                퍼센트: 25%<br>
+                                결과: 50
+                            </div>
+                            <div class="example-item">
+                                <div class="example-title">A가 B의 몇%인지</div>
+                                전체: 200<br>
+                                부분: 50<br>
+                                결과: 25%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn" onclick="calculateBasic()">📊 계산하기</button>
+                    <button class="btn btn-secondary" onclick="showBasicExample()">📝 예시</button>
+                    <button class="btn btn-danger" onclick="clearBasic()">🗑️ 초기화</button>
+                </div>
+                
+                <div class="result-section" id="basicResult"></div>
+            </div>
+            
+            <!-- 증감률 계산 -->
+            <div id="change" class="tab-content">
+                <div class="input-section">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <div class="input-label">
+                                <span class="icon">📉</span>
+                                이전 값 (기준값)
+                            </div>
+                            <input type="text" id="change-before" placeholder="예: 100, 100만원, 백..." oninput="smartParseChange()">
+                            <div class="parsed-result" id="changeBeforeParsed">입력 대기 중...</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <div class="input-label">
+                                <span class="icon">📈</span>
+                                현재 값 (변경값)
+                            </div>
+                            <input type="text" id="change-after" placeholder="예: 120, 120만원, 백이십..." oninput="smartParseChange()">
+                            <div class="parsed-result" id="changeAfterParsed">입력 대기 중...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="examples">
+                        <h4>💡 증감률 예시</h4>
+                        <div class="examples-grid">
+                            <div class="example-item">
+                                <div class="example-title">가격 상승</div>
+                                이전: 100만원<br>
+                                현재: 120만원<br>
+                                증가율: +20%
+                            </div>
+                            <div class="example-item">
+                                <div class="example-title">주가 하락</div>
+                                이전: 50,000<br>
+                                현재: 45,000<br>
+                                감소율: -10%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn" onclick="calculateChange()">📊 증감률 계산</button>
+                    <button class="btn btn-secondary" onclick="showChangeExample()">📝 예시</button>
+                    <button class="btn btn-danger" onclick="clearChange()">🗑️ 초기화</button>
+                </div>
+                
+                <div class="result-section" id="changeResult"></div>
+            </div>
+            
+            <!-- 비율 계산 -->
+            <div id="ratio" class="tab-content">
+                <div class="input-section">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <div class="input-label">
+                                <span class="icon">🅰️</span>
+                                첫 번째 값
+                            </div>
+                            <input type="text" id="ratio-a" placeholder="예: 3, 3명, 삼..." oninput="smartParseRatio()">
+                            <div class="parsed-result" id="ratioAParsed">입력 대기 중...</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <div class="input-label">
+                                <span class="icon">🅱️</span>
+                                두 번째 값
+                            </div>
+                            <input type="text" id="ratio-b" placeholder="예: 4, 4명, 사..." oninput="smartParseRatio()">
+                            <div class="parsed-result" id="ratioBParsed">입력 대기 중...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="examples">
+                        <h4>💡 비율 예시</h4>
+                        <div class="examples-grid">
+                            <div class="example-item">
+                                <div class="example-title">성비</div>
+                                남자: 3명<br>
+                                여자: 4명<br>
+                                비율: 3:4 (42.9% : 57.1%)
+                            </div>
+                            <div class="example-item">
+                                <div class="example-title">점수 비교</div>
+                                A팀: 80점<br>
+                                B팀: 100점<br>
+                                비율: 4:5 (80% : 100%)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn" onclick="calculateRatio()">📊 비율 계산</button>
+                    <button class="btn btn-secondary" onclick="showRatioExample()">📝 예시</button>
+                    <button class="btn btn-danger" onclick="clearRatio()">🗑️ 초기화</button>
+                </div>
+                
+                <div class="result-section" id="ratioResult"></div>
+            </div>
+            
+            <!-- 할인/할증 계산 -->
+            <div id="discount" class="tab-content">
+                <div class="input-section">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <div class="input-label">
+                                <span class="icon">💰</span>
+                                원래 가격
+                            </div>
+                            <input type="text" id="discount-original" placeholder="예: 10000, 1만원, 만원..." oninput="smartParseDiscount()">
+                            <div class="parsed-result" id="discountOriginalParsed">입력 대기 중...</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <div class="input-label">
+                                <span class="icon">🏷️</span>
+                                할인율 또는 할인금액
+                            </div>
+                            <input type="text" id="discount-rate" placeholder="예: 20%, 2000원, 이천원..." oninput="smartParseDiscount()">
+                            <div class="parsed-result" id="discountRateParsed">입력 대기 중...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="examples">
+                        <h4>💡 할인 예시</h4>
+                        <div class="examples-grid">
+                            <div class="example-item">
+                                <div class="example-title">퍼센트 할인</div>
+                                원가: 10,000원<br>
+                                할인: 20%<br>
+                                최종: 8,000원
+                            </div>
+                            <div class="example-item">
+                                <div class="example-title">금액 할인</div>
+                                원가: 10,000원<br>
+                                할인: 2,000원<br>
+                                최종: 8,000원
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn" onclick="calculateDiscount()">💰 할인 계산</button>
+                    <button class="btn btn-secondary" onclick="showDiscountExample()">📝 예시</button>
+                    <button class="btn btn-danger" onclick="clearDiscount()">🗑️ 초기화</button>
+                </div>
+                
+                <div class="result-section" id="discountResult"></div>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        class SmartPercentageParser {
+            constructor() {
+                this.koreanUnits = {
+                    '천': 1000,
+                    '만': 10000,
+                    '억': 100000000,
+                    '조': 1000000000000
+                };
+                
+                this.koreanNumbers = {
+                    '일': 1, '이': 2, '삼': 3, '사': 4, '오': 5,
+                    '육': 6, '칠': 7, '팔': 8, '구': 9, '십': 10,
+                    '이십': 20, '삼십': 30, '사십': 40, '오십': 50,
+                    '육십': 60, '칠십': 70, '팔십': 80, '구십': 90,
+                    '백': 100, '이백': 200, '삼백': 300
+                };
+            }
+            
+            parseNumber(input) {
+                if (!input) return null;
+                
+                let cleaned = input.replace(/\s+/g, '');
+                
+                // 한글 숫자 변환
+                for (let [korean, num] of Object.entries(this.koreanNumbers)) {
+                    if (cleaned.includes(korean)) {
+                        return num;
+                    }
+                }
+                
+                // 한글 단위 처리
+                for (let [unit, multiplier] of Object.entries(this.koreanUnits)) {
+                    if (cleaned.includes(unit)) {
+                        let parts = cleaned.split(unit);
+                        if (parts[0]) {
+                            let num = parseFloat(parts[0].replace(/[^0-9.]/g, ''));
+                            if (!isNaN(num)) {
+                                return num * multiplier;
+                            }
+                        }
+                    }
+                }
+                
+                // 쉼표 제거 후 숫자 추출
+                cleaned = cleaned.replace(/[^0-9.]/g, '');
+                let num = parseFloat(cleaned);
+                
+                return isNaN(num) ? null : num;
+            }
+            
+            parsePercentage(input) {
+                if (!input) return null;
+                
+                let cleaned = input.replace(/\s+/g, '');
+                
+                // % 기호가 있으면 퍼센트로 인식
+                if (cleaned.includes('%') || cleaned.includes('퍼센트')) {
+                    let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
+                    return isNaN(num) ? null : num;
+                }
+                
+                // 일반 숫자로 처리
+                return this.parseNumber(input);
+            }
+            
+            isPercentage(input) {
+                return input && (input.includes('%') || input.includes('퍼센트'));
+            }
+        }
+
+        const parser = new SmartPercentageParser();
+        let currentTab = 'basic';
+
+        function switchTab(tabName) {
+            // 탭 버튼 상태 변경
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 탭 콘텐츠 표시/숨김
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+            
+            currentTab = tabName;
+        }
+
+        // 기본 백분율 계산
+        function smartParseBasic() {
+            const total = document.getElementById('basic-total').value;
+            const part = document.getElementById('basic-part').value;
+            
+            const parsedTotal = parser.parseNumber(total);
+            const parsedPart = parser.isPercentage(part) 
+                ? parser.parsePercentage(part) 
+                : parser.parseNumber(part);
+            
+            document.getElementById('basicTotalParsed').textContent = 
+                parsedTotal ? `인식됨: ${parsedTotal.toLocaleString()}` : '입력 대기 중...';
+                
+            document.getElementById('basicPartParsed').textContent = 
+                parsedPart ? (parser.isPercentage(part) 
+                    ? `인식됨: ${parsedPart}%` 
+                    : `인식됨: ${parsedPart.toLocaleString()}`) 
+                : '입력 대기 중...';
+        }
+
+        function calculateBasic() {
+            const total = parser.parseNumber(document.getElementById('basic-total').value);
+            const partInput = document.getElementById('basic-part').value;
+            const part = parser.isPercentage(partInput) 
+                ? parser.parsePercentage(partInput) 
+                : parser.parseNumber(partInput);
+            
+            if (!total || !part) {
+                alert('전체 값과 부분 값(또는 퍼센트)을 입력해주세요.');
+                return;
+            }
+            
+            let result, resultType;
+            
+            if (parser.isPercentage(partInput)) {
+                // A의 B% 구하기
+                result = (total * part) / 100;
+                resultType = 'value';
+            } else {
+                // A가 B의 몇%인지 구하기
+                result = (part / total) * 100;
+                resultType = 'percentage';
+            }
+            
+            displayBasicResult({
+                total,
+                part,
+                result,
+                resultType,
+                isPercentageInput: parser.isPercentage(partInput)
+            });
+        }
+
+        function displayBasicResult(data) {
+            const resultSection = document.getElementById('basicResult');
+            
+            let resultHTML;
+            if (data.resultType === 'value') {
+                resultHTML = `
+                    <div class="result-title">📊 계산 결과</div>
+                    <div class="result-highlight">
+                        <div class="result-value">${data.result.toLocaleString()}</div>
+                        <div class="result-description">${data.total.toLocaleString()}의 ${data.part}%</div>
+                    </div>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">전체 값</div>
+                            <div class="result-item-value">${data.total.toLocaleString()}</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">퍼센트</div>
+                            <div class="result-item-value">${data.part}%</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">계산 결과</div>
+                            <div class="result-item-value">${data.result.toLocaleString()}</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                resultHTML = `
+                    <div class="result-title">📊 계산 결과</div>
+                    <div class="result-highlight">
+                        <div class="result-value">${data.result.toFixed(2)}%</div>
+                        <div class="result-description">${data.part.toLocaleString()}는 ${data.total.toLocaleString()}의 ${data.result.toFixed(2)}%</div>
+                    </div>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">전체 값</div>
+                            <div class="result-item-value">${data.total.toLocaleString()}</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">부분 값</div>
+                            <div class="result-item-value">${data.part.toLocaleString()}</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">비율</div>
+                            <div class="result-item-value">${data.result.toFixed(2)}%</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            resultSection.innerHTML = resultHTML;
+            resultSection.style.display = 'block';
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // 증감률 계산
+        function smartParseChange() {
+            const before = document.getElementById('change-before').value;
+            const after = document.getElementById('change-after').value;
+            
+            const parsedBefore = parser.parseNumber(before);
+            const parsedAfter = parser.parseNumber(after);
+            
+            document.getElementById('changeBeforeParsed').textContent = 
+                parsedBefore ? `인식됨: ${parsedBefore.toLocaleString()}` : '입력 대기 중...';
+                
+            document.getElementById('changeAfterParsed').textContent = 
+                parsedAfter ? `인식됨: ${parsedAfter.toLocaleString()}` : '입력 대기 중...';
+        }
+
+        function calculateChange() {
+            const before = parser.parseNumber(document.getElementById('change-before').value);
+            const after = parser.parseNumber(document.getElementById('change-after').value);
+            
+            if (!before || !after) {
+                alert('이전 값과 현재 값을 모두 입력해주세요.');
+                return;
+            }
+            
+            const change = after - before;
+            const changeRate = (change / before) * 100;
+            const isIncrease = change > 0;
+            
+            displayChangeResult({
+                before,
+                after,
+                change,
+                changeRate,
+                isIncrease
+            });
+        }
+
+        function displayChangeResult(data) {
+            const resultSection = document.getElementById('changeResult');
+            const sign = data.isIncrease ? '+' : '';
+            const color = data.isIncrease ? '#28a745' : '#dc3545';
+            const trend = data.isIncrease ? '📈' : '📉';
+            
+            const resultHTML = `
+                <div class="result-title">${trend} 증감률 계산 결과</div>
+                <div class="result-highlight">
+                    <div class="result-value" style="color: ${color}">${sign}${data.changeRate.toFixed(2)}%</div>
+                    <div class="result-description">${data.before.toLocaleString()} → ${data.after.toLocaleString()}</div>
+                </div>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="result-label">이전 값</div>
+                        <div class="result-item-value">${data.before.toLocaleString()}</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">현재 값</div>
+                        <div class="result-item-value">${data.after.toLocaleString()}</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">변화량</div>
+                        <div class="result-item-value" style="color: ${color}">${sign}${data.change.toLocaleString()}</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">변화율</div>
+                        <div class="result-item-value" style="color: ${color}">${sign}${data.changeRate.toFixed(2)}%</div>
+                    </div>
+                </div>
+            `;
+            
+            resultSection.innerHTML = resultHTML;
+            resultSection.style.display = 'block';
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // 비율 계산
+        function smartParseRatio() {
+            const a = document.getElementById('ratio-a').value;
+            const b = document.getElementById('ratio-b').value;
+            
+            const parsedA = parser.parseNumber(a);
+            const parsedB = parser.parseNumber(b);
+            
+            document.getElementById('ratioAParsed').textContent = 
+                parsedA ? `인식됨: ${parsedA.toLocaleString()}` : '입력 대기 중...';
+                
+            document.getElementById('ratioBParsed').textContent = 
+                parsedB ? `인식됨: ${parsedB.toLocaleString()}` : '입력 대기 중...';
+        }
+
+        function calculateRatio() {
+            const a = parser.parseNumber(document.getElementById('ratio-a').value);
+            const b = parser.parseNumber(document.getElementById('ratio-b').value);
+            
+            if (!a || !b) {
+                alert('두 값을 모두 입력해주세요.');
+                return;
+            }
+            
+            const total = a + b;
+            const percentageA = (a / total) * 100;
+            const percentageB = (b / total) * 100;
+            
+            // 최대공약수 구하기 (간단한 비율 표시용)
+            const gcd = (x, y) => y === 0 ? x : gcd(y, x % y);
+            const commonDivisor = gcd(a, b);
+            const simplifiedA = a / commonDivisor;
+            const simplifiedB = b / commonDivisor;
+            
+            displayRatioResult({
+                a, b, total,
+                percentageA, percentageB,
+                simplifiedA, simplifiedB
+            });
+        }
+
+        function displayRatioResult(data) {
+            const resultSection = document.getElementById('ratioResult');
+            
+            const resultHTML = `
+                <div class="result-title">⚖️ 비율 계산 결과</div>
+                <div class="result-highlight">
+                    <div class="result-value">${data.simplifiedA}:${data.simplifiedB}</div>
+                    <div class="result-description">${data.a.toLocaleString()} : ${data.b.toLocaleString()}</div>
+                </div>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="result-label">첫 번째 값</div>
+                        <div class="result-item-value">${data.a.toLocaleString()}</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">두 번째 값</div>
+                        <div class="result-item-value">${data.b.toLocaleString()}</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">첫 번째 비율</div>
+                        <div class="result-item-value">${data.percentageA.toFixed(1)}%</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">두 번째 비율</div>
+                        <div class="result-item-value">${data.percentageB.toFixed(1)}%</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">전체</div>
+                        <div class="result-item-value">${data.total.toLocaleString()}</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">간단한 비율</div>
+                        <div class="result-item-value">${data.simplifiedA}:${data.simplifiedB}</div>
+                    </div>
+                </div>
+            `;
+            
+            resultSection.innerHTML = resultHTML;
+            resultSection.style.display = 'block';
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // 할인 계산
+        function smartParseDiscount() {
+            const original = document.getElementById('discount-original').value;
+            const rate = document.getElementById('discount-rate').value;
+            
+            const parsedOriginal = parser.parseNumber(original);
+            const parsedRate = parser.isPercentage(rate) 
+                ? parser.parsePercentage(rate) 
+                : parser.parseNumber(rate);
+            
+            document.getElementById('discountOriginalParsed').textContent = 
+                parsedOriginal ? `인식됨: ${parsedOriginal.toLocaleString()}원` : '입력 대기 중...';
+                
+            document.getElementById('discountRateParsed').textContent = 
+                parsedRate ? (parser.isPercentage(rate) 
+                    ? `인식됨: ${parsedRate}% 할인` 
+                    : `인식됨: ${parsedRate.toLocaleString()}원 할인`) 
+                : '입력 대기 중...';
+        }
+
+        function calculateDiscount() {
+            const original = parser.parseNumber(document.getElementById('discount-original').value);
+            const rateInput = document.getElementById('discount-rate').value;
+            const rate = parser.isPercentage(rateInput) 
+                ? parser.parsePercentage(rateInput) 
+                : parser.parseNumber(rateInput);
+            
+            if (!original || !rate) {
+                alert('원래 가격과 할인율(또는 할인금액)을 입력해주세요.');
+                return;
+            }
+            
+            let discountAmount, finalPrice, discountRate;
+            
+            if (parser.isPercentage(rateInput)) {
+                // 퍼센트 할인
+                discountAmount = (original * rate) / 100;
+                finalPrice = original - discountAmount;
+                discountRate = rate;
+            } else {
+                // 금액 할인
+                discountAmount = rate;
+                finalPrice = original - discountAmount;
+                discountRate = (discountAmount / original) * 100;
+            }
+            
+            displayDiscountResult({
+                original,
+                discountAmount,
+                finalPrice,
+                discountRate,
+                savings: original - finalPrice
+            });
+        }
+
+        function displayDiscountResult(data) {
+            const resultSection = document.getElementById('discountResult');
+            
+            const resultHTML = `
+                <div class="result-title">💰 할인 계산 결과</div>
+                <div class="result-highlight">
+                    <div class="result-value">${data.finalPrice.toLocaleString()}원</div>
+                    <div class="result-description">${data.discountRate.toFixed(1)}% 할인 적용</div>
+                </div>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="result-label">원래 가격</div>
+                        <div class="result-item-value">${data.original.toLocaleString()}원</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">할인율</div>
+                        <div class="result-item-value">${data.discountRate.toFixed(1)}%</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">할인 금액</div>
+                        <div class="result-item-value">${data.discountAmount.toLocaleString()}원</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">최종 가격</div>
+                        <div class="result-item-value">${data.finalPrice.toLocaleString()}원</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">절약 금액</div>
+                        <div class="result-item-value" style="color: #dc3545">${data.savings.toLocaleString()}원</div>
+                    </div>
+                </div>
+            `;
+            
+            resultSection.innerHTML = resultHTML;
+            resultSection.style.display = 'block';
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // 예시 데이터 함수들
+        function showBasicExample() {
+            document.getElementById('basic-total').value = '200';
+            document.getElementById('basic-part').value = '25%';
+            smartParseBasic();
+        }
+
+        function showChangeExample() {
+            document.getElementById('change-before').value = '100만원';
+            document.getElementById('change-after').value = '120만원';
+            smartParseChange();
+        }
+
+        function showRatioExample() {
+            document.getElementById('ratio-a').value = '3';
+            document.getElementById('ratio-b').value = '4';
+            smartParseRatio();
+        }
+
+        function showDiscountExample() {
+            document.getElementById('discount-original').value = '10000원';
+            document.getElementById('discount-rate').value = '20%';
+            smartParseDiscount();
+        }
+
+        // 초기화 함수들
+        function clearBasic() {
+            document.getElementById('basic-total').value = '';
+            document.getElementById('basic-part').value = '';
+            document.getElementById('basicResult').style.display = 'none';
+            document.getElementById('basicTotalParsed').textContent = '입력 대기 중...';
+            document.getElementById('basicPartParsed').textContent = '입력 대기 중...';
+        }
+
+        function clearChange() {
+            document.getElementById('change-before').value = '';
+            document.getElementById('change-after').value = '';
+            document.getElementById('changeResult').style.display = 'none';
+            document.getElementById('changeBeforeParsed').textContent = '입력 대기 중...';
+            document.getElementById('changeAfterParsed').textContent = '입력 대기 중...';
+        }
+
+        function clearRatio() {
+            document.getElementById('ratio-a').value = '';
+            document.getElementById('ratio-b').value = '';
+            document.getElementById('ratioResult').style.display = 'none';
+            document.getElementById('ratioAParsed').textContent = '입력 대기 중...';
+            document.getElementById('ratioBParsed').textContent = '입력 대기 중...';
+        }
+
+        function clearDiscount() {
+            document.getElementById('discount-original').value = '';
+            document.getElementById('discount-rate').value = '';
+            document.getElementById('discountResult').style.display = 'none';
+            document.getElementById('discountOriginalParsed').textContent = '입력 대기 중...';
+            document.getElementById('discountRateParsed').textContent = '입력 대기 중...';
+        }
+
+        // 페이지 로드 시 예시 데이터
+        window.addEventListener('load', function() {
+            showBasicExample();
+            
+            // 2초 후 자동 계산
+            setTimeout(() => {
+                calculateBasic();
+            }, 2000);
+        });
+
+        // 엔터키 이벤트
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                switch(currentTab) {
+                    case 'basic': calculateBasic(); break;
+                    case 'change': calculateChange(); break;
+                    case 'ratio': calculateRatio(); break;
+                    case 'discount': calculateDiscount(); break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
