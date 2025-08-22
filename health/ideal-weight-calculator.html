@@ -1,1 +1,835 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이상체중 계산기 - 표준체중 및 목표체중 계산 | 스마트 파싱</title>
+    <meta name="description" content="이상체중 계산기로 표준체중, 이상체중, 목표체중을 계산하세요. 다양한 공식으로 건강한 체중 범위를 제공합니다.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .input-section:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .input-group {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .input-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .input-label .icon {
+            font-size: 1.3rem;
+        }
+        
+        input[type="text"], select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+        
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .parsed-result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e3f2fd;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #1976d2;
+            min-height: 20px;
+        }
+        
+        .examples {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffeaa7 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .examples h4 {
+            color: #d68910;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .example-item {
+            background: rgba(255,255,255,0.7);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .example-title {
+            font-weight: bold;
+            color: #d68910;
+            margin-bottom: 5px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 25px 0;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+        }
+        
+        .result-section {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            border: 2px solid #28a745;
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #155724;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .weight-display {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .weight-value {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #28a745;
+        }
+        
+        .weight-label {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .weight-description {
+            font-size: 1rem;
+            color: #666;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .result-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .result-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        .weight-methods {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+        
+        .methods-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .method-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .method-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+        }
+        
+        .method-name {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .method-weight {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 5px;
+        }
+        
+        .method-description {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .weight-range {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+        
+        .range-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .range-bar {
+            height: 30px;
+            border-radius: 15px;
+            background: linear-gradient(to right, 
+                #dc3545 0%, #dc3545 15%,
+                #ffc107 15%, #ffc107 25%,
+                #28a745 25%, #28a745 75%,
+                #ffc107 75%, #ffc107 85%,
+                #dc3545 85%, #dc3545 100%);
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .range-pointer {
+            position: absolute;
+            top: -10px;
+            width: 4px;
+            height: 50px;
+            background: #333;
+            border-radius: 2px;
+            transition: left 0.5s ease;
+        }
+        
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .weight-value {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚖️ 이상체중 계산기</h1>
+            <p>다양한 공식으로 표준체중과 이상체중을 계산하여 건강한 체중 범위를 제공합니다</p>
+        </div>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <div class="input-label">
+                            <span class="icon">📏</span>
+                            키 (신장)
+                        </div>
+                        <input type="text" id="height" placeholder="예: 175cm, 175센치, 1m75cm, 1.75m..." oninput="smartParse()">
+                        <div class="parsed-result" id="heightParsed">입력 대기 중...</div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <div class="input-label">
+                            <span class="icon">⚖️</span>
+                            현재 몸무게 (선택사항)
+                        </div>
+                        <input type="text" id="weight" placeholder="예: 70kg, 70킬로, 70키로, 70키로그램..." oninput="smartParse()">
+                        <div class="parsed-result" id="weightParsed">입력 대기 중...</div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <div class="input-label">
+                            <span class="icon">👤</span>
+                            성별
+                        </div>
+                        <select id="gender">
+                            <option value="male">남성</option>
+                            <option value="female">여성</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <div class="input-label">
+                            <span class="icon">🎂</span>
+                            나이 (선택사항)
+                        </div>
+                        <input type="text" id="age" placeholder="예: 25, 25세, 25살..." oninput="smartParse()">
+                        <div class="parsed-result" id="ageParsed">입력 대기 중...</div>
+                    </div>
+                </div>
+                
+                <div class="examples">
+                    <h4>💡 다양한 입력 예시</h4>
+                    <div class="examples-grid">
+                        <div class="example-item">
+                            <div class="example-title">키 입력</div>
+                            175cm, 175센치<br>
+                            1m75cm, 1.75m
+                        </div>
+                        <div class="example-item">
+                            <div class="example-title">몸무게 입력</div>
+                            70kg, 70킬로<br>
+                            70키로그램, 70키로
+                        </div>
+                        <div class="example-item">
+                            <div class="example-title">나이 입력</div>
+                            25, 25세<br>
+                            25살, 스물다섯
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="controls">
+                <button class="btn" onclick="calculateIdealWeight()">
+                    ⚖️ 이상체중 계산하기
+                </button>
+                <button class="btn btn-secondary" onclick="showExampleData()">
+                    📝 예시 데이터 입력
+                </button>
+                <button class="btn btn-danger" onclick="clearAll()">
+                    🗑️ 초기화
+                </button>
+            </div>
+
+            <div class="result-section" id="resultSection">
+                <div class="result-title">⚖️ 이상체중 계산 결과</div>
+                
+                <div class="weight-display" id="weightDisplay">
+                    <div class="weight-value" id="weightValue">0kg</div>
+                    <div class="weight-label" id="weightLabel">이상체중 (BMI 22)</div>
+                    <div class="weight-description" id="weightDescription">가장 건강한 체중으로 권장되는 이상체중입니다</div>
+                </div>
+                
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="result-label">현재 키</div>
+                        <div class="result-value" id="heightResult">0cm</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">현재 몸무게</div>
+                        <div class="result-value" id="currentWeight">입력 안함</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">목표 달성 필요</div>
+                        <div class="result-value" id="weightDifference">0kg</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">건강 체중 범위</div>
+                        <div class="result-value" id="healthyRange">0kg</div>
+                    </div>
+                </div>
+                
+                <div class="weight-methods">
+                    <div class="methods-title">📊 다양한 공식별 이상체중</div>
+                    <div class="methods-grid">
+                        <div class="method-item">
+                            <div class="method-name">BMI 22 기준</div>
+                            <div class="method-weight" id="bmi22Weight">0kg</div>
+                            <div class="method-description">가장 이상적인 BMI</div>
+                        </div>
+                        <div class="method-item">
+                            <div class="method-name">브로카 공식</div>
+                            <div class="method-weight" id="brocaWeight">0kg</div>
+                            <div class="method-description">(키-100) × 0.9</div>
+                        </div>
+                        <div class="method-item">
+                            <div class="method-name">로렌츠 공식</div>
+                            <div class="method-weight" id="lorentzWeight">0kg</div>
+                            <div class="method-description">성별 고려한 공식</div>
+                        </div>
+                        <div class="method-item">
+                            <div class="method-name">밀러 공식</div>
+                            <div class="method-weight" id="millerWeight">0kg</div>
+                            <div class="method-description">키 기반 정밀 계산</div>
+                        </div>
+                        <div class="method-item">
+                            <div class="method-name">디바인 공식</div>
+                            <div class="method-weight" id="devineWeight">0kg</div>
+                            <div class="method-description">의학적 표준</div>
+                        </div>
+                        <div class="method-item">
+                            <div class="method-name">햄위 공식</div>
+                            <div class="method-weight" id="hamwiWeight">0kg</div>
+                            <div class="method-description">미국 표준</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="weight-range" id="weightRange" style="display: none;">
+                    <div class="range-title">📊 현재 체중 위치</div>
+                    <div class="range-bar">
+                        <div class="range-pointer" id="rangePointer"></div>
+                    </div>
+                    <div class="range-labels">
+                        <span>저체중</span>
+                        <span>정상 하한</span>
+                        <span>이상 체중</span>
+                        <span>정상 상한</span>
+                        <span>과체중</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class SmartHealthParser {
+            parseHeight(input) {
+                if (!input) return null;
+                
+                let cleaned = input.replace(/\s+/g, '').toLowerCase();
+                
+                if (cleaned.includes('m')) {
+                    if (cleaned.includes('cm')) {
+                        let meterMatch = cleaned.match(/(\d+(?:\.\d+)?)m/);
+                        let cmMatch = cleaned.match(/(\d+)cm/);
+                        if (meterMatch && cmMatch) {
+                            return parseFloat(meterMatch[1]) * 100 + parseFloat(cmMatch[1]);
+                        }
+                    } else {
+                        let meterMatch = cleaned.match(/(\d+(?:\.\d+)?)m/);
+                        if (meterMatch) {
+                            return parseFloat(meterMatch[1]) * 100;
+                        }
+                    }
+                }
+                
+                if (cleaned.includes('cm') || cleaned.includes('센치')) {
+                    let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
+                    return isNaN(num) ? null : num;
+                }
+                
+                let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
+                if (isNaN(num)) return null;
+                
+                if (num >= 1.2 && num <= 2.5) {
+                    return num * 100;
+                }
+                
+                return num >= 100 ? num : null;
+            }
+            
+            parseWeight(input) {
+                if (!input) return null;
+                
+                let cleaned = input.replace(/\s+/g, '').toLowerCase();
+                cleaned = cleaned.replace(/(kg|킬로|키로|키로그램|킬로그램)/g, '');
+                
+                let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
+                
+                return isNaN(num) ? null : num;
+            }
+            
+            parseAge(input) {
+                if (!input) return null;
+                
+                let cleaned = input.replace(/\s+/g, '').toLowerCase();
+                cleaned = cleaned.replace(/(세|살|년)/g, '');
+                
+                let num = parseInt(cleaned.replace(/[^0-9]/g, ''));
+                
+                return isNaN(num) ? null : num;
+            }
+        }
+
+        const parser = new SmartHealthParser();
+
+        function smartParse() {
+            const height = document.getElementById('height').value;
+            const weight = document.getElementById('weight').value;
+            const age = document.getElementById('age').value;
+            
+            const parsedHeight = parser.parseHeight(height);
+            const parsedWeight = parser.parseWeight(weight);
+            const parsedAge = parser.parseAge(age);
+            
+            document.getElementById('heightParsed').textContent = 
+                parsedHeight ? `인식됨: ${parsedHeight}cm` : '입력 대기 중...';
+                
+            document.getElementById('weightParsed').textContent = 
+                parsedWeight ? `인식됨: ${parsedWeight}kg` : '입력 대기 중...';
+                
+            document.getElementById('ageParsed').textContent = 
+                parsedAge ? `인식됨: ${parsedAge}세` : '입력 대기 중...';
+        }
+
+        function calculateIdealWeight() {
+            const height = parser.parseHeight(document.getElementById('height').value);
+            const currentWeight = parser.parseWeight(document.getElementById('weight').value);
+            const age = parser.parseAge(document.getElementById('age').value);
+            const gender = document.getElementById('gender').value;
+            
+            if (!height) {
+                alert('키를 입력해주세요.');
+                return;
+            }
+            
+            if (height <= 0) {
+                alert('올바른 키를 입력해주세요.');
+                return;
+            }
+            
+            const heightInMeters = height / 100;
+            
+            // 다양한 공식으로 이상체중 계산
+            const weights = {
+                // BMI 22 기준 (가장 이상적)
+                bmi22: 22 * heightInMeters * heightInMeters,
+                
+                // 브로카 공식 (키 - 100) × 0.9
+                broca: (height - 100) * 0.9,
+                
+                // 로렌츠 공식
+                lorentz: gender === 'male' 
+                    ? (height - 100) - ((height - 150) / 4)
+                    : (height - 100) - ((height - 150) / 2.5),
+                
+                // 밀러 공식
+                miller: gender === 'male'
+                    ? 56.2 + 1.41 * ((height - 152.4) / 2.54)
+                    : 53.1 + 1.36 * ((height - 152.4) / 2.54),
+                
+                // 디바인 공식
+                devine: gender === 'male'
+                    ? 50 + 2.3 * ((height - 152.4) / 2.54)
+                    : 45.5 + 2.3 * ((height - 152.4) / 2.54),
+                
+                // 햄위 공식
+                hamwi: gender === 'male'
+                    ? 48 + 2.7 * ((height - 152.4) / 2.54)
+                    : 45.5 + 2.2 * ((height - 152.4) / 2.54)
+            };
+            
+            // 건강 체중 범위 (BMI 18.5-24.9)
+            const minHealthyWeight = 18.5 * heightInMeters * heightInMeters;
+            const maxHealthyWeight = 24.9 * heightInMeters * heightInMeters;
+            
+            displayIdealWeightResults({
+                height,
+                currentWeight,
+                age,
+                gender,
+                weights,
+                minHealthyWeight,
+                maxHealthyWeight
+            });
+        }
+
+        function displayIdealWeightResults(data) {
+            const resultSection = document.getElementById('resultSection');
+            
+            // 메인 이상체중 값 표시 (BMI 22 기준)
+            document.getElementById('weightValue').textContent = data.weights.bmi22.toFixed(1) + 'kg';
+            document.getElementById('weightLabel').textContent = '이상체중 (BMI 22)';
+            document.getElementById('weightDescription').textContent = '가장 건강한 체중으로 권장되는 이상체중입니다';
+            
+            // 결과 그리드 표시
+            document.getElementById('heightResult').textContent = `${data.height}cm`;
+            document.getElementById('currentWeight').textContent = data.currentWeight ? `${data.currentWeight}kg` : '입력 안함';
+            
+            if (data.currentWeight) {
+                const difference = data.currentWeight - data.weights.bmi22;
+                document.getElementById('weightDifference').textContent = 
+                    difference > 0 ? `-${Math.abs(difference).toFixed(1)}kg` : `+${Math.abs(difference).toFixed(1)}kg`;
+            } else {
+                document.getElementById('weightDifference').textContent = '현재 체중 필요';
+            }
+            
+            document.getElementById('healthyRange').textContent = 
+                `${data.minHealthyWeight.toFixed(1)}kg - ${data.maxHealthyWeight.toFixed(1)}kg`;
+            
+            // 다양한 공식별 이상체중 표시
+            document.getElementById('bmi22Weight').textContent = `${data.weights.bmi22.toFixed(1)}kg`;
+            document.getElementById('brocaWeight').textContent = `${data.weights.broca.toFixed(1)}kg`;
+            document.getElementById('lorentzWeight').textContent = `${data.weights.lorentz.toFixed(1)}kg`;
+            document.getElementById('millerWeight').textContent = `${data.weights.miller.toFixed(1)}kg`;
+            document.getElementById('devineWeight').textContent = `${data.weights.devine.toFixed(1)}kg`;
+            document.getElementById('hamwiWeight').textContent = `${data.weights.hamwi.toFixed(1)}kg`;
+            
+            // 현재 체중이 있으면 체중 범위 표시
+            if (data.currentWeight) {
+                displayWeightRange(data.currentWeight, data.minHealthyWeight, data.maxHealthyWeight, data.weights.bmi22);
+            }
+            
+            resultSection.style.display = 'block';
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function displayWeightRange(currentWeight, minHealthy, maxHealthy, idealWeight) {
+            const weightRange = document.getElementById('weightRange');
+            const pointer = document.getElementById('rangePointer');
+            
+            // 범위 계산 (저체중부터 과체중까지)
+            const underweight = minHealthy * 0.85; // 저체중 기준
+            const overweight = maxHealthy * 1.1;   // 과체중 기준
+            
+            const totalRange = overweight - underweight;
+            const currentPosition = ((currentWeight - underweight) / totalRange) * 100;
+            
+            // 포인터 위치 설정
+            const position = Math.min(Math.max(currentPosition, 0), 100);
+            pointer.style.left = `${position}%`;
+            
+            weightRange.style.display = 'block';
+        }
+
+        function showExampleData() {
+            document.getElementById('height').value = '175cm';
+            document.getElementById('weight').value = '70kg';
+            document.getElementById('age').value = '25세';
+            document.getElementById('gender').value = 'male';
+            smartParse();
+        }
+
+        function clearAll() {
+            document.getElementById('height').value = '';
+            document.getElementById('weight').value = '';
+            document.getElementById('age').value = '';
+            document.getElementById('gender').value = 'male';
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('weightRange').style.display = 'none';
+            document.getElementById('heightParsed').textContent = '입력 대기 중...';
+            document.getElementById('weightParsed').textContent = '입력 대기 중...';
+            document.getElementById('ageParsed').textContent = '입력 대기 중...';
+        }
+
+        // 페이지 로드 시 예시 데이터
+        window.addEventListener('load', function() {
+            showExampleData();
+            
+            // 2초 후 자동 계산
+            setTimeout(() => {
+                calculateIdealWeight();
+            }, 2000);
+        });
+
+        // 엔터키 이벤트
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                calculateIdealWeight();
+            }
+        });
+    </script>
+</body>
+</html>
