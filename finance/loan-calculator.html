@@ -1,1 +1,1023 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대출 계산기 - 월 상환금 자동 계산 | 스마트 파싱</title>
+    <meta name="description" content="대출 계산기로 월 상환금과 총 이자를 계산하세요. 대출금액, 이율, 기간을 자유 형식으로 입력하면 자동 인식해서 정확한 상환 계획을 계산합니다.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .input-section:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .input-group {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .input-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .input-label .icon {
+            font-size: 1.3rem;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .parsed-result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e3f2fd;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #1976d2;
+            min-height: 20px;
+        }
+        
+        .repayment-type {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .repayment-type h4 {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .radio-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        
+        .radio-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-item:hover {
+            border-color: #667eea;
+        }
+        
+        .radio-item.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .radio-item input[type="radio"] {
+            margin-right: 8px;
+        }
+        
+        .examples {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffeaa7 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .examples h4 {
+            color: #d68910;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .example-item {
+            background: rgba(255,255,255,0.7);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .example-title {
+            font-weight: bold;
+            color: #d68910;
+            margin-bottom: 5px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 25px 0;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+        }
+        
+        .result-section {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            border: 2px solid #28a745;
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #155724;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .monthly-payment {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .payment-amount {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #dc3545;
+            margin-bottom: 10px;
+        }
+        
+        .payment-description {
+            font-size: 1.2rem;
+            color: #666;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .result-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .result-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        .amortization-table {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        .table-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        th, td {
+            padding: 12px 8px;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        th {
+            background: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            height: 200px;
+            gap: 2px;
+            margin: 20px 0;
+        }
+        
+        .chart-bar {
+            flex: 1;
+            border-radius: 2px 2px 0 0;
+            min-height: 5px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .chart-bar.principal {
+            background: linear-gradient(to top, #28a745, #20c997);
+        }
+        
+        .chart-bar.interest {
+            background: linear-gradient(to top, #dc3545, #fd79a8);
+        }
+        
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+        }
+        
+        .legend-principal {
+            background: linear-gradient(to right, #28a745, #20c997);
+        }
+        
+        .legend-interest {
+            background: linear-gradient(to right, #dc3545, #fd79a8);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .payment-amount {
+                font-size: 2.5rem;
+            }
+            
+            .radio-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏦 대출 계산기</h1>
+            <p>월 상환금과 총 이자를 자유 형식으로 계산하세요</p>
+        </div>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <div class="input-label">
+                            <span class="icon">💰</span>
+                            대출 금액
+                        </div>
+                        <input type="text" id="loanAmount" placeholder="예: 3억원, 300,000,000, 3억..." oninput="smartParseLoan()">
+                        <div class="parsed-result" id="loanAmountParsed">입력 대기 중...</div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <div class="input-label">
+                            <span class="icon">📊</span>
+                            연이율
+                        </div>
+                        <input type="text" id="interestRate" placeholder="예: 3.5%, 0.035, 연3.5%..." oninput="smartParseLoan()">
+                        <div class="parsed-result" id="interestRateParsed">입력 대기 중...</div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <div class="input-label">
+                            <span class="icon">⏰</span>
+                            대출 기간
+                        </div>
+                        <input type="text" id="loanTerm" placeholder="예: 30년, 360개월, 삼십년..." oninput="smartParseLoan()">
+                        <div class="parsed-result" id="loanTermParsed">입력 대기 중...</div>
+                    </div>
+                </div>
+                
+                <div class="repayment-type">
+                    <h4>📋 상환 방식</h4>
+                    <div class="radio-group">
+                        <div class="radio-item selected" onclick="selectRepaymentType('equal-payment')">
+                            <input type="radio" name="repaymentType" value="equal-payment" checked>
+                            <span>원리금균등</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRepaymentType('equal-principal')">
+                            <input type="radio" name="repaymentType" value="equal-principal">
+                            <span>원금균등</span>
+                        </div>
+                        <div class="radio-item" onclick="selectRepaymentType('interest-only')">
+                            <input type="radio" name="repaymentType" value="interest-only">
+                            <span>만기일시</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="examples">
+                    <h4>💡 다양한 입력 예시</h4>
+                    <div class="examples-grid">
+                        <div class="example-item">
+                            <div class="example-title">대출금액</div>
+                            3억원, 3억<br>
+                            300,000,000원
+                        </div>
+                        <div class="example-item">
+                            <div class="example-title">이율</div>
+                            3.5%, 연3.5%<br>
+                            0.035, 3.5퍼센트
+                        </div>
+                        <div class="example-item">
+                            <div class="example-title">기간</div>
+                            30년, 삼십년<br>
+                            360개월, 30 years
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="controls">
+                <button class="btn" onclick="calculateLoan()">
+                    🏦 대출 계산하기
+                </button>
+                <button class="btn btn-secondary" onclick="showLoanExample()">
+                    📝 예시 데이터 입력
+                </button>
+                <button class="btn btn-danger" onclick="clearLoan()">
+                    🗑️ 초기화
+                </button>
+            </div>
+
+            <div class="result-section" id="resultSection">
+                <div class="result-title">💳 대출 계산 결과</div>
+                
+                <div class="monthly-payment">
+                    <div class="payment-amount" id="monthlyPayment">0원</div>
+                    <div class="payment-description">월 상환금</div>
+                </div>
+                
+                <div class="result-grid" id="resultGrid"></div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">📊 원금/이자 상환 비율</div>
+                    <div class="chart-bars" id="chartBars"></div>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color legend-principal"></div>
+                            <span>원금</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color legend-interest"></div>
+                            <span>이자</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="amortization-table">
+                    <div class="table-title">📋 상환 스케줄 (처음 12개월)</div>
+                    <div class="table-container">
+                        <table id="amortizationTable">
+                            <thead>
+                                <tr>
+                                    <th>회차</th>
+                                    <th>월 상환금</th>
+                                    <th>원금</th>
+                                    <th>이자</th>
+                                    <th>잔여원금</th>
+                                </tr>
+                            </thead>
+                            <tbody id="amortizationBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class SmartLoanParser {
+            constructor() {
+                this.koreanUnits = {
+                    '천': 1000,
+                    '만': 10000,
+                    '억': 100000000,
+                    '조': 1000000000000
+                };
+                
+                this.koreanNumbers = {
+                    '일': 1, '이': 2, '삼': 3, '사': 4, '오': 5,
+                    '육': 6, '칠': 7, '팔': 8, '구': 9, '십': 10,
+                    '이십': 20, '삼십': 30, '사십': 40, '오십': 50
+                };
+            }
+            
+            parseAmount(input) {
+                if (!input) return null;
+                
+                let cleaned = input.replace(/\s+/g, '');
+                
+                // 한글 단위 처리
+                for (let [unit, multiplier] of Object.entries(this.koreanUnits)) {
+                    if (cleaned.includes(unit)) {
+                        let parts = cleaned.split(unit);
+                        if (parts[0]) {
+                            let num = parseFloat(parts[0].replace(/[^0-9.]/g, ''));
+                            if (!isNaN(num)) {
+                                return num * multiplier;
+                            }
+                        }
+                    }
+                }
+                
+                // 쉼표 제거 후 숫자 추출
+                cleaned = cleaned.replace(/[^0-9.]/g, '');
+                let num = parseFloat(cleaned);
+                
+                return isNaN(num) ? null : num;
+            }
+            
+            parseRate(input) {
+                if (!input) return null;
+                
+                let cleaned = input.replace(/\s+/g, '');
+                
+                // % 기호 처리
+                if (cleaned.includes('%') || cleaned.includes('퍼센트')) {
+                    let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
+                    return isNaN(num) ? null : num / 100;
+                }
+                
+                // 연 표시 제거
+                cleaned = cleaned.replace(/연/g, '');
+                let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
+                
+                if (isNaN(num)) return null;
+                
+                // 0-1 사이면 그대로, 1 이상이면 퍼센트로 간주
+                return num > 1 ? num / 100 : num;
+            }
+            
+            parseYears(input) {
+                if (!input) return null;
+                
+                let cleaned = input.replace(/\s+/g, '');
+                
+                // 개월 처리
+                if (cleaned.includes('개월') || cleaned.includes('월')) {
+                    let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
+                    return isNaN(num) ? null : num / 12;
+                }
+                
+                // 한글 숫자 변환
+                for (let [korean, num] of Object.entries(this.koreanNumbers)) {
+                    if (cleaned.includes(korean)) {
+                        return num;
+                    }
+                }
+                
+                // 년, years, y 제거 후 숫자 추출
+                cleaned = cleaned.replace(/[^0-9.]/g, '');
+                let num = parseFloat(cleaned);
+                
+                return isNaN(num) ? null : num;
+            }
+        }
+
+        const parser = new SmartLoanParser();
+        let currentRepaymentType = 'equal-payment';
+
+        function smartParseLoan() {
+            const loanAmount = document.getElementById('loanAmount').value;
+            const interestRate = document.getElementById('interestRate').value;
+            const loanTerm = document.getElementById('loanTerm').value;
+            
+            const parsedAmount = parser.parseAmount(loanAmount);
+            const parsedRate = parser.parseRate(interestRate);
+            const parsedTerm = parser.parseYears(loanTerm);
+            
+            document.getElementById('loanAmountParsed').textContent = 
+                parsedAmount ? `인식됨: ${parsedAmount.toLocaleString()}원` : '입력 대기 중...';
+                
+            document.getElementById('interestRateParsed').textContent = 
+                parsedRate ? `인식됨: 연 ${(parsedRate * 100).toFixed(2)}%` : '입력 대기 중...';
+                
+            document.getElementById('loanTermParsed').textContent = 
+                parsedTerm ? `인식됨: ${parsedTerm}년 (${parsedTerm * 12}개월)` : '입력 대기 중...';
+        }
+
+        function selectRepaymentType(type) {
+            currentRepaymentType = type;
+            
+            // 라디오 버튼 체크
+            document.querySelectorAll('input[name="repaymentType"]').forEach(radio => {
+                radio.checked = radio.value === type;
+            });
+            
+            // 시각적 선택 표시
+            document.querySelectorAll('.radio-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+        }
+
+        function calculateLoan() {
+            const loanAmount = parser.parseAmount(document.getElementById('loanAmount').value);
+            const annualRate = parser.parseRate(document.getElementById('interestRate').value);
+            const years = parser.parseYears(document.getElementById('loanTerm').value);
+            
+            if (!loanAmount || !annualRate || !years) {
+                alert('모든 값을 입력해주세요.');
+                return;
+            }
+            
+            if (loanAmount <= 0 || annualRate < 0 || years <= 0) {
+                alert('올바른 값을 입력해주세요.');
+                return;
+            }
+            
+            const months = years * 12;
+            const monthlyRate = annualRate / 12;
+            
+            let monthlyPayment, totalInterest, amortizationSchedule;
+            
+            switch(currentRepaymentType) {
+                case 'equal-payment':
+                    ({ monthlyPayment, totalInterest, amortizationSchedule } = calculateEqualPayment(loanAmount, monthlyRate, months));
+                    break;
+                case 'equal-principal':
+                    ({ monthlyPayment, totalInterest, amortizationSchedule } = calculateEqualPrincipal(loanAmount, monthlyRate, months));
+                    break;
+                case 'interest-only':
+                    ({ monthlyPayment, totalInterest, amortizationSchedule } = calculateInterestOnly(loanAmount, monthlyRate, months));
+                    break;
+            }
+            
+            displayLoanResults({
+                loanAmount,
+                annualRate,
+                years,
+                months,
+                monthlyPayment,
+                totalInterest,
+                totalPayment: loanAmount + totalInterest,
+                amortizationSchedule,
+                repaymentType: currentRepaymentType
+            });
+        }
+
+        function calculateEqualPayment(principal, monthlyRate, months) {
+            // 원리금균등 상환
+            const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / 
+                                 (Math.pow(1 + monthlyRate, months) - 1);
+            
+            let balance = principal;
+            let totalInterest = 0;
+            const schedule = [];
+            
+            for (let i = 1; i <= months; i++) {
+                const interestPayment = balance * monthlyRate;
+                const principalPayment = monthlyPayment - interestPayment;
+                balance -= principalPayment;
+                totalInterest += interestPayment;
+                
+                schedule.push({
+                    month: i,
+                    payment: monthlyPayment,
+                    principal: principalPayment,
+                    interest: interestPayment,
+                    balance: Math.max(0, balance)
+                });
+            }
+            
+            return { monthlyPayment, totalInterest, amortizationSchedule: schedule };
+        }
+
+        function calculateEqualPrincipal(principal, monthlyRate, months) {
+            // 원금균등 상환
+            const principalPayment = principal / months;
+            let balance = principal;
+            let totalInterest = 0;
+            const schedule = [];
+            
+            for (let i = 1; i <= months; i++) {
+                const interestPayment = balance * monthlyRate;
+                const monthlyPayment = principalPayment + interestPayment;
+                balance -= principalPayment;
+                totalInterest += interestPayment;
+                
+                schedule.push({
+                    month: i,
+                    payment: monthlyPayment,
+                    principal: principalPayment,
+                    interest: interestPayment,
+                    balance: Math.max(0, balance)
+                });
+            }
+            
+            // 첫 달 상환금을 대표값으로 사용
+            const monthlyPayment = schedule[0].payment;
+            
+            return { monthlyPayment, totalInterest, amortizationSchedule: schedule };
+        }
+
+        function calculateInterestOnly(principal, monthlyRate, months) {
+            // 만기일시 상환
+            const monthlyPayment = principal * monthlyRate;
+            const totalInterest = monthlyPayment * months;
+            const schedule = [];
+            
+            for (let i = 1; i <= months; i++) {
+                schedule.push({
+                    month: i,
+                    payment: i === months ? principal + monthlyPayment : monthlyPayment,
+                    principal: i === months ? principal : 0,
+                    interest: monthlyPayment,
+                    balance: i === months ? 0 : principal
+                });
+            }
+            
+            return { monthlyPayment, totalInterest, amortizationSchedule: schedule };
+        }
+
+        function displayLoanResults(data) {
+            const resultSection = document.getElementById('resultSection');
+            const monthlyPayment = document.getElementById('monthlyPayment');
+            const resultGrid = document.getElementById('resultGrid');
+            
+            // 월 상환금 표시 (원금균등의 경우 첫 달 기준)
+            let paymentDisplay = data.monthlyPayment.toLocaleString() + '원';
+            if (data.repaymentType === 'equal-principal') {
+                paymentDisplay += ' (첫 달 기준)';
+            } else if (data.repaymentType === 'interest-only') {
+                paymentDisplay += ' (이자만)';
+            }
+            monthlyPayment.textContent = paymentDisplay;
+            
+            // 결과 그리드 표시
+            const repaymentTypeNames = {
+                'equal-payment': '원리금균등',
+                'equal-principal': '원금균등',
+                'interest-only': '만기일시'
+            };
+            
+            resultGrid.innerHTML = `
+                <div class="result-item">
+                    <div class="result-label">대출 금액</div>
+                    <div class="result-value">${data.loanAmount.toLocaleString()}원</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">연이율</div>
+                    <div class="result-value">${(data.annualRate * 100).toFixed(2)}%</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">대출 기간</div>
+                    <div class="result-value">${data.years}년 (${data.months}개월)</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">상환 방식</div>
+                    <div class="result-value">${repaymentTypeNames[data.repaymentType]}</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">총 이자</div>
+                    <div class="result-value">${data.totalInterest.toLocaleString()}원</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">총 상환액</div>
+                    <div class="result-value">${data.totalPayment.toLocaleString()}원</div>
+                </div>
+            `;
+            
+            // 차트 생성
+            createLoanChart(data.amortizationSchedule);
+            
+            // 상환 스케줄 테이블 생성
+            createAmortizationTable(data.amortizationSchedule);
+            
+            resultSection.style.display = 'block';
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function createLoanChart(schedule) {
+            const chartBars = document.getElementById('chartBars');
+            chartBars.innerHTML = '';
+            
+            // 처음 12개월 또는 전체 기간 중 짧은 것
+            const displayMonths = Math.min(12, schedule.length);
+            const interval = Math.max(1, Math.floor(schedule.length / 12));
+            
+            for (let i = 0; i < schedule.length; i += interval) {
+                if (chartBars.children.length >= 12) break;
+                
+                const data = schedule[i];
+                const totalPayment = data.payment;
+                
+                const principalHeight = (data.principal / totalPayment) * 100;
+                const interestHeight = (data.interest / totalPayment) * 100;
+                
+                const barGroup = document.createElement('div');
+                barGroup.style.flex = '1';
+                barGroup.style.display = 'flex';
+                barGroup.style.flexDirection = 'column';
+                barGroup.style.height = '100%';
+                barGroup.style.justifyContent = 'flex-end';
+                
+                const principalBar = document.createElement('div');
+                principalBar.className = 'chart-bar principal';
+                principalBar.style.height = principalHeight + '%';
+                principalBar.title = `${data.month}회차 - 원금: ${data.principal.toLocaleString()}원`;
+                
+                const interestBar = document.createElement('div');
+                interestBar.className = 'chart-bar interest';
+                interestBar.style.height = interestHeight + '%';
+                interestBar.title = `${data.month}회차 - 이자: ${data.interest.toLocaleString()}원`;
+                
+                barGroup.appendChild(interestBar);
+                barGroup.appendChild(principalBar);
+                chartBars.appendChild(barGroup);
+            }
+        }
+
+        function createAmortizationTable(schedule) {
+            const amortizationBody = document.getElementById('amortizationBody');
+            amortizationBody.innerHTML = '';
+            
+            // 처음 12개월만 표시
+            const displaySchedule = schedule.slice(0, 12);
+            
+            displaySchedule.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.month}</td>
+                    <td>${row.payment.toLocaleString()}원</td>
+                    <td>${row.principal.toLocaleString()}원</td>
+                    <td>${row.interest.toLocaleString()}원</td>
+                    <td>${row.balance.toLocaleString()}원</td>
+                `;
+                amortizationBody.appendChild(tr);
+            });
+        }
+
+        function showLoanExample() {
+            document.getElementById('loanAmount').value = '3억원';
+            document.getElementById('interestRate').value = '3.5%';
+            document.getElementById('loanTerm').value = '30년';
+            smartParseLoan();
+        }
+
+        function clearLoan() {
+            document.getElementById('loanAmount').value = '';
+            document.getElementById('interestRate').value = '';
+            document.getElementById('loanTerm').value = '';
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('loanAmountParsed').textContent = '입력 대기 중...';
+            document.getElementById('interestRateParsed').textContent = '입력 대기 중...';
+            document.getElementById('loanTermParsed').textContent = '입력 대기 중...';
+            
+            // 라디오 버튼 초기화
+            selectRepaymentType('equal-payment');
+        }
+
+        // 페이지 로드 시 예시 데이터
+        window.addEventListener('load', function() {
+            showLoanExample();
+            
+            // 2초 후 자동 계산
+            setTimeout(() => {
+                calculateLoan();
+            }, 2000);
+        });
+
+        // 엔터키 이벤트
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                calculateLoan();
+            }
+        });
+    </script>
+</body>
+</html>
