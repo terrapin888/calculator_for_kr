@@ -30,7 +30,7 @@
         <div class="calculator-card">
             <!-- 계산기 헤더 -->
             <div class="calculator-header">
-                <h1 class="calculator-title">🔄 단위 변환기</h1>
+                <h1 class="calculator-title">단위 변환기</h1>
                 <p class="calculator-subtitle">다양한 단위를 간편하게 변환하세요</p>
             </div>
 
@@ -38,7 +38,7 @@
             <div class="calculator-body">
                 <!-- 입력 섹션 -->
                 <div class="input-section">
-                    <h2 class="section-title">🔢 변환 정보</h2>
+                    <h2 class="section-title">변환 정보</h2>
                     <div class="input-grid">
                         <div class="input-group">
                             <label for="unitType" class="input-label">단위 종류</label>
@@ -72,7 +72,7 @@
 
                 <!-- 결과 섹션 -->
                 <div id="resultSection" class="result-section">
-                    <h2 class="result-title">📋 변환 결과</h2>
+                    <h2 class="result-title">변환 결과</h2>
                     <div class="result-grid">
                         <div class="result-item">
                             <div class="result-label">변환 결과</div>
@@ -132,7 +132,56 @@
         // 숫자 파싱 함수
         function parseNumber(input) {
             if (!input || typeof input !== 'string') return 0;
-            return parseFloat(input.replace(/[^0-9.-]/g, '')) || 0;
+            
+            // 원본 보관 (퍼센트 체크용)
+            const original = input.trim();
+            
+            // 기본 정리 (쉼표, 공백, 언더스코어 제거)
+            input = input.replace(/[,\s_]/g, '').toLowerCase();
+            
+            // 퍼센트 처리 (%, percent, 퍼센트)
+            let isPercent = false;
+            if (input.includes('%') || input.includes('percent') || input.includes('퍼센트')) {
+                isPercent = true;
+                input = input.replace(/(%|percent|퍼센트)/g, '');
+            }
+            
+            // 한국어 단위 변환 (더 많은 단위 추가)
+            const units = {
+                '조': 1000000000000,
+                '천억': 100000000000,
+                '백억': 10000000000,
+                '십억': 1000000000,
+                '억': 100000000,
+                '천만': 10000000,
+                '백만': 1000000,
+                '십만': 100000,
+                '만': 10000,
+                '천': 1000,
+                '백': 100,
+                '십': 10
+            };
+            
+            // 단위 변환 처리
+            for (let unit in units) {
+                if (input.includes(unit)) {
+                    const numPart = input.replace(unit, '');
+                    const num = parseFloat(numPart) || 1;
+                    let result = num * units[unit];
+                    
+                    if (isPercent) result = result / 100;
+                    
+                    return result;
+                }
+            }
+            
+            // 일반 숫자 파싱 (소수점 고정밀도 지원)
+            let parsed = parseFloat(input);
+            if (isNaN(parsed)) return 0;
+            
+            if (isPercent) parsed = parsed / 100;
+            
+            return parsed;
         }
 
         // 단위 옵션 업데이트
@@ -226,7 +275,6 @@
             
             document.getElementById('convertedValue').textContent = `${formattedResult} ${toUnitName.split('(')[1].split(')')[0]}`;
             
-            document.getElementById('resultSection').style.display = 'block';
             document.getElementById('resultSection').classList.add('fade-in');
         }
 

@@ -30,7 +30,7 @@
         <div class="calculator-card">
             <!-- 계산기 헤더 -->
             <div class="calculator-header">
-                <h1 class="calculator-title">⏰ 타이머 계산기</h1>
+                <h1 class="calculator-title">타이머 계산기</h1>
                 <p class="calculator-subtitle">카운트다운과 스톱워치를 간편하게 사용하세요</p>
             </div>
 
@@ -38,7 +38,7 @@
             <div class="calculator-body">
                 <!-- 입력 섹션 -->
                 <div class="input-section">
-                    <h2 class="section-title">⏱️ 타이머 설정</h2>
+                    <h2 class="section-title">타이머 설정</h2>
                     <div class="input-grid">
                         <div class="input-group">
                             <label for="timerMode" class="input-label">모드 선택</label>
@@ -61,7 +61,7 @@
 
                 <!-- 결과 섹션 -->
                 <div id="resultSection" class="result-section">
-                    <h2 class="result-title">📋 타이머 상태</h2>
+                    <h2 class="result-title">타이머 상태</h2>
                     <div class="result-grid">
                         <div class="result-item">
                             <div class="result-label">현재 시간</div>
@@ -89,6 +89,63 @@
         let isPaused = false;
         let mode = 'countdown';
 
+        // 고급 숫자 파싱 함수 (한국어, 퍼센트, 밑줄, 소수점 지원)
+        function parseNumber(input) {
+            if (!input || typeof input !== 'string') return NaN;
+            
+            // 공백 제거 및 소문자 변환
+            let str = input.trim().toLowerCase();
+            
+            // 한국어 숫자 단위 변환
+            const koreanUnits = {
+                '만': 10000, '억': 100000000, '조': 1000000000000,
+                '천': 1000, '백': 100, '십': 10
+            };
+            
+            let result = 0;
+            let hasKoreanUnit = false;
+            
+            // 한국어 단위가 있는지 확인
+            for (const unit in koreanUnits) {
+                if (str.includes(unit)) {
+                    hasKoreanUnit = true;
+                    break;
+                }
+            }
+            
+            if (hasKoreanUnit) {
+                // 한국어 단위 처리
+                let tempStr = str;
+                for (const unit in koreanUnits) {
+                    const regex = new RegExp('(\\d+(?:\\.\\d+)?)' + unit, 'g');
+                    tempStr = tempStr.replace(regex, (match, num) => {
+                        return (parseFloat(num) * koreanUnits[unit]).toString();
+                    });
+                }
+                // 남은 숫자들을 모두 더함
+                const numbers = tempStr.match(/\d+(?:\.\d+)?/g);
+                if (numbers) {
+                    result = numbers.reduce((sum, num) => sum + parseFloat(num), 0);
+                }
+            } else {
+                // 퍼센트 처리
+                if (str.includes('%')) {
+                    str = str.replace('%', '');
+                    const num = parseFloat(str.replace(/[^\d.-]/g, ''));
+                    return isNaN(num) ? NaN : num / 100;
+                }
+                
+                // 밑줄 제거 (1_000_000 형태)
+                str = str.replace(/_/g, '');
+                
+                // 일반 숫자 추출 (음수 포함)
+                const match = str.match(/-?\d+(?:\.\d+)?/);
+                result = match ? parseFloat(match[0]) : NaN;
+            }
+            
+            return result;
+        }
+
         // 시간 파싱 함수 (한국어 지원)
         function parseTime(input) {
             if (!input) return 0;
@@ -96,20 +153,29 @@
             input = input.trim().toLowerCase().replace(/\s/g, '');
             let totalSeconds = 0;
             
-            // 시간 단위 파싱
-            const hourMatch = input.match(/(\d+(?:\.\d+)?)시간?/);
+            // 시간 단위 파싱 (개선된 parseNumber 사용)
+            const hourMatch = input.match(/(\d+(?:\.\d+)?(?:_\d+)*(?:%|만|억|조|천|백|십)?)시간?/);
             if (hourMatch) {
-                totalSeconds += parseFloat(hourMatch[1]) * 3600;
+                const parsedHour = parseNumber(hourMatch[1]);
+                if (!isNaN(parsedHour)) {
+                    totalSeconds += parsedHour * 3600;
+                }
             }
             
-            const minMatch = input.match(/(\d+(?:\.\d+)?)분/);
+            const minMatch = input.match(/(\d+(?:\.\d+)?(?:_\d+)*(?:%|만|억|조|천|백|십)?)분/);
             if (minMatch) {
-                totalSeconds += parseFloat(minMatch[1]) * 60;
+                const parsedMin = parseNumber(minMatch[1]);
+                if (!isNaN(parsedMin)) {
+                    totalSeconds += parsedMin * 60;
+                }
             }
             
-            const secMatch = input.match(/(\d+(?:\.\d+)?)초/);
+            const secMatch = input.match(/(\d+(?:\.\d+)?(?:_\d+)*(?:%|만|억|조|천|백|십)?)초/);
             if (secMatch) {
-                totalSeconds += parseFloat(secMatch[1]);
+                const parsedSec = parseNumber(secMatch[1]);
+                if (!isNaN(parsedSec)) {
+                    totalSeconds += parsedSec;
+                }
             }
             
             // HH:MM:SS 형식
@@ -124,9 +190,9 @@
                 totalSeconds = parseInt(minSecMatch[1]) * 60 + parseInt(minSecMatch[2]);
             }
             
-            // 숫자만 있는 경우 (초로 간주)
+            // 숫자만 있는 경우 (초로 간주) - parseNumber 사용
             if (totalSeconds === 0) {
-                const num = parseFloat(input.replace(/[^0-9.]/g, ''));
+                const num = parseNumber(input);
                 if (!isNaN(num)) {
                     totalSeconds = num;
                 }

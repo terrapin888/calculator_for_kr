@@ -30,7 +30,7 @@
         <div class="calculator-card">
             <!-- 계산기 헤더 -->
             <div class="calculator-header">
-                <h1 class="calculator-title">📅 날짜 계산기</h1>
+                <h1 class="calculator-title">날짜 계산기</h1>
                 <p class="calculator-subtitle">D-Day와 날짜 차이를 간편하게 계산하세요</p>
             </div>
 
@@ -38,7 +38,7 @@
             <div class="calculator-body">
                 <!-- 입력 섹션 -->
                 <div class="input-section">
-                    <h2 class="section-title">📅 날짜 정보</h2>
+                    <h2 class="section-title">날짜 정보</h2>
                     <div class="input-grid">
                         <div class="input-group">
                             <label for="startDate" class="input-label">시작 날짜</label>
@@ -53,8 +53,8 @@
                 </div>
 
                 <!-- 결과 섹션 -->
-                <div id="resultSection" class="result-section" style="display: none;">
-                    <h2 class="result-title">📋 계산 결과</h2>
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">계산 결과</h2>
                     <div class="result-grid">
                         <div class="result-item">
                             <div class="result-label">날짜 차이</div>
@@ -165,7 +165,6 @@
             document.getElementById('weeksDiff').textContent = `${weeksDiff}주`;
             document.getElementById('monthsDiff').textContent = `약 ${monthsDiff}개월`;
             
-            document.getElementById('resultSection').style.display = 'block';
             document.getElementById('resultSection').classList.add('fade-in');
         }
 

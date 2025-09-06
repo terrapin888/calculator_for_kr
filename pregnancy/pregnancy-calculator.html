@@ -30,7 +30,7 @@
         <div class="calculator-card">
             <!-- 계산기 헤더 -->
             <div class="calculator-header">
-                <h1 class="calculator-title">🤱 임신 주수 계산기</h1>
+                <h1 class="calculator-title">임신 주수 계산기</h1>
                 <p class="calculator-subtitle">현재 임신 주차와 출산예정일을 간편하게 계산하세요</p>
             </div>
 
@@ -38,7 +38,7 @@
             <div class="calculator-body">
                 <!-- 입력 섹션 -->
                 <div class="input-section">
-                    <h2 class="section-title">📅 임신 정보</h2>
+                    <h2 class="section-title">임신 정보</h2>
                     <div class="input-grid">
                         <div class="input-group">
                             <label for="lastPeriodDate" class="input-label">마지막 생리 시작일</label>
@@ -53,8 +53,8 @@
                 </div>
 
                 <!-- 결과 섹션 -->
-                <div id="resultSection" class="result-section" style="display: none;">
-                    <h2 class="result-title">📋 계산 결과</h2>
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">계산 결과</h2>
                     <div class="result-grid">
                         <div class="result-item">
                             <div class="result-label">임신 주수</div>
@@ -118,10 +118,57 @@
             return null;
         }
 
-        // 숫자 파싱 함수
+        // 숫자 파싱 함수 (한국어 단위 지원)
         function parseNumber(input) {
+            if (typeof input === 'number') return input;
             if (!input || typeof input !== 'string') return 0;
-            return parseFloat(input.replace(/[^0-9.]/g, '')) || 0;
+            
+            // 입력값 정리
+            input = input.toString().trim();
+            
+            // 빈 문자열 처리
+            if (!input) return 0;
+            
+            // 퍼센트 처리 (% 제거)
+            if (input.includes('%')) {
+                input = input.replace(/%/g, '');
+            }
+            
+            // 한국어 숫자 단위 처리
+            const koreanUnits = {
+                '천': 1000,
+                '만': 10000,
+                '십만': 100000,
+                '백만': 1000000,
+                '천만': 10000000,
+                '억': 100000000,
+                '조': 1000000000000
+            };
+            
+            // 한국어 단위가 포함된 경우
+            for (let [unit, multiplier] of Object.entries(koreanUnits)) {
+                if (input.includes(unit)) {
+                    const parts = input.split(unit);
+                    const baseNumber = parseFloat(parts[0].replace(/[^0-9.,]/g, '').replace(/,/g, '')) || 0;
+                    let remainder = 0;
+                    if (parts[1] && parts[1].trim()) {
+                        remainder = parseFloat(parts[1].replace(/[^0-9.,]/g, '').replace(/,/g, '')) || 0;
+                    }
+                    return baseNumber * multiplier + remainder;
+                }
+            }
+            
+            // 콤마 제거 및 언더스코어 제거
+            input = input.replace(/[,_]/g, '');
+            
+            // 일반적인 숫자 추출 (음수 포함)
+            const match = input.match(/-?\d*\.?\d+/);
+            if (match) {
+                const result = parseFloat(match[0]);
+                return isNaN(result) ? 0 : result;
+            }
+            
+            return 0;
         }
 
         // 날짜 포맷팅 함수
@@ -196,7 +243,6 @@
             }
             document.getElementById('daysRemaining').textContent = remainingText;
             
-            document.getElementById('resultSection').style.display = 'block';
             document.getElementById('resultSection').classList.add('fade-in');
         }
 

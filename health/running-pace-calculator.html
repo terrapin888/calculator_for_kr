@@ -30,7 +30,7 @@
         <div class="calculator-card">
             <!-- 계산기 헤더 -->
             <div class="calculator-header">
-                <h1 class="calculator-title">🏃 러닝 페이스 계산기</h1>
+                <h1 class="calculator-title">러닝 페이스 계산기</h1>
                 <p class="calculator-subtitle">달리기 속도와 예상 완주 시간을 간편하게 계산하세요</p>
             </div>
 
@@ -38,7 +38,7 @@
             <div class="calculator-body">
                 <!-- 입력 섹션 -->
                 <div class="input-section">
-                    <h2 class="section-title">🏃 러닝 정보</h2>
+                    <h2 class="section-title">러닝 정보</h2>
                     <div class="input-grid">
                         <div class="input-group">
                             <label for="distance" class="input-label">거리 (km)</label>
@@ -53,8 +53,8 @@
                 </div>
 
                 <!-- 결과 섹션 -->
-                <div id="resultSection" class="result-section" style="display: none;">
-                    <h2 class="result-title">📋 계산 결과</h2>
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">계산 결과</h2>
                     <div class="result-grid">
                         <div class="result-item">
                             <div class="result-label">페이스 (분/km)</div>
@@ -75,21 +75,48 @@
     </div>
 
     <script>
-        // 숫자 파싱 함수 (한국어 단위 지원)
+        // 고급 숫자 파싱 함수 (한국어 단위, 퍼센트, 언더스코어, 소수점 지원)
         function parseNumber(input) {
-            if (!input || typeof input !== 'string') return 0;
+            if (!input) return 0;
+            if (typeof input === 'number') return input;
+            if (typeof input !== 'string') return 0;
             
-            // 기본 정리
-            input = input.replace(/[,\s]/g, '').toLowerCase();
+            // 기본 정리: 콤마, 공백 제거, 소문자 변환
+            let cleaned = input.replace(/[,\s_]/g, '').toLowerCase();
             
             // 특수 거리 처리
-            if (input.includes('마라톤')) return 42.195;
-            if (input.includes('하프')) return 21.0975;
+            if (cleaned.includes('마라톤')) return 42.195;
+            if (cleaned.includes('하프')) return 21.0975;
             
-            // 단위 제거
-            input = input.replace(/(km|키로|킬로)/g, '');
+            // 퍼센트 처리
+            if (cleaned.includes('%')) {
+                let num = parseFloat(cleaned.replace(/%/g, ''));
+                return isNaN(num) ? 0 : num;
+            }
             
-            return parseFloat(input) || 0;
+            // 한국어 단위 처리
+            const koreanUnits = {
+                '만': 10000, '천': 1000, '백': 100,
+                '억': 100000000, '조': 1000000000000
+            };
+            
+            for (let [unit, multiplier] of Object.entries(koreanUnits)) {
+                if (cleaned.includes(unit)) {
+                    let parts = cleaned.split(unit);
+                    if (parts.length === 2) {
+                        let beforeUnit = parseFloat(parts[0]) || 0;
+                        let afterUnit = parseFloat(parts[1]) || 0;
+                        return beforeUnit * multiplier + afterUnit;
+                    }
+                }
+            }
+            
+            // 일반 단위 제거 (km, m, cm 등)
+            cleaned = cleaned.replace(/(km|키로미터|키로|킬로|m|미터|cm|센치|센티|mm|밀리)$/g, '');
+            
+            // 최종 숫자 파싱
+            let result = parseFloat(cleaned);
+            return isNaN(result) ? 0 : result;
         }
 
         // 시간 파싱 함수
@@ -186,7 +213,7 @@
             document.getElementById('speedResult').textContent = `${speed.toFixed(1)}km/h`;
             document.getElementById('marathonResult').textContent = formatTime(marathonTime);
             
-            document.getElementById('resultSection').style.display = 'block';
+            // 결과 섹션은 이미 표시되어 있음
             document.getElementById('resultSection').classList.add('fade-in');
         }
 

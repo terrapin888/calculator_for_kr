@@ -30,7 +30,7 @@
         <div class="calculator-card">
             <!-- 계산기 헤더 -->
             <div class="calculator-header">
-                <h1 class="calculator-title">💳 수수료 계산기</h1>
+                <h1 class="calculator-title">수수료 계산기</h1>
                 <p class="calculator-subtitle">수수료와 총 금액을 간편하게 계산하세요</p>
             </div>
 
@@ -38,7 +38,7 @@
             <div class="calculator-body">
                 <!-- 입력 섹션 -->
                 <div class="input-section">
-                    <h2 class="section-title">💰 거래 정보</h2>
+                    <h2 class="section-title">거래 정보</h2>
                     <div class="input-grid">
                         <div class="input-group">
                             <label for="baseAmount" class="input-label">기본 금액 (원)</label>
@@ -60,8 +60,8 @@
                 </div>
 
                 <!-- 결과 섹션 -->
-                <div id="resultSection" class="result-section" style="display: none;">
-                    <h2 class="result-title">📋 계산 결과</h2>
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">계산 결과</h2>
                     <div class="result-grid">
                         <div class="result-item">
                             <div class="result-label">수수료</div>
@@ -82,33 +82,49 @@
     </div>
 
     <script>
-        // 숫자 파싱 함수 (한국어 단위 지원)
+        // 고급 숫자 파싱 함수 (한국어 단위, 백분율, 언더스코어, 소수점 지원)
         function parseNumber(input) {
+            if (typeof input === 'number') return input;
             if (!input || typeof input !== 'string') return 0;
             
-            // 기본 정리
-            input = input.replace(/[,\s]/g, '').toLowerCase();
+            // 기본 정리 (공백, 쉼표 제거하되 소수점은 유지)
+            let cleaned = input.replace(/[,\s]/g, '').toLowerCase();
             
-            // 한국어 단위 변환
-            const units = {
+            // 백분율 처리 (%가 있으면 100으로 나눔)
+            let isPercentage = cleaned.includes('%');
+            cleaned = cleaned.replace(/%/g, '');
+            
+            // 한국어 단위 변환 (더 포괄적)
+            const koreanUnits = {
+                '천': 1000,
                 '만': 10000,
                 '십만': 100000,
                 '백만': 1000000,
                 '천만': 10000000,
-                '억': 100000000
+                '억': 100000000,
+                '십억': 1000000000,
+                '백억': 10000000000,
+                '천억': 100000000000,
+                '조': 1000000000000
             };
             
-            for (let unit in units) {
-                if (input.includes(unit)) {
-                    const num = parseFloat(input.replace(unit, '')) || 1;
-                    return num * units[unit];
+            // 한국어 단위 처리 (긴 단위부터 처리)
+            const sortedUnits = Object.entries(koreanUnits).sort((a, b) => b[0].length - a[0].length);
+            for (let [unit, multiplier] of sortedUnits) {
+                if (cleaned.includes(unit)) {
+                    const numPart = cleaned.replace(unit, '') || '1';
+                    const number = parseFloat(numPart.replace(/[_원명개]/g, '')) || 1;
+                    let result = number * multiplier;
+                    return isPercentage ? result / 100 : result;
                 }
             }
             
-            // % 및 기타 단위 제거
-            input = input.replace(/(%|원)/g, '');
+            // 언더스코어 및 기타 단위 제거
+            cleaned = cleaned.replace(/[_원명개]/g, '');
             
-            return parseFloat(input) || 0;
+            // 숫자 파싱
+            const number = parseFloat(cleaned) || 0;
+            return isPercentage ? number / 100 : number;
         }
 
         // 계산 함수
@@ -141,7 +157,6 @@
             document.getElementById('totalAmount').textContent = `${Math.round(totalAmount).toLocaleString()}원`;
             document.getElementById('actualAmount').textContent = `${Math.round(actualAmount).toLocaleString()}원`;
             
-            document.getElementById('resultSection').style.display = 'block';
             document.getElementById('resultSection').classList.add('fade-in');
         }
 

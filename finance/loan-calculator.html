@@ -30,7 +30,7 @@
         <div class="calculator-card">
             <!-- 계산기 헤더 -->
             <div class="calculator-header">
-                <h1 class="calculator-title">🏦 대출 계산기</h1>
+                <h1 class="calculator-title">대출 계산기</h1>
                 <p class="calculator-subtitle">월 상환금과 총 이자를 쉽고 빠르게 계산하세요</p>
             </div>
 
@@ -38,7 +38,7 @@
             <div class="calculator-body">
                 <!-- 입력 섹션 -->
                 <div class="input-section">
-                    <h2 class="section-title">💰 대출 정보 입력</h2>
+                    <h2 class="section-title">대출 정보 입력</h2>
                     <div class="input-grid">
                         <div class="input-group">
                             <label for="loanAmount" class="input-label">대출 금액</label>
@@ -57,8 +57,8 @@
                 </div>
 
                 <!-- 결과 섹션 -->
-                <div id="resultSection" class="result-section" style="display: none;">
-                    <h2 class="result-title">📋 대출 계산 결과</h2>
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">대출 계산 결과</h2>
                     <div class="result-grid">
                         <div class="result-item">
                             <div class="result-label">월 상환금</div>
@@ -79,35 +79,72 @@
     </div>
 
     <script>
-        // 숫자 파싱 함수 (한국어 단위 지원)
+        // 숫자 파싱 함수 (한국어 단위 및 다양한 형식 지원)
         function parseNumber(input) {
             if (!input || typeof input !== 'string') return 0;
             
-            // 기본 정리
-            input = input.replace(/[,\s]/g, '').toLowerCase();
+            // 원본 보관 (퍼센트 체크용)
+            const original = input.trim();
             
-            // % 제거
-            input = input.replace(/%/g, '');
+            // 기본 정리 (쉼표, 공백, 언더스코어 제거)
+            input = input.replace(/[,\s_]/g, '').toLowerCase();
             
-            // 한국어 단위 변환
+            // 퍼센트 처리 (%, percent, 퍼센트)
+            let isPercent = false;
+            if (input.includes('%') || input.includes('percent') || input.includes('퍼센트')) {
+                isPercent = true;
+                input = input.replace(/(%|percent|퍼센트)/g, '');
+            }
+            
+            // 기간 단위 처리 (년, 개월)
+            let isYear = false;
+            let isMonth = false;
+            if (input.includes('년')) {
+                isYear = true;
+                input = input.replace(/년/g, '');
+            } else if (input.includes('개월') || input.includes('월')) {
+                isMonth = true;
+                input = input.replace(/(개월|월)/g, '');
+            }
+            
+            // 한국어 단위 변환 (더 많은 단위 추가)
             const units = {
-                '만': 10000,
-                '십만': 100000,
-                '백만': 1000000,
-                '천만': 10000000,
-                '억': 100000000,
+                '조': 1000000000000,
                 '천억': 100000000000,
-                '조': 1000000000000
+                '백억': 10000000000,
+                '십억': 1000000000,
+                '억': 100000000,
+                '천만': 10000000,
+                '백만': 1000000,
+                '십만': 100000,
+                '만': 10000,
+                '천': 1000,
+                '백': 100,
+                '십': 10
             };
             
+            // 단위 변환 처리
             for (let unit in units) {
                 if (input.includes(unit)) {
-                    const num = parseFloat(input.replace(unit, '')) || 1;
-                    return num * units[unit];
+                    const numPart = input.replace(unit, '');
+                    const num = parseFloat(numPart) || 1;
+                    let result = num * units[unit];
+                    
+                    if (isPercent) result = result / 100;
+                    if (isYear) result = result * 12; // 년을 개월로 변환
+                    
+                    return result;
                 }
             }
             
-            return parseFloat(input) || 0;
+            // 일반 숫자 파싱 (소수점 고정밀도 지원)
+            let parsed = parseFloat(input);
+            if (isNaN(parsed)) return 0;
+            
+            if (isPercent) parsed = parsed / 100;
+            if (isYear) parsed = parsed * 12; // 년을 개월로 변환
+            
+            return parsed;
         }
 
         // 연이율 파싱
@@ -171,7 +208,6 @@
             document.getElementById('totalInterest').textContent = Math.round(totalInterest).toLocaleString() + '원';
             document.getElementById('totalPayment').textContent = Math.round(totalPayment).toLocaleString() + '원';
             
-            document.getElementById('resultSection').style.display = 'block';
             document.getElementById('resultSection').classList.add('fade-in');
         }
 

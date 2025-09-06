@@ -28,13 +28,13 @@
     <div class="container">
         <div class="calculator-card">
             <div class="calculator-header">
-                <h1 class="calculator-title">🎯 표준체중 계산기</h1>
+                <h1 class="calculator-title">표준체중 계산기</h1>
                 <p class="calculator-subtitle">나의 이상적인 체중을 확인해보세요</p>
             </div>
 
             <div class="calculator-body">
                 <div class="input-section">
-                    <h2 class="section-title">📏 신체 정보 입력</h2>
+                    <h2 class="section-title">신체 정보 입력</h2>
                     <div class="input-grid">
                         <div class="input-group">
                             <label for="height" class="input-label">키</label>
@@ -51,8 +51,8 @@
                     <button onclick="calculate()" class="btn btn-primary">표준체중 계산하기</button>
                 </div>
 
-                <div id="resultSection" class="result-section" style="display: none;">
-                    <h2 class="result-title">⚖️ 표준체중 결과</h2>
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">표준체중 결과</h2>
                     <div class="result-grid">
                         <div class="result-item">
                             <div class="result-label">표준체중</div>
@@ -69,15 +69,55 @@
     </div>
 
     <script>
+        // 고급 숫자 파싱 함수 (한국어 단위, 퍼센트, 언더스코어, 소수점 지원)
+        function parseNumber(input) {
+            if (!input) return 0;
+            if (typeof input === 'number') return input;
+            if (typeof input !== 'string') return 0;
+            
+            // 기본 정리: 콤마, 공백 제거, 소문자 변환
+            let cleaned = input.replace(/[,\s_]/g, '').toLowerCase();
+            
+            // 퍼센트 처리
+            if (cleaned.includes('%')) {
+                let num = parseFloat(cleaned.replace(/%/g, ''));
+                return isNaN(num) ? 0 : num;
+            }
+            
+            // 한국어 단위 처리
+            const koreanUnits = {
+                '만': 10000, '천': 1000, '백': 100,
+                '억': 100000000, '조': 1000000000000
+            };
+            
+            for (let [unit, multiplier] of Object.entries(koreanUnits)) {
+                if (cleaned.includes(unit)) {
+                    let parts = cleaned.split(unit);
+                    if (parts.length === 2) {
+                        let beforeUnit = parseFloat(parts[0]) || 0;
+                        let afterUnit = parseFloat(parts[1]) || 0;
+                        return beforeUnit * multiplier + afterUnit;
+                    }
+                }
+            }
+            
+            // 일반 단위 제거 (kg, m, cm, 키로, 킬로, 센치 등)
+            cleaned = cleaned.replace(/(kg|키로|킬로|그램|g|톤|t|파운드|lb|온스|oz)$/g, '');
+            cleaned = cleaned.replace(/(m|미터|cm|센치|센티|mm|밀리|km|킬로미터|인치|피트|야드)$/g, '');
+            cleaned = cleaned.replace(/(원|달러|\$|€|¥|£)$/g, '');
+            
+            // 최종 숫자 파싱
+            let result = parseFloat(cleaned);
+            return isNaN(result) ? 0 : result;
+        }
+
         function parseHeight(input) {
-            if (!input || typeof input !== 'string') return 0;
-            input = input.replace(/[,\s]/g, '').toLowerCase();
-            input = input.replace(/cm/g, '');
-            const num = parseFloat(input) || 0;
+            const num = parseNumber(input);
+            // 1.7 같은 형태면 m 단위로 간주
             if (num > 0 && num < 3) {
                 return num * 100; // m -> cm
             }
-            return num;
+            return num; // 이미 cm
         }
 
         function calculate() {
@@ -104,7 +144,7 @@
             document.getElementById('idealWeight').textContent = `${idealWeight.toFixed(1)}kg`;
             document.getElementById('weightRange').textContent = `${minWeight.toFixed(1)}kg ~ ${maxWeight.toFixed(1)}kg`;
             
-            document.getElementById('resultSection').style.display = 'block';
+            // 결과 섹션은 이미 표시되어 있음
             document.getElementById('resultSection').classList.add('fade-in');
         }
 

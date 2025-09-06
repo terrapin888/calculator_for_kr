@@ -30,7 +30,7 @@
         <div class="calculator-card">
             <!-- 계산기 헤더 -->
             <div class="calculator-header">
-                <h1 class="calculator-title">⚖️ BMI 계산기</h1>
+                <h1 class="calculator-title">BMI 계산기</h1>
                 <p class="calculator-subtitle">체질량지수와 비만도를 빠르게 확인하세요</p>
             </div>
 
@@ -38,7 +38,7 @@
             <div class="calculator-body">
                 <!-- 입력 섹션 -->
                 <div class="input-section">
-                    <h2 class="section-title">📏 신체 정보 입력</h2>
+                    <h2 class="section-title">신체 정보 입력</h2>
                     <div class="input-grid">
                         <div class="input-group">
                             <label for="height" class="input-label">키</label>
@@ -53,8 +53,8 @@
                 </div>
 
                 <!-- 결과 섹션 -->
-                <div id="resultSection" class="result-section" style="display: none;">
-                    <h2 class="result-title">📋 BMI 결과</h2>
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">BMI 결과</h2>
                     <div class="result-grid">
                         <div class="result-item">
                             <div class="result-label">BMI</div>
@@ -74,17 +74,46 @@
     </div>
 
     <script>
-        // 숫자 파싱 함수
+        // 고급 숫자 파싱 함수 (한국어 단위, 퍼센트, 언더스코어, 소수점 지원)
         function parseNumber(input) {
-            if (!input || typeof input !== 'string') return 0;
+            if (!input) return 0;
+            if (typeof input === 'number') return input;
+            if (typeof input !== 'string') return 0;
             
-            // 기본 정리
-            input = input.replace(/[,\s]/g, '').toLowerCase();
+            // 기본 정리: 콤마, 공백 제거, 소문자 변환
+            let cleaned = input.replace(/[,\s_]/g, '').toLowerCase();
             
-            // 단위 제거
-            input = input.replace(/[kg|m|cm]/g, '');
+            // 퍼센트 처리
+            if (cleaned.includes('%')) {
+                let num = parseFloat(cleaned.replace(/%/g, ''));
+                return isNaN(num) ? 0 : num;
+            }
             
-            return parseFloat(input) || 0;
+            // 한국어 단위 처리
+            const koreanUnits = {
+                '만': 10000, '천': 1000, '백': 100,
+                '억': 100000000, '조': 1000000000000
+            };
+            
+            for (let [unit, multiplier] of Object.entries(koreanUnits)) {
+                if (cleaned.includes(unit)) {
+                    let parts = cleaned.split(unit);
+                    if (parts.length === 2) {
+                        let beforeUnit = parseFloat(parts[0]) || 0;
+                        let afterUnit = parseFloat(parts[1]) || 0;
+                        return beforeUnit * multiplier + afterUnit;
+                    }
+                }
+            }
+            
+            // 일반 단위 제거 (kg, m, cm, 키로, 킬로, 센치 등)
+            cleaned = cleaned.replace(/(kg|키로|킬로|그램|g|톤|t|파운드|lb|온스|oz)$/g, '');
+            cleaned = cleaned.replace(/(m|미터|cm|센치|센티|mm|밀리|km|킬로미터|인치|피트|야드)$/g, '');
+            cleaned = cleaned.replace(/(원|달러|\$|€|¥|£)$/g, '');
+            
+            // 최종 숫자 파싱
+            let result = parseFloat(cleaned);
+            return isNaN(result) ? 0 : result;
         }
 
         // 키 파싱 (cm 단위로 변환)
@@ -155,7 +184,7 @@
             adviceElement.className = `alert ${categoryClass}`;
             adviceElement.style.display = 'flex';
             
-            document.getElementById('resultSection').style.display = 'block';
+            // 결과 섹션은 이미 표시되어 있음
             document.getElementById('resultSection').classList.add('fade-in');
         }
 

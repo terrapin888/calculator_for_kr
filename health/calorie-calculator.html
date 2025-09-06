@@ -28,13 +28,13 @@
     <div class="container">
         <div class="calculator-card">
             <div class="calculator-header">
-                <h1 class="calculator-title">🔥 칼로리 계산기</h1>
+                <h1 class="calculator-title">칼로리 계산기</h1>
                 <p class="calculator-subtitle">기초대사량과 일일 권장 칼로리를 확인하세요</p>
             </div>
 
             <div class="calculator-body">
                 <div class="input-section">
-                    <h2 class="section-title">👤 신체 정보 입력</h2>
+                    <h2 class="section-title">신체 정보 입력</h2>
                     <div class="input-grid">
                         <div class="input-group">
                             <label for="age" class="input-label">나이</label>
@@ -68,8 +68,8 @@
                     <button onclick="calculate()" class="btn btn-primary">칼로리 계산하기</button>
                 </div>
 
-                <div id="resultSection" class="result-section" style="display: none;">
-                    <h2 class="result-title">📊 일일 칼로리</h2>
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">일일 칼로리</h2>
                     <div class="result-grid">
                         <div class="result-item">
                             <div class="result-label">기초대사량</div>
@@ -86,11 +86,53 @@
     </div>
 
     <script>
+        // 고급 숫자 파싱 함수 (한국어 단위, 퍼센트, 언더스코어, 소수점 지원)
+        function parseNumber(input) {
+            if (!input) return 0;
+            if (typeof input === 'number') return input;
+            if (typeof input !== 'string') return 0;
+            
+            // 기본 정리: 콤마, 공백 제거, 소문자 변환
+            let cleaned = input.replace(/[,\s_]/g, '').toLowerCase();
+            
+            // 퍼센트 처리
+            if (cleaned.includes('%')) {
+                let num = parseFloat(cleaned.replace(/%/g, ''));
+                return isNaN(num) ? 0 : num;
+            }
+            
+            // 한국어 단위 처리
+            const koreanUnits = {
+                '만': 10000, '천': 1000, '백': 100,
+                '억': 100000000, '조': 1000000000000
+            };
+            
+            for (let [unit, multiplier] of Object.entries(koreanUnits)) {
+                if (cleaned.includes(unit)) {
+                    let parts = cleaned.split(unit);
+                    if (parts.length === 2) {
+                        let beforeUnit = parseFloat(parts[0]) || 0;
+                        let afterUnit = parseFloat(parts[1]) || 0;
+                        return beforeUnit * multiplier + afterUnit;
+                    }
+                }
+            }
+            
+            // 일반 단위 제거 (kg, m, cm, 세, 년 등)
+            cleaned = cleaned.replace(/(kg|키로|킬로|그램|g|톤|t|파운드|lb|온스|oz)$/g, '');
+            cleaned = cleaned.replace(/(m|미터|cm|센치|센티|mm|밀리|km|킬로미터|인치|피트|야드)$/g, '');
+            cleaned = cleaned.replace(/(세|살|year|yr|년)$/g, '');
+            
+            // 최종 숫자 파싱
+            let result = parseFloat(cleaned);
+            return isNaN(result) ? 0 : result;
+        }
+
         function calculate() {
-            const age = parseInt(document.getElementById('age').value);
+            const age = parseNumber(document.getElementById('age').value);
             const gender = document.getElementById('gender').value;
-            const height = parseFloat(document.getElementById('height').value);
-            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseNumber(document.getElementById('height').value);
+            const weight = parseNumber(document.getElementById('weight').value);
             const activity = parseFloat(document.getElementById('activity').value);
             
             if (!age || !height || !weight) {
@@ -112,7 +154,7 @@
             document.getElementById('bmr').textContent = `${Math.round(bmr).toLocaleString()} kcal`;
             document.getElementById('tdee').textContent = `${Math.round(tdee).toLocaleString()} kcal`;
             
-            document.getElementById('resultSection').style.display = 'block';
+            // 결과 섹션은 이미 표시되어 있음
             document.getElementById('resultSection').classList.add('fade-in');
         }
 
