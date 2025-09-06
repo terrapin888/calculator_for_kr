@@ -1,5 +1,5 @@
 # CalcHub - 스마트 계산기 포털
-# https://your-domain.github.io/calculator_for_kr/
+# https://www.calcforkr.com/
 
 User-agent: *
 Allow: /
@@ -14,7 +14,7 @@ Allow: /images/
 # Disallow: 
 
 # 사이트맵 위치
-Sitemap: https://your-domain.github.io/calculator_for_kr/sitemap.xml
+Sitemap: https://www.calcforkr.com/sitemap.xml
 
 # 크롤링 지연 시간 (초) - 서버 부하 방지
 Crawl-delay: 1
@@ -37,4 +37,4 @@ Crawl-delay: 1
 # 목적: 26개 스마트 계산기 포털
 # 언어: 한국어
 # 대상: 한국 사용자
-# 업데이트: 2025-08-23
+# 업데이트: 2025-09-06
