@@ -3,522 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>러닝 페이스 계산기 - 달리기 속도 및 예상 완주 시간 계산 | 스마트 파싱</title>
-    <meta name="description" content="러닝 페이스 계산기로 달리기 속도, 예상 완주 시간, 목표 페이스를 계산하세요. 마라톤, 하프마라톤, 10K 등 다양한 거리를 지원합니다.">
-       <!-- 이 3줄 추가 -->
-   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="../../css/common.css">
-   <link rel="stylesheet" href="../../css/calculator.css">
+    <title>러닝 페이스 계산기 - CalcHub | 달리기 속도 및 완주시간 계산</title>
+    <meta name="description" content="러닝 페이스 계산기로 달리기 속도와 예상 완주 시간을 간편하게 계산하세요. 한국어 입력 자동 인식.">
+    <meta name="keywords" content="러닝페이스계산기, 달리기속도, 마라톤시간, 조깅">
     
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            overflow: hidden;
-            animation: slideUp 0.6s ease-out;
-        }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: pulse 4s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .content {
-            padding: 40px 30px;
-        }
-        
-        .mode-selector {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
-            border: 2px solid #e9ecef;
-        }
-        
-        .mode-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .mode-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .mode-btn {
-            background: white;
-            border: 2px solid #e9ecef;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .mode-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-color: #667eea;
-        }
-        
-        .mode-btn:hover {
-            border-color: #667eea;
-            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.2);
-        }
-        
-        .input-section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 2px solid #e9ecef;
-            transition: all 0.3s ease;
-        }
-        
-        .input-section:hover {
-            border-color: #667eea;
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
-        }
-        
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-        
-        .input-group {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        
-        .input-label {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .input-label .icon {
-            font-size: 1.3rem;
-        }
-        
-        input[type="text"], select {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: #fafbfc;
-        }
-        
-        input[type="text"]:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        .parsed-result {
-            margin-top: 10px;
-            padding: 10px;
-            background: #e3f2fd;
-            border-radius: 6px;
-            font-size: 14px;
-            color: #1976d2;
-            min-height: 20px;
-        }
-        
-        .examples {
-            background: linear-gradient(135deg, #fff3e0 0%, #ffeaa7 100%);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 25px 0;
-            border-left: 4px solid #f39c12;
-        }
-        
-        .examples h4 {
-            color: #d68910;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-        }
-        
-        .examples-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        
-        .example-item {
-            background: rgba(255,255,255,0.7);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-        
-        .example-title {
-            font-weight: bold;
-            color: #d68910;
-            margin-bottom: 5px;
-        }
-        
-        .controls {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 25px 0;
-        }
-        
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-        
-        .btn-secondary {
-            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
-        }
-        
-        .result-section {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            border-radius: 15px;
-            padding: 30px;
-            margin-top: 30px;
-            border: 2px solid #28a745;
-            display: none;
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .result-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #155724;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        
-        .pace-display {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-        
-        .pace-value {
-            font-size: 3rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #28a745;
-        }
-        
-        .pace-label {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #333;
-        }
-        
-        .pace-description {
-            font-size: 1rem;
-            color: #666;
-        }
-        
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-        
-        .result-item {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-        }
-        
-        .result-label {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 8px;
-        }
-        
-        .result-value {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #28a745;
-        }
-        
-        .race-predictions {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            margin-top: 25px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-        }
-        
-        .predictions-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .predictions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-        }
-        
-        .prediction-item {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            border: 2px solid #e9ecef;
-            transition: all 0.3s ease;
-        }
-        
-        .prediction-item:hover {
-            border-color: #667eea;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
-        }
-        
-        .prediction-distance {
-            font-size: 1rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 8px;
-        }
-        
-        .prediction-time {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #28a745;
-            margin-bottom: 5px;
-        }
-        
-        .prediction-pace {
-            font-size: 0.9rem;
-            color: #666;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-                border-radius: 15px;
-            }
-            
-            .header {
-                padding: 30px 20px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .content {
-                padding: 30px 20px;
-            }
-            
-            .input-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .btn {
-                width: 100%;
-                max-width: 300px;
-            }
-            
-            .pace-value {
-                font-size: 2.5rem;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
 </head>
 <body>
-       <!-- 이 헤더 부분 추가 -->
-   <header class="header">
-       <div class="header-content">
-           <a href="../../index.html" class="logo">
-               <div class="logo-icon">🧮</div>
-               CalcHub
-           </a>
-           <nav class="nav-links">
-               <a href="../../index.html" class="nav-link">홈</a>
-               <a href="../health/" class="nav-link">💼 건강</a>
-           </nav>
-       </div>
-   </header>
- 
-    <div class="container">
-        <div class="header">
-            <h1>🏃 러닝 페이스 계산기</h1>
-            <p>달리기 속도와 예상 완주 시간을 계산하여 러닝 목표를 달성하세요</p>
+    <!-- 공통 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
         </div>
-        
-        <div class="content">
-            <div class="mode-selector">
-                <div class="mode-title">📊 계산 모드 선택</div>
-                <div class="mode-buttons">
-                    <button class="mode-btn active" onclick="setMode('pace')" id="modeDistance">거리 + 시간 → 페이스</button>
-                    <button class="mode-btn" onclick="setMode('time')" id="modeTime">거리 + 페이스 → 시간</button>
-                    <button class="mode-btn" onclick="setMode('distance')" id="modeDistance">시간 + 페이스 → 거리</button>
-                </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <!-- 계산기 헤더 -->
+            <div class="calculator-header">
+                <h1 class="calculator-title">🏃 러닝 페이스 계산기</h1>
+                <p class="calculator-subtitle">달리기 속도와 예상 완주 시간을 간편하게 계산하세요</p>
             </div>
-            
-            <div class="input-section">
-                <div class="input-grid" id="inputGrid">
-                    <!-- 동적으로 생성 -->
-                </div>
-                
-                <div class="examples">
-                    <h4>💡 다양한 입력 예시</h4>
-                    <div class="examples-grid">
-                        <div class="example-item">
-                            <div class="example-title">거리 입력</div>
-                            5km, 10K, 21.1km<br>
-                            42.195km, 마라톤
+
+            <!-- 계산기 본문 -->
+            <div class="calculator-body">
+                <!-- 입력 섹션 -->
+                <div class="input-section">
+                    <h2 class="section-title">🏃 러닝 정보</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="distance" class="input-label">거리 (km)</label>
+                            <input type="text" id="distance" class="input-field" placeholder="예: 5, 10, 마라톤, 42.195">
                         </div>
-                        <div class="example-item">
-                            <div class="example-title">시간 입력</div>
-                            25분, 1시간 30분<br>
-                            3:45:30, 45:20
-                        </div>
-                        <div class="example-item">
-                            <div class="example-title">페이스 입력</div>
-                            5분/km, 4:30/km<br>
-                            6분 30초/km
+                        <div class="input-group">
+                            <label for="time" class="input-label">완주 시간</label>
+                            <input type="text" id="time" class="input-field" placeholder="예: 30분, 1시간30분, 3:45:30">
                         </div>
                     </div>
+                    <button onclick="calculate()" class="btn btn-primary">계산하기</button>
                 </div>
-            </div>
 
-            <div class="controls">
-                <button class="btn" onclick="calculatePace()">
-                    🏃 계산하기
-                </button>
-                <button class="btn btn-secondary" onclick="showExampleData()">
-                    📝 예시 데이터 입력
-                </button>
-                <button class="btn btn-danger" onclick="clearAll()">
-                    🗑️ 초기화
-                </button>
-            </div>
-
-            <div class="result-section" id="resultSection">
-                <div class="result-title" id="resultTitle">🏃 러닝 페이스 계산 결과</div>
-                
-                <div class="pace-display" id="paceDisplay">
-                    <div class="pace-value" id="paceValue">0:00</div>
-                    <div class="pace-label" id="paceLabel">페이스 (분/km)</div>
-                    <div class="pace-description" id="paceDescription">1km당 소요 시간입니다</div>
-                </div>
-                
-                <div class="result-grid" id="resultGrid">
-                    <!-- 동적으로 생성 -->
-                </div>
-                
-                <div class="race-predictions">
-                    <div class="predictions-title">🏁 주요 대회 예상 기록</div>
-                    <div class="predictions-grid" id="predictionsGrid">
-                        <!-- 동적으로 생성 -->
+                <!-- 결과 섹션 -->
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <h2 class="result-title">📋 계산 결과</h2>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">페이스 (분/km)</div>
+                            <div id="paceResult" class="result-value highlight">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">평균 속도 (km/h)</div>
+                            <div id="speedResult" class="result-value">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">마라톤 예상시간</div>
+                            <div id="marathonResult" class="result-value">-</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -526,225 +75,78 @@
     </div>
 
     <script>
-        class SmartRunningParser {
-            parseDistance(input) {
-                if (!input) return null;
-                
-                let cleaned = input.replace(/\s+/g, '').toLowerCase();
-                
-                // 특수 거리 처리
-                if (cleaned.includes('마라톤') || cleaned.includes('marathon')) {
-                    return 42.195;
-                }
-                if (cleaned.includes('하프') || cleaned.includes('half')) {
-                    return 21.0975;
-                }
-                
-                // km 단위 처리
-                if (cleaned.includes('km') || cleaned.includes('키로')) {
-                    let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
-                    return isNaN(num) ? null : num;
-                }
-                
-                // m 단위 처리
-                if (cleaned.includes('m') && !cleaned.includes('km')) {
-                    let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
-                    return isNaN(num) ? null : num / 1000;
-                }
-                
-                // K 표기 (5K, 10K 등)
-                if (cleaned.includes('k') && !cleaned.includes('km')) {
-                    let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
-                    return isNaN(num) ? null : num;
-                }
-                
-                // 단위 없는 숫자는 km로 간주
-                let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
-                return isNaN(num) ? null : num;
+        // 숫자 파싱 함수 (한국어 단위 지원)
+        function parseNumber(input) {
+            if (!input || typeof input !== 'string') return 0;
+            
+            // 기본 정리
+            input = input.replace(/[,\s]/g, '').toLowerCase();
+            
+            // 특수 거리 처리
+            if (input.includes('마라톤')) return 42.195;
+            if (input.includes('하프')) return 21.0975;
+            
+            // 단위 제거
+            input = input.replace(/(km|키로|킬로)/g, '');
+            
+            return parseFloat(input) || 0;
+        }
+
+        // 시간 파싱 함수
+        function parseTime(input) {
+            if (!input || typeof input !== 'string') return 0;
+            
+            input = input.replace(/\s+/g, '').toLowerCase();
+            let totalSeconds = 0;
+            
+            // 시:분:초 형태 (3:45:30)
+            let timeMatch = input.match(/(\d+):(\d+):(\d+)/);
+            if (timeMatch) {
+                totalSeconds = parseInt(timeMatch[1]) * 3600 + 
+                              parseInt(timeMatch[2]) * 60 + 
+                              parseInt(timeMatch[3]);
+                return totalSeconds;
             }
             
-            parseTime(input) {
-                if (!input) return null;
-                
-                let cleaned = input.replace(/\s+/g, '').toLowerCase();
-                let totalSeconds = 0;
-                
-                // 시:분:초 형태 (3:45:30, 1:30:00)
-                let timeMatch = cleaned.match(/(\d+):(\d+):(\d+)/);
-                if (timeMatch) {
-                    totalSeconds = parseInt(timeMatch[1]) * 3600 + 
-                                  parseInt(timeMatch[2]) * 60 + 
-                                  parseInt(timeMatch[3]);
-                    return totalSeconds;
-                }
-                
-                // 분:초 형태 (45:30, 5:20)
-                timeMatch = cleaned.match(/(\d+):(\d+)/);
-                if (timeMatch) {
-                    totalSeconds = parseInt(timeMatch[1]) * 60 + parseInt(timeMatch[2]);
-                    return totalSeconds;
-                }
-                
-                // 시간 처리
-                let hourMatch = cleaned.match(/(\d+(?:\.\d+)?)(시간|h)/);
+            // 분:초 형태 (45:30)
+            timeMatch = input.match(/(\d+):(\d+)/);
+            if (timeMatch) {
+                totalSeconds = parseInt(timeMatch[1]) * 60 + parseInt(timeMatch[2]);
+                return totalSeconds;
+            }
+            
+            // 시간을 분으로 변환
+            if (input.includes('시간')) {
+                let hourMatch = input.match(/(\d+(?:\.\d+)?)시간/);
                 if (hourMatch) {
                     totalSeconds += parseFloat(hourMatch[1]) * 3600;
                 }
-                
-                // 분 처리
-                let minuteMatch = cleaned.match(/(\d+(?:\.\d+)?)(분|min)/);
+            }
+            
+            // 분 처리
+            if (input.includes('분')) {
+                let minuteMatch = input.match(/(\d+(?:\.\d+)?)분/);
                 if (minuteMatch) {
                     totalSeconds += parseFloat(minuteMatch[1]) * 60;
                 }
-                
-                // 초 처리
-                let secondMatch = cleaned.match(/(\d+(?:\.\d+)?)(초|sec)/);
-                if (secondMatch) {
-                    totalSeconds += parseFloat(secondMatch[1]);
-                }
-                
-                // 단위 없는 숫자는 분으로 간주
-                if (totalSeconds === 0) {
-                    let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
-                    if (!isNaN(num)) {
-                        totalSeconds = num * 60;
-                    }
-                }
-                
-                return totalSeconds > 0 ? totalSeconds : null;
             }
             
-            parsePace(input) {
-                if (!input) return null;
-                
-                let cleaned = input.replace(/\s+/g, '').toLowerCase();
-                
-                // 분:초/km 형태 (5:30/km, 4:20/km)
-                let paceMatch = cleaned.match(/(\d+):(\d+)/);
-                if (paceMatch) {
-                    return parseInt(paceMatch[1]) * 60 + parseInt(paceMatch[2]);
+            // 단위 없는 숫자는 분으로 간주
+            if (totalSeconds === 0) {
+                let num = parseFloat(input.replace(/[^0-9.]/g, ''));
+                if (!isNaN(num)) {
+                    totalSeconds = num * 60;
                 }
-                
-                // 분 단위만 (5분/km, 4.5분/km)
-                let minuteMatch = cleaned.match(/(\d+(?:\.\d+)?)(분|min)/);
-                if (minuteMatch) {
-                    return parseFloat(minuteMatch[1]) * 60;
-                }
-                
-                // 단위 없는 숫자는 분으로 간주
-                let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
-                return isNaN(num) ? null : num * 60;
             }
+            
+            return totalSeconds;
         }
 
-        const parser = new SmartRunningParser();
-        let currentMode = 'pace';
-
-        function setMode(mode) {
-            currentMode = mode;
-            
-            // 버튼 상태 업데이트
-            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`#mode${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
-            
-            updateInputFields();
-        }
-
-        function updateInputFields() {
-            const inputGrid = document.getElementById('inputGrid');
-            inputGrid.innerHTML = '';
-            
-            if (currentMode === 'pace') {
-                // 거리 + 시간 → 페이스
-                inputGrid.innerHTML = `
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">📏</span>
-                            거리
-                        </div>
-                        <input type="text" id="distance" placeholder="예: 5km, 10K, 21.1km, 마라톤..." oninput="smartParse()">
-                        <div class="parsed-result" id="distanceParsed">입력 대기 중...</div>
-                    </div>
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">⏱️</span>
-                            완주 시간
-                        </div>
-                        <input type="text" id="time" placeholder="예: 25분, 1시간 30분, 3:45:30..." oninput="smartParse()">
-                        <div class="parsed-result" id="timeParsed">입력 대기 중...</div>
-                    </div>
-                `;
-            } else if (currentMode === 'time') {
-                // 거리 + 페이스 → 시간
-                inputGrid.innerHTML = `
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">📏</span>
-                            거리
-                        </div>
-                        <input type="text" id="distance" placeholder="예: 5km, 10K, 21.1km, 마라톤..." oninput="smartParse()">
-                        <div class="parsed-result" id="distanceParsed">입력 대기 중...</div>
-                    </div>
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">🏃</span>
-                            목표 페이스
-                        </div>
-                        <input type="text" id="pace" placeholder="예: 5분/km, 4:30/km, 6분 30초/km..." oninput="smartParse()">
-                        <div class="parsed-result" id="paceParsed">입력 대기 중...</div>
-                    </div>
-                `;
-            } else {
-                // 시간 + 페이스 → 거리
-                inputGrid.innerHTML = `
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">⏱️</span>
-                            운동 시간
-                        </div>
-                        <input type="text" id="time" placeholder="예: 30분, 1시간, 2:30:00..." oninput="smartParse()">
-                        <div class="parsed-result" id="timeParsed">입력 대기 중...</div>
-                    </div>
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">🏃</span>
-                            페이스
-                        </div>
-                        <input type="text" id="pace" placeholder="예: 5분/km, 4:30/km, 6분 30초/km..." oninput="smartParse()">
-                        <div class="parsed-result" id="paceParsed">입력 대기 중...</div>
-                    </div>
-                `;
-            }
-        }
-
-        function smartParse() {
-            const distanceInput = document.getElementById('distance');
-            const timeInput = document.getElementById('time');
-            const paceInput = document.getElementById('pace');
-            
-            if (distanceInput) {
-                const parsedDistance = parser.parseDistance(distanceInput.value);
-                document.getElementById('distanceParsed').textContent = 
-                    parsedDistance ? `인식됨: ${parsedDistance}km` : '입력 대기 중...';
-            }
-            
-            if (timeInput) {
-                const parsedTime = parser.parseTime(timeInput.value);
-                document.getElementById('timeParsed').textContent = 
-                    parsedTime ? `인식됨: ${formatTime(parsedTime)}` : '입력 대기 중...';
-            }
-            
-            if (paceInput) {
-                const parsedPace = parser.parsePace(paceInput.value);
-                document.getElementById('paceParsed').textContent = 
-                    parsedPace ? `인식됨: ${formatPace(parsedPace)}` : '입력 대기 중...';
-            }
-        }
-
+        // 시간 포맷팅 함수
         function formatTime(seconds) {
             const hours = Math.floor(seconds / 3600);
             const minutes = Math.floor((seconds % 3600) / 60);
-            const secs = seconds % 60;
+            const secs = Math.floor(seconds % 60);
             
             if (hours > 0) {
                 return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
@@ -753,178 +155,47 @@
             }
         }
 
+        // 페이스 포맷팅 함수
         function formatPace(seconds) {
             const minutes = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${minutes}:${secs.toString().padStart(2, '0')}/km`;
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs.toString().padStart(2, '0')}`;
         }
 
-        function calculatePace() {
-            let distance, time, pace;
+        // 계산 함수
+        function calculate() {
+            const distance = parseNumber(document.getElementById('distance').value);
+            const timeInSeconds = parseTime(document.getElementById('time').value);
             
-            if (currentMode === 'pace') {
-                // 거리 + 시간 → 페이스
-                distance = parser.parseDistance(document.getElementById('distance').value);
-                time = parser.parseTime(document.getElementById('time').value);
-                
-                if (!distance || !time) {
-                    alert('거리와 시간을 모두 입력해주세요.');
-                    return;
-                }
-                
-                pace = time / distance; // 초/km
-                displayPaceResults({ distance, time, pace, mode: 'pace' });
-                
-            } else if (currentMode === 'time') {
-                // 거리 + 페이스 → 시간
-                distance = parser.parseDistance(document.getElementById('distance').value);
-                pace = parser.parsePace(document.getElementById('pace').value);
-                
-                if (!distance || !pace) {
-                    alert('거리와 페이스를 모두 입력해주세요.');
-                    return;
-                }
-                
-                time = distance * pace; // 총 시간(초)
-                displayPaceResults({ distance, time, pace, mode: 'time' });
-                
-            } else {
-                // 시간 + 페이스 → 거리
-                time = parser.parseTime(document.getElementById('time').value);
-                pace = parser.parsePace(document.getElementById('pace').value);
-                
-                if (!time || !pace) {
-                    alert('시간과 페이스를 모두 입력해주세요.');
-                    return;
-                }
-                
-                distance = time / pace; // km
-                displayPaceResults({ distance, time, pace, mode: 'distance' });
+            if (!distance || !timeInSeconds) {
+                alert('거리와 시간을 모두 입력해주세요');
+                return;
             }
+
+            // 페이스 계산 (초/km)
+            const paceInSeconds = timeInSeconds / distance;
+            
+            // 평균 속도 계산 (km/h)
+            const speed = distance / (timeInSeconds / 3600);
+            
+            // 마라톤 예상 시간 계산
+            const marathonTime = paceInSeconds * 42.195;
+
+            // 결과 표시
+            document.getElementById('paceResult').textContent = formatPace(paceInSeconds);
+            document.getElementById('speedResult').textContent = `${speed.toFixed(1)}km/h`;
+            document.getElementById('marathonResult').textContent = formatTime(marathonTime);
+            
+            document.getElementById('resultSection').style.display = 'block';
+            document.getElementById('resultSection').classList.add('fade-in');
         }
 
-        function displayPaceResults(data) {
-            const resultSection = document.getElementById('resultSection');
-            
-            // 결과 제목 및 메인 값 업데이트
-            if (data.mode === 'pace') {
-                document.getElementById('resultTitle').textContent = '🏃 페이스 계산 결과';
-                document.getElementById('paceValue').textContent = formatPace(data.pace);
-                document.getElementById('paceLabel').textContent = '페이스 (분/km)';
-                document.getElementById('paceDescription').textContent = '1km당 소요 시간입니다';
-            } else if (data.mode === 'time') {
-                document.getElementById('resultTitle').textContent = '⏱️ 완주 시간 계산 결과';
-                document.getElementById('paceValue').textContent = formatTime(data.time);
-                document.getElementById('paceLabel').textContent = '예상 완주 시간';
-                document.getElementById('paceDescription').textContent = '목표 페이스로 달릴 때의 완주 시간입니다';
-            } else {
-                document.getElementById('resultTitle').textContent = '📏 달릴 수 있는 거리 계산 결과';
-                document.getElementById('paceValue').textContent = data.distance.toFixed(2) + 'km';
-                document.getElementById('paceLabel').textContent = '달릴 수 있는 거리';
-                document.getElementById('paceDescription').textContent = '주어진 시간과 페이스로 달릴 수 있는 거리입니다';
-            }
-            
-            // 결과 그리드 업데이트
-            updateResultGrid(data);
-            
-            // 주요 대회 예상 기록 업데이트
-            updateRacePredictions(data.pace);
-            
-            resultSection.style.display = 'block';
-            resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        function updateResultGrid(data) {
-            const resultGrid = document.getElementById('resultGrid');
-            const speed = 3600 / data.pace; // km/h
-            
-            resultGrid.innerHTML = `
-                <div class="result-item">
-                    <div class="result-label">거리</div>
-                    <div class="result-value">${data.distance.toFixed(2)}km</div>
-                </div>
-                <div class="result-item">
-                    <div class="result-label">완주 시간</div>
-                    <div class="result-value">${formatTime(data.time)}</div>
-                </div>
-                <div class="result-item">
-                    <div class="result-label">페이스</div>
-                    <div class="result-value">${formatPace(data.pace)}</div>
-                </div>
-                <div class="result-item">
-                    <div class="result-label">평균 속도</div>
-                    <div class="result-value">${speed.toFixed(1)}km/h</div>
-                </div>
-            `;
-        }
-
-        function updateRacePredictions(pace) {
-            const predictionsGrid = document.getElementById('predictionsGrid');
-            
-            const races = [
-                { name: '5K', distance: 5 },
-                { name: '10K', distance: 10 },
-                { name: '하프마라톤', distance: 21.0975 },
-                { name: '마라톤', distance: 42.195 }
-            ];
-            
-            predictionsGrid.innerHTML = '';
-            
-            races.forEach(race => {
-                const time = race.distance * pace;
-                const div = document.createElement('div');
-                div.className = 'prediction-item';
-                div.innerHTML = `
-                    <div class="prediction-distance">${race.name}</div>
-                    <div class="prediction-time">${formatTime(time)}</div>
-                    <div class="prediction-pace">${formatPace(pace)}</div>
-                `;
-                predictionsGrid.appendChild(div);
-            });
-        }
-
-        function showExampleData() {
-            if (currentMode === 'pace') {
-                document.getElementById('distance').value = '10km';
-                document.getElementById('time').value = '45분';
-            } else if (currentMode === 'time') {
-                document.getElementById('distance').value = '마라톤';
-                document.getElementById('pace').value = '5분/km';
-            } else {
-                document.getElementById('time').value = '1시간';
-                document.getElementById('pace').value = '6분/km';
-            }
-            smartParse();
-        }
-
-        function clearAll() {
-            document.querySelectorAll('input[type="text"]').forEach(input => {
-                input.value = '';
-            });
-            document.querySelectorAll('.parsed-result').forEach(result => {
-                result.textContent = '입력 대기 중...';
-            });
-            document.getElementById('resultSection').style.display = 'none';
-        }
-
-        // 페이지 로드 시 초기화
-        window.addEventListener('load', function() {
-            updateInputFields();
-            showExampleData();
-            
-            // 2초 후 자동 계산
-            setTimeout(() => {
-                calculatePace();
-            }, 2000);
-        });
-
-        // 엔터키 이벤트
-        document.addEventListener('keydown', function(e) {
+        // 엔터키로 계산
+        document.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                calculatePace();
+                calculate();
             }
         });
     </script>
 </body>
 </html>
-

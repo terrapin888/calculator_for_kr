@@ -1,836 +1,156 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>수수료 계산기 - 플랫폼 수수료 자동 계산 | 스마트 파싱</title>
-   <meta name="description" content="수수료 계산기로 플랫폼 수수료와 실수령액을 쉽게 계산하세요. 판매가와 수수료율을 자유 형식으로 입력하면 자동 인식합니다.">
-   
-   <!-- 이 3줄 추가 -->
-   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="../../css/common.css">
-   <link rel="stylesheet" href="../../css/calculator.css">
-   
-   <style>
-       * {
-           margin: 0;
-           padding: 0;
-           box-sizing: border-box;
-       }
-       
-       body {
-           font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
-           background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
-           min-height: 100vh;
-           padding: 20px;
-       }
-       
-       .container {
-           max-width: 1200px;
-           margin: 0 auto;
-           background: white;
-           border-radius: 20px;
-           box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-           overflow: hidden;
-           animation: slideUp 0.6s ease-out;
-       }
-       
-       @keyframes slideUp {
-           from { opacity: 0; transform: translateY(30px); }
-           to { opacity: 1; transform: translateY(0); }
-       }
-       
-       .header {
-           background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-           color: white;
-           padding: 40px 30px;
-           text-align: center;
-           position: relative;
-           overflow: hidden;
-       }
-       
-       .header::before {
-           content: '';
-           position: absolute;
-           top: -50%;
-           left: -50%;
-           width: 200%;
-           height: 200%;
-           background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-           animation: pulse 4s ease-in-out infinite;
-       }
-       
-       @keyframes pulse {
-           0%, 100% { transform: scale(1); }
-           50% { transform: scale(1.1); }
-       }
-       
-       .header h1 {
-           font-size: 2.5rem;
-           margin-bottom: 10px;
-           position: relative;
-           z-index: 1;
-       }
-       
-       .header p {
-           font-size: 1.1rem;
-           opacity: 0.9;
-           position: relative;
-           z-index: 1;
-       }
-       
-       .content {
-           padding: 40px 30px;
-       }
-       
-       .calculator-tabs {
-           display: flex;
-           background: #f8f9fa;
-           border-radius: 15px;
-           padding: 5px;
-           margin-bottom: 30px;
-           gap: 5px;
-       }
-       
-       .tab-button {
-           flex: 1;
-           padding: 15px 20px;
-           border: none;
-           border-radius: 10px;
-           background: transparent;
-           cursor: pointer;
-           transition: all 0.3s ease;
-           font-weight: 600;
-           font-size: 14px;
-       }
-       
-       .tab-button.active {
-           background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-           color: white;
-       }
-       
-       .tab-content {
-           display: none;
-       }
-       
-       .tab-content.active {
-           display: block;
-       }
-       
-       .input-section {
-           background: #f8f9fa;
-           border-radius: 15px;
-           padding: 30px;
-           margin-bottom: 30px;
-           border: 2px solid #e9ecef;
-       }
-       
-       .input-grid {
-           display: grid;
-           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-           gap: 25px;
-       }
-       
-       .input-group {
-           background: white;
-           border-radius: 12px;
-           padding: 20px;
-           box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-       }
-       
-       .input-label {
-           font-size: 1.1rem;
-           font-weight: 600;
-           color: #333;
-           margin-bottom: 10px;
-           display: flex;
-           align-items: center;
-           gap: 8px;
-       }
-       
-       input[type="text"], input[type="number"] {
-           width: 100%;
-           padding: 15px;
-           border: 2px solid #e1e5e9;
-           border-radius: 8px;
-           font-size: 16px;
-           transition: all 0.3s ease;
-           background: #fafbfc;
-       }
-       
-       input:focus {
-           outline: none;
-           border-color: #ff9a9e;
-           background: white;
-           box-shadow: 0 0 0 3px rgba(255, 154, 158, 0.1);
-       }
-       
-       .parsed-result {
-           margin-top: 10px;
-           padding: 10px;
-           background: #fff3e0;
-           border-radius: 6px;
-           font-size: 14px;
-           color: #ef6c00;
-       }
-       
-       .controls {
-           display: flex;
-           gap: 15px;
-           flex-wrap: wrap;
-           justify-content: center;
-           margin: 25px 0;
-       }
-       
-       .btn {
-           background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-           color: white;
-           border: none;
-           padding: 15px 30px;
-           border-radius: 25px;
-           font-size: 16px;
-           font-weight: 600;
-           cursor: pointer;
-           transition: all 0.3s ease;
-       }
-       
-       .btn:hover {
-           transform: translateY(-2px);
-           box-shadow: 0 8px 25px rgba(255, 154, 158, 0.3);
-       }
-       
-       .btn-secondary {
-           background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
-       }
-       
-       .btn-danger {
-           background: linear-gradient(135deg, #ef5350 0%, #f44336 100%);
-       }
-       
-       .result-section {
-           background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
-           border-radius: 15px;
-           padding: 30px;
-           margin-top: 30px;
-           border: 2px solid #4caf50;
-           display: none;
-           animation: fadeIn 0.5s ease-in;
-       }
-       
-       @keyframes fadeIn {
-           from { opacity: 0; transform: translateY(20px); }
-           to { opacity: 1; transform: translateY(0); }
-       }
-       
-       .result-title {
-           font-size: 1.5rem;
-           font-weight: bold;
-           color: #2e7d32;
-           margin-bottom: 25px;
-           text-align: center;
-       }
-       
-       .fee-display {
-           background: white;
-           border-radius: 15px;
-           padding: 30px;
-           text-align: center;
-           margin-bottom: 25px;
-           box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-       }
-       
-       .fee-value {
-           font-size: 3rem;
-           font-weight: bold;
-           color: #4caf50;
-           margin-bottom: 10px;
-       }
-       
-       .fee-description {
-           font-size: 1.2rem;
-           color: #666;
-       }
-       
-       .result-grid {
-           display: grid;
-           grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-           gap: 20px;
-       }
-       
-       .result-item {
-           background: white;
-           padding: 20px;
-           border-radius: 12px;
-           text-align: center;
-           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-       }
-       
-       .result-label {
-           font-size: 0.9rem;
-           color: #666;
-           margin-bottom: 8px;
-       }
-       
-       .result-value {
-           font-size: 1.3rem;
-           font-weight: bold;
-           color: #4caf50;
-       }
-       
-       .preset-fees {
-           background: white;
-           border-radius: 12px;
-           padding: 20px;
-           margin-top: 20px;
-           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-       }
-       
-       .preset-title {
-           font-size: 1.1rem;
-           font-weight: bold;
-           color: #333;
-           margin-bottom: 15px;
-           text-align: center;
-       }
-       
-       .preset-buttons {
-           display: grid;
-           grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-           gap: 10px;
-       }
-       
-       .preset-btn {
-           padding: 12px 15px;
-           border: 2px solid #e9ecef;
-           border-radius: 20px;
-           background: white;
-           cursor: pointer;
-           transition: all 0.3s ease;
-           text-align: center;
-           font-weight: 600;
-           font-size: 13px;
-       }
-       
-       .preset-btn:hover {
-           border-color: #ff9a9e;
-           background: rgba(255, 154, 158, 0.1);
-       }
-       
-       @media (max-width: 768px) {
-           .container {
-               margin: 10px;
-           }
-           
-           .header h1 {
-               font-size: 2rem;
-           }
-           
-           .calculator-tabs {
-               flex-direction: column;
-           }
-           
-           .input-grid {
-               grid-template-columns: 1fr;
-           }
-           
-           .controls {
-               flex-direction: column;
-           }
-           
-           .btn {
-               width: 100%;
-           }
-           
-           .fee-value {
-               font-size: 2.5rem;
-           }
-       }
-   </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수수료 계산기 - CalcHub | 수수료 및 총액 계산</title>
+    <meta name="description" content="수수료 계산기로 수수료와 총 금액을 간편하게 계산하세요. 한국어 단위 자동 인식.">
+    <meta name="keywords" content="수수료계산기, 수수료율계산, 거래수수료, 중개수수료">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
 </head>
 <body>
-   
-   <!-- 이 헤더 부분 추가 -->
-   <header class="header">
-       <div class="header-content">
-           <a href="../../index.html" class="logo">
-               <div class="logo-icon">🧮</div>
-               CalcHub
-           </a>
-           <nav class="nav-links">
-               <a href="../../index.html" class="nav-link">홈</a>
-               <a href="../business/" class="nav-link">💼 비즈니스</a>
-           </nav>
-       </div>
-   </header>
-   
-   <div class="container">
-       <div class="header">
-           <h1>💳 수수료 계산기</h1>
-           <p>플랫폼 수수료와 실수령액을 쉽게 계산하세요</p>
-       </div>
-       
-       <div class="content">
-           <div class="calculator-tabs">
-               <button class="tab-button active" onclick="switchTab('platform')">플랫폼 수수료</button>
-               <button class="tab-button" onclick="switchTab('custom')">커스텀 수수료</button>
-               <button class="tab-button" onclick="switchTab('reverse')">역산 계산</button>
-           </div>
-           
-           <!-- 플랫폼 수수료 -->
-           <div id="platform" class="tab-content active">
-               <div class="input-section">
-                   <div class="input-grid">
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>💰</span>
-                               판매가격
-                           </div>
-                           <input type="text" id="sale-price" placeholder="예: 100000원, 10만원..." oninput="smartParsePlatform()">
-                           <div class="parsed-result" id="salePriceParsed">입력 대기 중...</div>
-                       </div>
-                       
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>🏪</span>
-                               플랫폼 선택
-                           </div>
-                           <select id="platform-select" onchange="updatePlatformFee()" style="width: 100%; padding: 15px; border: 2px solid #e1e5e9; border-radius: 8px; font-size: 16px; background: #fafbfc;">
-                               <option value="">플랫폼을 선택하세요</option>
-                               <option value="3">네이버 스마트스토어 (3%)</option>
-                               <option value="3.6">쿠팡 (3.6%)</option>
-                               <option value="5.5">11번가 (5.5%)</option>
-                               <option value="6">G마켓/옥션 (6%)</option>
-                               <option value="8.5">카카오톡 선물하기 (8.5%)</option>
-                               <option value="30">배달의민족 (30%)</option>
-                               <option value="custom">직접 입력</option>
-                           </select>
-                       </div>
-                   </div>
-                   
-                   <div class="input-group" id="custom-fee-group" style="display: none; margin-top: 20px;">
-                       <div class="input-label">
-                           <span>📊</span>
-                           수수료율
-                       </div>
-                       <input type="text" id="custom-fee-rate" placeholder="예: 5%, 0.05..." oninput="smartParsePlatform()">
-                       <div class="parsed-result" id="customFeeRateParsed">입력 대기 중...</div>
-                   </div>
-               </div>
-               
-               <div class="controls">
-                   <button class="btn" onclick="calculatePlatformFee()">💳 수수료 계산</button>
-                   <button class="btn btn-secondary" onclick="showPlatformExample()">📝 예시</button>
-                   <button class="btn btn-danger" onclick="clearPlatform()">🗑️ 초기화</button>
-               </div>
-               
-               <div class="result-section" id="platformResult"></div>
-           </div>
-           
-           <!-- 커스텀 수수료 -->
-           <div id="custom" class="tab-content">
-               <div class="input-section">
-                   <div class="input-grid">
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>💰</span>
-                               거래금액
-                           </div>
-                           <input type="text" id="custom-amount" placeholder="예: 500000원, 50만원..." oninput="smartParseCustom()">
-                           <div class="parsed-result" id="customAmountParsed">입력 대기 중...</div>
-                       </div>
-                       
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>📊</span>
-                               수수료율
-                           </div>
-                           <input type="text" id="fee-rate" placeholder="예: 2.5%, 0.025..." oninput="smartParseCustom()">
-                           <div class="parsed-result" id="feeRateParsed">입력 대기 중...</div>
-                       </div>
-                   </div>
-                   
-                   <div class="preset-fees">
-                       <div class="preset-title">🎯 빠른 수수료율 선택</div>
-                       <div class="preset-buttons">
-                           <button class="preset-btn" onclick="setFeeRate(1)">1%</button>
-                           <button class="preset-btn" onclick="setFeeRate(2)">2%</button>
-                           <button class="preset-btn" onclick="setFeeRate(3)">3%</button>
-                           <button class="preset-btn" onclick="setFeeRate(5)">5%</button>
-                           <button class="preset-btn" onclick="setFeeRate(10)">10%</button>
-                           <button class="preset-btn" onclick="setFeeRate(15)">15%</button>
-                       </div>
-                   </div>
-               </div>
-               
-               <div class="controls">
-                   <button class="btn" onclick="calculateCustomFee()">💳 수수료 계산</button>
-                   <button class="btn btn-secondary" onclick="showCustomExample()">📝 예시</button>
-                   <button class="btn btn-danger" onclick="clearCustom()">🗑️ 초기화</button>
-               </div>
-               
-               <div class="result-section" id="customResult"></div>
-           </div>
-           
-           <!-- 역산 계산 -->
-           <div id="reverse" class="tab-content">
-               <div class="input-section">
-                   <div class="input-grid">
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>🎯</span>
-                               원하는 실수령액
-                           </div>
-                           <input type="text" id="desired-amount" placeholder="예: 95000원, 9만5천원..." oninput="smartParseReverse()">
-                           <div class="parsed-result" id="desiredAmountParsed">입력 대기 중...</div>
-                       </div>
-                       
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>📊</span>
-                               수수료율
-                           </div>
-                           <input type="text" id="reverse-fee-rate" placeholder="예: 5%, 0.05..." oninput="smartParseReverse()">
-                           <div class="parsed-result" id="reverseFeeRateParsed">입력 대기 중...</div>
-                       </div>
-                   </div>
-               </div>
-               
-               <div class="controls">
-                   <button class="btn" onclick="calculateReverseFee()">💳 필요 판매가 계산</button>
-                   <button class="btn btn-secondary" onclick="showReverseExample()">📝 예시</button>
-                   <button class="btn btn-danger" onclick="clearReverse()">🗑️ 초기화</button>
-               </div>
-               
-               <div class="result-section" id="reverseResult"></div>
-           </div>
-       </div>
-   </div>
+    <!-- 공통 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
 
-   <script>
-       let currentTab = 'platform';
-       
-       class PriceParser {
-           constructor() {
-               this.koreanUnits = {
-                   '천': 1000,
-                   '만': 10000,
-                   '억': 100000000
-               };
-           }
-           
-           parseAmount(input) {
-               if (!input) return null;
-               
-               let cleaned = input.replace(/\s+/g, '');
-               
-               for (let [unit, multiplier] of Object.entries(this.koreanUnits)) {
-                   if (cleaned.includes(unit)) {
-                       let parts = cleaned.split(unit);
-                       if (parts[0]) {
-                           let num = parseFloat(parts[0].replace(/[^0-9.]/g, ''));
-                           if (!isNaN(num)) {
-                               return num * multiplier;
-                           }
-                       }
-                   }
-               }
-               
-               cleaned = cleaned.replace(/[^0-9.]/g, '');
-               let num = parseFloat(cleaned);
-               
-               return isNaN(num) ? null : num;
-           }
-           
-           parseRate(input) {
-               if (!input) return null;
-               
-               let cleaned = input.replace(/\s+/g, '');
-               
-               if (cleaned.includes('%')) {
-                   let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
-                   return isNaN(num) ? null : num;
-               }
-               
-               let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
-               
-               if (isNaN(num)) return null;
-               
-               return num > 1 ? num : num * 100;
-           }
-       }
-       
-       const parser = new PriceParser();
-       
-       function switchTab(tabName) {
-           document.querySelectorAll('.tab-button').forEach(btn => {
-               btn.classList.remove('active');
-           });
-           event.target.classList.add('active');
-           
-           document.querySelectorAll('.tab-content').forEach(content => {
-               content.classList.remove('active');
-           });
-           document.getElementById(tabName).classList.add('active');
-           
-           currentTab = tabName;
-       }
-       
-       function updatePlatformFee() {
-           const select = document.getElementById('platform-select');
-           const customGroup = document.getElementById('custom-fee-group');
-           
-           if (select.value === 'custom') {
-               customGroup.style.display = 'block';
-           } else {
-               customGroup.style.display = 'none';
-           }
-           smartParsePlatform();
-       }
-       
-       // 플랫폼 수수료 계산
-       function smartParsePlatform() {
-           const price = document.getElementById('sale-price').value;
-           const parsedPrice = parser.parseAmount(price);
-           
-           document.getElementById('salePriceParsed').textContent = 
-               parsedPrice ? `인식됨: ${parsedPrice.toLocaleString()}원` : '입력 대기 중...';
-           
-           const platformSelect = document.getElementById('platform-select');
-           if (platformSelect.value === 'custom') {
-               const customRate = document.getElementById('custom-fee-rate').value;
-               const parsedRate = parser.parseRate(customRate);
-               document.getElementById('customFeeRateParsed').textContent = 
-                   parsedRate ? `인식됨: ${parsedRate}%` : '입력 대기 중...';
-           }
-       }
-       
-       function calculatePlatformFee() {
-           const salePrice = parser.parseAmount(document.getElementById('sale-price').value);
-           const platformSelect = document.getElementById('platform-select');
-           
-           if (!salePrice) {
-               alert('판매가격을 입력해주세요.');
-               return;
-           }
-           
-           if (!platformSelect.value) {
-               alert('플랫폼을 선택해주세요.');
-               return;
-           }
-           
-           let feeRate;
-           if (platformSelect.value === 'custom') {
-               feeRate = parser.parseRate(document.getElementById('custom-fee-rate').value);
-               if (!feeRate) {
-                   alert('커스텀 수수료율을 입력해주세요.');
-                   return;
-               }
-           } else {
-               feeRate = parseFloat(platformSelect.value);
-           }
-           
-           const feeAmount = salePrice * (feeRate / 100);
-           const netAmount = salePrice - feeAmount;
-           const platformName = platformSelect.options[platformSelect.selectedIndex].text;
-           
-           const resultHTML = `
-               <div class="result-title">💳 수수료 계산 결과</div>
-               <div class="fee-display">
-                   <div class="fee-value">${Math.round(netAmount).toLocaleString()}원</div>
-                   <div class="fee-description">실수령액</div>
-               </div>
-               <div class="result-grid">
-                   <div class="result-item">
-                       <div class="result-label">판매가격</div>
-                       <div class="result-value">${salePrice.toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">플랫폼</div>
-                       <div class="result-value" style="font-size: 1rem;">${platformName}</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">수수료</div>
-                       <div class="result-value">${Math.round(feeAmount).toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">수수료율</div>
-                       <div class="result-value">${feeRate}%</div>
-                   </div>
-               </div>
-           `;
-           
-           document.getElementById('platformResult').innerHTML = resultHTML;
-           document.getElementById('platformResult').style.display = 'block';
-           document.getElementById('platformResult').scrollIntoView({ behavior: 'smooth' });
-       }
-       
-       function showPlatformExample() {
-           document.getElementById('sale-price').value = '10만원';
-           document.getElementById('platform-select').value = '3';
-           smartParsePlatform();
-       }
-       
-       function clearPlatform() {
-           document.getElementById('sale-price').value = '';
-           document.getElementById('platform-select').value = '';
-           document.getElementById('custom-fee-rate').value = '';
-           document.getElementById('salePriceParsed').textContent = '입력 대기 중...';
-           document.getElementById('customFeeRateParsed').textContent = '입력 대기 중...';
-           document.getElementById('custom-fee-group').style.display = 'none';
-           document.getElementById('platformResult').style.display = 'none';
-       }
-       
-       // 커스텀 수수료 계산
-       function smartParseCustom() {
-           const amount = document.getElementById('custom-amount').value;
-           const rate = document.getElementById('fee-rate').value;
-           
-           const parsedAmount = parser.parseAmount(amount);
-           const parsedRate = parser.parseRate(rate);
-           
-           document.getElementById('customAmountParsed').textContent = 
-               parsedAmount ? `인식됨: ${parsedAmount.toLocaleString()}원` : '입력 대기 중...';
-           document.getElementById('feeRateParsed').textContent = 
-               parsedRate ? `인식됨: ${parsedRate}%` : '입력 대기 중...';
-       }
-       
-       function setFeeRate(rate) {
-           document.getElementById('fee-rate').value = rate + '%';
-           smartParseCustom();
-       }
-       
-       function calculateCustomFee() {
-           const amount = parser.parseAmount(document.getElementById('custom-amount').value);
-           const feeRate = parser.parseRate(document.getElementById('fee-rate').value);
-           
-           if (!amount || !feeRate) {
-               alert('거래금액과 수수료율을 모두 입력해주세요.');
-               return;
-           }
-           
-           const feeAmount = amount * (feeRate / 100);
-           const netAmount = amount - feeAmount;
-           
-           const resultHTML = `
-               <div class="result-title">💳 수수료 계산 결과</div>
-               <div class="fee-display">
-                   <div class="fee-value">${Math.round(netAmount).toLocaleString()}원</div>
-                   <div class="fee-description">실수령액</div>
-               </div>
-               <div class="result-grid">
-                   <div class="result-item">
-                       <div class="result-label">거래금액</div>
-                       <div class="result-value">${amount.toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">수수료율</div>
-                       <div class="result-value">${feeRate}%</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">수수료</div>
-                       <div class="result-value">${Math.round(feeAmount).toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">실수령액</div>
-                       <div class="result-value">${Math.round(netAmount).toLocaleString()}원</div>
-                   </div>
-               </div>
-           `;
-           
-           document.getElementById('customResult').innerHTML = resultHTML;
-           document.getElementById('customResult').style.display = 'block';
-           document.getElementById('customResult').scrollIntoView({ behavior: 'smooth' });
-       }
-       
-       function showCustomExample() {
-           document.getElementById('custom-amount').value = '50만원';
-           document.getElementById('fee-rate').value = '3%';
-           smartParseCustom();
-       }
-       
-       function clearCustom() {
-           document.getElementById('custom-amount').value = '';
-           document.getElementById('fee-rate').value = '';
-           document.getElementById('customAmountParsed').textContent = '입력 대기 중...';
-           document.getElementById('feeRateParsed').textContent = '입력 대기 중...';
-           document.getElementById('customResult').style.display = 'none';
-       }
-       
-       // 역산 계산
-       function smartParseReverse() {
-           const desiredAmount = document.getElementById('desired-amount').value;
-           const feeRate = document.getElementById('reverse-fee-rate').value;
-           
-           const parsedAmount = parser.parseAmount(desiredAmount);
-           const parsedRate = parser.parseRate(feeRate);
-           
-           document.getElementById('desiredAmountParsed').textContent = 
-               parsedAmount ? `인식됨: ${parsedAmount.toLocaleString()}원` : '입력 대기 중...';
-           document.getElementById('reverseFeeRateParsed').textContent = 
-               parsedRate ? `인식됨: ${parsedRate}%` : '입력 대기 중...';
-       }
-       
-       function calculateReverseFee() {
-           const desiredAmount = parser.parseAmount(document.getElementById('desired-amount').value);
-           const feeRate = parser.parseRate(document.getElementById('reverse-fee-rate').value);
-           
-           if (!desiredAmount || !feeRate) {
-               alert('원하는 실수령액과 수수료율을 모두 입력해주세요.');
-               return;
-           }
-           
-           const requiredSalePrice = desiredAmount / (1 - feeRate / 100);
-           const feeAmount = requiredSalePrice - desiredAmount;
-           
-           const resultHTML = `
-               <div class="result-title">💳 필요 판매가 계산 결과</div>
-               <div class="fee-display">
-                   <div class="fee-value">${Math.round(requiredSalePrice).toLocaleString()}원</div>
-                   <div class="fee-description">필요 판매가</div>
-               </div>
-               <div class="result-grid">
-                   <div class="result-item">
-                       <div class="result-label">원하는 실수령액</div>
-                       <div class="result-value">${desiredAmount.toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">수수료율</div>
-                       <div class="result-value">${feeRate}%</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">수수료</div>
-                       <div class="result-value">${Math.round(feeAmount).toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">필요 판매가</div>
-                       <div class="result-value">${Math.round(requiredSalePrice).toLocaleString()}원</div>
-                   </div>
-               </div>
-           `;
-           
-           document.getElementById('reverseResult').innerHTML = resultHTML;
-           document.getElementById('reverseResult').style.display = 'block';
-           document.getElementById('reverseResult').scrollIntoView({ behavior: 'smooth' });
-       }
-       
-       function showReverseExample() {
-           document.getElementById('desired-amount').value = '97000원';
-           document.getElementById('reverse-fee-rate').value = '3%';
-           smartParseReverse();
-       }
-       
-       function clearReverse() {
-           document.getElementById('desired-amount').value = '';
-           document.getElementById('reverse-fee-rate').value = '';
-           document.getElementById('desiredAmountParsed').textContent = '입력 대기 중...';
-           document.getElementById('reverseFeeRateParsed').textContent = '입력 대기 중...';
-           document.getElementById('reverseResult').style.display = 'none';
-       }
-       
-       window.addEventListener('load', function() {
-           showPlatformExample();
-           setTimeout(() => calculatePlatformFee(), 1500);
-       });
-   </script>
+    <div class="container">
+        <div class="calculator-card">
+            <!-- 계산기 헤더 -->
+            <div class="calculator-header">
+                <h1 class="calculator-title">💳 수수료 계산기</h1>
+                <p class="calculator-subtitle">수수료와 총 금액을 간편하게 계산하세요</p>
+            </div>
+
+            <!-- 계산기 본문 -->
+            <div class="calculator-body">
+                <!-- 입력 섹션 -->
+                <div class="input-section">
+                    <h2 class="section-title">💰 거래 정보</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="baseAmount" class="input-label">기본 금액 (원)</label>
+                            <input type="text" id="baseAmount" class="input-field" placeholder="예: 100000, 10만원">
+                        </div>
+                        <div class="input-group">
+                            <label for="feeRate" class="input-label">수수료율 (%)</label>
+                            <input type="text" id="feeRate" class="input-field" placeholder="예: 3, 3%">
+                        </div>
+                        <div class="input-group">
+                            <label for="feeType" class="input-label">수수료 방식</label>
+                            <select id="feeType" class="input-field">
+                                <option value="add">기본 금액에 추가 (받는 입장)</option>
+                                <option value="subtract">기본 금액에서 차감 (보내는 입장)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="calculate()" class="btn btn-primary">계산하기</button>
+                </div>
+
+                <!-- 결과 섹션 -->
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <h2 class="result-title">📋 계산 결과</h2>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">수수료</div>
+                            <div id="feeAmount" class="result-value highlight">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">최종 금액</div>
+                            <div id="totalAmount" class="result-value">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">실수령액/실지불액</div>
+                            <div id="actualAmount" class="result-value">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 숫자 파싱 함수 (한국어 단위 지원)
+        function parseNumber(input) {
+            if (!input || typeof input !== 'string') return 0;
+            
+            // 기본 정리
+            input = input.replace(/[,\s]/g, '').toLowerCase();
+            
+            // 한국어 단위 변환
+            const units = {
+                '만': 10000,
+                '십만': 100000,
+                '백만': 1000000,
+                '천만': 10000000,
+                '억': 100000000
+            };
+            
+            for (let unit in units) {
+                if (input.includes(unit)) {
+                    const num = parseFloat(input.replace(unit, '')) || 1;
+                    return num * units[unit];
+                }
+            }
+            
+            // % 및 기타 단위 제거
+            input = input.replace(/(%|원)/g, '');
+            
+            return parseFloat(input) || 0;
+        }
+
+        // 계산 함수
+        function calculate() {
+            const baseAmount = parseNumber(document.getElementById('baseAmount').value);
+            const feeRate = parseNumber(document.getElementById('feeRate').value);
+            const feeType = document.getElementById('feeType').value;
+            
+            if (!baseAmount || !feeRate) {
+                alert('기본 금액과 수수료율을 입력해주세요');
+                return;
+            }
+
+            let feeAmount, totalAmount, actualAmount;
+            
+            if (feeType === 'add') {
+                // 받는 입장: 기본 금액에 수수료 추가
+                feeAmount = baseAmount * (feeRate / 100);
+                totalAmount = baseAmount + feeAmount;
+                actualAmount = baseAmount; // 실수령액
+            } else {
+                // 보내는 입장: 기본 금액에서 수수료 차감
+                feeAmount = baseAmount * (feeRate / 100);
+                totalAmount = baseAmount;
+                actualAmount = baseAmount - feeAmount; // 실지불액
+            }
+
+            // 결과 표시
+            document.getElementById('feeAmount').textContent = `${Math.round(feeAmount).toLocaleString()}원`;
+            document.getElementById('totalAmount').textContent = `${Math.round(totalAmount).toLocaleString()}원`;
+            document.getElementById('actualAmount').textContent = `${Math.round(actualAmount).toLocaleString()}원`;
+            
+            document.getElementById('resultSection').style.display = 'block';
+            document.getElementById('resultSection').classList.add('fade-in');
+        }
+
+        // 엔터키로 계산
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+    </script>
 </body>
 </html>

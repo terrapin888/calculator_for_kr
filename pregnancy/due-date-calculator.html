@@ -3,586 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>출산예정일 계산기 - 임신 주차 및 예정일 계산 | 스마트 파싱</title>
-    <meta name="description" content="출산예정일 계산기로 마지막 생리일 또는 수정일을 기준으로 출산예정일과 현재 임신 주차를 계산하세요. 임신 단계별 정보도 제공합니다.">
-       <!-- 이 3줄 추가 -->
-   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="../../css/common.css">
-   <link rel="stylesheet" href="../../css/calculator.css">
+    <title>출산예정일 계산기 - CalcHub | 출산예정일 및 임신 주차 계산</title>
+    <meta name="description" content="출산예정일 계산기로 출산예정일과 임신 주차를 간편하게 계산하세요. 한국어 날짜 형식 자동 인식.">
+    <meta name="keywords" content="출산예정일계산기, 임신주차, 예정일, 마지막생리일">
     
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            overflow: hidden;
-            animation: slideUp 0.6s ease-out;
-        }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: pulse 4s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .content {
-            padding: 40px 30px;
-        }
-        
-        .mode-selector {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
-            border: 2px solid #e9ecef;
-        }
-        
-        .mode-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .mode-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .mode-btn {
-            background: white;
-            border: 2px solid #e9ecef;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .mode-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-color: #667eea;
-        }
-        
-        .mode-btn:hover {
-            border-color: #667eea;
-            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.2);
-        }
-        
-        .input-section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 2px solid #e9ecef;
-            transition: all 0.3s ease;
-        }
-        
-        .input-section:hover {
-            border-color: #667eea;
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
-        }
-        
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-        
-        .input-group {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        
-        .input-label {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .input-label .icon {
-            font-size: 1.3rem;
-        }
-        
-        input[type="text"], input[type="date"] {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: #fafbfc;
-        }
-        
-        input[type="text"]:focus, input[type="date"]:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        .parsed-result {
-            margin-top: 10px;
-            padding: 10px;
-            background: #e3f2fd;
-            border-radius: 6px;
-            font-size: 14px;
-            color: #1976d2;
-            min-height: 20px;
-        }
-        
-        .examples {
-            background: linear-gradient(135deg, #fff3e0 0%, #ffeaa7 100%);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 25px 0;
-            border-left: 4px solid #f39c12;
-        }
-        
-        .examples h4 {
-            color: #d68910;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-        }
-        
-        .examples-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        
-        .example-item {
-            background: rgba(255,255,255,0.7);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-        
-        .example-title {
-            font-weight: bold;
-            color: #d68910;
-            margin-bottom: 5px;
-        }
-        
-        .controls {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 25px 0;
-        }
-        
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-        
-        .btn-secondary {
-            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
-        }
-        
-        .result-section {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            border-radius: 15px;
-            padding: 30px;
-            margin-top: 30px;
-            border: 2px solid #28a745;
-            display: none;
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .result-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #155724;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        
-        .due-date-display {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-        
-        .due-date-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #e91e63;
-        }
-        
-        .due-date-label {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #333;
-        }
-        
-        .due-date-description {
-            font-size: 1rem;
-            color: #666;
-        }
-        
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-        
-        .result-item {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-        }
-        
-        .result-label {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 8px;
-        }
-        
-        .result-value {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #28a745;
-        }
-        
-        .pregnancy-timeline {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            margin-top: 25px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-        }
-        
-        .timeline-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .trimester-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-        }
-        
-        .trimester-item {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            border: 2px solid #e9ecef;
-            transition: all 0.3s ease;
-        }
-        
-        .trimester-item.active {
-            border-color: #e91e63;
-            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
-        }
-        
-        .trimester-name {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 8px;
-        }
-        
-        .trimester-weeks {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 10px;
-        }
-        
-        .trimester-description {
-            font-size: 0.8rem;
-            color: #666;
-            line-height: 1.4;
-        }
-        
-        .progress-bar {
-            background: #e9ecef;
-            border-radius: 10px;
-            height: 20px;
-            margin: 20px 0;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            background: linear-gradient(135deg, #e91e63 0%, #ad1457 100%);
-            height: 100%;
-            border-radius: 10px;
-            transition: width 0.5s ease;
-        }
-        
-        .progress-text {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #666;
-            margin-top: 5px;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-                border-radius: 15px;
-            }
-            
-            .header {
-                padding: 30px 20px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .content {
-                padding: 30px 20px;
-            }
-            
-            .input-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .btn {
-                width: 100%;
-                max-width: 300px;
-            }
-            
-            .due-date-value {
-                font-size: 2rem;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
 </head>
 <body>
-    
-   <!-- 이 헤더 부분 추가 -->
-   <header class="header">
-       <div class="header-content">
-           <a href="../../index.html" class="logo">
-               <div class="logo-icon">🧮</div>
-               CalcHub
-           </a>
-           <nav class="nav-links">
-               <a href="../../index.html" class="nav-link">홈</a>
-               <a href="../pregnancy/" class="nav-link">💼 임신</a>
-           </nav>
-       </div>
-   </header>
+    <!-- 공통 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
 
     <div class="container">
-        <div class="header">
-            <h1>👶 출산예정일 계산기</h1>
-            <p>마지막 생리일 또는 수정일을 기준으로 출산예정일과 임신 주차를 계산하세요</p>
-        </div>
-        
-        <div class="content">
-            <div class="mode-selector">
-                <div class="mode-title">📅 계산 기준 선택</div>
-                <div class="mode-buttons">
-                    <button class="mode-btn active" onclick="setMode('lmp')" id="modeLmp">마지막 생리일 (LMP)</button>
-                    <button class="mode-btn" onclick="setMode('conception')" id="modeConception">수정일/배란일</button>
-                    <button class="mode-btn" onclick="setMode('ultrasound')" id="modeUltrasound">초음파 검사 결과</button>
-                </div>
-            </div>
-            
-            <div class="input-section">
-                <div class="input-grid" id="inputGrid">
-                    <!-- 동적으로 생성 -->
-                </div>
-                
-                <div class="examples">
-                    <h4>💡 다양한 입력 예시</h4>
-                    <div class="examples-grid">
-                        <div class="example-item">
-                            <div class="example-title">날짜 입력</div>
-                            2024-01-15<br>
-                            2024년 1월 15일
-                        </div>
-                        <div class="example-item">
-                            <div class="example-title">주차 입력</div>
-                            12주, 12주 3일<br>
-                            15주차, 20w
-                        </div>
-                        <div class="example-item">
-                            <div class="example-title">계산 기준</div>
-                            생리일: 가장 정확<br>
-                            수정일: 수정일 알 때
-                        </div>
-                    </div>
-                </div>
+        <div class="calculator-card">
+            <!-- 계산기 헤더 -->
+            <div class="calculator-header">
+                <h1 class="calculator-title">👶 출산예정일 계산기</h1>
+                <p class="calculator-subtitle">출산예정일과 임신 주차를 간편하게 계산하세요</p>
             </div>
 
-            <div class="controls">
-                <button class="btn" onclick="calculateDueDate()">
-                    👶 출산예정일 계산하기
-                </button>
-                <button class="btn btn-secondary" onclick="showExampleData()">
-                    📝 예시 데이터 입력
-                </button>
-                <button class="btn btn-danger" onclick="clearAll()">
-                    🗑️ 초기화
-                </button>
-            </div>
+            <!-- 계산기 본문 -->
+            <div class="calculator-body">
+                <!-- 입력 섹션 -->
+                <div class="input-section">
+                    <h2 class="section-title">📅 임신 정보</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="calculationMethod" class="input-label">계산 기준</label>
+                            <select id="calculationMethod" class="input-field" onchange="updateCalculationMethod()">
+                                <option value="lmp">마지막 생리 시작일</option>
+                                <option value="conception">수정일 (배란일)</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="referenceDate" class="input-label" id="referenceDateLabel">마지막 생리 시작일</label>
+                            <input type="text" id="referenceDate" class="input-field" placeholder="예: 2024-01-01, 2024년 1월 1일">
+                        </div>
+                    </div>
+                    <button onclick="calculate()" class="btn btn-primary">계산하기</button>
+                </div>
 
-            <div class="result-section" id="resultSection">
-                <div class="result-title">👶 출산예정일 계산 결과</div>
-                
-                <div class="due-date-display">
-                    <div class="due-date-value" id="dueDateValue">2024년 10월 22일</div>
-                    <div class="due-date-label">출산예정일</div>
-                    <div class="due-date-description" id="dueDateDescription">예정일까지 약 120일 남았습니다</div>
-                </div>
-                
-                <div class="result-grid">
-                    <div class="result-item">
-                        <div class="result-label">현재 임신 주차</div>
-                        <div class="result-value" id="currentWeeks">20주 3일</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="result-label">임신 진행률</div>
-                        <div class="result-value" id="progressPercent">51%</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="result-label">남은 기간</div>
-                        <div class="result-value" id="remainingTime">19주 4일</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="result-label">현재 삼분기</div>
-                        <div class="result-value" id="currentTrimester">2분기</div>
-                    </div>
-                </div>
-                
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <div class="progress-text" id="progressText">임신 진행률</div>
-                
-                <div class="pregnancy-timeline">
-                    <div class="timeline-title">🗓️ 임신 3분기 일정</div>
-                    <div class="trimester-grid">
-                        <div class="trimester-item" id="trimester1">
-                            <div class="trimester-name">1분기 (First Trimester)</div>
-                            <div class="trimester-weeks">1주 ~ 12주</div>
-                            <div class="trimester-description">
-                                배아가 태아로 발달하며 주요 장기가 형성되는 시기입니다. 
-                                입덧, 피로감 등이 나타날 수 있습니다.
-                            </div>
+                <!-- 결과 섹션 -->
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <h2 class="result-title">📋 계산 결과</h2>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">출산예정일</div>
+                            <div id="dueDate" class="result-value highlight">-</div>
                         </div>
-                        <div class="trimester-item" id="trimester2">
-                            <div class="trimester-name">2분기 (Second Trimester)</div>
-                            <div class="trimester-weeks">13주 ~ 27주</div>
-                            <div class="trimester-description">
-                                비교적 안정적인 시기로 태아의 성별을 알 수 있고, 
-                                태동을 느낄 수 있습니다. 입덧이 줄어듭니다.
-                            </div>
+                        <div class="result-item">
+                            <div class="result-label">현재 임신 주수</div>
+                            <div id="currentWeeks" class="result-value">-</div>
                         </div>
-                        <div class="trimester-item" id="trimester3">
-                            <div class="trimester-name">3분기 (Third Trimester)</div>
-                            <div class="trimester-weeks">28주 ~ 40주</div>
-                            <div class="trimester-description">
-                                태아가 급속히 성장하며 출산을 준비하는 시기입니다. 
-                                배가 커지고 출산 준비가 필요합니다.
-                            </div>
+                        <div class="result-item">
+                            <div class="result-label">출산까지 남은 일수</div>
+                            <div id="daysRemaining" class="result-value">-</div>
                         </div>
                     </div>
                 </div>
@@ -591,331 +78,160 @@
     </div>
 
     <script>
-        class SmartDateParser {
-            parseDate(input) {
-                if (!input) return null;
-                
-                // 이미 Date 객체인 경우
-                if (input instanceof Date) return input;
-                
-                // YYYY-MM-DD 형태
-                let dateMatch = input.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
-                if (dateMatch) {
-                    return new Date(parseInt(dateMatch[1]), parseInt(dateMatch[2]) - 1, parseInt(dateMatch[3]));
-                }
-                
-                // 한국어 날짜 형태
-                dateMatch = input.match(/(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/);
-                if (dateMatch) {
-                    return new Date(parseInt(dateMatch[1]), parseInt(dateMatch[2]) - 1, parseInt(dateMatch[3]));
-                }
-                
-                // 기본 Date 생성자 시도
-                let parsedDate = new Date(input);
-                return isNaN(parsedDate.getTime()) ? null : parsedDate;
-            }
+        // 날짜 파싱 함수
+        function parseDate(input) {
+            if (!input) return null;
             
-            parseWeeks(input) {
-                if (!input) return null;
-                
-                let cleaned = input.replace(/\s+/g, '').toLowerCase();
-                
-                // 12주 3일, 12w 3d 형태
-                let weekMatch = cleaned.match(/(\d+)(주|w)(?:\s*(\d+)(일|d))?/);
-                if (weekMatch) {
-                    let weeks = parseInt(weekMatch[1]);
-                    let days = weekMatch[3] ? parseInt(weekMatch[3]) : 0;
-                    return { weeks, days };
-                }
-                
-                // 12.3주 형태
-                weekMatch = cleaned.match(/(\d+(?:\.\d+)?)(주|week)/);
-                if (weekMatch) {
-                    let totalWeeks = parseFloat(weekMatch[1]);
-                    let weeks = Math.floor(totalWeeks);
-                    let days = Math.round((totalWeeks - weeks) * 7);
-                    return { weeks, days };
-                }
-                
-                return null;
-            }
-        }
-
-        const parser = new SmartDateParser();
-        let currentMode = 'lmp';
-
-        function setMode(mode) {
-            currentMode = mode;
+            input = input.trim().toLowerCase();
             
-            // 버튼 상태 업데이트
-            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`#mode${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
-            
-            updateInputFields();
-        }
-
-        function updateInputFields() {
-            const inputGrid = document.getElementById('inputGrid');
-            inputGrid.innerHTML = '';
-            
-            if (currentMode === 'lmp') {
-                // 마지막 생리일
-                inputGrid.innerHTML = `
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">📅</span>
-                            마지막 생리 시작일 (LMP)
-                        </div>
-                        <input type="date" id="lmpDate">
-                        <div class="parsed-result" id="lmpParsed">날짜를 선택해주세요</div>
-                    </div>
-                `;
-            } else if (currentMode === 'conception') {
-                // 수정일/배란일
-                inputGrid.innerHTML = `
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">🥚</span>
-                            수정일 또는 배란일
-                        </div>
-                        <input type="date" id="conceptionDate">
-                        <div class="parsed-result" id="conceptionParsed">날짜를 선택해주세요</div>
-                    </div>
-                `;
-            } else {
-                // 초음파 검사 결과
-                inputGrid.innerHTML = `
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">🔬</span>
-                            초음파 검사일
-                        </div>
-                        <input type="date" id="ultrasoundDate">
-                        <div class="parsed-result" id="ultrasoundDateParsed">날짜를 선택해주세요</div>
-                    </div>
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">📊</span>
-                            검사 당시 임신 주차
-                        </div>
-                        <input type="text" id="ultrasoundWeeks" placeholder="예: 12주, 12주 3일, 12.3주..." oninput="smartParse()">
-                        <div class="parsed-result" id="ultrasoundWeeksParsed">입력 대기 중...</div>
-                    </div>
-                `;
-            }
-        }
-
-        function smartParse() {
-            const ultrasoundWeeksInput = document.getElementById('ultrasoundWeeks');
-            
-            if (ultrasoundWeeksInput) {
-                const parsedWeeks = parser.parseWeeks(ultrasoundWeeksInput.value);
-                document.getElementById('ultrasoundWeeksParsed').textContent = 
-                    parsedWeeks ? `인식됨: ${parsedWeeks.weeks}주 ${parsedWeeks.days}일` : '입력 대기 중...';
-            }
-        }
-
-        function calculateDueDate() {
-            let lmpDate;
-            
-            if (currentMode === 'lmp') {
-                const lmpInput = document.getElementById('lmpDate').value;
-                if (!lmpInput) {
-                    alert('마지막 생리 시작일을 입력해주세요.');
-                    return;
-                }
-                lmpDate = new Date(lmpInput);
-                
-            } else if (currentMode === 'conception') {
-                const conceptionInput = document.getElementById('conceptionDate').value;
-                if (!conceptionInput) {
-                    alert('수정일 또는 배란일을 입력해주세요.');
-                    return;
-                }
-                // 수정일에서 14일을 빼서 LMP 계산
-                let conceptionDate = new Date(conceptionInput);
-                lmpDate = new Date(conceptionDate.getTime() - (14 * 24 * 60 * 60 * 1000));
-                
-            } else {
-                // 초음파 검사 결과
-                const ultrasoundDateInput = document.getElementById('ultrasoundDate').value;
-                const ultrasoundWeeksInput = document.getElementById('ultrasoundWeeks').value;
-                
-                if (!ultrasoundDateInput || !ultrasoundWeeksInput) {
-                    alert('초음파 검사일과 임신 주차를 모두 입력해주세요.');
-                    return;
-                }
-                
-                const ultrasoundDate = new Date(ultrasoundDateInput);
-                const parsedWeeks = parser.parseWeeks(ultrasoundWeeksInput);
-                
-                if (!parsedWeeks) {
-                    alert('올바른 임신 주차를 입력해주세요.');
-                    return;
-                }
-                
-                // 검사일에서 해당 주차만큼 빼서 LMP 계산
-                const daysFromLmp = (parsedWeeks.weeks * 7) + parsedWeeks.days;
-                lmpDate = new Date(ultrasoundDate.getTime() - (daysFromLmp * 24 * 60 * 60 * 1000));
-            }
-            
-            // 출산예정일 계산 (LMP + 280일)
-            const dueDate = new Date(lmpDate.getTime() + (280 * 24 * 60 * 60 * 1000));
-            
-            // 현재 임신 주차 계산
+            // 특수 날짜들
             const today = new Date();
-            const daysFromLmp = Math.floor((today - lmpDate) / (24 * 60 * 60 * 1000));
-            const currentWeeks = Math.floor(daysFromLmp / 7);
-            const currentDays = daysFromLmp % 7;
             
-            // 남은 기간 계산
-            const daysUntilDue = Math.ceil((dueDate - today) / (24 * 60 * 60 * 1000));
-            const remainingWeeks = Math.floor(daysUntilDue / 7);
-            const remainingDays = daysUntilDue % 7;
+            if (input === '오늘' || input === 'today') return today;
+            if (input === '어제' || input === 'yesterday') {
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+                return yesterday;
+            }
             
-            displayDueDateResults({
-                lmpDate,
-                dueDate,
-                currentWeeks,
-                currentDays,
-                remainingWeeks,
-                remainingDays,
-                daysFromLmp,
-                daysUntilDue
-            });
+            // 한국어 날짜 형식 (2024년 1월 1일)
+            let koreanMatch = input.match(/(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/);
+            if (koreanMatch) {
+                const year = parseInt(koreanMatch[1]);
+                const month = parseInt(koreanMatch[2]) - 1; // 월은 0부터 시작
+                const day = parseInt(koreanMatch[3]);
+                return new Date(year, month, day);
+            }
+            
+            // ISO 형식 또는 다른 표준 형식
+            const standardDate = new Date(input);
+            if (!isNaN(standardDate.getTime())) {
+                return standardDate;
+            }
+            
+            // 슬래시나 점으로 구분된 형식 (YYYY/MM/DD, YYYY.MM.DD)
+            let dateMatch = input.match(/(\d{4})[\/\.\-](\d{1,2})[\/\.\-](\d{1,2})/);
+            if (dateMatch) {
+                const year = parseInt(dateMatch[1]);
+                const month = parseInt(dateMatch[2]) - 1;
+                const day = parseInt(dateMatch[3]);
+                return new Date(year, month, day);
+            }
+            
+            return null;
         }
 
-        function displayDueDateResults(data) {
-            const resultSection = document.getElementById('resultSection');
-            
-            // 출산예정일 표시
-            document.getElementById('dueDateValue').textContent = formatKoreanDate(data.dueDate);
-            
-            if (data.daysUntilDue > 0) {
-                document.getElementById('dueDateDescription').textContent = 
-                    `예정일까지 약 ${data.daysUntilDue}일 남았습니다`;
-            } else if (data.daysUntilDue === 0) {
-                document.getElementById('dueDateDescription').textContent = '오늘이 출산예정일입니다!';
-            } else {
-                document.getElementById('dueDateDescription').textContent = 
-                    `예정일이 ${Math.abs(data.daysUntilDue)}일 지났습니다`;
-            }
-            
-            // 결과 그리드 표시
-            document.getElementById('currentWeeks').textContent = 
-                data.currentWeeks >= 0 ? `${data.currentWeeks}주 ${data.currentDays}일` : '임신 전';
-            
-            const progressPercent = Math.min(Math.max((data.daysFromLmp / 280) * 100, 0), 100);
-            document.getElementById('progressPercent').textContent = `${Math.round(progressPercent)}%`;
-            
-            if (data.remainingWeeks >= 0) {
-                document.getElementById('remainingTime').textContent = `${data.remainingWeeks}주 ${data.remainingDays}일`;
-            } else {
-                document.getElementById('remainingTime').textContent = '출산 완료';
-            }
-            
-            // 현재 삼분기 표시
-            let trimester;
-            if (data.currentWeeks < 13) {
-                trimester = '1분기';
-            } else if (data.currentWeeks < 28) {
-                trimester = '2분기';
-            } else {
-                trimester = '3분기';
-            }
-            document.getElementById('currentTrimester').textContent = trimester;
-            
-            // 진행률 바 업데이트
-            document.getElementById('progressFill').style.width = `${progressPercent}%`;
-            document.getElementById('progressText').textContent = 
-                `임신 진행률: ${Math.round(progressPercent)}% (${data.currentWeeks}주 ${data.currentDays}일)`;
-            
-            // 삼분기 하이라이트
-            updateTrimesterHighlight(data.currentWeeks);
-            
-            resultSection.style.display = 'block';
-            resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        function updateTrimesterHighlight(currentWeeks) {
-            // 모든 삼분기 아이템에서 active 클래스 제거
-            document.querySelectorAll('.trimester-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // 현재 삼분기 하이라이트
-            if (currentWeeks >= 1 && currentWeeks < 13) {
-                document.getElementById('trimester1').classList.add('active');
-            } else if (currentWeeks >= 13 && currentWeeks < 28) {
-                document.getElementById('trimester2').classList.add('active');
-            } else if (currentWeeks >= 28) {
-                document.getElementById('trimester3').classList.add('active');
-            }
-        }
-
-        function formatKoreanDate(date) {
+        // 날짜 포맷팅 함수
+        function formatDate(date) {
             const year = date.getFullYear();
-            const month = date.getMonth() + 1;
-            const day = date.getDate();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            
             const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
             const weekday = weekdays[date.getDay()];
             
-            return `${year}년 ${month}월 ${day}일 (${weekday})`;
+            return `${year}년 ${parseInt(month)}월 ${parseInt(day)}일 (${weekday})`;
         }
 
-        function showExampleData() {
-            const today = new Date();
-            const exampleLmp = new Date(today.getTime() - (140 * 24 * 60 * 60 * 1000)); // 20주 전
+        // 계산 방법 업데이트
+        function updateCalculationMethod() {
+            const method = document.getElementById('calculationMethod').value;
+            const label = document.getElementById('referenceDateLabel');
+            const input = document.getElementById('referenceDate');
             
-            if (currentMode === 'lmp') {
-                document.getElementById('lmpDate').value = exampleLmp.toISOString().split('T')[0];
-            } else if (currentMode === 'conception') {
-                const exampleConception = new Date(exampleLmp.getTime() + (14 * 24 * 60 * 60 * 1000));
-                document.getElementById('conceptionDate').value = exampleConception.toISOString().split('T')[0];
+            if (method === 'conception') {
+                label.textContent = '수정일 (배란일)';
+                input.placeholder = '예: 2024-01-15, 2024년 1월 15일';
             } else {
-                const exampleUltrasound = new Date(today.getTime() - (28 * 24 * 60 * 60 * 1000)); // 4주 전
-                document.getElementById('ultrasoundDate').value = exampleUltrasound.toISOString().split('T')[0];
-                document.getElementById('ultrasoundWeeks').value = '16주';
-                smartParse();
+                label.textContent = '마지막 생리 시작일';
+                input.placeholder = '예: 2024-01-01, 2024년 1월 1일';
             }
         }
 
-        function clearAll() {
-            document.querySelectorAll('input').forEach(input => {
-                input.value = '';
-            });
-            document.querySelectorAll('.parsed-result').forEach(result => {
-                if (result.id.includes('Parsed')) {
-                    result.textContent = '입력 대기 중...';
-                } else {
-                    result.textContent = '날짜를 선택해주세요';
-                }
-            });
-            document.getElementById('resultSection').style.display = 'none';
-        }
-
-        // 페이지 로드 시 초기화
-        window.addEventListener('load', function() {
-            updateInputFields();
-            showExampleData();
+        // 계산 함수
+        function calculate() {
+            const referenceDateInput = document.getElementById('referenceDate').value;
+            const calculationMethod = document.getElementById('calculationMethod').value;
             
-            // 2초 후 자동 계산
-            setTimeout(() => {
-                calculateDueDate();
-            }, 2000);
-        });
+            if (!referenceDateInput) {
+                alert('날짜를 입력해주세요');
+                return;
+            }
 
-        // 날짜 입력 시 자동 계산
-        document.addEventListener('change', function(e) {
-            if (e.target.type === 'date') {
-                // 잠시 후 자동 계산
-                setTimeout(() => {
-                    if (e.target.value) {
-                        calculateDueDate();
-                    }
-                }, 500);
+            const referenceDate = parseDate(referenceDateInput);
+            
+            if (!referenceDate) {
+                alert('올바른 날짜 형식을 입력해주세요');
+                return;
+            }
+
+            let dueDate;
+            let lmpDate;
+            
+            if (calculationMethod === 'conception') {
+                // 수정일 기준: 수정일 + 266일
+                dueDate = new Date(referenceDate);
+                dueDate.setDate(dueDate.getDate() + 266);
+                
+                // 마지막 생리일 추정 (수정일 - 14일)
+                lmpDate = new Date(referenceDate);
+                lmpDate.setDate(lmpDate.getDate() - 14);
+            } else {
+                // 마지막 생리일 기준: 생리일 + 280일
+                dueDate = new Date(referenceDate);
+                dueDate.setDate(dueDate.getDate() + 280);
+                
+                lmpDate = referenceDate;
+            }
+
+            const today = new Date();
+            
+            // 현재 임신 주수 계산
+            const daysSinceLMP = Math.floor((today.getTime() - lmpDate.getTime()) / (1000 * 3600 * 24));
+            const weeks = Math.floor(daysSinceLMP / 7);
+            const days = daysSinceLMP % 7;
+            
+            // 출산까지 남은 일수
+            const daysRemaining = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
+
+            // 결과 표시
+            document.getElementById('dueDate').textContent = formatDate(dueDate);
+            
+            let weeksText;
+            if (weeks < 0) {
+                weeksText = '임신 전 단계';
+            } else if (weeks >= 42) {
+                weeksText = `${weeks}주 ${days}일 (예정일 초과)`;
+            } else {
+                weeksText = `${weeks}주 ${days}일`;
+            }
+            document.getElementById('currentWeeks').textContent = weeksText;
+            
+            let remainingText;
+            if (daysRemaining > 0) {
+                remainingText = `${daysRemaining}일 남음`;
+            } else if (daysRemaining === 0) {
+                remainingText = '오늘이 예정일입니다! 🎉';
+            } else {
+                remainingText = `예정일 ${Math.abs(daysRemaining)}일 지남`;
+            }
+            document.getElementById('daysRemaining').textContent = remainingText;
+            
+            document.getElementById('resultSection').style.display = 'block';
+            document.getElementById('resultSection').classList.add('fade-in');
+        }
+
+        // 엔터키로 계산
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
             }
         });
+
+        // 초기화
+        window.onload = function() {
+            updateCalculationMethod();
+        };
     </script>
 </body>
 </html>

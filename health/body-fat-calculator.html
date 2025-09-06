@@ -3,559 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>체지방률 계산기 - 체지방 및 근육량 계산 | 스마트 파싱</title>
-    <meta name="description" content="체지방률 계산기로 체지방률과 근육량을 계산하세요. 나이, 성별, 키, 몸무게를 입력하면 정확한 체지방률을 계산합니다.">
-       <!-- 이 3줄 추가 -->
-   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="../../css/common.css">
-   <link rel="stylesheet" href="../../css/calculator.css">
+    <title>체지방률 계산기 - CalcHub | 체지방률 및 근육량 계산</title>
+    <meta name="description" content="체지방률을 간편하게 계산하고 건강한 체지방 범위를 확인하세요. 한국어 입력 자동 인식.">
+    <meta name="keywords" content="체지방률계산기, 근육량, 다이어트, 체성분">
     
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            overflow: hidden;
-            animation: slideUp 0.6s ease-out;
-        }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: pulse 4s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .content {
-            padding: 40px 30px;
-        }
-        
-        .input-section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 2px solid #e9ecef;
-            transition: all 0.3s ease;
-        }
-        
-        .input-section:hover {
-            border-color: #667eea;
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
-        }
-        
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-        
-        .input-group {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        
-        .input-label {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .input-label .icon {
-            font-size: 1.3rem;
-        }
-        
-        input[type="text"], select {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: #fafbfc;
-        }
-        
-        input[type="text"]:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        .parsed-result {
-            margin-top: 10px;
-            padding: 10px;
-            background: #e3f2fd;
-            border-radius: 6px;
-            font-size: 14px;
-            color: #1976d2;
-            min-height: 20px;
-        }
-        
-        .examples {
-            background: linear-gradient(135deg, #fff3e0 0%, #ffeaa7 100%);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 25px 0;
-            border-left: 4px solid #f39c12;
-        }
-        
-        .examples h4 {
-            color: #d68910;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-        }
-        
-        .examples-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        
-        .example-item {
-            background: rgba(255,255,255,0.7);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-        
-        .example-title {
-            font-weight: bold;
-            color: #d68910;
-            margin-bottom: 5px;
-        }
-        
-        .controls {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 25px 0;
-        }
-        
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-        
-        .btn-secondary {
-            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
-        }
-        
-        .result-section {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            border-radius: 15px;
-            padding: 30px;
-            margin-top: 30px;
-            border: 2px solid #28a745;
-            display: none;
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .result-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #155724;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        
-        .bodyfat-display {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-        
-        .bodyfat-value {
-            font-size: 3rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .bodyfat-category {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .bodyfat-description {
-            font-size: 1rem;
-            color: #666;
-        }
-        
-        .bodyfat-low {
-            color: #17a2b8;
-        }
-        
-        .bodyfat-normal {
-            color: #28a745;
-        }
-        
-        .bodyfat-high {
-            color: #ffc107;
-        }
-        
-        .bodyfat-very-high {
-            color: #dc3545;
-        }
-        
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-        
-        .result-item {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-        }
-        
-        .result-label {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 8px;
-        }
-        
-        .result-value {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #28a745;
-        }
-        
-        .bodyfat-scale {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 25px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-        }
-        
-        .scale-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .scale-bar {
-            height: 30px;
-            border-radius: 15px;
-            background: linear-gradient(to right, 
-                #17a2b8 0%, #17a2b8 25%,
-                #28a745 25%, #28a745 50%,
-                #ffc107 50%, #ffc107 75%,
-                #dc3545 75%, #dc3545 100%);
-            position: relative;
-            margin: 20px 0;
-        }
-        
-        .scale-pointer {
-            position: absolute;
-            top: -10px;
-            width: 4px;
-            height: 50px;
-            background: #333;
-            border-radius: 2px;
-            transition: left 0.5s ease;
-        }
-        
-        .scale-categories {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .scale-category {
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-        
-        .scale-category.low {
-            background: rgba(23, 162, 184, 0.2);
-            color: #17a2b8;
-        }
-        
-        .scale-category.normal {
-            background: rgba(40, 167, 69, 0.2);
-            color: #28a745;
-        }
-        
-        .scale-category.high {
-            background: rgba(255, 193, 7, 0.2);
-            color: #ffc107;
-        }
-        
-        .scale-category.very-high {
-            background: rgba(220, 53, 69, 0.2);
-            color: #dc3545;
-        }
-        
-        .scale-category.active {
-            transform: scale(1.05);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-                border-radius: 15px;
-            }
-            
-            .header {
-                padding: 30px 20px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .content {
-                padding: 30px 20px;
-            }
-            
-            .input-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .btn {
-                width: 100%;
-                max-width: 300px;
-            }
-            
-            .bodyfat-value {
-                font-size: 2.5rem;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
 </head>
 <body>
-       <!-- 이 헤더 부분 추가 -->
-   <header class="header">
-       <div class="header-content">
-           <a href="../../index.html" class="logo">
-               <div class="logo-icon">🧮</div>
-               CalcHub
-           </a>
-           <nav class="nav-links">
-               <a href="../../index.html" class="nav-link">홈</a>
-               <a href="../health/" class="nav-link">💼 건강</a>
-           </nav>
-       </div>
-   </header>
-    
-    <div class="container">
-        <div class="header">
-            <h1>📊 체지방률 계산기</h1>
-            <p>나이, 성별, 키, 몸무게로 체지방률과 근육량을 계산하세요</p>
+    <!-- 공통 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
         </div>
-        
-        <div class="content">
-            <div class="input-section">
-                <div class="input-grid">
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">📏</span>
-                            키 (신장)
-                        </div>
-                        <input type="text" id="height" placeholder="예: 175cm, 175센치, 1m75cm, 1.75m..." oninput="smartParse()">
-                        <div class="parsed-result" id="heightParsed">입력 대기 중...</div>
-                    </div>
-                    
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">⚖️</span>
-                            몸무게 (체중)
-                        </div>
-                        <input type="text" id="weight" placeholder="예: 70kg, 70킬로, 70키로, 70키로그램..." oninput="smartParse()">
-                        <div class="parsed-result" id="weightParsed">입력 대기 중...</div>
-                    </div>
-                    
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">👤</span>
-                            성별
-                        </div>
-                        <select id="gender">
-                            <option value="male">남성</option>
-                            <option value="female">여성</option>
-                        </select>
-                    </div>
-                    
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">🎂</span>
-                            나이
-                        </div>
-                        <input type="text" id="age" placeholder="예: 25, 25세, 25살..." oninput="smartParse()">
-                        <div class="parsed-result" id="ageParsed">입력 대기 중...</div>
-                    </div>
-                </div>
-                
-                <div class="examples">
-                    <h4>💡 다양한 입력 예시</h4>
-                    <div class="examples-grid">
-                        <div class="example-item">
-                            <div class="example-title">키 입력</div>
-                            175cm, 175센치<br>
-                            1m75cm, 1.75m
-                        </div>
-                        <div class="example-item">
-                            <div class="example-title">몸무게 입력</div>
-                            70kg, 70킬로<br>
-                            70키로그램, 70키로
-                        </div>
-                        <div class="example-item">
-                            <div class="example-title">나이 입력</div>
-                            25, 25세<br>
-                            25살, 스물다섯
-                        </div>
-                    </div>
-                </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <!-- 계산기 헤더 -->
+            <div class="calculator-header">
+                <h1 class="calculator-title">📊 체지방률 계산기</h1>
+                <p class="calculator-subtitle">체지방률을 계산하고 건강한 체성분을 확인하세요</p>
             </div>
 
-            <div class="controls">
-                <button class="btn" onclick="calculateBodyFat()">
-                    📊 체지방률 계산하기
-                </button>
-                <button class="btn btn-secondary" onclick="showExampleData()">
-                    📝 예시 데이터 입력
-                </button>
-                <button class="btn btn-danger" onclick="clearAll()">
-                    🗑️ 초기화
-                </button>
-            </div>
+            <!-- 계산기 본문 -->
+            <div class="calculator-body">
+                <!-- 입력 섹션 -->
+                <div class="input-section">
+                    <h2 class="section-title">📏 기본 정보</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="height" class="input-label">키 (cm)</label>
+                            <input type="text" id="height" class="input-field" placeholder="예: 175, 175cm">
+                        </div>
+                        <div class="input-group">
+                            <label for="weight" class="input-label">몸무게 (kg)</label>
+                            <input type="text" id="weight" class="input-field" placeholder="예: 70, 70kg">
+                        </div>
+                        <div class="input-group">
+                            <label for="age" class="input-label">나이 (세)</label>
+                            <input type="text" id="age" class="input-field" placeholder="예: 25, 25세">
+                        </div>
+                    </div>
+                </div>
 
-            <div class="result-section" id="resultSection">
-                <div class="result-title">📊 체지방률 계산 결과</div>
-                
-                <div class="bodyfat-display" id="bodyfatDisplay">
-                    <div class="bodyfat-value" id="bodyfatValue">0.0%</div>
-                    <div class="bodyfat-category" id="bodyfatCategory">체지방률</div>
-                    <div class="bodyfat-description" id="bodyfatDescription">체지방률을 계산중입니다</div>
+                <div class="input-section">
+                    <h2 class="section-title">👤 개인 설정</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="gender" class="input-label">성별</label>
+                            <select id="gender" class="input-field">
+                                <option value="male">남성</option>
+                                <option value="female">여성</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="waist" class="input-label">허리둘레 (cm) - 선택사항</label>
+                            <input type="text" id="waist" class="input-field" placeholder="예: 80, 80cm">
+                        </div>
+                    </div>
+                    <button onclick="calculate()" class="btn btn-primary">계산하기</button>
                 </div>
-                
-                <div class="result-grid">
-                    <div class="result-item">
-                        <div class="result-label">체지방량</div>
-                        <div class="result-value" id="fatMass">0kg</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="result-label">제지방량 (근육량)</div>
-                        <div class="result-value" id="leanMass">0kg</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="result-label">기초대사율</div>
-                        <div class="result-value" id="bmr">0kcal</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="result-label">권장 체지방률</div>
-                        <div class="result-value" id="recommendedRange">0%</div>
-                    </div>
-                </div>
-                
-                <div class="bodyfat-scale">
-                    <div class="scale-title">📊 체지방률 범위표</div>
-                    <div class="scale-bar">
-                        <div class="scale-pointer" id="scalePointer"></div>
-                    </div>
-                    <div class="scale-categories" id="scaleCategories">
-                        <!-- 성별에 따라 동적으로 생성 -->
+
+                <!-- 결과 섹션 -->
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <h2 class="result-title">📋 계산 결과</h2>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">추정 체지방률</div>
+                            <div id="bodyFatResult" class="result-value highlight">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">체지방량</div>
+                            <div id="fatMassResult" class="result-value">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">근육량</div>
+                            <div id="muscleMassResult" class="result-value">-</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -563,105 +96,34 @@
     </div>
 
     <script>
-        class SmartHealthParser {
-            parseHeight(input) {
-                if (!input) return null;
-                
-                let cleaned = input.replace(/\s+/g, '').toLowerCase();
-                
-                if (cleaned.includes('m')) {
-                    if (cleaned.includes('cm')) {
-                        let meterMatch = cleaned.match(/(\d+(?:\.\d+)?)m/);
-                        let cmMatch = cleaned.match(/(\d+)cm/);
-                        if (meterMatch && cmMatch) {
-                            return parseFloat(meterMatch[1]) * 100 + parseFloat(cmMatch[1]);
-                        }
-                    } else {
-                        let meterMatch = cleaned.match(/(\d+(?:\.\d+)?)m/);
-                        if (meterMatch) {
-                            return parseFloat(meterMatch[1]) * 100;
-                        }
-                    }
-                }
-                
-                if (cleaned.includes('cm') || cleaned.includes('센치')) {
-                    let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
-                    return isNaN(num) ? null : num;
-                }
-                
-                let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
-                if (isNaN(num)) return null;
-                
-                if (num >= 1.2 && num <= 2.5) {
-                    return num * 100;
-                }
-                
-                return num >= 100 ? num : null;
-            }
+        // 숫자 파싱 함수 (한국어 단위 지원)
+        function parseNumber(input) {
+            if (!input || typeof input !== 'string') return 0;
             
-            parseWeight(input) {
-                if (!input) return null;
-                
-                let cleaned = input.replace(/\s+/g, '').toLowerCase();
-                cleaned = cleaned.replace(/(kg|킬로|키로|키로그램|킬로그램)/g, '');
-                
-                let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
-                
-                return isNaN(num) ? null : num;
-            }
+            // 기본 정리
+            input = input.replace(/[,\s]/g, '').toLowerCase();
             
-            parseAge(input) {
-                if (!input) return null;
-                
-                let cleaned = input.replace(/\s+/g, '').toLowerCase();
-                cleaned = cleaned.replace(/(세|살|년)/g, '');
-                
-                let num = parseInt(cleaned.replace(/[^0-9]/g, ''));
-                
-                return isNaN(num) ? null : num;
-            }
+            // 단위 제거
+            input = input.replace(/(cm|kg|세|살|키로|킬로|센치)/g, '');
+            
+            return parseFloat(input) || 0;
         }
 
-        const parser = new SmartHealthParser();
-
-        function smartParse() {
-            const height = document.getElementById('height').value;
-            const weight = document.getElementById('weight').value;
-            const age = document.getElementById('age').value;
-            
-            const parsedHeight = parser.parseHeight(height);
-            const parsedWeight = parser.parseWeight(weight);
-            const parsedAge = parser.parseAge(age);
-            
-            document.getElementById('heightParsed').textContent = 
-                parsedHeight ? `인식됨: ${parsedHeight}cm` : '입력 대기 중...';
-                
-            document.getElementById('weightParsed').textContent = 
-                parsedWeight ? `인식됨: ${parsedWeight}kg` : '입력 대기 중...';
-                
-            document.getElementById('ageParsed').textContent = 
-                parsedAge ? `인식됨: ${parsedAge}세` : '입력 대기 중...';
-        }
-
-        function calculateBodyFat() {
-            const height = parser.parseHeight(document.getElementById('height').value);
-            const weight = parser.parseWeight(document.getElementById('weight').value);
-            const age = parser.parseAge(document.getElementById('age').value);
+        // 계산 함수
+        function calculate() {
+            const height = parseNumber(document.getElementById('height').value);
+            const weight = parseNumber(document.getElementById('weight').value);
+            const age = parseNumber(document.getElementById('age').value);
             const gender = document.getElementById('gender').value;
+            const waist = parseNumber(document.getElementById('waist').value);
             
             if (!height || !weight || !age) {
-                alert('모든 항목을 입력해주세요.');
+                alert('키, 몸무게, 나이를 모두 입력해주세요');
                 return;
             }
-            
-            if (height <= 0 || weight <= 0 || age <= 0) {
-                alert('올바른 값을 입력해주세요.');
-                return;
-            }
-            
+
             // BMI 계산
-            const heightInMeters = height / 100;
-            const bmi = weight / (heightInMeters * heightInMeters);
+            const bmi = weight / Math.pow(height / 100, 2);
             
             // 체지방률 계산 (Deurenberg 공식)
             let bodyFatPercentage;
@@ -671,207 +133,36 @@
                 bodyFatPercentage = (1.20 * bmi) + (0.23 * age) - 5.4;
             }
             
-            // 기초대사율 계산 (Harris-Benedict 공식)
-            let bmr;
-            if (gender === 'male') {
-                bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
-            } else {
-                bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
-            }
-            
-            // 체지방량과 제지방량 계산
-            const fatMass = (bodyFatPercentage / 100) * weight;
-            const leanMass = weight - fatMass;
-            
-            // 체지방률 카테고리 판정
-            let category, description, colorClass, recommendedRange;
-            
-            if (gender === 'male') {
-                recommendedRange = '10-18%';
-                if (bodyFatPercentage < 6) {
-                    category = '매우 낮음';
-                    description = '필수 체지방보다 낮습니다. 건강에 위험할 수 있습니다.';
-                    colorClass = 'bodyfat-low';
-                } else if (bodyFatPercentage < 13) {
-                    category = '운동선수급';
-                    description = '매우 우수한 체지방률입니다.';
-                    colorClass = 'bodyfat-normal';
-                } else if (bodyFatPercentage < 18) {
-                    category = '정상';
-                    description = '건강한 체지방률입니다.';
-                    colorClass = 'bodyfat-normal';
-                } else if (bodyFatPercentage < 25) {
-                    category = '과체중';
-                    description = '체지방률이 높습니다. 운동과 식이요법이 필요합니다.';
-                    colorClass = 'bodyfat-high';
+            // 허리둘레가 있으면 더 정확한 계산 (Navy 방식 간소화)
+            if (waist > 0) {
+                if (gender === 'male') {
+                    bodyFatPercentage = (bodyFatPercentage + 
+                        (86.010 * Math.log10(waist - 78)) - 
+                        (70.041 * Math.log10(height))) / 2;
                 } else {
-                    category = '비만';
-                    description = '체지방률이 매우 높습니다. 전문가와 상담하세요.';
-                    colorClass = 'bodyfat-very-high';
-                }
-            } else {
-                recommendedRange = '16-24%';
-                if (bodyFatPercentage < 10) {
-                    category = '매우 낮음';
-                    description = '필수 체지방보다 낮습니다. 건강에 위험할 수 있습니다.';
-                    colorClass = 'bodyfat-low';
-                } else if (bodyFatPercentage < 16) {
-                    category = '운동선수급';
-                    description = '매우 우수한 체지방률입니다.';
-                    colorClass = 'bodyfat-normal';
-                } else if (bodyFatPercentage < 24) {
-                    category = '정상';
-                    description = '건강한 체지방률입니다.';
-                    colorClass = 'bodyfat-normal';
-                } else if (bodyFatPercentage < 32) {
-                    category = '과체중';
-                    description = '체지방률이 높습니다. 운동과 식이요법이 필요합니다.';
-                    colorClass = 'bodyfat-high';
-                } else {
-                    category = '비만';
-                    description = '체지방률이 매우 높습니다. 전문가와 상담하세요.';
-                    colorClass = 'bodyfat-very-high';
+                    bodyFatPercentage = (bodyFatPercentage + 
+                        (163.205 * Math.log10(waist - 97)) - 
+                        (97.684 * Math.log10(height))) / 2;
                 }
             }
             
-            displayBodyFatResults({
-                bodyFatPercentage,
-                height,
-                weight,
-                age,
-                gender,
-                category,
-                description,
-                colorClass,
-                fatMass,
-                leanMass,
-                bmr,
-                recommendedRange
-            });
+            // 체지방량과 근육량 계산
+            const fatMass = weight * bodyFatPercentage / 100;
+            const muscleMass = weight - fatMass;
+
+            // 결과 표시
+            document.getElementById('bodyFatResult').textContent = `${bodyFatPercentage.toFixed(1)}%`;
+            document.getElementById('fatMassResult').textContent = `${fatMass.toFixed(1)}kg`;
+            document.getElementById('muscleMassResult').textContent = `${muscleMass.toFixed(1)}kg`;
+            
+            document.getElementById('resultSection').style.display = 'block';
+            document.getElementById('resultSection').classList.add('fade-in');
         }
 
-        function displayBodyFatResults(data) {
-            const resultSection = document.getElementById('resultSection');
-            
-            // 체지방률 값 표시
-            document.getElementById('bodyfatValue').textContent = data.bodyFatPercentage.toFixed(1) + '%';
-            document.getElementById('bodyfatCategory').textContent = data.category;
-            document.getElementById('bodyfatDescription').textContent = data.description;
-            
-            // 체지방률 색상 적용
-            const bodyfatDisplay = document.getElementById('bodyfatDisplay');
-            bodyfatDisplay.className = 'bodyfat-display';
-            document.getElementById('bodyfatValue').className = `bodyfat-value ${data.colorClass}`;
-            document.getElementById('bodyfatCategory').className = `bodyfat-category ${data.colorClass}`;
-            
-            // 결과 그리드 표시
-            document.getElementById('fatMass').textContent = `${data.fatMass.toFixed(1)}kg`;
-            document.getElementById('leanMass').textContent = `${data.leanMass.toFixed(1)}kg`;
-            document.getElementById('bmr').textContent = `${Math.round(data.bmr)}kcal`;
-            document.getElementById('recommendedRange').textContent = data.recommendedRange;
-            
-            // 체지방률 스케일 업데이트
-            updateBodyFatScale(data.bodyFatPercentage, data.colorClass, data.gender);
-            
-            resultSection.style.display = 'block';
-            resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        function updateBodyFatScale(bodyFat, colorClass, gender) {
-            const pointer = document.getElementById('scalePointer');
-            const scaleCategories = document.getElementById('scaleCategories');
-            
-            // 성별에 따른 범위 설정
-            let ranges, categories;
-            if (gender === 'male') {
-                ranges = [6, 13, 18, 25];
-                categories = [
-                    { name: '운동선수급', range: '6-13%', class: 'low' },
-                    { name: '정상', range: '13-18%', class: 'normal' },
-                    { name: '과체중', range: '18-25%', class: 'high' },
-                    { name: '비만', range: '25%+', class: 'very-high' }
-                ];
-            } else {
-                ranges = [10, 16, 24, 32];
-                categories = [
-                    { name: '운동선수급', range: '10-16%', class: 'low' },
-                    { name: '정상', range: '16-24%', class: 'normal' },
-                    { name: '과체중', range: '24-32%', class: 'high' },
-                    { name: '비만', range: '32%+', class: 'very-high' }
-                ];
-            }
-            
-            // 포인터 위치 계산
-            let position;
-            const maxRange = ranges[3] + 10; // 최대값
-            
-            if (bodyFat < ranges[0]) {
-                position = (bodyFat / ranges[0]) * 25;
-            } else if (bodyFat < ranges[1]) {
-                position = 25 + ((bodyFat - ranges[0]) / (ranges[1] - ranges[0])) * 25;
-            } else if (bodyFat < ranges[2]) {
-                position = 50 + ((bodyFat - ranges[1]) / (ranges[2] - ranges[1])) * 25;
-            } else {
-                position = 75 + Math.min(((bodyFat - ranges[2]) / (maxRange - ranges[2])) * 25, 25);
-            }
-            
-            position = Math.min(Math.max(position, 0), 100);
-            pointer.style.left = `${position}%`;
-            
-            // 카테고리 표시
-            scaleCategories.innerHTML = '';
-            categories.forEach((cat, index) => {
-                const div = document.createElement('div');
-                div.className = `scale-category ${cat.class}`;
-                div.innerHTML = `${cat.name}<br><small>${cat.range}</small>`;
-                
-                // 현재 범위 하이라이트
-                if (
-                    (index === 0 && bodyFat >= ranges[0] && bodyFat < ranges[1]) ||
-                    (index === 1 && bodyFat >= ranges[1] && bodyFat < ranges[2]) ||
-                    (index === 2 && bodyFat >= ranges[2] && bodyFat < ranges[3]) ||
-                    (index === 3 && bodyFat >= ranges[3])
-                ) {
-                    div.classList.add('active');
-                }
-                
-                scaleCategories.appendChild(div);
-            });
-        }
-
-        function showExampleData() {
-            document.getElementById('height').value = '175cm';
-            document.getElementById('weight').value = '70kg';
-            document.getElementById('age').value = '25세';
-            document.getElementById('gender').value = 'male';
-            smartParse();
-        }
-
-        function clearAll() {
-            document.getElementById('height').value = '';
-            document.getElementById('weight').value = '';
-            document.getElementById('age').value = '';
-            document.getElementById('gender').value = 'male';
-            document.getElementById('resultSection').style.display = 'none';
-            document.getElementById('heightParsed').textContent = '입력 대기 중...';
-            document.getElementById('weightParsed').textContent = '입력 대기 중...';
-            document.getElementById('ageParsed').textContent = '입력 대기 중...';
-        }
-
-        // 페이지 로드 시 예시 데이터
-        window.addEventListener('load', function() {
-            showExampleData();
-            
-            // 2초 후 자동 계산
-            setTimeout(() => {
-                calculateBodyFat();
-            }, 2000);
-        });
-
-        // 엔터키 이벤트
-        document.addEventListener('keydown', function(e) {
+        // 엔터키로 계산
+        document.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                calculateBodyFat();
+                calculate();
             }
         });
     </script>

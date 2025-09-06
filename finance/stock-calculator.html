@@ -1,1182 +1,164 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>주식 계산기 - 수익률/손익 자동 계산 | 스마트 파싱</title>
-   <meta name="description" content="주식 계산기로 수익률, 손익, 배당을 쉽게 계산하세요. 매수가와 매도가를 입력하면 자동으로 수익률을 계산합니다.">
-   
-      <!-- 이 3줄 추가 -->
-   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="../../css/common.css">
-   <link rel="stylesheet" href="../../css/calculator.css">
-   <style>
-       * {
-           margin: 0;
-           padding: 0;
-           box-sizing: border-box;
-       }
-       
-       body {
-           font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
-           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-           min-height: 100vh;
-           padding: 20px;
-       }
-       
-       .container {
-           max-width: 1200px;
-           margin: 0 auto;
-           background: white;
-           border-radius: 20px;
-           box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-           overflow: hidden;
-           animation: slideUp 0.6s ease-out;
-       }
-       
-       @keyframes slideUp {
-           from { opacity: 0; transform: translateY(30px); }
-           to { opacity: 1; transform: translateY(0); }
-       }
-       
-       .header {
-           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-           color: white;
-           padding: 40px 30px;
-           text-align: center;
-           position: relative;
-           overflow: hidden;
-       }
-       
-       .header::before {
-           content: '';
-           position: absolute;
-           top: -50%;
-           left: -50%;
-           width: 200%;
-           height: 200%;
-           background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-           animation: pulse 4s ease-in-out infinite;
-       }
-       
-       @keyframes pulse {
-           0%, 100% { transform: scale(1); }
-           50% { transform: scale(1.1); }
-       }
-       
-       .header h1 {
-           font-size: 2.5rem;
-           margin-bottom: 10px;
-           position: relative;
-           z-index: 1;
-       }
-       
-       .header p {
-           font-size: 1.1rem;
-           opacity: 0.9;
-           position: relative;
-           z-index: 1;
-       }
-       
-       .content {
-           padding: 40px 30px;
-       }
-       
-       .calculator-tabs {
-           display: flex;
-           background: #f8f9fa;
-           border-radius: 15px;
-           padding: 5px;
-           margin-bottom: 30px;
-           gap: 5px;
-       }
-       
-       .tab-button {
-           flex: 1;
-           padding: 15px 20px;
-           border: none;
-           border-radius: 10px;
-           background: transparent;
-           cursor: pointer;
-           transition: all 0.3s ease;
-           font-weight: 600;
-           font-size: 14px;
-       }
-       
-       .tab-button.active {
-           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-           color: white;
-       }
-       
-       .tab-content {
-           display: none;
-       }
-       
-       .tab-content.active {
-           display: block;
-       }
-       
-       .input-section {
-           background: #f8f9fa;
-           border-radius: 15px;
-           padding: 30px;
-           margin-bottom: 30px;
-           border: 2px solid #e9ecef;
-       }
-       
-       .input-grid {
-           display: grid;
-           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-           gap: 25px;
-       }
-       
-       .input-group {
-           background: white;
-           border-radius: 12px;
-           padding: 20px;
-           box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-       }
-       
-       .input-label {
-           font-size: 1.1rem;
-           font-weight: 600;
-           color: #333;
-           margin-bottom: 10px;
-           display: flex;
-           align-items: center;
-           gap: 8px;
-       }
-       
-       input[type="text"], input[type="number"], select {
-           width: 100%;
-           padding: 15px;
-           border: 2px solid #e1e5e9;
-           border-radius: 8px;
-           font-size: 16px;
-           transition: all 0.3s ease;
-           background: #fafbfc;
-       }
-       
-       input:focus, select:focus {
-           outline: none;
-           border-color: #667eea;
-           background: white;
-           box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-       }
-       
-       .parsed-result {
-           margin-top: 10px;
-           padding: 10px;
-           background: #e3f2fd;
-           border-radius: 6px;
-           font-size: 14px;
-           color: #1976d2;
-       }
-       
-       .controls {
-           display: flex;
-           gap: 15px;
-           flex-wrap: wrap;
-           justify-content: center;
-           margin: 25px 0;
-       }
-       
-       .btn {
-           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-           color: white;
-           border: none;
-           padding: 15px 30px;
-           border-radius: 25px;
-           font-size: 16px;
-           font-weight: 600;
-           cursor: pointer;
-           transition: all 0.3s ease;
-       }
-       
-       .btn:hover {
-           transform: translateY(-2px);
-           box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-       }
-       
-       .btn-secondary {
-           background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-       }
-       
-       .btn-danger {
-           background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
-       }
-       
-       .result-section {
-           border-radius: 15px;
-           padding: 30px;
-           margin-top: 30px;
-           border: 2px solid;
-           display: none;
-           animation: fadeIn 0.5s ease-in;
-       }
-       
-       .result-section.profit {
-           background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
-           border-color: #4caf50;
-       }
-       
-       .result-section.loss {
-           background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
-           border-color: #f44336;
-       }
-       
-       @keyframes fadeIn {
-           from { opacity: 0; transform: translateY(20px); }
-           to { opacity: 1; transform: translateY(0); }
-       }
-       
-       .result-title {
-           font-size: 1.5rem;
-           font-weight: bold;
-           margin-bottom: 25px;
-           text-align: center;
-       }
-       
-       .result-title.profit {
-           color: #2e7d32;
-       }
-       
-       .result-title.loss {
-           color: #c62828;
-       }
-       
-       .stock-display {
-           background: white;
-           border-radius: 15px;
-           padding: 30px;
-           text-align: center;
-           margin-bottom: 25px;
-           box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-       }
-       
-       .stock-value {
-           font-size: 3rem;
-           font-weight: bold;
-           margin-bottom: 10px;
-           font-family: 'Courier New', monospace;
-       }
-       
-       .stock-value.profit {
-           color: #4caf50;
-       }
-       
-       .stock-value.loss {
-           color: #f44336;
-       }
-       
-       .stock-description {
-           font-size: 1.2rem;
-           color: #666;
-       }
-       
-       .result-grid {
-           display: grid;
-           grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-           gap: 20px;
-       }
-       
-       .result-item {
-           background: white;
-           padding: 20px;
-           border-radius: 12px;
-           text-align: center;
-           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-       }
-       
-       .result-label {
-           font-size: 0.9rem;
-           color: #666;
-           margin-bottom: 8px;
-       }
-       
-       .result-value {
-           font-size: 1.3rem;
-           font-weight: bold;
-       }
-       
-       .result-value.profit {
-           color: #4caf50;
-       }
-       
-       .result-value.loss {
-           color: #f44336;
-       }
-       
-       .result-value.neutral {
-           color: #666;
-       }
-       
-       .trading-summary {
-           background: white;
-           border-radius: 12px;
-           padding: 20px;
-           margin-top: 20px;
-           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-       }
-       
-       .summary-title {
-           font-size: 1.1rem;
-           font-weight: bold;
-           color: #333;
-           margin-bottom: 15px;
-           text-align: center;
-       }
-       
-       .summary-table {
-           width: 100%;
-           border-collapse: collapse;
-           font-size: 14px;
-       }
-       
-       .summary-table th, .summary-table td {
-           padding: 8px 12px;
-           text-align: center;
-           border-bottom: 1px solid #e9ecef;
-       }
-       
-       .summary-table th {
-           background: #f8f9fa;
-           font-weight: bold;
-           color: #333;
-       }
-       
-       .preset-amounts {
-           background: white;
-           border-radius: 12px;
-           padding: 20px;
-           margin-top: 20px;
-           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-       }
-       
-       .preset-title {
-           font-size: 1.1rem;
-           font-weight: bold;
-           color: #333;
-           margin-bottom: 15px;
-           text-align: center;
-       }
-       
-       .preset-grid {
-           display: grid;
-           grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-           gap: 10px;
-       }
-       
-       .preset-btn {
-           padding: 12px 15px;
-           border: 2px solid #e9ecef;
-           border-radius: 20px;
-           background: white;
-           cursor: pointer;
-           transition: all 0.3s ease;
-           text-align: center;
-           font-weight: 600;
-           font-size: 13px;
-       }
-       
-       .preset-btn:hover {
-           border-color: #667eea;
-           background: rgba(102, 126, 234, 0.1);
-       }
-       
-       @media (max-width: 768px) {
-           .container {
-               margin: 10px;
-           }
-           
-           .header h1 {
-               font-size: 2rem;
-           }
-           
-           .calculator-tabs {
-               flex-direction: column;
-           }
-           
-           .input-grid {
-               grid-template-columns: 1fr;
-           }
-           
-           .controls {
-               flex-direction: column;
-           }
-           
-           .btn {
-               width: 100%;
-           }
-           
-           .stock-value {
-               font-size: 2.5rem;
-           }
-       }
-   </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주식 계산기 - CalcHub | 주식 수익률 및 손익 계산</title>
+    <meta name="description" content="주식 계산기로 수익률과 손익을 쉽게 계산하세요. 매수가, 매도가, 수량을 입력하면 정확한 투자 성과를 확인할 수 있습니다.">
+    <meta name="keywords" content="주식계산기, 주식수익률, 주식손익, 투자수익, 매수매도">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
 </head>
 <body>
-      <!-- 이 헤더 부분 추가 -->
-   <header class="header">
-       <div class="header-content">
-           <a href="../../index.html" class="logo">
-               <div class="logo-icon">🧮</div>
-               CalcHub
-           </a>
-           <nav class="nav-links">
-               <a href="../../index.html" class="nav-link">홈</a>
-               <a href="../finance/" class="nav-link">💼 금융</a>
-           </nav>
-       </div>
-   </header>
-   
-   <div class="container">
-       <div class="header">
-           <h1>📈 주식 계산기</h1>
-           <p>주식 수익률, 손익, 배당을 쉽게 계산하고 투자 성과를 분석하세요</p>
-       </div>
-       
-       <div class="content">
-           <div class="calculator-tabs">
-               <button class="tab-button active" onclick="switchTab('profit')">수익률 계산</button>
-               <button class="tab-button" onclick="switchTab('dividend')">배당 계산</button>
-               <button class="tab-button" onclick="switchTab('portfolio')">포트폴리오</button>
-           </div>
-           
-           <!-- 수익률 계산 -->
-           <div id="profit" class="tab-content active">
-               <div class="input-section">
-                   <div class="input-grid">
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>💰</span>
-                               매수가
-                           </div>
-                           <input type="number" id="buy-price" placeholder="예: 50000" step="100" oninput="smartParseProfit()">
-                           <div class="parsed-result" id="buyPriceParsed">매수가를 입력해주세요</div>
-                       </div>
-                       
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>💸</span>
-                               매도가 (현재가)
-                           </div>
-                           <input type="number" id="sell-price" placeholder="예: 55000" step="100" oninput="smartParseProfit()">
-                           <div class="parsed-result" id="sellPriceParsed">매도가를 입력해주세요</div>
-                       </div>
-                       
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>📊</span>
-                               보유 수량
-                           </div>
-                           <input type="number" id="quantity" placeholder="예: 100" min="1" oninput="smartParseProfit()">
-                           <div class="parsed-result" id="quantityParsed">보유 수량을 입력해주세요</div>
-                       </div>
-                       
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>💳</span>
-                               수수료율 (%)
-                           </div>
-                           <select id="commission-rate" onchange="smartParseProfit()">
-                               <option value="0.015">일반 증권사 (0.015%)</option>
-                               <option value="0.025">은행 증권 (0.025%)</option>
-                               <option value="0.05">고수수료 (0.05%)</option>
-                               <option value="0">수수료 없음 (0%)</option>
-                               <option value="custom">직접 입력</option>
-                           </select>
-                           <div class="parsed-result" id="commissionRateParsed">일반 증권사 수수료가 선택되었습니다</div>
-                       </div>
-                   </div>
-                   
-                   <div class="input-group" id="custom-commission-group" style="display: none; margin-top: 20px;">
-                       <div class="input-label">
-                           <span>📊</span>
-                           커스텀 수수료율 (%)
-                       </div>
-                       <input type="number" id="custom-commission" placeholder="예: 0.02" step="0.001" oninput="smartParseProfit()">
-                       <div class="parsed-result" id="customCommissionParsed">커스텀 수수료율을 입력해주세요</div>
-                   </div>
-                   
-                   <div class="preset-amounts">
-                       <div class="preset-title">🎯 빠른 가격 설정</div>
-                       <div class="preset-grid">
-                           <button class="preset-btn" onclick="setBuyPrice(10000)">1만원</button>
-                           <button class="preset-btn" onclick="setBuyPrice(50000)">5만원</button>
-                           <button class="preset-btn" onclick="setBuyPrice(100000)">10만원</button>
-                           <button class="preset-btn" onclick="setBuyPrice(200000)">20만원</button>
-                           <button class="preset-btn" onclick="setBuyPrice(500000)">50만원</button>
-                           <button class="preset-btn" onclick="setBuyPrice(1000000)">100만원</button>
-                       </div>
-                   </div>
-               </div>
-               
-               <div class="controls">
-                   <button class="btn" onclick="calculateProfit()">📈 수익률 계산</button>
-                   <button class="btn btn-secondary" onclick="showProfitExample()">📝 예시</button>
-                   <button class="btn btn-danger" onclick="clearProfit()">🗑️ 초기화</button>
-               </div>
-               
-               <div class="result-section" id="profitResult"></div>
-           </div>
-           
-           <!-- 배당 계산 -->
-           <div id="dividend" class="tab-content">
-               <div class="input-section">
-                   <div class="input-grid">
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>💰</span>
-                               주식 가격
-                           </div>
-                           <input type="number" id="stock-price" placeholder="예: 80000" step="100" oninput="smartParseDividend()">
-                           <div class="parsed-result" id="stockPriceParsed">주식 가격을 입력해주세요</div>
-                       </div>
-                       
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>📊</span>
-                               보유 수량
-                           </div>
-                           <input type="number" id="dividend-quantity" placeholder="예: 200" min="1" oninput="smartParseDividend()">
-                           <div class="parsed-result" id="dividendQuantityParsed">보유 수량을 입력해주세요</div>
-                       </div>
-                       
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>💸</span>
-                               연간 배당금 (주당)
-                           </div>
-                           <input type="number" id="dividend-per-share" placeholder="예: 2000" step="10" oninput="smartParseDividend()">
-                           <div class="parsed-result" id="dividendPerShareParsed">주당 배당금을 입력해주세요</div>
-                       </div>
-                       
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>📅</span>
-                               배당 횟수 (연간)
-                           </div>
-                           <select id="dividend-frequency" onchange="smartParseDividend()">
-                               <option value="1">연 1회</option>
-                               <option value="2">반기별 (연 2회)</option>
-                               <option value="4">분기별 (연 4회)</option>
-                               <option value="12">월별 (연 12회)</option>
-                           </select>
-                           <div class="parsed-result" id="dividendFrequencyParsed">연 1회 배당이 선택되었습니다</div>
-                       </div>
-                   </div>
-               </div>
-               
-               <div class="controls">
-                   <button class="btn" onclick="calculateDividend()">💸 배당 계산</button>
-                   <button class="btn btn-secondary" onclick="showDividendExample()">📝 예시</button>
-                   <button class="btn btn-danger" onclick="clearDividend()">🗑️ 초기화</button>
-               </div>
-               
-               <div class="result-section" id="dividendResult"></div>
-           </div>
-           
-           <!-- 포트폴리오 -->
-           <div id="portfolio" class="tab-content">
-               <div class="input-section">
-                   <div class="input-grid">
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>💰</span>
-                               총 투자 금액
-                           </div>
-                           <input type="text" id="total-investment" placeholder="예: 1000만원, 10000000원..." oninput="smartParsePortfolio()">
-                           <div class="parsed-result" id="totalInvestmentParsed">총 투자 금액을 입력해주세요</div>
-                       </div>
-                       
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>📈</span>
-                               현재 평가 금액
-                           </div>
-                           <input type="text" id="current-value" placeholder="예: 1200만원, 12000000원..." oninput="smartParsePortfolio()">
-                           <div class="parsed-result" id="currentValueParsed">현재 평가 금액을 입력해주세요</div>
-                       </div>
-                       
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>📅</span>
-                               투자 기간 (개월)
-                           </div>
-                           <input type="number" id="investment-period" placeholder="예: 12" min="1" oninput="smartParsePortfolio()">
-                           <div class="parsed-result" id="investmentPeriodParsed">투자 기간을 입력해주세요</div>
-                       </div>
-                       
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>💸</span>
-                               받은 배당금 (총액)
-                           </div>
-                           <input type="text" id="total-dividend" placeholder="예: 50만원, 500000원..." oninput="smartParsePortfolio()">
-                           <div class="parsed-result" id="totalDividendParsed">선택사항 (없으면 0원)</div>
-                       </div>
-                   </div>
-               </div>
-               
-               <div class="controls">
-                   <button class="btn" onclick="calculatePortfolio()">📊 포트폴리오 분석</button>
-                   <button class="btn btn-secondary" onclick="showPortfolioExample()">📝 예시</button>
-                   <button class="btn btn-danger" onclick="clearPortfolio()">🗑️ 초기화</button>
-               </div>
-               
-               <div class="result-section" id="portfolioResult"></div>
-           </div>
-       </div>
-   </div>
+    <!-- 공통 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
 
-   <script>
-       let currentTab = 'profit';
-       
-       class PriceParser {
-           constructor() {
-               this.koreanUnits = {
-                   '천': 1000,
-                   '만': 10000,
-                   '억': 100000000
-               };
-           }
-           
-           parseAmount(input) {
-               if (!input) return null;
-               
-               let cleaned = input.replace(/\s+/g, '');
-               
-               for (let [unit, multiplier] of Object.entries(this.koreanUnits)) {
-                   if (cleaned.includes(unit)) {
-                       let parts = cleaned.split(unit);
-                       if (parts[0]) {
-                           let num = parseFloat(parts[0].replace(/[^0-9.]/g, ''));
-                           if (!isNaN(num)) {
-                               return num * multiplier;
-                           }
-                       }
-                   }
-               }
-               
-               cleaned = cleaned.replace(/[^0-9.]/g, '');
-               let num = parseFloat(cleaned);
-               
-               return isNaN(num) ? null : num;
-           }
-       }
-       
-       const parser = new PriceParser();
-       
-       function switchTab(tabName) {
-           document.querySelectorAll('.tab-button').forEach(btn => {
-               btn.classList.remove('active');
-           });
-           event.target.classList.add('active');
-           
-           document.querySelectorAll('.tab-content').forEach(content => {
-               content.classList.remove('active');
-           });
-           document.getElementById(tabName).classList.add('active');
-           
-           currentTab = tabName;
-       }
-       
-       // 수익률 계산
-       function smartParseProfit() {
-           const buyPrice = document.getElementById('buy-price').value;
-           const sellPrice = document.getElementById('sell-price').value;
-           const quantity = document.getElementById('quantity').value;
-           const commissionRate = document.getElementById('commission-rate').value;
-           
-           if (buyPrice) {
-               document.getElementById('buyPriceParsed').textContent = `매수가: ${parseFloat(buyPrice).toLocaleString()}원`;
-           } else {
-               document.getElementById('buyPriceParsed').textContent = '매수가를 입력해주세요';
-           }
-           
-           if (sellPrice) {
-               document.getElementById('sellPriceParsed').textContent = `매도가: ${parseFloat(sellPrice).toLocaleString()}원`;
-           } else {
-               document.getElementById('sellPriceParsed').textContent = '매도가를 입력해주세요';
-           }
-           
-           if (quantity) {
-               document.getElementById('quantityParsed').textContent = `보유 수량: ${parseInt(quantity).toLocaleString()}주`;
-           } else {
-               document.getElementById('quantityParsed').textContent = '보유 수량을 입력해주세요';
-           }
-           
-           const commissionTypes = {
-               '0.015': '일반 증권사 수수료가 선택되었습니다',
-               '0.025': '은행 증권 수수료가 선택되었습니다',
-               '0.05': '고수수료가 선택되었습니다',
-               '0': '수수료 없음이 선택되었습니다',
-               'custom': '커스텀 수수료가 선택되었습니다'
-           };
-           
-           document.getElementById('commissionRateParsed').textContent = commissionTypes[commissionRate];
-           
-           const customGroup = document.getElementById('custom-commission-group');
-           if (commissionRate === 'custom') {
-               customGroup.style.display = 'block';
-               const customRate = document.getElementById('custom-commission').value;
-               if (customRate) {
-                   document.getElementById('customCommissionParsed').textContent = `커스텀 수수료: ${customRate}%`;
-               }
-           } else {
-               customGroup.style.display = 'none';
-           }
-       }
-       
-       function setBuyPrice(price) {
-           document.getElementById('buy-price').value = price;
-           smartParseProfit();
-       }
-       
-       function calculateProfit() {
-           const buyPrice = parseFloat(document.getElementById('buy-price').value);
-           const sellPrice = parseFloat(document.getElementById('sell-price').value);
-           const quantity = parseInt(document.getElementById('quantity').value);
-           let commissionRate = document.getElementById('commission-rate').value;
-           
-           if (!buyPrice || !sellPrice || !quantity) {
-               alert('매수가, 매도가, 수량을 모두 입력해주세요.');
-               return;
-           }
-           
-           if (commissionRate === 'custom') {
-               const customRate = parseFloat(document.getElementById('custom-commission').value);
-               if (!customRate && customRate !== 0) {
-                   alert('커스텀 수수료율을 입력해주세요.');
-                   return;
-               }
-               commissionRate = customRate;
-           } else {
-               commissionRate = parseFloat(commissionRate);
-           }
-           
-           // 매수/매도 금액 계산
-           const buyAmount = buyPrice * quantity;
-           const sellAmount = sellPrice * quantity;
-           
-           // 수수료 계산
-           const buyCommission = buyAmount * (commissionRate / 100);
-           const sellCommission = sellAmount * (commissionRate / 100);
-           const totalCommission = buyCommission + sellCommission;
-           
-           // 손익 계산
-           const grossProfit = sellAmount - buyAmount;
-           const netProfit = grossProfit - totalCommission;
-           const profitRate = (netProfit / buyAmount) * 100;
-           
-           // 결과 클래스 결정
-           const resultClass = netProfit >= 0 ? 'profit' : 'loss';
-           const resultText = netProfit >= 0 ? '수익' : '손실';
-           
-           const resultHTML = `
-               <div class="result-title ${resultClass}">📈 주식 ${resultText} 계산 결과</div>
-               <div class="stock-display">
-                   <div class="stock-value ${resultClass}">${netProfit >= 0 ? '+' : ''}${Math.round(netProfit).toLocaleString()}원</div>
-                   <div class="stock-description">실현 ${resultText}</div>
-               </div>
-               <div class="result-grid">
-                   <div class="result-item">
-                       <div class="result-label">매수가</div>
-                       <div class="result-value neutral">${buyPrice.toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">매도가</div>
-                       <div class="result-value neutral">${sellPrice.toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">보유 수량</div>
-                       <div class="result-value neutral">${quantity.toLocaleString()}주</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">매수 금액</div>
-                       <div class="result-value neutral">${buyAmount.toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">매도 금액</div>
-                       <div class="result-value neutral">${sellAmount.toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">총 수수료</div>
-                       <div class="result-value neutral">${Math.round(totalCommission).toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">실현 ${resultText}</div>
-                       <div class="result-value ${resultClass}">${netProfit >= 0 ? '+' : ''}${Math.round(netProfit).toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">${resultText}률</div>
-                       <div class="result-value ${resultClass}">${netProfit >= 0 ? '+' : ''}${profitRate.toFixed(2)}%</div>
-                   </div>
-               </div>
-               <div class="trading-summary">
-                   <div class="summary-title">📊 거래 요약</div>
-                   <table class="summary-table">
-                       <tr>
-                           <th>구분</th>
-                           <th>금액</th>
-                           <th>수수료</th>
-                           <th>실제 금액</th>
-                       </tr>
-                       <tr>
-                           <td>매수</td>
-                           <td>${buyAmount.toLocaleString()}원</td>
-                           <td>${Math.round(buyCommission).toLocaleString()}원</td>
-                           <td>${Math.round(buyAmount + buyCommission).toLocaleString()}원</td>
-                       </tr>
-                       <tr>
-                           <td>매도</td>
-                           <td>${sellAmount.toLocaleString()}원</td>
-                           <td>${Math.round(sellCommission).toLocaleString()}원</td>
-                           <td>${Math.round(sellAmount - sellCommission).toLocaleString()}원</td>
-                       </tr>
-                   </table>
-               </div>
-           `;
-           
-           const resultSection = document.getElementById('profitResult');
-           resultSection.innerHTML = resultHTML;
-           resultSection.className = `result-section ${resultClass}`;
-           resultSection.style.display = 'block';
-           resultSection.scrollIntoView({ behavior: 'smooth' });
-       }
-       
-       function showProfitExample() {
-           document.getElementById('buy-price').value = '50000';
-           document.getElementById('sell-price').value = '55000';
-           document.getElementById('quantity').value = '100';
-           document.getElementById('commission-rate').value = '0.015';
-           smartParseProfit();
-       }
-       
-       function clearProfit() {
-           document.getElementById('buy-price').value = '';
-           document.getElementById('sell-price').value = '';
-           document.getElementById('quantity').value = '';
-           document.getElementById('commission-rate').value = '0.015';
-           document.getElementById('custom-commission').value = '';
-           smartParseProfit();
-           document.getElementById('profitResult').style.display = 'none';
-       }
-       
-       // 배당 계산
-       function smartParseDividend() {
-           const stockPrice = document.getElementById('stock-price').value;
-           const quantity = document.getElementById('dividend-quantity').value;
-           const dividendPerShare = document.getElementById('dividend-per-share').value;
-           const frequency = document.getElementById('dividend-frequency').value;
-           
-           if (stockPrice) {
-               document.getElementById('stockPriceParsed').textContent = `주식 가격: ${parseFloat(stockPrice).toLocaleString()}원`;
-           } else {
-               document.getElementById('stockPriceParsed').textContent = '주식 가격을 입력해주세요';
-           }
-           
-           if (quantity) {
-               document.getElementById('dividendQuantityParsed').textContent = `보유 수량: ${parseInt(quantity).toLocaleString()}주`;
-           } else {
-               document.getElementById('dividendQuantityParsed').textContent = '보유 수량을 입력해주세요';
-           }
-           
-           if (dividendPerShare) {
-               document.getElementById('dividendPerShareParsed').textContent = `주당 배당금: ${parseFloat(dividendPerShare).toLocaleString()}원`;
-           } else {
-               document.getElementById('dividendPerShareParsed').textContent = '주당 배당금을 입력해주세요';
-           }
-           
-           const frequencyNames = {
-               '1': '연 1회 배당이 선택되었습니다',
-               '2': '반기별 배당이 선택되었습니다',
-               '4': '분기별 배당이 선택되었습니다',
-               '12': '월별 배당이 선택되었습니다'
-           };
-           
-           document.getElementById('dividendFrequencyParsed').textContent = frequencyNames[frequency];
-       }
-       
-       function calculateDividend() {
-           const stockPrice = parseFloat(document.getElementById('stock-price').value);
-           const quantity = parseInt(document.getElementById('dividend-quantity').value);
-           const dividendPerShare = parseFloat(document.getElementById('dividend-per-share').value);
-           const frequency = parseInt(document.getElementById('dividend-frequency').value);
-           
-           if (!stockPrice || !quantity || !dividendPerShare) {
-               alert('주식 가격, 보유 수량, 주당 배당금을 모두 입력해주세요.');
-               return;
-           }
-           
-           // 투자 금액
-           const totalInvestment = stockPrice * quantity;
-           
-           // 배당 계산
-           const annualDividend = dividendPerShare * quantity;
-           const dividendPerPayment = annualDividend / frequency;
-           const dividendYield = (dividendPerShare / stockPrice) * 100;
-           
-           // 세후 배당 (배당소득세 15.4% 적용)
-           const dividendTaxRate = 0.154;
-           const afterTaxAnnualDividend = annualDividend * (1 - dividendTaxRate);
-           const afterTaxDividendPerPayment = dividendPerPayment * (1 - dividendTaxRate);
-           const afterTaxYield = dividendYield * (1 - dividendTaxRate);
-           
-           const resultHTML = `
-               <div class="result-title profit">💸 배당 계산 결과</div>
-               <div class="stock-display">
-                   <div class="stock-value profit">${Math.round(annualDividend).toLocaleString()}원</div>
-                   <div class="stock-description">연간 배당금 (세전)</div>
-               </div>
-               <div class="result-grid">
-                   <div class="result-item">
-                       <div class="result-label">주식 가격</div>
-                       <div class="result-value neutral">${stockPrice.toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">보유 수량</div>
-                       <div class="result-value neutral">${quantity.toLocaleString()}주</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">투자 금액</div>
-                       <div class="result-value neutral">${totalInvestment.toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">주당 배당금</div>
-                       <div class="result-value neutral">${dividendPerShare.toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">배당 수익률</div>
-                       <div class="result-value profit">${dividendYield.toFixed(2)}%</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">연간 배당금</div>
-                       <div class="result-value profit">${Math.round(annualDividend).toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">회당 배당금</div>
-                       <div class="result-value profit">${Math.round(dividendPerPayment).toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">세후 연간 배당</div>
-                       <div class="result-value profit">${Math.round(afterTaxAnnualDividend).toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">세후 수익률</div>
-                       <div class="result-value profit">${afterTaxYield.toFixed(2)}%</div>
-                   </div>
-               </div>
-               <div class="trading-summary">
-                   <div class="summary-title">📊 배당 스케줄</div>
-                   <table class="summary-table">
-                       <tr>
-                           <th>구분</th>
-                           <th>배당금 (세전)</th>
-                           <th>배당소득세</th>
-                           <th>실수령액</th>
-                       </tr>
-                       <tr>
-                           <td>회당 배당</td>
-                           <td>${Math.round(dividendPerPayment).toLocaleString()}원</td>
-                           <td>${Math.round(dividendPerPayment * dividendTaxRate).toLocaleString()}원</td>
-                           <td>${Math.round(afterTaxDividendPerPayment).toLocaleString()}원</td>
-                       </tr>
-                       <tr>
-                           <td>연간 배당</td>
-                           <td>${Math.round(annualDividend).toLocaleString()}원</td>
-                           <td>${Math.round(annualDividend * dividendTaxRate).toLocaleString()}원</td>
-                           <td>${Math.round(afterTaxAnnualDividend).toLocaleString()}원</td>
-                       </tr>
-                   </table>
-               </div>
-           `;
-           
-           const resultSection = document.getElementById('dividendResult');
-           resultSection.innerHTML = resultHTML;
-           resultSection.className = 'result-section profit';
-           resultSection.style.display = 'block';
-           resultSection.scrollIntoView({ behavior: 'smooth' });
-       }
-       
-       function showDividendExample() {
-           document.getElementById('stock-price').value = '80000';
-           document.getElementById('dividend-quantity').value = '200';
-           document.getElementById('dividend-per-share').value = '2000';
-           document.getElementById('dividend-frequency').value = '4';
-           smartParseDividend();
-       }
-       
-       function clearDividend() {
-           document.getElementById('stock-price').value = '';
-           document.getElementById('dividend-quantity').value = '';
-           document.getElementById('dividend-per-share').value = '';
-           document.getElementById('dividend-frequency').value = '1';
-           smartParseDividend();
-           document.getElementById('dividendResult').style.display = 'none';
-       }
-       
-       // 포트폴리오 계산
-       function smartParsePortfolio() {
-           const totalInvestment = document.getElementById('total-investment').value;
-           const currentValue = document.getElementById('current-value').value;
-           const period = document.getElementById('investment-period').value;
-           const totalDividend = document.getElementById('total-dividend').value;
-           
-           const parsedInvestment = parser.parseAmount(totalInvestment);
-           const parsedCurrentValue = parser.parseAmount(currentValue);
-           const parsedDividend = parser.parseAmount(totalDividend) || 0;
-           
-           if (parsedInvestment) {
-               document.getElementById('totalInvestmentParsed').textContent = `인식됨: ${parsedInvestment.toLocaleString()}원`;
-           } else {
-               document.getElementById('totalInvestmentParsed').textContent = '총 투자 금액을 입력해주세요';
-           }
-           
-           if (parsedCurrentValue) {
-               document.getElementById('currentValueParsed').textContent = `인식됨: ${parsedCurrentValue.toLocaleString()}원`;
-           } else {
-               document.getElementById('currentValueParsed').textContent = '현재 평가 금액을 입력해주세요';
-           }
-           
-           if (period) {
-               document.getElementById('investmentPeriodParsed').textContent = `투자 기간: ${period}개월`;
-           } else {
-               document.getElementById('investmentPeriodParsed').textContent = '투자 기간을 입력해주세요';
-           }
-           
-           if (parsedDividend > 0) {
-               document.getElementById('totalDividendParsed').textContent = `인식됨: ${parsedDividend.toLocaleString()}원`;
-           } else {
-               document.getElementById('totalDividendParsed').textContent = '선택사항 (없으면 0원)';
-           }
-       }
-       
-       function calculatePortfolio() {
-           const totalInvestment = parser.parseAmount(document.getElementById('total-investment').value);
-           const currentValue = parser.parseAmount(document.getElementById('current-value').value);
-           const period = parseInt(document.getElementById('investment-period').value);
-           const totalDividend = parser.parseAmount(document.getElementById('total-dividend').value) || 0;
-           
-           if (!totalInvestment || !currentValue || !period) {
-               alert('총 투자 금액, 현재 평가 금액, 투자 기간을 모두 입력해주세요.');
-               return;
-           }
-           
-           // 손익 계산
-           const capitalGain = currentValue - totalInvestment;
-           const totalReturn = capitalGain + totalDividend;
-           const totalReturnRate = (totalReturn / totalInvestment) * 100;
-           
-           // 연환산 수익률 계산
-           const years = period / 12;
-           const annualizedReturn = years > 0 ? (Math.pow(((currentValue + totalDividend) / totalInvestment), (1 / years)) - 1) * 100 : 0;
-           
-           // 월평균 수익률
-           const monthlyReturn = totalReturnRate / period;
-           
-           // 결과 클래스 결정
-           const resultClass = totalReturn >= 0 ? 'profit' : 'loss';
-           const resultText = totalReturn >= 0 ? '수익' : '손실';
-           
-           const resultHTML = `
-               <div class="result-title ${resultClass}">📊 포트폴리오 분석 결과</div>
-               <div class="stock-display">
-                   <div class="stock-value ${resultClass}">${totalReturn >= 0 ? '+' : ''}${Math.round(totalReturn).toLocaleString()}원</div>
-                   <div class="stock-description">총 ${resultText}</div>
-               </div>
-               <div class="result-grid">
-                   <div class="result-item">
-                       <div class="result-label">총 투자 금액</div>
-                       <div class="result-value neutral">${totalInvestment.toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">현재 평가 금액</div>
-                       <div class="result-value neutral">${currentValue.toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">투자 기간</div>
-                       <div class="result-value neutral">${period}개월</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">평가 ${resultText}</div>
-                       <div class="result-value ${resultClass}">${capitalGain >= 0 ? '+' : ''}${Math.round(capitalGain).toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">배당 수익</div>
-                       <div class="result-value profit">${Math.round(totalDividend).toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">총 ${resultText}</div>
-                       <div class="result-value ${resultClass}">${totalReturn >= 0 ? '+' : ''}${Math.round(totalReturn).toLocaleString()}원</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">총 수익률</div>
-                       <div class="result-value ${resultClass}">${totalReturnRate >= 0 ? '+' : ''}${totalReturnRate.toFixed(2)}%</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">연환산 수익률</div>
-                       <div class="result-value ${resultClass}">${annualizedReturn >= 0 ? '+' : ''}${annualizedReturn.toFixed(2)}%</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">월평균 수익률</div>
-                       <div class="result-value ${resultClass}">${monthlyReturn >= 0 ? '+' : ''}${monthlyReturn.toFixed(2)}%</div>
-                   </div>
-               </div>
-               <div class="trading-summary">
-                   <div class="summary-title">📈 수익 구조 분석</div>
-                   <table class="summary-table">
-                       <tr>
-                           <th>구분</th>
-                           <th>금액</th>
-                           <th>비율</th>
-                           <th>기여도</th>
-                       </tr>
-                       <tr>
-                           <td>평가 ${capitalGain >= 0 ? '수익' : '손실'}</td>
-                           <td>${Math.round(capitalGain).toLocaleString()}원</td>
-                           <td>${((capitalGain / totalInvestment) * 100).toFixed(2)}%</td>
-                           <td>${totalReturn !== 0 ? ((capitalGain / totalReturn) * 100).toFixed(1) : '0'}%</td>
-                       </tr>
-                       <tr>
-                           <td>배당 수익</td>
-                           <td>${Math.round(totalDividend).toLocaleString()}원</td>
-                           <td>${((totalDividend / totalInvestment) * 100).toFixed(2)}%</td>
-                           <td>${totalReturn !== 0 ? ((totalDividend / totalReturn) * 100).toFixed(1) : '0'}%</td>
-                       </tr>
-                   </table>
-               </div>
-           `;
-           
-           const resultSection = document.getElementById('portfolioResult');
-           resultSection.innerHTML = resultHTML;
-           resultSection.className = `result-section ${resultClass}`;
-           resultSection.style.display = 'block';
-           resultSection.scrollIntoView({ behavior: 'smooth' });
-       }
-       
-       function showPortfolioExample() {
-           document.getElementById('total-investment').value = '1000만원';
-           document.getElementById('current-value').value = '1200만원';
-           document.getElementById('investment-period').value = '18';
-           document.getElementById('total-dividend').value = '50만원';
-           smartParsePortfolio();
-       }
-       
-       function clearPortfolio() {
-           document.getElementById('total-investment').value = '';
-           document.getElementById('current-value').value = '';
-           document.getElementById('investment-period').value = '';
-           document.getElementById('total-dividend').value = '';
-           smartParsePortfolio();
-           document.getElementById('portfolioResult').style.display = 'none';
-       }
-       
-       window.addEventListener('load', function() {
-           showProfitExample();
-           setTimeout(() => calculateProfit(), 1500);
-       });
-   </script>
+    <div class="container">
+        <div class="calculator-card">
+            <!-- 계산기 헤더 -->
+            <div class="calculator-header">
+                <h1 class="calculator-title">📈 주식 계산기</h1>
+                <p class="calculator-subtitle">주식 투자 수익률과 손익을 쉽고 빠르게 계산하세요</p>
+            </div>
+
+            <!-- 계산기 본문 -->
+            <div class="calculator-body">
+                <!-- 입력 섹션 -->
+                <div class="input-section">
+                    <h2 class="section-title">💼 주식 거래 정보 입력</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="buyPrice" class="input-label">매수가</label>
+                            <input type="text" id="buyPrice" class="input-field" placeholder="예: 50000, 5만원">
+                        </div>
+                        <div class="input-group">
+                            <label for="sellPrice" class="input-label">매도가</label>
+                            <input type="text" id="sellPrice" class="input-field" placeholder="예: 55000, 5.5만원">
+                        </div>
+                        <div class="input-group">
+                            <label for="quantity" class="input-label">수량 (주)</label>
+                            <input type="text" id="quantity" class="input-field" placeholder="예: 100, 100주">
+                        </div>
+                    </div>
+                    <button onclick="calculate()" class="btn btn-primary">주식 손익 계산하기</button>
+                </div>
+
+                <!-- 결과 섹션 -->
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <h2 class="result-title">📋 주식 계산 결과</h2>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">손익</div>
+                            <div id="profitLoss" class="result-value highlight">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">수익률</div>
+                            <div id="returnRate" class="result-value">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">투자 금액</div>
+                            <div id="investment" class="result-value">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 숫자 파싱 함수 (한국어 단위 지원)
+        function parseNumber(input) {
+            if (!input || typeof input !== 'string') return 0;
+            
+            // 기본 정리
+            input = input.replace(/[,\s]/g, '').toLowerCase();
+            
+            // 주 제거
+            input = input.replace(/주/g, '');
+            
+            // 한국어 단위 변환
+            const units = {
+                '만': 10000,
+                '십만': 100000,
+                '백만': 1000000,
+                '천만': 10000000,
+                '억': 100000000,
+                '천억': 100000000000,
+                '조': 1000000000000
+            };
+            
+            for (let unit in units) {
+                if (input.includes(unit)) {
+                    const num = parseFloat(input.replace(unit, '')) || 1;
+                    return num * units[unit];
+                }
+            }
+            
+            return parseFloat(input) || 0;
+        }
+
+        // 주식 손익 계산 함수
+        function calculate() {
+            const buyPriceInput = document.getElementById('buyPrice').value;
+            const sellPriceInput = document.getElementById('sellPrice').value;
+            const quantityInput = document.getElementById('quantity').value;
+            
+            if (!buyPriceInput || !sellPriceInput || !quantityInput) {
+                alert('모든 값을 입력해주세요');
+                return;
+            }
+
+            const buyPrice = parseNumber(buyPriceInput);
+            const sellPrice = parseNumber(sellPriceInput);
+            const quantity = parseNumber(quantityInput);
+            
+            if (buyPrice <= 0 || sellPrice <= 0 || quantity <= 0) {
+                alert('올바른 값을 입력해주세요');
+                return;
+            }
+
+            // 투자 금액과 손익 계산
+            const investment = buyPrice * quantity;
+            const revenue = sellPrice * quantity;
+            const profitLoss = revenue - investment;
+            const returnRate = (profitLoss / investment) * 100;
+
+            // 결과 표시
+            const profitSign = profitLoss >= 0 ? '+' : '';
+            const profitColor = profitLoss >= 0 ? 'var(--success-color)' : 'var(--error-color)';
+            
+            document.getElementById('profitLoss').textContent = profitSign + Math.round(profitLoss).toLocaleString() + '원';
+            document.getElementById('profitLoss').style.color = profitColor;
+            
+            const returnSign = returnRate >= 0 ? '+' : '';
+            document.getElementById('returnRate').textContent = returnSign + returnRate.toFixed(2) + '%';
+            document.getElementById('returnRate').style.color = profitColor;
+            
+            document.getElementById('investment').textContent = investment.toLocaleString() + '원';
+            
+            document.getElementById('resultSection').style.display = 'block';
+            document.getElementById('resultSection').classList.add('fade-in');
+        }
+
+        // 엔터키로 계산
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+    </script>
 </body>
 </html>

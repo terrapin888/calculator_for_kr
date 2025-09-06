@@ -1,888 +1,189 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>날짜 계산기 - 날짜 더하기/빼기 자동 계산 | 스마트 파싱</title>
-   <meta name="description" content="날짜 계산기로 날짜 더하기, 빼기, 차이 계산을 쉽게 하세요. 날짜와 기간을 자유 형식으로 입력하면 자동 인식합니다.">
-
-   <!-- 이 3줄 추가 -->
-   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="../../css/common.css">
-   <link rel="stylesheet" href="../../css/calculator.css">
-
-   <style>
-       * {
-           margin: 0;
-           padding: 0;
-           box-sizing: border-box;
-       }
-       
-       body {
-           font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
-           background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-           min-height: 100vh;
-           padding: 20px;
-       }
-       
-       .container {
-           max-width: 1200px;
-           margin: 0 auto;
-           background: white;
-           border-radius: 20px;
-           box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-           overflow: hidden;
-           animation: slideUp 0.6s ease-out;
-       }
-       
-       @keyframes slideUp {
-           from { opacity: 0; transform: translateY(30px); }
-           to { opacity: 1; transform: translateY(0); }
-       }
-       
-       .header {
-           background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-           color: white;
-           padding: 40px 30px;
-           text-align: center;
-           position: relative;
-           overflow: hidden;
-       }
-       
-       .header::before {
-           content: '';
-           position: absolute;
-           top: -50%;
-           left: -50%;
-           width: 200%;
-           height: 200%;
-           background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-           animation: pulse 4s ease-in-out infinite;
-       }
-       
-       @keyframes pulse {
-           0%, 100% { transform: scale(1); }
-           50% { transform: scale(1.1); }
-       }
-       
-       .header h1 {
-           font-size: 2.5rem;
-           margin-bottom: 10px;
-           position: relative;
-           z-index: 1;
-       }
-       
-       .header p {
-           font-size: 1.1rem;
-           opacity: 0.9;
-           position: relative;
-           z-index: 1;
-       }
-       
-       .content {
-           padding: 40px 30px;
-       }
-       
-       .calculator-tabs {
-           display: flex;
-           background: #f8f9fa;
-           border-radius: 15px;
-           padding: 5px;
-           margin-bottom: 30px;
-           gap: 5px;
-       }
-       
-       .tab-button {
-           flex: 1;
-           padding: 15px 20px;
-           border: none;
-           border-radius: 10px;
-           background: transparent;
-           cursor: pointer;
-           transition: all 0.3s ease;
-           font-weight: 600;
-           font-size: 14px;
-       }
-       
-       .tab-button.active {
-           background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-           color: white;
-       }
-       
-       .tab-content {
-           display: none;
-       }
-       
-       .tab-content.active {
-           display: block;
-       }
-       
-       .input-section {
-           background: #f8f9fa;
-           border-radius: 15px;
-           padding: 30px;
-           margin-bottom: 30px;
-           border: 2px solid #e9ecef;
-       }
-       
-       .input-grid {
-           display: grid;
-           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-           gap: 25px;
-       }
-       
-       .input-group {
-           background: white;
-           border-radius: 12px;
-           padding: 20px;
-           box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-       }
-       
-       .input-label {
-           font-size: 1.1rem;
-           font-weight: 600;
-           color: #333;
-           margin-bottom: 10px;
-           display: flex;
-           align-items: center;
-           gap: 8px;
-       }
-       
-       input[type="text"], input[type="date"], input[type="number"], select {
-           width: 100%;
-           padding: 15px;
-           border: 2px solid #e1e5e9;
-           border-radius: 8px;
-           font-size: 16px;
-           transition: all 0.3s ease;
-           background: #fafbfc;
-       }
-       
-       input:focus, select:focus {
-           outline: none;
-           border-color: #a8edea;
-           background: white;
-           box-shadow: 0 0 0 3px rgba(168, 237, 234, 0.1);
-       }
-       
-       .parsed-result {
-           margin-top: 10px;
-           padding: 10px;
-           background: #e1f5fe;
-           border-radius: 6px;
-           font-size: 14px;
-           color: #0277bd;
-       }
-       
-       .controls {
-           display: flex;
-           gap: 15px;
-           flex-wrap: wrap;
-           justify-content: center;
-           margin: 25px 0;
-       }
-       
-       .btn {
-           background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-           color: white;
-           border: none;
-           padding: 15px 30px;
-           border-radius: 25px;
-           font-size: 16px;
-           font-weight: 600;
-           cursor: pointer;
-           transition: all 0.3s ease;
-       }
-       
-       .btn:hover {
-           transform: translateY(-2px);
-           box-shadow: 0 8px 25px rgba(168, 237, 234, 0.3);
-       }
-       
-       .btn-secondary {
-           background: linear-gradient(135d, #84fab0 0%, #8fd3f4 100%);
-       }
-       
-       .btn-danger {
-           background: linear-gradient(135deg, #ff8a80 0%, #ff5722 100%);
-       }
-       
-       .result-section {
-           background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
-           border-radius: 15px;
-           padding: 30px;
-           margin-top: 30px;
-           border: 2px solid #4caf50;
-           display: none;
-           animation: fadeIn 0.5s ease-in;
-       }
-       
-       @keyframes fadeIn {
-           from { opacity: 0; transform: translateY(20px); }
-           to { opacity: 1; transform: translateY(0); }
-       }
-       
-       .result-title {
-           font-size: 1.5rem;
-           font-weight: bold;
-           color: #2e7d32;
-           margin-bottom: 25px;
-           text-align: center;
-       }
-       
-       .date-display {
-           background: white;
-           border-radius: 15px;
-           padding: 30px;
-           text-align: center;
-           margin-bottom: 25px;
-           box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-       }
-       
-       .date-value {
-           font-size: 2.5rem;
-           font-weight: bold;
-           color: #4caf50;
-           margin-bottom: 10px;
-       }
-       
-       .date-description {
-           font-size: 1.2rem;
-           color: #666;
-       }
-       
-       .result-grid {
-           display: grid;
-           grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-           gap: 20px;
-       }
-       
-       .result-item {
-           background: white;
-           padding: 20px;
-           border-radius: 12px;
-           text-align: center;
-           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-       }
-       
-       .result-label {
-           font-size: 0.9rem;
-           color: #666;
-           margin-bottom: 8px;
-       }
-       
-       .result-value {
-           font-size: 1.3rem;
-           font-weight: bold;
-           color: #4caf50;
-       }
-       
-       .period-buttons {
-           background: white;
-           border-radius: 12px;
-           padding: 20px;
-           margin-top: 20px;
-           box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-       }
-       
-       .period-title {
-           font-size: 1.1rem;
-           font-weight: bold;
-           color: #333;
-           margin-bottom: 15px;
-           text-align: center;
-       }
-       
-       .period-grid {
-           display: grid;
-           grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-           gap: 10px;
-       }
-       
-       .period-btn {
-           padding: 12px 15px;
-           border: 2px solid #e9ecef;
-           border-radius: 20px;
-           background: white;
-           cursor: pointer;
-           transition: all 0.3s ease;
-           text-align: center;
-           font-weight: 600;
-           font-size: 13px;
-       }
-       
-       .period-btn:hover {
-           border-color: #a8edea;
-           background: rgba(168, 237, 234, 0.1);
-       }
-       
-       @media (max-width: 768px) {
-           .container {
-               margin: 10px;
-           }
-           
-           .header h1 {
-               font-size: 2rem;
-           }
-           
-           .calculator-tabs {
-               flex-direction: column;
-           }
-           
-           .input-grid {
-               grid-template-columns: 1fr;
-           }
-           
-           .controls {
-               flex-direction: column;
-           }
-           
-           .btn {
-               width: 100%;
-           }
-           
-           .date-value {
-               font-size: 2rem;
-           }
-       }
-   </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>날짜 계산기 - CalcHub | D-Day 및 날짜 차이 계산</title>
+    <meta name="description" content="날짜 계산기로 D-Day와 날짜 차이를 간편하게 계산하세요. 한국어 날짜 형식 자동 인식.">
+    <meta name="keywords" content="날짜계산기, D-Day계산, 날짜차이, 디데이">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
 </head>
 <body>
-    <!-- 이 헤더 부분 추가 -->
-   <header class="header">
-       <div class="header-content">
-           <a href="../../index.html" class="logo">
-               <div class="logo-icon">🧮</div>
-               CalcHub
-           </a>
-           <nav class="nav-links">
-               <a href="../../index.html" class="nav-link">홈</a>
-               <a href="../datetime/" class="nav-link">💼 시간</a>
-           </nav>
-       </div>
-   </header>
- 
-   <div class="container">
-       <div class="header">
-           <h1>📅 날짜 계산기</h1>
-           <p>날짜 더하기, 빼기, 차이 계산을 쉽게 하세요</p>
-       </div>
-       
-       <div class="content">
-           <div class="calculator-tabs">
-               <button class="tab-button active" onclick="switchTab('add')">날짜 더하기</button>
-               <button class="tab-button" onclick="switchTab('subtract')">날짜 빼기</button>
-               <button class="tab-button" onclick="switchTab('difference')">날짜 차이</button>
-           </div>
-           
-           <!-- 날짜 더하기 -->
-           <div id="add" class="tab-content active">
-               <div class="input-section">
-                   <div class="input-grid">
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>📅</span>
-                               기준 날짜
-                           </div>
-                           <input type="date" id="add-base-date" onchange="smartParseAdd()">
-                           <div class="parsed-result" id="addBaseDateParsed">날짜를 선택해주세요</div>
-                       </div>
-                       
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>➕</span>
-                               더할 기간
-                           </div>
-                           <div style="display: grid; grid-template-columns: 1fr 100px; gap: 10px;">
-                               <input type="number" id="add-amount" placeholder="숫자 입력..." oninput="smartParseAdd()">
-                               <select id="add-unit" onchange="smartParseAdd()">
-                                   <option value="days">일</option>
-                                   <option value="weeks">주</option>
-                                   <option value="months">개월</option>
-                                   <option value="years">년</option>
-                               </select>
-                           </div>
-                           <div class="parsed-result" id="addAmountParsed">기간을 입력해주세요</div>
-                       </div>
-                   </div>
-                   
-                   <div class="period-buttons">
-                       <div class="period-title">🎯 빠른 기간 선택</div>
-                       <div class="period-grid">
-                           <button class="period-btn" onclick="setAddPeriod(7, 'days')">1주</button>
-                           <button class="period-btn" onclick="setAddPeriod(14, 'days')">2주</button>
-                           <button class="period-btn" onclick="setAddPeriod(1, 'months')">1개월</button>
-                           <button class="period-btn" onclick="setAddPeriod(3, 'months')">3개월</button>
-                           <button class="period-btn" onclick="setAddPeriod(6, 'months')">6개월</button>
-                           <button class="period-btn" onclick="setAddPeriod(1, 'years')">1년</button>
-                       </div>
-                   </div>
-               </div>
-               
-               <div class="controls">
-                   <button class="btn" onclick="calculateAdd()">📅 날짜 더하기</button>
-                   <button class="btn btn-secondary" onclick="showAddExample()">📝 예시</button>
-                   <button class="btn btn-danger" onclick="clearAdd()">🗑️ 초기화</button>
-               </div>
-               
-               <div class="result-section" id="addResult"></div>
-           </div>
-           
-           <!-- 날짜 빼기 -->
-           <div id="subtract" class="tab-content">
-               <div class="input-section">
-                   <div class="input-grid">
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>📅</span>
-                               기준 날짜
-                           </div>
-                           <input type="date" id="subtract-base-date" onchange="smartParseSubtract()">
-                           <div class="parsed-result" id="subtractBaseDateParsed">날짜를 선택해주세요</div>
-                       </div>
-                       
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>➖</span>
-                               뺄 기간
-                           </div>
-                           <div style="display: grid; grid-template-columns: 1fr 100px; gap: 10px;">
-                               <input type="number" id="subtract-amount" placeholder="숫자 입력..." oninput="smartParseSubtract()">
-                               <select id="subtract-unit" onchange="smartParseSubtract()">
-                                   <option value="days">일</option>
-                                   <option value="weeks">주</option>
-                                   <option value="months">개월</option>
-                                   <option value="years">년</option>
-                               </select>
-                           </div>
-                           <div class="parsed-result" id="subtractAmountParsed">기간을 입력해주세요</div>
-                       </div>
-                   </div>
-                   
-                   <div class="period-buttons">
-                       <div class="period-title">🎯 빠른 기간 선택</div>
-                       <div class="period-grid">
-                           <button class="period-btn" onclick="setSubtractPeriod(7, 'days')">1주</button>
-                           <button class="period-btn" onclick="setSubtractPeriod(14, 'days')">2주</button>
-                           <button class="period-btn" onclick="setSubtractPeriod(1, 'months')">1개월</button>
-                           <button class="period-btn" onclick="setSubtractPeriod(3, 'months')">3개월</button>
-                           <button class="period-btn" onclick="setSubtractPeriod(6, 'months')">6개월</button>
-                           <button class="period-btn" onclick="setSubtractPeriod(1, 'years')">1년</button>
-                       </div>
-                   </div>
-               </div>
-               
-               <div class="controls">
-                   <button class="btn" onclick="calculateSubtract()">📅 날짜 빼기</button>
-                   <button class="btn btn-secondary" onclick="showSubtractExample()">📝 예시</button>
-                   <button class="btn btn-danger" onclick="clearSubtract()">🗑️ 초기화</button>
-               </div>
-               
-               <div class="result-section" id="subtractResult"></div>
-           </div>
-           
-           <!-- 날짜 차이 -->
-           <div id="difference" class="tab-content">
-               <div class="input-section">
-                   <div class="input-grid">
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>📅</span>
-                               시작 날짜
-                           </div>
-                           <input type="date" id="start-date" onchange="smartParseDifference()">
-                           <div class="parsed-result" id="startDateParsed">날짜를 선택해주세요</div>
-                       </div>
-                       
-                       <div class="input-group">
-                           <div class="input-label">
-                               <span>📅</span>
-                               끝 날짜
-                           </div>
-                           <input type="date" id="end-date" onchange="smartParseDifference()">
-                           <div class="parsed-result" id="endDateParsed">날짜를 선택해주세요</div>
-                       </div>
-                   </div>
-               </div>
-               
-               <div class="controls">
-                   <button class="btn" onclick="calculateDifference()">📅 날짜 차이 계산</button>
-                   <button class="btn btn-secondary" onclick="showDifferenceExample()">📝 예시</button>
-                   <button class="btn btn-danger" onclick="clearDifference()">🗑️ 초기화</button>
-               </div>
-               
-               <div class="result-section" id="differenceResult"></div>
-           </div>
-       </div>
-   </div>
+    <!-- 공통 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
 
-   <script>
-       let currentTab = 'add';
-       
-       function switchTab(tabName) {
-           document.querySelectorAll('.tab-button').forEach(btn => {
-               btn.classList.remove('active');
-           });
-           event.target.classList.add('active');
-           
-           document.querySelectorAll('.tab-content').forEach(content => {
-               content.classList.remove('active');
-           });
-           document.getElementById(tabName).classList.add('active');
-           
-           currentTab = tabName;
-       }
-       
-       function formatDate(dateString) {
-           const date = new Date(dateString);
-           return date.toLocaleDateString('ko-KR', { 
-               year: 'numeric', 
-               month: 'long', 
-               day: 'numeric',
-               weekday: 'long'
-           });
-       }
-       
-       function getUnitName(unit) {
-           const units = {
-               'days': '일',
-               'weeks': '주',
-               'months': '개월',
-               'years': '년'
-           };
-           return units[unit] || unit;
-       }
-       
-       // 날짜 더하기
-       function smartParseAdd() {
-           const baseDate = document.getElementById('add-base-date').value;
-           const amount = document.getElementById('add-amount').value;
-           const unit = document.getElementById('add-unit').value;
-           
-           if (baseDate) {
-               document.getElementById('addBaseDateParsed').textContent = `선택됨: ${formatDate(baseDate)}`;
-           }
-           
-           if (amount && unit) {
-               document.getElementById('addAmountParsed').textContent = `더할 기간: ${amount}${getUnitName(unit)}`;
-           } else {
-               document.getElementById('addAmountParsed').textContent = '기간을 입력해주세요';
-           }
-       }
-       
-       function setAddPeriod(amount, unit) {
-           document.getElementById('add-amount').value = amount;
-           document.getElementById('add-unit').value = unit;
-           smartParseAdd();
-       }
-       
-       function calculateAdd() {
-           const baseDate = new Date(document.getElementById('add-base-date').value);
-           const amount = parseInt(document.getElementById('add-amount').value);
-           const unit = document.getElementById('add-unit').value;
-           
-           if (!document.getElementById('add-base-date').value || !amount) {
-               alert('기준 날짜와 더할 기간을 모두 입력해주세요.');
-               return;
-           }
-           
-           let resultDate = new Date(baseDate);
-           
-           switch(unit) {
-               case 'days':
-                   resultDate.setDate(resultDate.getDate() + amount);
-                   break;
-               case 'weeks':
-                   resultDate.setDate(resultDate.getDate() + (amount * 7));
-                   break;
-               case 'months':
-                   resultDate.setMonth(resultDate.getMonth() + amount);
-                   break;
-               case 'years':
-                   resultDate.setFullYear(resultDate.getFullYear() + amount);
-                   break;
-           }
-           
-           // 기간 계산
-           const timeDiff = resultDate.getTime() - baseDate.getTime();
-           const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-           const weeksDiff = Math.floor(daysDiff / 7);
-           const monthsDiff = (resultDate.getFullYear() - baseDate.getFullYear()) * 12 + (resultDate.getMonth() - baseDate.getMonth());
-           
-           const resultHTML = `
-               <div class="result-title">📅 날짜 더하기 결과</div>
-               <div class="date-display">
-                   <div class="date-value">${resultDate.toLocaleDateString('ko-KR')}</div>
-                   <div class="date-description">${resultDate.toLocaleDateString('ko-KR', { weekday: 'long' })}</div>
-               </div>
-               <div class="result-grid">
-                   <div class="result-item">
-                       <div class="result-label">기준 날짜</div>
-                       <div class="result-value" style="font-size: 1rem;">${baseDate.toLocaleDateString('ko-KR')}</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">더한 기간</div>
-                       <div class="result-value">${amount}${getUnitName(unit)}</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">결과 날짜</div>
-                       <div class="result-value" style="font-size: 1rem;">${resultDate.toLocaleDateString('ko-KR')}</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">총 일수</div>
-                       <div class="result-value">${daysDiff}일</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">총 주수</div>
-                       <div class="result-value">${weeksDiff}주</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">요일</div>
-                       <div class="result-value">${resultDate.toLocaleDateString('ko-KR', { weekday: 'long' })}</div>
-                   </div>
-               </div>
-           `;
-           
-           document.getElementById('addResult').innerHTML = resultHTML;
-           document.getElementById('addResult').style.display = 'block';
-           document.getElementById('addResult').scrollIntoView({ behavior: 'smooth' });
-       }
-       
-       function showAddExample() {
-           const today = new Date();
-           document.getElementById('add-base-date').value = today.toISOString().split('T')[0];
-           document.getElementById('add-amount').value = '30';
-           document.getElementById('add-unit').value = 'days';
-           smartParseAdd();
-       }
-       
-       function clearAdd() {
-           document.getElementById('add-base-date').value = '';
-           document.getElementById('add-amount').value = '';
-           document.getElementById('add-unit').value = 'days';
-           document.getElementById('addBaseDateParsed').textContent = '날짜를 선택해주세요';
-           document.getElementById('addAmountParsed').textContent = '기간을 입력해주세요';
-           document.getElementById('addResult').style.display = 'none';
-       }
-       
-       // 날짜 빼기
-       function smartParseSubtract() {
-           const baseDate = document.getElementById('subtract-base-date').value;
-           const amount = document.getElementById('subtract-amount').value;
-           const unit = document.getElementById('subtract-unit').value;
-           
-           if (baseDate) {
-               document.getElementById('subtractBaseDateParsed').textContent = `선택됨: ${formatDate(baseDate)}`;
-           }
-           
-           if (amount && unit) {
-               document.getElementById('subtractAmountParsed').textContent = `뺄 기간: ${amount}${getUnitName(unit)}`;
-           } else {
-               document.getElementById('subtractAmountParsed').textContent = '기간을 입력해주세요';
-           }
-       }
-       
-       function setSubtractPeriod(amount, unit) {
-           document.getElementById('subtract-amount').value = amount;
-           document.getElementById('subtract-unit').value = unit;
-           smartParseSubtract();
-       }
-       
-       function calculateSubtract() {
-           const baseDate = new Date(document.getElementById('subtract-base-date').value);
-           const amount = parseInt(document.getElementById('subtract-amount').value);
-           const unit = document.getElementById('subtract-unit').value;
-           
-           if (!document.getElementById('subtract-base-date').value || !amount) {
-               alert('기준 날짜와 뺄 기간을 모두 입력해주세요.');
-               return;
-           }
-           
-           let resultDate = new Date(baseDate);
-           
-           switch(unit) {
-               case 'days':
-                   resultDate.setDate(resultDate.getDate() - amount);
-                   break;
-               case 'weeks':
-                   resultDate.setDate(resultDate.getDate() - (amount * 7));
-                   break;
-               case 'months':
-                   resultDate.setMonth(resultDate.getMonth() - amount);
-                   break;
-               case 'years':
-                   resultDate.setFullYear(resultDate.getFullYear() - amount);
-                   break;
-           }
-           
-           // 기간 계산
-           const timeDiff = baseDate.getTime() - resultDate.getTime();
-           const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-           const weeksDiff = Math.floor(daysDiff / 7);
-           
-           const resultHTML = `
-               <div class="result-title">📅 날짜 빼기 결과</div>
-               <div class="date-display">
-                   <div class="date-value">${resultDate.toLocaleDateString('ko-KR')}</div>
-                   <div class="date-description">${resultDate.toLocaleDateString('ko-KR', { weekday: 'long' })}</div>
-               </div>
-               <div class="result-grid">
-                   <div class="result-item">
-                       <div class="result-label">기준 날짜</div>
-                       <div class="result-value" style="font-size: 1rem;">${baseDate.toLocaleDateString('ko-KR')}</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">뺀 기간</div>
-                       <div class="result-value">${amount}${getUnitName(unit)}</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">결과 날짜</div>
-                       <div class="result-value" style="font-size: 1rem;">${resultDate.toLocaleDateString('ko-KR')}</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">총 일수</div>
-                       <div class="result-value">${daysDiff}일</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">총 주수</div>
-                       <div class="result-value">${weeksDiff}주</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">요일</div>
-                       <div class="result-value">${resultDate.toLocaleDateString('ko-KR', { weekday: 'long' })}</div>
-                   </div>
-               </div>
-           `;
-           
-           document.getElementById('subtractResult').innerHTML = resultHTML;
-           document.getElementById('subtractResult').style.display = 'block';
-           document.getElementById('subtractResult').scrollIntoView({ behavior: 'smooth' });
-       }
-       
-       function showSubtractExample() {
-           const today = new Date();
-           document.getElementById('subtract-base-date').value = today.toISOString().split('T')[0];
-           document.getElementById('subtract-amount').value = '90';
-           document.getElementById('subtract-unit').value = 'days';
-           smartParseSubtract();
-       }
-       
-       function clearSubtract() {
-           document.getElementById('subtract-base-date').value = '';
-           document.getElementById('subtract-amount').value = '';
-           document.getElementById('subtract-unit').value = 'days';
-           document.getElementById('subtractBaseDateParsed').textContent = '날짜를 선택해주세요';
-           document.getElementById('subtractAmountParsed').textContent = '기간을 입력해주세요';
-           document.getElementById('subtractResult').style.display = 'none';
-       }
-       
-       // 날짜 차이
-       function smartParseDifference() {
-           const startDate = document.getElementById('start-date').value;
-           const endDate = document.getElementById('end-date').value;
-           
-           if (startDate) {
-               document.getElementById('startDateParsed').textContent = `선택됨: ${formatDate(startDate)}`;
-           }
-           
-           if (endDate) {
-               document.getElementById('endDateParsed').textContent = `선택됨: ${formatDate(endDate)}`;
-           }
-       }
-       
-       function calculateDifference() {
-           const startDate = new Date(document.getElementById('start-date').value);
-           const endDate = new Date(document.getElementById('end-date').value);
-           
-           if (!document.getElementById('start-date').value || !document.getElementById('end-date').value) {
-               alert('시작 날짜와 끝 날짜를 모두 선택해주세요.');
-               return;
-           }
-           
-           // 날짜 차이 계산
-           const timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
-           const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-           const weeksDiff = Math.floor(daysDiff / 7);
-           const monthsDiff = Math.abs((endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth()));
-           const yearsDiff = Math.abs(endDate.getFullYear() - startDate.getFullYear());
-           
-           // 시간 단위 계산
-           const hoursDiff = Math.floor(timeDiff / (1000 * 60 * 60));
-           const minutesDiff = Math.floor(timeDiff / (1000 * 60));
-           
-           // 어느 날짜가 더 이른지 확인
-           const isStartEarlier = startDate < endDate;
-           const earlierDate = isStartEarlier ? startDate : endDate;
-           const laterDate = isStartEarlier ? endDate : startDate;
-           
-           const resultHTML = `
-               <div class="result-title">📅 날짜 차이 계산 결과</div>
-               <div class="date-display">
-                   <div class="date-value">${daysDiff}일</div>
-                   <div class="date-description">총 차이</div>
-               </div>
-               <div class="result-grid">
-                   <div class="result-item">
-                       <div class="result-label">시작 날짜</div>
-                       <div class="result-value" style="font-size: 1rem;">${startDate.toLocaleDateString('ko-KR')}</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">끝 날짜</div>
-                       <div class="result-value" style="font-size: 1rem;">${endDate.toLocaleDateString('ko-KR')}</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">총 일수</div>
-                       <div class="result-value">${daysDiff}일</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">총 주수</div>
-                       <div class="result-value">${weeksDiff}주 ${daysDiff % 7}일</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">총 개월수</div>
-                       <div class="result-value">${monthsDiff}개월</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">총 년수</div>
-                       <div class="result-value">${yearsDiff}년</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">총 시간</div>
-                       <div class="result-value">${hoursDiff.toLocaleString()}시간</div>
-                   </div>
-                   <div class="result-item">
-                       <div class="result-label">총 분</div>
-                       <div class="result-value">${minutesDiff.toLocaleString()}분</div>
-                   </div>
-               </div>
-           `;
-           
-           document.getElementById('differenceResult').innerHTML = resultHTML;
-           document.getElementById('differenceResult').style.display = 'block';
-           document.getElementById('differenceResult').scrollIntoView({ behavior: 'smooth' });
-       }
-       
-       function showDifferenceExample() {
-           const today = new Date();
-           const pastDate = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
-           
-           document.getElementById('start-date').value = pastDate.toISOString().split('T')[0];
-           document.getElementById('end-date').value = today.toISOString().split('T')[0];
-           smartParseDifference();
-       }
-       
-       function clearDifference() {
-           document.getElementById('start-date').value = '';
-           document.getElementById('end-date').value = '';
-           document.getElementById('startDateParsed').textContent = '날짜를 선택해주세요';
-           document.getElementById('endDateParsed').textContent = '날짜를 선택해주세요';
-           document.getElementById('differenceResult').style.display = 'none';
-       }
-       
-       window.addEventListener('load', function() {
-           showAddExample();
-           setTimeout(() => calculateAdd(), 1500);
-       });
-   </script>
+    <div class="container">
+        <div class="calculator-card">
+            <!-- 계산기 헤더 -->
+            <div class="calculator-header">
+                <h1 class="calculator-title">📅 날짜 계산기</h1>
+                <p class="calculator-subtitle">D-Day와 날짜 차이를 간편하게 계산하세요</p>
+            </div>
+
+            <!-- 계산기 본문 -->
+            <div class="calculator-body">
+                <!-- 입력 섹션 -->
+                <div class="input-section">
+                    <h2 class="section-title">📅 날짜 정보</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="startDate" class="input-label">시작 날짜</label>
+                            <input type="text" id="startDate" class="input-field" placeholder="예: 2024-01-01, 2024년 1월 1일, 오늘">
+                        </div>
+                        <div class="input-group">
+                            <label for="endDate" class="input-label">목표 날짜</label>
+                            <input type="text" id="endDate" class="input-field" placeholder="예: 2024-12-31, 크리스마스">
+                        </div>
+                    </div>
+                    <button onclick="calculate()" class="btn btn-primary">계산하기</button>
+                </div>
+
+                <!-- 결과 섹션 -->
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <h2 class="result-title">📋 계산 결과</h2>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">날짜 차이</div>
+                            <div id="daysDiff" class="result-value highlight">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">주 단위</div>
+                            <div id="weeksDiff" class="result-value">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">월 단위 (근사)</div>
+                            <div id="monthsDiff" class="result-value">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 날짜 파싱 함수
+        function parseDate(input) {
+            if (!input) return null;
+            
+            input = input.trim().toLowerCase();
+            
+            // 특수 날짜들
+            const today = new Date();
+            
+            if (input === '오늘' || input === 'today') return today;
+            if (input === '내일' || input === 'tomorrow') {
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                return tomorrow;
+            }
+            if (input === '어제' || input === 'yesterday') {
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+                return yesterday;
+            }
+            if (input === '크리스마스') return new Date(today.getFullYear(), 11, 25);
+            if (input === '신정' || input === '새해') return new Date(today.getFullYear() + 1, 0, 1);
+            
+            // 한국어 날짜 형식 (2024년 1월 1일)
+            let koreanMatch = input.match(/(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/);
+            if (koreanMatch) {
+                const year = parseInt(koreanMatch[1]);
+                const month = parseInt(koreanMatch[2]) - 1; // 월은 0부터 시작
+                const day = parseInt(koreanMatch[3]);
+                return new Date(year, month, day);
+            }
+            
+            // ISO 형식 또는 다른 표준 형식
+            const standardDate = new Date(input);
+            if (!isNaN(standardDate.getTime())) {
+                return standardDate;
+            }
+            
+            // 슬래시나 점으로 구분된 형식 (YYYY/MM/DD, YYYY.MM.DD)
+            let dateMatch = input.match(/(\d{4})[\/\.\-](\d{1,2})[\/\.\-](\d{1,2})/);
+            if (dateMatch) {
+                const year = parseInt(dateMatch[1]);
+                const month = parseInt(dateMatch[2]) - 1;
+                const day = parseInt(dateMatch[3]);
+                return new Date(year, month, day);
+            }
+            
+            return null;
+        }
+
+        // 계산 함수
+        function calculate() {
+            const startInput = document.getElementById('startDate').value;
+            const endInput = document.getElementById('endDate').value;
+            
+            if (!startInput || !endInput) {
+                alert('시작 날짜와 목표 날짜를 모두 입력해주세요');
+                return;
+            }
+
+            const startDate = parseDate(startInput);
+            const endDate = parseDate(endInput);
+            
+            if (!startDate || !endDate) {
+                alert('올바른 날짜 형식을 입력해주세요');
+                return;
+            }
+
+            // 날짜 차이 계산 (밀리초 단위를 일 단위로 변환)
+            const timeDiff = endDate.getTime() - startDate.getTime();
+            const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            
+            // 주와 월 계산
+            const weeksDiff = Math.floor(Math.abs(daysDiff) / 7);
+            const monthsDiff = Math.floor(Math.abs(daysDiff) / 30.44); // 평균 일수
+
+            // 결과 표시
+            let daysText = `${daysDiff}일`;
+            if (daysDiff > 0) {
+                daysText += ` (앞으로 ${daysDiff}일)`;
+            } else if (daysDiff < 0) {
+                daysText = `${Math.abs(daysDiff)}일 (지난 날로부터)`;
+            } else {
+                daysText = '오늘 (같은 날)';
+            }
+            
+            document.getElementById('daysDiff').textContent = daysText;
+            document.getElementById('weeksDiff').textContent = `${weeksDiff}주`;
+            document.getElementById('monthsDiff').textContent = `약 ${monthsDiff}개월`;
+            
+            document.getElementById('resultSection').style.display = 'block';
+            document.getElementById('resultSection').classList.add('fade-in');
+        }
+
+        // 엔터키로 계산
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+
+        // 기본값으로 오늘 날짜 설정
+        window.onload = function() {
+            const today = new Date();
+            const todayString = today.getFullYear() + '-' + 
+                String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                String(today.getDate()).padStart(2, '0');
+            document.getElementById('startDate').value = todayString;
+        };
+    </script>
 </body>
 </html>

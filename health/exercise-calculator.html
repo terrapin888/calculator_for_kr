@@ -3,533 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>운동 칼로리 계산기 - 운동별 칼로리 소모량 계산 | 스마트 파싱</title>
-    <meta name="description" content="운동 칼로리 계산기로 다양한 운동의 칼로리 소모량을 계산하세요. 체중과 운동 시간을 입력하면 정확한 칼로리 소모량을 제공합니다.">
-       <!-- 이 3줄 추가 -->
-   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="../../css/common.css">
-   <link rel="stylesheet" href="../../css/calculator.css">
-
+    <title>운동 칼로리 계산기 - CalcHub | 운동별 칼로리 소모량 계산</title>
+    <meta name="description" content="운동 칼로리 계산기로 다양한 운동의 칼로리 소모량을 간편하게 계산하세요. 한국어 입력 자동 인식.">
+    <meta name="keywords" content="운동칼로리계산기, 칼로리소모량, 다이어트운동, 피트니스">
     
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            overflow: hidden;
-            animation: slideUp 0.6s ease-out;
-        }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: pulse 4s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .content {
-            padding: 40px 30px;
-        }
-        
-        .input-section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 2px solid #e9ecef;
-            transition: all 0.3s ease;
-        }
-        
-        .input-section:hover {
-            border-color: #667eea;
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
-        }
-        
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-        
-        .input-group {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        
-        .input-label {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .input-label .icon {
-            font-size: 1.3rem;
-        }
-        
-        input[type="text"], select {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: #fafbfc;
-        }
-        
-        input[type="text"]:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        .parsed-result {
-            margin-top: 10px;
-            padding: 10px;
-            background: #e3f2fd;
-            border-radius: 6px;
-            font-size: 14px;
-            color: #1976d2;
-            min-height: 20px;
-        }
-        
-        .examples {
-            background: linear-gradient(135deg, #fff3e0 0%, #ffeaa7 100%);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 25px 0;
-            border-left: 4px solid #f39c12;
-        }
-        
-        .examples h4 {
-            color: #d68910;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-        }
-        
-        .examples-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        
-        .example-item {
-            background: rgba(255,255,255,0.7);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-        
-        .example-title {
-            font-weight: bold;
-            color: #d68910;
-            margin-bottom: 5px;
-        }
-        
-        .controls {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 25px 0;
-        }
-        
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-        
-        .btn-secondary {
-            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
-        }
-        
-        .result-section {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            border-radius: 15px;
-            padding: 30px;
-            margin-top: 30px;
-            border: 2px solid #28a745;
-            display: none;
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .result-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #155724;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        
-        .exercise-display {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-        
-        .exercise-value {
-            font-size: 3rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #28a745;
-        }
-        
-        .exercise-label {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #333;
-        }
-        
-        .exercise-description {
-            font-size: 1rem;
-            color: #666;
-        }
-        
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-        
-        .result-item {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-        }
-        
-        .result-label {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 8px;
-        }
-        
-        .result-value {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #28a745;
-        }
-        
-        .exercise-comparison {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            margin-top: 25px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-        }
-        
-        .comparison-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        
-        .comparison-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            border: 2px solid #e9ecef;
-            transition: all 0.3s ease;
-        }
-        
-        .comparison-item:hover {
-            border-color: #667eea;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
-        }
-        
-        .comparison-exercise {
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-        
-        .comparison-calories {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #28a745;
-            margin-bottom: 5px;
-        }
-        
-        .comparison-time {
-            font-size: 0.8rem;
-            color: #666;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-                border-radius: 15px;
-            }
-            
-            .header {
-                padding: 30px 20px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .content {
-                padding: 30px 20px;
-            }
-            
-            .input-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .btn {
-                width: 100%;
-                max-width: 300px;
-            }
-            
-            .exercise-value {
-                font-size: 2.5rem;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
 </head>
 <body>
-       <!-- 이 헤더 부분 추가 -->
-   <header class="header">
-       <div class="header-content">
-           <a href="../../index.html" class="logo">
-               <div class="logo-icon">🧮</div>
-               CalcHub
-           </a>
-           <nav class="nav-links">
-               <a href="../../index.html" class="nav-link">홈</a>
-               <a href="../health/" class="nav-link">💼 건강</a>
-           </nav>
-       </div>
-   </header>
-    
-    <div class="container">
-        <div class="header">
-            <h1>🏃 운동 칼로리 계산기</h1>
-            <p>다양한 운동의 칼로리 소모량을 계산하여 운동 계획을 세워보세요</p>
+    <!-- 공통 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
         </div>
-        
-        <div class="content">
-            <div class="input-section">
-                <div class="input-grid">
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">⚖️</span>
-                            몸무게 (체중)
-                        </div>
-                        <input type="text" id="weight" placeholder="예: 70kg, 70킬로, 70키로, 70키로그램..." oninput="smartParse()">
-                        <div class="parsed-result" id="weightParsed">입력 대기 중...</div>
-                    </div>
-                    
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">🏃</span>
-                            운동 종류
-                        </div>
-                        <select id="exercise">
-                            <option value="walking_3">걷기 (3.2km/h)</option>
-                            <option value="walking_4">걷기 (4.8km/h)</option>
-                            <option value="walking_6">빠른 걷기 (6.4km/h)</option>
-                            <option value="jogging">조깅 (8km/h)</option>
-                            <option value="running_10" selected>달리기 (10km/h)</option>
-                            <option value="running_12">달리기 (12km/h)</option>
-                            <option value="running_16">달리기 (16km/h)</option>
-                            <option value="cycling_16">자전거 (16km/h)</option>
-                            <option value="cycling_20">자전거 (20km/h)</option>
-                            <option value="cycling_25">자전거 (25km/h)</option>
-                            <option value="swimming_slow">수영 (천천히)</option>
-                            <option value="swimming_fast">수영 (빠르게)</option>
-                            <option value="basketball">농구</option>
-                            <option value="soccer">축구</option>
-                            <option value="tennis">테니스</option>
-                            <option value="badminton">배드민턴</option>
-                            <option value="volleyball">배구</option>
-                            <option value="jump_rope">줄넘기</option>
-                            <option value="weight_training">웨이트 트레이닝</option>
-                            <option value="yoga">요가</option>
-                            <option value="pilates">필라테스</option>
-                            <option value="dancing">댄스</option>
-                            <option value="hiking">등산</option>
-                            <option value="climbing_stairs">계단 오르기</option>
-                        </select>
-                    </div>
-                    
-                    <div class="input-group">
-                        <div class="input-label">
-                            <span class="icon">⏰</span>
-                            운동 시간
-                        </div>
-                        <input type="text" id="duration" placeholder="예: 30분, 1시간, 90분..." oninput="smartParse()">
-                        <div class="parsed-result" id="durationParsed">입력 대기 중...</div>
-                    </div>
-                </div>
-                
-                <div class="examples">
-                    <h4>💡 다양한 입력 예시</h4>
-                    <div class="examples-grid">
-                        <div class="example-item">
-                            <div class="example-title">몸무게 입력</div>
-                            70kg, 70킬로<br>
-                            70키로그램, 70키로
-                        </div>
-                        <div class="example-item">
-                            <div class="example-title">시간 입력</div>
-                            30분, 1시간<br>
-                            90분, 1시간 30분
-                        </div>
-                        <div class="example-item">
-                            <div class="example-title">운동 종류</div>
-                            달리기, 수영<br>
-                            웨이트, 요가
-                        </div>
-                    </div>
-                </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <!-- 계산기 헤더 -->
+            <div class="calculator-header">
+                <h1 class="calculator-title">🏃 운동 칼로리 계산기</h1>
+                <p class="calculator-subtitle">운동별 칼로리 소모량을 간편하게 계산하세요</p>
             </div>
 
-            <div class="controls">
-                <button class="btn" onclick="calculateExercise()">
-                    🔥 칼로리 계산하기
-                </button>
-                <button class="btn btn-secondary" onclick="showExampleData()">
-                    📝 예시 데이터 입력
-                </button>
-                <button class="btn btn-danger" onclick="clearAll()">
-                    🗑️ 초기화
-                </button>
-            </div>
+            <!-- 계산기 본문 -->
+            <div class="calculator-body">
+                <!-- 입력 섹션 -->
+                <div class="input-section">
+                    <h2 class="section-title">🏃 운동 정보</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="weight" class="input-label">몸무게 (kg)</label>
+                            <input type="text" id="weight" class="input-field" placeholder="예: 70, 70kg">
+                        </div>
+                        <div class="input-group">
+                            <label for="exercise" class="input-label">운동 종류</label>
+                            <select id="exercise" class="input-field">
+                                <option value="running_10" selected>달리기 (10km/h)</option>
+                                <option value="walking_6">빠른 걷기 (6.4km/h)</option>
+                                <option value="cycling_20">자전거 (20km/h)</option>
+                                <option value="swimming_fast">수영 (빠르게)</option>
+                                <option value="jump_rope">줄넘기</option>
+                                <option value="basketball">농구</option>
+                                <option value="weight_training">웨이트 트레이닝</option>
+                                <option value="yoga">요가</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="duration" class="input-label">운동 시간 (분)</label>
+                            <input type="text" id="duration" class="input-field" placeholder="예: 30, 30분, 1시간">
+                        </div>
+                    </div>
+                    <button onclick="calculate()" class="btn btn-primary">계산하기</button>
+                </div>
 
-            <div class="result-section" id="resultSection">
-                <div class="result-title">🔥 운동 칼로리 계산 결과</div>
-                
-                <div class="exercise-display" id="exerciseDisplay">
-                    <div class="exercise-value" id="exerciseValue">0</div>
-                    <div class="exercise-label" id="exerciseLabel">칼로리 소모량</div>
-                    <div class="exercise-description" id="exerciseDescription">선택한 운동으로 소모된 칼로리입니다</div>
-                </div>
-                
-                <div class="result-grid">
-                    <div class="result-item">
-                        <div class="result-label">운동 종류</div>
-                        <div class="result-value" id="exerciseType">달리기</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="result-label">운동 시간</div>
-                        <div class="result-value" id="exerciseTime">30분</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="result-label">시간당 소모량</div>
-                        <div class="result-value" id="caloriesPerHour">0kcal/h</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="result-label">분당 소모량</div>
-                        <div class="result-value" id="caloriesPerMinute">0kcal/min</div>
-                    </div>
-                </div>
-                
-                <div class="exercise-comparison">
-                    <div class="comparison-title">🏃 다른 운동과 비교 (같은 시간)</div>
-                    <div class="comparison-grid" id="comparisonGrid">
-                        <!-- 동적으로 생성 -->
+                <!-- 결과 섹션 -->
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <h2 class="result-title">📋 계산 결과</h2>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">총 칼로리 소모량</div>
+                            <div id="totalCalories" class="result-value highlight">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">분당 소모량</div>
+                            <div id="caloriesPerMinute" class="result-value">-</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -537,203 +84,69 @@
     </div>
 
     <script>
-        class SmartHealthParser {
-            parseWeight(input) {
-                if (!input) return null;
-                
-                let cleaned = input.replace(/\s+/g, '').toLowerCase();
-                cleaned = cleaned.replace(/(kg|킬로|키로|키로그램|킬로그램)/g, '');
-                
-                let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
-                
-                return isNaN(num) ? null : num;
+        // 숫자 파싱 함수 (한국어 단위 지원)
+        function parseNumber(input) {
+            if (!input || typeof input !== 'string') return 0;
+            
+            // 기본 정리
+            input = input.replace(/[,\s]/g, '').toLowerCase();
+            
+            // 시간을 분으로 변환
+            if (input.includes('시간')) {
+                let hourMatch = input.match(/(\d+(?:\.\d+)?)시간/);
+                if (hourMatch) {
+                    return parseFloat(hourMatch[1]) * 60;
+                }
             }
             
-            parseDuration(input) {
-                if (!input) return null;
-                
-                let cleaned = input.replace(/\s+/g, '').toLowerCase();
-                let totalMinutes = 0;
-                
-                // 시간 처리
-                let hourMatch = cleaned.match(/(\d+(?:\.\d+)?)(시간|h)/);
-                if (hourMatch) {
-                    totalMinutes += parseFloat(hourMatch[1]) * 60;
-                }
-                
-                // 분 처리
-                let minuteMatch = cleaned.match(/(\d+(?:\.\d+)?)(분|min)/);
-                if (minuteMatch) {
-                    totalMinutes += parseFloat(minuteMatch[1]);
-                }
-                
-                // 단위 없는 숫자는 분으로 간주
-                if (totalMinutes === 0) {
-                    let num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
-                    if (!isNaN(num)) {
-                        totalMinutes = num;
-                    }
-                }
-                
-                return totalMinutes > 0 ? totalMinutes : null;
-            }
+            // 단위 제거
+            input = input.replace(/(kg|분|min|키로|킬로)/g, '');
+            
+            return parseFloat(input) || 0;
         }
 
-        const parser = new SmartHealthParser();
-        
         // MET 값 (체중 1kg당 1시간 운동시 소모 칼로리)
         const exerciseMET = {
-            'walking_3': { name: '걷기 (3.2km/h)', met: 2.9 },
-            'walking_4': { name: '걷기 (4.8km/h)', met: 3.5 },
-            'walking_6': { name: '빠른 걷기 (6.4km/h)', met: 5.0 },
-            'jogging': { name: '조깅 (8km/h)', met: 8.0 },
             'running_10': { name: '달리기 (10km/h)', met: 10.0 },
-            'running_12': { name: '달리기 (12km/h)', met: 12.0 },
-            'running_16': { name: '달리기 (16km/h)', met: 16.0 },
-            'cycling_16': { name: '자전거 (16km/h)', met: 5.5 },
+            'walking_6': { name: '빠른 걷기 (6.4km/h)', met: 5.0 },
             'cycling_20': { name: '자전거 (20km/h)', met: 7.5 },
-            'cycling_25': { name: '자전거 (25km/h)', met: 10.0 },
-            'swimming_slow': { name: '수영 (천천히)', met: 6.0 },
             'swimming_fast': { name: '수영 (빠르게)', met: 10.0 },
-            'basketball': { name: '농구', met: 8.0 },
-            'soccer': { name: '축구', met: 7.0 },
-            'tennis': { name: '테니스', met: 7.0 },
-            'badminton': { name: '배드민턴', met: 5.5 },
-            'volleyball': { name: '배구', met: 4.0 },
             'jump_rope': { name: '줄넘기', met: 12.0 },
+            'basketball': { name: '농구', met: 8.0 },
             'weight_training': { name: '웨이트 트레이닝', met: 6.0 },
-            'yoga': { name: '요가', met: 2.5 },
-            'pilates': { name: '필라테스', met: 3.0 },
-            'dancing': { name: '댄스', met: 4.8 },
-            'hiking': { name: '등산', met: 6.0 },
-            'climbing_stairs': { name: '계단 오르기', met: 8.0 }
+            'yoga': { name: '요가', met: 2.5 }
         };
 
-        function smartParse() {
-            const weight = document.getElementById('weight').value;
-            const duration = document.getElementById('duration').value;
-            
-            const parsedWeight = parser.parseWeight(weight);
-            const parsedDuration = parser.parseDuration(duration);
-            
-            document.getElementById('weightParsed').textContent = 
-                parsedWeight ? `인식됨: ${parsedWeight}kg` : '입력 대기 중...';
-                
-            document.getElementById('durationParsed').textContent = 
-                parsedDuration ? `인식됨: ${parsedDuration}분` : '입력 대기 중...';
-        }
-
-        function calculateExercise() {
-            const weight = parser.parseWeight(document.getElementById('weight').value);
-            const duration = parser.parseDuration(document.getElementById('duration').value);
+        // 계산 함수
+        function calculate() {
+            const weight = parseNumber(document.getElementById('weight').value);
+            const duration = parseNumber(document.getElementById('duration').value);
             const exerciseType = document.getElementById('exercise').value;
             
             if (!weight || !duration) {
-                alert('몸무게와 운동 시간을 모두 입력해주세요.');
+                alert('모든 값을 입력해주세요');
                 return;
             }
-            
-            if (weight <= 0 || duration <= 0) {
-                alert('올바른 값을 입력해주세요.');
-                return;
-            }
-            
+
             const exercise = exerciseMET[exerciseType];
             
             // 칼로리 계산: MET × 체중(kg) × 시간(h)
             const hours = duration / 60;
-            const totalCalories = exercise.met * weight * hours;
-            const caloriesPerHour = exercise.met * weight;
-            const caloriesPerMinute = caloriesPerHour / 60;
+            const totalCalories = Math.round(exercise.met * weight * hours);
+            const caloriesPerMinute = Math.round(exercise.met * weight / 60);
+
+            // 결과 표시
+            document.getElementById('totalCalories').textContent = `${totalCalories}kcal`;
+            document.getElementById('caloriesPerMinute').textContent = `${caloriesPerMinute}kcal/분`;
             
-            displayExerciseResults({
-                weight,
-                duration,
-                exerciseType,
-                exercise,
-                totalCalories,
-                caloriesPerHour,
-                caloriesPerMinute
-            });
+            document.getElementById('resultSection').style.display = 'block';
+            document.getElementById('resultSection').classList.add('fade-in');
         }
 
-        function displayExerciseResults(data) {
-            const resultSection = document.getElementById('resultSection');
-            
-            // 메인 칼로리 값 표시
-            document.getElementById('exerciseValue').textContent = Math.round(data.totalCalories) + 'kcal';
-            document.getElementById('exerciseLabel').textContent = '총 칼로리 소모량';
-            document.getElementById('exerciseDescription').textContent = `${data.exercise.name}로 소모된 칼로리입니다`;
-            
-            // 결과 그리드 표시
-            document.getElementById('exerciseType').textContent = data.exercise.name;
-            document.getElementById('exerciseTime').textContent = `${data.duration}분`;
-            document.getElementById('caloriesPerHour').textContent = `${Math.round(data.caloriesPerHour)}kcal/h`;
-            document.getElementById('caloriesPerMinute').textContent = `${Math.round(data.caloriesPerMinute)}kcal/min`;
-            
-            // 운동 비교 표시
-            displayExerciseComparison(data.weight, data.duration, data.exerciseType);
-            
-            resultSection.style.display = 'block';
-            resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        function displayExerciseComparison(weight, duration, currentExercise) {
-            const comparisonGrid = document.getElementById('comparisonGrid');
-            comparisonGrid.innerHTML = '';
-            
-            // 인기 운동들 선택 (현재 운동 제외)
-            const popularExercises = ['running_10', 'cycling_20', 'swimming_fast', 'jump_rope', 'basketball', 'walking_6'];
-            const comparisons = popularExercises.filter(ex => ex !== currentExercise).slice(0, 5);
-            
-            const hours = duration / 60;
-            
-            comparisons.forEach(exerciseKey => {
-                const exercise = exerciseMET[exerciseKey];
-                const calories = Math.round(exercise.met * weight * hours);
-                
-                const div = document.createElement('div');
-                div.className = 'comparison-item';
-                div.innerHTML = `
-                    <div class="comparison-exercise">${exercise.name}</div>
-                    <div class="comparison-calories">${calories}kcal</div>
-                    <div class="comparison-time">${duration}분</div>
-                `;
-                
-                comparisonGrid.appendChild(div);
-            });
-        }
-
-        function showExampleData() {
-            document.getElementById('weight').value = '70kg';
-            document.getElementById('exercise').value = 'running_10';
-            document.getElementById('duration').value = '30분';
-            smartParse();
-        }
-
-        function clearAll() {
-            document.getElementById('weight').value = '';
-            document.getElementById('exercise').value = 'running_10';
-            document.getElementById('duration').value = '';
-            document.getElementById('resultSection').style.display = 'none';
-            document.getElementById('weightParsed').textContent = '입력 대기 중...';
-            document.getElementById('durationParsed').textContent = '입력 대기 중...';
-        }
-
-        // 페이지 로드 시 예시 데이터
-        window.addEventListener('load', function() {
-            showExampleData();
-            
-            // 2초 후 자동 계산
-            setTimeout(() => {
-                calculateExercise();
-            }, 2000);
-        });
-
-        // 엔터키 이벤트
-        document.addEventListener('keydown', function(e) {
+        // 엔터키로 계산
+        document.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                calculateExercise();
+                calculate();
             }
         });
     </script>
