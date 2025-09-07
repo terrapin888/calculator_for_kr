@@ -178,9 +178,12 @@
                 }
             }
 
+            // 소수점 자릿수 결정: 4자리 이하면 4자리, 5자리 이상이면 최대 자릿수 사용
+            let displayDecimals = maxDecimals <= 4 ? 4 : maxDecimals;
+
             // 결과 표시
             document.getElementById('count').textContent = count + '개';
-            document.getElementById('average').textContent = average.toFixed(maxDecimals);
+            document.getElementById('average').textContent = average.toFixed(displayDecimals);
             
             document.getElementById('resultSection').classList.add('fade-in');
         }
