@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>삼각형 넓이 계산기 - 다양한 방법으로 삼각형 넓이 계산 | CalcHub</title>
+    <meta name="description" content="무료 삼각형 넓이 계산기로 밑변과 높이, 세 변의 길이, 두 변과 끼인각으로 삼각형의 넓이를 계산하세요. 헤론의 공식, 삼각법 등 다양한 방법 지원.">
+    <meta name="keywords" content="온라인계산기, 무료계산기, 삼각형넓이계산기, 헤론공식계산기, 삼각형면적계산기, 기하학계산기, 수학계산기, 삼각법계산기">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+</head>
+<body>
+    <!-- 공통 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <!-- 계산기 헤더 -->
+            <div class="calculator-header">
+                <h1 class="calculator-title">삼각형 넓이 계산기</h1>
+                <p class="calculator-subtitle">다양한 방법으로 삼각형의 넓이를 계산하세요</p>
+            </div>
+
+            <!-- 계산기 본문 -->
+            <div class="calculator-body">
+                <!-- 입력 섹션 -->
+                <div class="input-section">
+                    <h2 class="section-title">계산 방법 선택</h2>
+                    <div class="input-group">
+                        <label class="input-label">계산 방법</label>
+                        <select id="method" class="input-field" onchange="updateInputs()">
+                            <option value="base-height">밑변과 높이</option>
+                            <option value="three-sides">세 변의 길이 (헤론의 공식)</option>
+                            <option value="two-sides-angle">두 변과 끼인각</option>
+                            <option value="coordinates">좌표로 계산</option>
+                        </select>
+                    </div>
+
+                    <!-- 밑변과 높이 -->
+                    <div id="baseHeightInputs" class="method-inputs">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="base" class="input-label">밑변 길이</label>
+                                <input type="number" id="base" class="input-field" placeholder="밑변의 길이" step="any">
+                            </div>
+                            <div class="input-group">
+                                <label for="height" class="input-label">높이</label>
+                                <input type="number" id="height" class="input-field" placeholder="높이" step="any">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 세 변의 길이 -->
+                    <div id="threeSidesInputs" class="method-inputs" style="display: none;">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="sideA" class="input-label">변 a</label>
+                                <input type="number" id="sideA" class="input-field" placeholder="첫 번째 변" step="any">
+                            </div>
+                            <div class="input-group">
+                                <label for="sideB" class="input-label">변 b</label>
+                                <input type="number" id="sideB" class="input-field" placeholder="두 번째 변" step="any">
+                            </div>
+                            <div class="input-group">
+                                <label for="sideC" class="input-label">변 c</label>
+                                <input type="number" id="sideC" class="input-field" placeholder="세 번째 변" step="any">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 두 변과 끼인각 -->
+                    <div id="twoSidesAngleInputs" class="method-inputs" style="display: none;">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="side1" class="input-label">변 1</label>
+                                <input type="number" id="side1" class="input-field" placeholder="첫 번째 변" step="any">
+                            </div>
+                            <div class="input-group">
+                                <label for="side2" class="input-label">변 2</label>
+                                <input type="number" id="side2" class="input-field" placeholder="두 번째 변" step="any">
+                            </div>
+                            <div class="input-group">
+                                <label for="angle" class="input-label">끼인각 (도)</label>
+                                <input type="number" id="angle" class="input-field" placeholder="끼인각 (도)" step="any">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 좌표 -->
+                    <div id="coordinatesInputs" class="method-inputs" style="display: none;">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label class="input-label">점 A (x₁, y₁)</label>
+                                <div class="coord-inputs">
+                                    <input type="number" id="x1" class="input-field" placeholder="x₁" step="any">
+                                    <input type="number" id="y1" class="input-field" placeholder="y₁" step="any">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">점 B (x₂, y₂)</label>
+                                <div class="coord-inputs">
+                                    <input type="number" id="x2" class="input-field" placeholder="x₂" step="any">
+                                    <input type="number" id="y2" class="input-field" placeholder="y₂" step="any">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">점 C (x₃, y₃)</label>
+                                <div class="coord-inputs">
+                                    <input type="number" id="x3" class="input-field" placeholder="x₃" step="any">
+                                    <input type="number" id="y3" class="input-field" placeholder="y₃" step="any">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="calculate()" class="btn btn-primary">계산하기</button>
+                    <button onclick="clearInputs()" class="btn btn-secondary">초기화</button>
+                </div>
+
+                <!-- 결과 섹션 -->
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">계산 결과</h2>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">삼각형 넓이</div>
+                            <div id="area" class="result-value highlight">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">둘레</div>
+                            <div id="perimeter" class="result-value">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">삼각형 유형</div>
+                            <div id="triangleType" class="result-value">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">사용된 공식</div>
+                            <div id="formula" class="result-value">-</div>
+                        </div>
+                    </div>
+                    <button onclick="copyResults()" class="btn btn-secondary">결과 복사</button>
+                </div>
+
+                <!-- 정보 섹션 -->
+                <div class="info-section">
+                    <h2 class="section-title">삼각형 넓이 계산 공식</h2>
+                    <div class="info-content">
+                        <h3>1. 밑변과 높이</h3>
+                        <p><strong>공식:</strong> 넓이 = (밑변 × 높이) ÷ 2</p>
+                        <p>가장 기본적인 삼각형 넓이 공식입니다.</p>
+
+                        <h3>2. 헤론의 공식 (세 변의 길이)</h3>
+                        <p><strong>공식:</strong> 넓이 = √[s(s-a)(s-b)(s-c)]</p>
+                        <p>여기서 s = (a+b+c)/2 (둘레의 반)</p>
+                        <p>세 변의 길이만 알 때 사용하는 공식입니다.</p>
+
+                        <h3>3. 두 변과 끼인각</h3>
+                        <p><strong>공식:</strong> 넓이 = (1/2) × a × b × sin(C)</p>
+                        <p>두 변과 그 사이의 각을 알 때 사용하는 삼각법 공식입니다.</p>
+
+                        <h3>4. 좌표로 계산</h3>
+                        <p><strong>공식:</strong> 넓이 = (1/2)|x₁(y₂-y₃) + x₂(y₃-y₁) + x₃(y₁-y₂)|</p>
+                        <p>세 꼭짓점의 좌표를 알 때 사용하는 공식입니다.</p>
+
+                        <h3>삼각형 유형:</h3>
+                        <ul>
+                            <li><strong>정삼각형:</strong> 세 변의 길이가 모두 같음</li>
+                            <li><strong>이등변삼각형:</strong> 두 변의 길이가 같음</li>
+                            <li><strong>부등변삼각형:</strong> 세 변의 길이가 모두 다름</li>
+                            <li><strong>직각삼각형:</strong> 한 각이 90도</li>
+                            <li><strong>예각삼각형:</strong> 모든 각이 90도 미만</li>
+                            <li><strong>둔각삼각형:</strong> 한 각이 90도 초과</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .method-inputs {
+            margin-top: 15px;
+        }
+        
+        .coord-inputs {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .coord-inputs .input-field {
+            flex: 1;
+        }
+    </style>
+
+    <script>
+        function updateInputs() {
+            const method = document.getElementById('method').value;
+            const allInputs = document.querySelectorAll('.method-inputs');
+            
+            // 모든 입력 섹션 숨기기
+            allInputs.forEach(input => {
+                input.style.display = 'none';
+            });
+            
+            // 선택된 방법의 입력 섹션 보이기
+            switch(method) {
+                case 'base-height':
+                    document.getElementById('baseHeightInputs').style.display = 'block';
+                    break;
+                case 'three-sides':
+                    document.getElementById('threeSidesInputs').style.display = 'block';
+                    break;
+                case 'two-sides-angle':
+                    document.getElementById('twoSidesAngleInputs').style.display = 'block';
+                    break;
+                case 'coordinates':
+                    document.getElementById('coordinatesInputs').style.display = 'block';
+                    break;
+            }
+        }
+
+        function calculate() {
+            const method = document.getElementById('method').value;
+            let area, perimeter, triangleType, formula;
+
+            try {
+                switch(method) {
+                    case 'base-height':
+                        ({ area, perimeter, triangleType, formula } = calculateBaseHeight());
+                        break;
+                    case 'three-sides':
+                        ({ area, perimeter, triangleType, formula } = calculateThreeSides());
+                        break;
+                    case 'two-sides-angle':
+                        ({ area, perimeter, triangleType, formula } = calculateTwoSidesAngle());
+                        break;
+                    case 'coordinates':
+                        ({ area, perimeter, triangleType, formula } = calculateCoordinates());
+                        break;
+                }
+
+                if (area <= 0) {
+                    throw new Error('올바른 삼각형을 형성하지 않습니다.');
+                }
+
+                // 결과 표시
+                document.getElementById('area').textContent = area.toFixed(4) + ' 평방단위';
+                document.getElementById('perimeter').textContent = perimeter ? perimeter.toFixed(4) + ' 단위' : '-';
+                document.getElementById('triangleType').textContent = triangleType;
+                document.getElementById('formula').textContent = formula;
+                
+                document.getElementById('resultSection').classList.add('fade-in');
+
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        function calculateBaseHeight() {
+            const base = parseFloat(document.getElementById('base').value);
+            const height = parseFloat(document.getElementById('height').value);
+            
+            if (!base || !height || base <= 0 || height <= 0) {
+                throw new Error('밑변과 높이를 올바르게 입력해주세요.');
+            }
+            
+            const area = (base * height) / 2;
+            return {
+                area: area,
+                perimeter: null,
+                triangleType: '일반 삼각형',
+                formula: '넓이 = (밑변 × 높이) ÷ 2'
+            };
+        }
+
+        function calculateThreeSides() {
+            const a = parseFloat(document.getElementById('sideA').value);
+            const b = parseFloat(document.getElementById('sideB').value);
+            const c = parseFloat(document.getElementById('sideC').value);
+            
+            if (!a || !b || !c || a <= 0 || b <= 0 || c <= 0) {
+                throw new Error('세 변의 길이를 올바르게 입력해주세요.');
+            }
+            
+            // 삼각형 성립 조건 확인
+            if (a + b <= c || b + c <= a || a + c <= b) {
+                throw new Error('입력된 변의 길이로는 삼각형을 만들 수 없습니다.');
+            }
+            
+            const s = (a + b + c) / 2;
+            const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+            const perimeter = a + b + c;
+            
+            // 삼각형 유형 판별
+            let triangleType;
+            if (a === b && b === c) {
+                triangleType = '정삼각형';
+            } else if (a === b || b === c || a === c) {
+                triangleType = '이등변삼각형';
+            } else {
+                triangleType = '부등변삼각형';
+            }
+            
+            // 각도별 분류 추가
+            const sides = [a, b, c].sort((x, y) => x - y);
+            const longest = sides[2];
+            const sumOfSquares = sides[0] * sides[0] + sides[1] * sides[1];
+            const longestSquared = longest * longest;
+            
+            if (Math.abs(sumOfSquares - longestSquared) < 1e-10) {
+                triangleType += ' (직각삼각형)';
+            } else if (sumOfSquares > longestSquared) {
+                triangleType += ' (예각삼각형)';
+            } else {
+                triangleType += ' (둔각삼각형)';
+            }
+            
+            return {
+                area: area,
+                perimeter: perimeter,
+                triangleType: triangleType,
+                formula: '헤론의 공식: √[s(s-a)(s-b)(s-c)]'
+            };
+        }
+
+        function calculateTwoSidesAngle() {
+            const side1 = parseFloat(document.getElementById('side1').value);
+            const side2 = parseFloat(document.getElementById('side2').value);
+            const angleDegrees = parseFloat(document.getElementById('angle').value);
+            
+            if (!side1 || !side2 || !angleDegrees || side1 <= 0 || side2 <= 0 || angleDegrees <= 0 || angleDegrees >= 180) {
+                throw new Error('두 변의 길이와 끼인각(0°~180°)을 올바르게 입력해주세요.');
+            }
+            
+            const angleRadians = angleDegrees * Math.PI / 180;
+            const area = 0.5 * side1 * side2 * Math.sin(angleRadians);
+            
+            // 세 번째 변 계산 (코사인 법칙)
+            const side3 = Math.sqrt(side1 * side1 + side2 * side2 - 2 * side1 * side2 * Math.cos(angleRadians));
+            const perimeter = side1 + side2 + side3;
+            
+            return {
+                area: area,
+                perimeter: perimeter,
+                triangleType: '일반 삼각형',
+                formula: '넓이 = (1/2) × a × b × sin(C)'
+            };
+        }
+
+        function calculateCoordinates() {
+            const x1 = parseFloat(document.getElementById('x1').value) || 0;
+            const y1 = parseFloat(document.getElementById('y1').value) || 0;
+            const x2 = parseFloat(document.getElementById('x2').value) || 0;
+            const y2 = parseFloat(document.getElementById('y2').value) || 0;
+            const x3 = parseFloat(document.getElementById('x3').value) || 0;
+            const y3 = parseFloat(document.getElementById('y3').value) || 0;
+            
+            const area = Math.abs(x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2;
+            
+            if (area === 0) {
+                throw new Error('세 점이 한 직선 위에 있어 삼각형을 만들 수 없습니다.');
+            }
+            
+            // 변의 길이 계산
+            const side1 = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+            const side2 = Math.sqrt((x3 - x2) ** 2 + (y3 - y2) ** 2);
+            const side3 = Math.sqrt((x1 - x3) ** 2 + (y1 - y3) ** 2);
+            const perimeter = side1 + side2 + side3;
+            
+            return {
+                area: area,
+                perimeter: perimeter,
+                triangleType: '좌표 삼각형',
+                formula: '넓이 = (1/2)|x₁(y₂-y₃) + x₂(y₃-y₁) + x₃(y₁-y₂)|'
+            };
+        }
+
+        function clearInputs() {
+            // 모든 입력 필드 초기화
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => input.value = '');
+            
+            // 방법을 기본값으로 설정
+            document.getElementById('method').value = 'base-height';
+            updateInputs();
+        }
+
+        function copyResults() {
+            const area = document.getElementById('area').textContent;
+            const perimeter = document.getElementById('perimeter').textContent;
+            const triangleType = document.getElementById('triangleType').textContent;
+            const formula = document.getElementById('formula').textContent;
+            
+            const result = `삼각형 넓이 계산 결과:
+넓이: ${area}
+둘레: ${perimeter}
+삼각형 유형: ${triangleType}
+사용된 공식: ${formula}`;
+            
+            navigator.clipboard.writeText(result).then(() => {
+                alert('결과가 클립보드에 복사되었습니다!');
+            });
+        }
+
+        // 초기화
+        updateInputs();
+
+        // 엔터키로 계산
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+    </script>
+</body>
+</html>

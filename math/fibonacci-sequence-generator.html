@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js?adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>피보나치 수열 생성기 - 황금비 | CalcHub</title>
+    <meta name="description" content="피보나치 수열을 생성하고 황금비(1.618)를 계산하세요. 자연의 아름다운 비율을 탐구하는 수학 도구.">
+    <meta name="keywords" content="피보나치수열, 황금비, 리노나치, 수학수열, 결정비">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "피보나치 수열 생성기",
+      "description": "피보나치 수열을 생성하고 황금비(1.618)를 계산하세요. 자연의 아름다운 비율을 탐구하는 수학 도구.",
+      "url": "https://www.calcforkr.com/math/fibonacci-sequence-generator.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="calculator-container">
+            <div class="calculator-header">
+                <h1>피보나치 수열 생성기</h1>
+                <p>피보나치 수열과 황금비를 계산합니다</p>
+            </div>
+            
+            <div class="calculator-wrapper">
+                <div class="input-section">
+                    <h2>수열 생성 옵션</h2>
+                    <div class="input-group">
+                        <label for="count">생성할 항의 개수</label>
+                        <input type="number" id="count" min="1" max="100" value="20" placeholder="항의 개수 입력">
+                        <span class="unit-text">최대 100개까지</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="start-a">첫 번째 항 (a₀)</label>
+                        <input type="number" id="start-a" value="0" placeholder="첫 번째 항 값">
+                        <span class="unit-text">일반적으로 0</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="start-b">두 번째 항 (a₁)</label>
+                        <input type="number" id="start-b" value="1" placeholder="두 번째 항 값">
+                        <span class="unit-text">일반적으로 1</span>
+                    </div>
+                    
+                    <button onclick="generateFibonacci()" class="calculate-btn">피보나치 수열 생성</button>
+                </div>
+                
+                <div class="result-section" id="result" style="display:none;">
+                    <h3>피보나치 수열</h3>
+                    <div id="sequence-display"></div>
+                    <div id="golden-ratio"></div>
+                    <div id="sequence-properties"></div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3>피보나치 수열에 대해</h3>
+                <div class="info-content">
+                    <p><strong>피보나치 수열</strong>은 각 항이 앞의 두 항의 합이 되는 수열입니다.</p>
+                    <h4>기본 정의</h4>
+                    <ul>
+                        <li><strong>F(0) = 0, F(1) = 1</strong></li>
+                        <li><strong>F(n) = F(n-1) + F(n-2)</strong> (n ≥ 2)</li>
+                        <li>수열: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144...</li>
+                    </ul>
+                    
+                    <h4>황금비 (φ = phi)</h4>
+                    <ul>
+                        <li><strong>φ = (1 + √5) / 2 ≈ 1.618033988...</strong></li>
+                        <li>연속된 두 피보나치 수의 비가 황금비로 수렴</li>
+                        <li>F(n+1) / F(n) → φ (n이 커질 때)</li>
+                    </ul>
+                    
+                    <h4>비네의 공식 (Binet's Formula)</h4>
+                    <ul>
+                        <li><strong>F(n) = (φⁿ - (-φ)ⁿ) / √5</strong></li>
+                        <li>직접 계산 없이 n번째 피보나치 수 계산 가능</li>
+                        <li>공식의 정확성은 n이 커질수록 증가</li>
+                    </ul>
+                    
+                    <h4>자연에서의 피보나치</h4>
+                    <ul>
+                        <li><strong>식물</strong>: 꽃잔, 솔방울, 나선형 배열</li>
+                        <li><strong>동물</strong>: 소라께질, 벌집의 육각형</li>
+                        <li><strong>인체</strong>: 손가락 비율, 얼굴 비율</li>
+                        <li><strong>지질학</strong>: 나선형 은하, 바람 패턴</li>
+                    </ul>
+                    
+                    <h4>예술과 건축에서의 활용</h4>
+                    <ul>
+                        <li><strong>건축</strong>: 파르테논 신전, 피라미드</li>
+                        <li><strong>디자인</strong>: 로고, 레이아웃, 타이포그래피</li>
+                        <li><strong>예술</strong>: 레오나르다 다 빈치, 모나리자</li>
+                        <li><strong>사진</strong>: 삼분법 규칙, 구도 비율</li>
+                    </ul>
+                    
+                    <h4>수학적 성질</h4>
+                    <ul>
+                        <li>F(n)² - F(n-1) × F(n+1) = (-1)ⁿ⁻¹ (카시니 항등식)</li>
+                        <li>연속된 3개의 피보나치 수로 직각삼각형 만들기 가능</li>
+                        <li>GCD(F(m), F(n)) = F(GCD(m, n))</li>
+                        <li>유클리드 호제법의 최악 사례</li>
+                    </ul>
+                    
+                    <h4>컴퓨터 과학에서의 활용</h4>
+                    <ul>
+                        <li>알고리즘 분석 (동적 계획법)</li>
+                        <li>피보나치 힐 (Fibonacci Heap)</li>
+                        <li>피보나치 탐색 (Fibonacci Search)</li>
+                        <li>란담 넘버 생성 알고리즘</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+    function generateFibonacci() {
+        const count = parseInt(document.getElementById('count').value);
+        const startA = parseInt(document.getElementById('start-a').value);
+        const startB = parseInt(document.getElementById('start-b').value);
+        
+        if (isNaN(count) || count < 1 || count > 100) {
+            alert('항의 개수를 1-100 범위로 입력해주세요.');
+            return;
+        }
+        
+        if (isNaN(startA) || isNaN(startB)) {
+            alert('시작 값들을 올바르게 입력해주세요.');
+            return;
+        }
+        
+        // 피보나치 수열 생성
+        const sequence = [startA, startB];
+        
+        for (let i = 2; i < count; i++) {
+            const nextValue = sequence[i-1] + sequence[i-2];
+            // 번호가 너무 쮴지면 계산 중단
+            if (nextValue > Number.MAX_SAFE_INTEGER) {
+                alert(`수가 너무 커서 ${i}번째 항까지만 생성합니다.`);
+                break;
+            }
+            sequence.push(nextValue);
+        }
+        
+        displaySequence(sequence);
+        calculateGoldenRatio(sequence);
+        calculateProperties(sequence);
+        
+        document.getElementById('result').style.display = 'block';
+    }
+    
+    function displaySequence(sequence) {
+        let html = '<div class="sequence-container">';
+        
+        // 수열 리스트
+        html += '<div class="sequence-list">';
+        sequence.forEach((num, index) => {
+            html += `<div class="sequence-item">
+                <span class="index">F(${index})</span>
+                <span class="value">${num.toLocaleString()}</span>
+            </div>`;
+        });
+        html += '</div>';
+        
+        // 수열 요약
+        html += `<div class="sequence-summary">
+            <div class="summary-item">
+                <strong>수열:</strong> ${sequence.slice(0, Math.min(10, sequence.length)).join(', ')}${sequence.length > 10 ? '...' : ''}
+            </div>
+            <div class="summary-item">
+                <strong>생성된 항의 개수:</strong> ${sequence.length}
+            </div>
+            <div class="summary-item">
+                <strong>마지막 항:</strong> ${sequence[sequence.length - 1].toLocaleString()}
+            </div>
+        </div>`;
+        
+        html += '</div>';
+        document.getElementById('sequence-display').innerHTML = html;
+    }
+    
+    function calculateGoldenRatio(sequence) {
+        if (sequence.length < 3) {
+            document.getElementById('golden-ratio').innerHTML = '<p>황금비 계산에는 최소 3개의 항이 필요합니다.</p>';
+            return;
+        }
+        
+        const goldenRatio = (1 + Math.sqrt(5)) / 2;
+        let ratiosHtml = '<h4>황금비 분석</h4>';
+        
+        ratiosHtml += `<div class="golden-ratio-info">
+            <div class="ratio-item">
+                <strong>이론적 황금비 (φ):</strong>
+                <span class="ratio-value">${goldenRatio.toFixed(10)}</span>
+            </div>
+        </div>`;
+        
+        // 비율 계산 (마지막 몇 개 항)
+        ratiosHtml += '<div class="ratios-list"><h5>연속된 항의 비율</h5>';
+        
+        const startIndex = Math.max(1, sequence.length - 10);
+        for (let i = startIndex; i < sequence.length - 1; i++) {
+            if (sequence[i] !== 0) {
+                const ratio = sequence[i + 1] / sequence[i];
+                const difference = Math.abs(ratio - goldenRatio);
+                const accuracy = ((1 - difference / goldenRatio) * 100);
+                
+                ratiosHtml += `<div class="ratio-calculation">
+                    <span class="calculation">F(${i+1}) / F(${i}) = ${sequence[i+1].toLocaleString()} / ${sequence[i].toLocaleString()}</span>
+                    <span class="ratio-result">${ratio.toFixed(8)}</span>
+                    <span class="accuracy">(${accuracy.toFixed(2)}% 정확도)</span>
+                </div>`;
+            }
+        }
+        ratiosHtml += '</div>';
+        
+        document.getElementById('golden-ratio').innerHTML = ratiosHtml;
+    }
+    
+    function calculateProperties(sequence) {
+        let propsHtml = '<h4>수열의 성질</h4><div class="properties-grid">';
+        
+        // 합 계산
+        const sum = sequence.reduce((a, b) => a + b, 0);
+        propsHtml += `<div class="property-item">
+            <span class="label">모든 항의 합:</span>
+            <span class="value">${sum.toLocaleString()}</span>
+        </div>`;
+        
+        // 짝수 항의 합
+        const evenSum = sequence.filter((_, i) => i % 2 === 0).reduce((a, b) => a + b, 0);
+        propsHtml += `<div class="property-item">
+            <span class="label">짝수 인덱스 항의 합:</span>
+            <span class="value">${evenSum.toLocaleString()}</span>
+        </div>`;
+        
+        // 홀수 항의 합
+        const oddSum = sequence.filter((_, i) => i % 2 === 1).reduce((a, b) => a + b, 0);
+        propsHtml += `<div class="property-item">
+            <span class="label">홀수 인덱스 항의 합:</span>
+            <span class="value">${oddSum.toLocaleString()}</span>
+        </div>`;
+        
+        // 가장 큰 항
+        const maxValue = Math.max(...sequence);
+        const maxIndex = sequence.indexOf(maxValue);
+        propsHtml += `<div class="property-item">
+            <span class="label">가장 큰 항:</span>
+            <span class="value">F(${maxIndex}) = ${maxValue.toLocaleString()}</span>
+        </div>`;
+        
+        // 증가율 (마지막 항 기준)
+        if (sequence.length > 1) {
+            const lastRatio = sequence[sequence.length - 1] / sequence[sequence.length - 2];
+            propsHtml += `<div class="property-item">
+                <span class="label">마지막 증가율:</span>
+                <span class="value">${lastRatio.toFixed(6)}</span>
+            </div>`;
+        }
+        
+        // 자릿수
+        const lastNumber = sequence[sequence.length - 1];
+        const digits = lastNumber.toString().length;
+        propsHtml += `<div class="property-item">
+            <span class="label">마지막 항의 자릿수:</span>
+            <span class="value">${digits}자리</span>
+        </div>`;
+        
+        propsHtml += '</div>';
+        document.getElementById('sequence-properties').innerHTML = propsHtml;
+    }
+    </script>
+    
+    <style>
+    .sequence-container {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 15px 0;
+    }
+    
+    .sequence-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+        margin-bottom: 20px;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    
+    .sequence-item {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .index {
+        color: #6c757d;
+        font-size: 0.9em;
+        font-weight: 500;
+    }
+    
+    .value {
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        color: #212529;
+        word-break: break-all;
+    }
+    
+    .sequence-summary {
+        background: white;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        padding: 15px;
+    }
+    
+    .summary-item {
+        padding: 8px 0;
+        border-bottom: 1px solid #f8f9fa;
+    }
+    
+    .summary-item:last-child {
+        border-bottom: none;
+    }
+    
+    .golden-ratio-info {
+        background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 10px 0;
+    }
+    
+    .ratio-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .ratio-value {
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+    
+    .ratios-list {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 15px;
+    }
+    
+    .ratio-calculation {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 10px;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f8f9fa;
+        font-size: 0.9em;
+    }
+    
+    .ratio-calculation:last-child {
+        border-bottom: none;
+    }
+    
+    .calculation {
+        font-family: 'Courier New', monospace;
+        color: #495057;
+    }
+    
+    .ratio-result {
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        text-align: center;
+    }
+    
+    .accuracy {
+        text-align: right;
+        color: #28a745;
+        font-weight: 500;
+    }
+    
+    .properties-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 15px;
+        margin-top: 10px;
+    }
+    
+    .property-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 15px;
+    }
+    
+    .property-item .label {
+        font-weight: 500;
+        color: #495057;
+    }
+    
+    .property-item .value {
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        color: #212529;
+    }
+    </style>
+</body>
+</html>

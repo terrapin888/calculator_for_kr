@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마진 계산기 - 매출 총이익률, 순이익률 계산 | CalcHub</title>
+    <meta name="description" content="무료 마진 계산기로 매출 총이익률, 순이익률, 마크업을 계산하세요. 판매가격과 원가를 입력하면 자동으로 이익률을 계산합니다.">
+    <meta name="keywords" content="온라인계산기, 무료계산기, 마진계산기, 이익률계산기, 마크업계산기, 수익률계산기, 사업계산기">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header">
+                <h1 class="calculator-title">마진 계산기</h1>
+                <p class="calculator-subtitle">이익률과 마크업을 계산하세요</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">계산 정보</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="costPrice" class="input-label">원가 (원)</label>
+                            <input type="text" id="costPrice" class="input-field" placeholder="예: 100000">
+                        </div>
+                        <div class="input-group">
+                            <label for="sellPrice" class="input-label">판매가격 (원)</label>
+                            <input type="text" id="sellPrice" class="input-field" placeholder="예: 150000">
+                        </div>
+                        <div class="input-group">
+                            <label for="targetMargin" class="input-label">목표 마진율 (%)</label>
+                            <input type="number" id="targetMargin" class="input-field" placeholder="예: 30" step="0.01">
+                        </div>
+                    </div>
+                    <button onclick="calculate()" class="btn btn-primary">계산하기</button>
+                    <button onclick="clearInputs()" class="btn btn-secondary">초기화</button>
+                </div>
+
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">계산 결과</h2>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">총 이익</div>
+                            <div id="profit" class="result-value highlight">- 원</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">마진율 (%)</div>
+                            <div id="marginPercent" class="result-value highlight">- %</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">마크업 (%)</div>
+                            <div id="markupPercent" class="result-value">- %</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">목표가격 (목표마진 기준)</div>
+                            <div id="targetPrice" class="result-value">- 원</div>
+                        </div>
+                    </div>
+                    <button onclick="copyResults()" class="btn btn-secondary">결과 복사</button>
+                </div>
+
+                <div class="info-section">
+                    <h2 class="section-title">마진 계산 공식</h2>
+                    <div class="info-content">
+                        <h3>주요 용어:</h3>
+                        <ul>
+                            <li><strong>마진(Margin):</strong> 판매가격에서 원가를 뺀 이익</li>
+                            <li><strong>마진율:</strong> (판매가격 - 원가) ÷ 판매가격 × 100</li>
+                            <li><strong>마크업:</strong> (판매가격 - 원가) ÷ 원가 × 100</li>
+                        </ul>
+                        
+                        <h3>계산 공식:</h3>
+                        <ul>
+                            <li><strong>이익 = 판매가격 - 원가</strong></li>
+                            <li><strong>마진율 = (이익 ÷ 판매가격) × 100</strong></li>
+                            <li><strong>마크업 = (이익 ÷ 원가) × 100</strong></li>
+                        </ul>
+
+                        <h3>업종별 평균 마진율:</h3>
+                        <ul>
+                            <li><strong>음식점업:</strong> 60-80%</li>
+                            <li><strong>소매업:</strong> 20-50%</li>
+                            <li><strong>제조업:</strong> 10-30%</li>
+                            <li><strong>서비스업:</strong> 40-70%</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function parseNumber(input) {
+            if (typeof input === 'number') return input;
+            if (!input || typeof input !== 'string') return 0;
+            
+            let cleaned = input.replace(/[,\s]/g, '').toLowerCase();
+            
+            const koreanUnits = {
+                '천': 1000, '만': 10000, '십만': 100000, '백만': 1000000,
+                '천만': 10000000, '억': 100000000
+            };
+            
+            const sortedUnits = Object.entries(koreanUnits).sort((a, b) => b[0].length - a[0].length);
+            for (let [unit, multiplier] of sortedUnits) {
+                if (cleaned.includes(unit)) {
+                    const numPart = cleaned.replace(unit, '') || '1';
+                    const number = parseFloat(numPart.replace(/[_원명개]/g, '')) || 1;
+                    return number * multiplier;
+                }
+            }
+            
+            cleaned = cleaned.replace(/[_원명개]/g, '');
+            return parseFloat(cleaned) || 0;
+        }
+
+        function calculate() {
+            const costPrice = parseNumber(document.getElementById('costPrice').value);
+            const sellPrice = parseNumber(document.getElementById('sellPrice').value);
+            const targetMargin = parseFloat(document.getElementById('targetMargin').value) || 0;
+            
+            if (!costPrice && !sellPrice) {
+                alert('원가 또는 판매가격을 입력해주세요.');
+                return;
+            }
+            
+            // 기본 계산
+            let profit = 0;
+            let marginPercent = 0;
+            let markupPercent = 0;
+            let targetPrice = 0;
+            
+            if (costPrice && sellPrice) {
+                profit = sellPrice - costPrice;
+                marginPercent = (profit / sellPrice) * 100;
+                markupPercent = (profit / costPrice) * 100;
+            }
+            
+            // 목표 마진율 기준 가격 계산
+            if (costPrice && targetMargin) {
+                targetPrice = costPrice / (1 - targetMargin / 100);
+            }
+            
+            // 결과 표시
+            document.getElementById('profit').textContent = Math.round(profit).toLocaleString() + ' 원';
+            document.getElementById('marginPercent').textContent = marginPercent.toFixed(2) + ' %';
+            document.getElementById('markupPercent').textContent = markupPercent.toFixed(2) + ' %';
+            document.getElementById('targetPrice').textContent = targetPrice > 0 ? Math.round(targetPrice).toLocaleString() + ' 원' : '- 원';
+            
+            document.getElementById('resultSection').classList.add('fade-in');
+        }
+
+        function clearInputs() {
+            document.getElementById('costPrice').value = '';
+            document.getElementById('sellPrice').value = '';
+            document.getElementById('targetMargin').value = '';
+        }
+
+        function copyResults() {
+            const profit = document.getElementById('profit').textContent;
+            const marginPercent = document.getElementById('marginPercent').textContent;
+            const markupPercent = document.getElementById('markupPercent').textContent;
+            
+            const result = `마진 계산 결과:
+총 이익: ${profit}
+마진율: ${marginPercent}
+마크업: ${markupPercent}`;
+            
+            navigator.clipboard.writeText(result).then(() => {
+                alert('결과가 클립보드에 복사되었습니다!');
+            });
+        }
+
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') calculate();
+        });
+    </script>
+
+    <!-- 정보 섹션 -->
+    <div class="container">
+        <div class="info-section">
+            <div class="info-card">
+                <h2>📖 마진계산기 사용 메뉴얼</h2>
+                <ul>
+                    <li><strong>원가 입력:</strong> 상품 제조 또는 구매에 든 실제 비용을 입력하세요 (예: 10000원)</li>
+                    <li><strong>판매가 입력:</strong> 고객에게 판매하는 최종 가격을 입력하세요 (예: 15000원)</li>
+                    <li><strong>마진율 확인:</strong> (판매가-원가)/판매가 × 100으로 계산된 이익률</li>
+                    <li><strong>마크업 확인:</strong> (판매가-원가)/원가 × 100으로 계산된 가격 인상률</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h2>💡 실제 마진 계산 예시</h2>
+                <div class="example-box">
+                    <h3>🛒 온라인 쇼핑몰 운영</h3>
+                    <p><strong>상황:</strong> 원가 8,000원인 화장품을 12,000원에 판매</p>
+                    <p><strong>계산:</strong></p>
+                    <ul>
+                        <li>원가: 8,000원</li>
+                        <li>판매가: 12,000원</li>
+                        <li>총 이익: 4,000원</li>
+                        <li>마진율: 33.3% (4,000÷12,000×100)</li>
+                        <li>마크업: 50% (4,000÷8,000×100)</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h3>🍕 음식점 메뉴 분석</h3>
+                    <p><strong>상황:</strong> 재료비 3,500원인 피자를 15,000원에 판매</p>
+                    <p><strong>계산:</strong></p>
+                    <ul>
+                        <li>원가(재료비): 3,500원</li>
+                        <li>판매가: 15,000원</li>
+                        <li>총 이익: 11,500원</li>
+                        <li>마진율: 76.7% (11,500÷15,000×100)</li>
+                        <li>마크업: 328.6% (11,500÷3,500×100)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h2>🔥 사업 마진 관리 꿀팁</h2>
+                <ul>
+                    <li><strong>업종별 표준 마진:</strong> 식음료 60-70%, 의류 40-60%, 전자제품 15-25% 등 업종별 평균 참고</li>
+                    <li><strong>고정비 고려:</strong> 임대료, 인건비 등 고정비를 감안한 최소 마진율 설정 필요</li>
+                    <li><strong>경쟁사 분석:</strong> 쿠팡, 11번가 등 경쟁업체 가격 모니터링으로 적정 마진 유지</li>
+                    <li><strong>계절별 조정:</strong> 성수기에는 마진 상향, 비수기에는 회전률 중심 운영</li>
+                    <li><strong>볼륨 할인:</strong> 대량 주문 시 마진을 줄여도 총 이익 증대 효과</li>
+                    <li><strong>세금 고려:</strong> 사업소득세, 부가세 등을 감안한 실질 마진 계산</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h2>📚 마진 관련 용어 정리</h2>
+                <div class="term-grid">
+                    <div class="term-item">
+                        <h3>마진(Margin)</h3>
+                        <p>판매가에서 원가를 뺀 이익을 판매가로 나눈 비율로 표현되는 이익률</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>마크업(Markup)</h3>
+                        <p>원가에 더해지는 이익을 원가로 나눈 비율로 표현되는 가격 인상률</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>총이익</h3>
+                        <p>판매가에서 직접적인 제품 원가(재료비, 구매비용)를 뺀 금액</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>순이익</h3>
+                        <p>총이익에서 운영비(임대료, 인건비, 광고비 등)를 모두 뺀 최종 이익</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>원가</h3>
+                        <p>상품을 제조하거나 구매하는데 직접적으로 소요되는 비용</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>손익분기점</h3>
+                        <p>총 매출이 총 비용과 같아지는 지점으로, 이 지점부터 순이익 발생</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>행렬 계산기 - 덧셈, 뺄셈, 곱셈, 행렬식 계산 | 수학 도구</title>
+    <meta name="description" content="2×2, 3×3 행렬의 덧셈, 뺄셈, 곱셈, 행렬식, 역행렬을 계산합니다. 선형대수학 학습과 수학 문제 해결에 도움이 되는 계산기입니다.">
+    <meta name="keywords" content="행렬계산기, 행렬식, 역행렬, 행렬곱셈, 선형대수, 수학계산기, 매트릭스">
+    <meta name="author" content="계산기 For 한국인">
+    <meta property="og:title" content="행렬 계산기 - 덧셈, 뺄셈, 곱셈, 행렬식 계산">
+    <meta property="og:description" content="다양한 행렬 연산을 수행하고 단계별 해설을 제공하는 수학 계산기">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://calcforkr.com/math/matrix-calculator.html">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+            crossorigin="anonymous"></script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "행렬 계산기",
+      "description": "2×2, 3×3 행렬의 다양한 연산을 수행하는 선형대수 계산 도구",
+      "url": "https://calcforkr.com/math/matrix-calculator.html",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+        .matrix-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-start;
+            margin: 20px 0;
+        }
+        
+        .matrix-input {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .matrix-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+        
+        .matrix-grid {
+            display: grid;
+            gap: 5px;
+            justify-items: center;
+            align-items: center;
+        }
+        
+        .matrix-2x2 {
+            grid-template-columns: repeat(2, 60px);
+            grid-template-rows: repeat(2, 40px);
+        }
+        
+        .matrix-3x3 {
+            grid-template-columns: repeat(3, 60px);
+            grid-template-rows: repeat(3, 40px);
+        }
+        
+        .matrix-cell {
+            width: 55px;
+            height: 35px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .matrix-brackets {
+            position: relative;
+        }
+        
+        .matrix-brackets::before,
+        .matrix-brackets::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 8px;
+            border: 2px solid #333;
+        }
+        
+        .matrix-brackets::before {
+            left: -12px;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+        }
+        
+        .matrix-brackets::after {
+            right: -12px;
+            border-left: none;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .operation-controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .size-selector {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .size-selector label {
+            margin: 0 15px;
+            cursor: pointer;
+        }
+        
+        .operation-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .op-button {
+            padding: 12px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        
+        .op-button:hover {
+            background: #0056b3;
+        }
+        
+        .op-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .result-matrix {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #28a745;
+        }
+        
+        .result-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+        
+        .step-by-step {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .step-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .properties-info {
+            background: #d1ecf1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #bee5eb;
+        }
+        
+        .examples-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .example-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .formula {
+            font-family: 'Times New Roman', serif;
+            font-size: 1.1em;
+            text-align: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .matrix-display {
+            display: inline-block;
+            margin: 0 10px;
+            vertical-align: middle;
+        }
+        
+        .matrix-values {
+            display: grid;
+            gap: 2px;
+            font-family: monospace;
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>행렬 계산기</h1>
+        <p class="description">2×2, 3×3 행렬의 덧셈, 뺄셈, 곱셈, 행렬식, 역행렬을 계산하고 단계별 풀이를 제공합니다.</p>
+        
+        <div class="calculator-container">
+            <div class="size-selector">
+                <h3>행렬 크기 선택:</h3>
+                <label>
+                    <input type="radio" name="matrixSize" value="2" checked onchange="changeMatrixSize()"> 2×2 행렬
+                </label>
+                <label>
+                    <input type="radio" name="matrixSize" value="3" onchange="changeMatrixSize()"> 3×3 행렬
+                </label>
+            </div>
+            
+            <div class="matrix-container" id="matrixContainer">
+                <!-- 행렬 입력 영역이 여기에 생성됩니다 -->
+            </div>
+            
+            <div class="operation-buttons">
+                <button class="op-button" onclick="performOperation('add')">A + B</button>
+                <button class="op-button" onclick="performOperation('subtract')">A - B</button>
+                <button class="op-button" onclick="performOperation('multiply')">A × B</button>
+                <button class="op-button" onclick="performOperation('determinantA')">det(A)</button>
+                <button class="op-button" onclick="performOperation('determinantB')">det(B)</button>
+                <button class="op-button" onclick="performOperation('inverseA')">A⁻¹</button>
+                <button class="op-button" onclick="performOperation('inverseB')">B⁻¹</button>
+                <button class="op-button" onclick="performOperation('transposeA')">Aᵀ</button>
+            </div>
+            
+            <div id="result"></div>
+        </div>
+        
+        <div class="info-section">
+            <h2>행렬 연산 기초</h2>
+            <div class="examples-section">
+                <div class="example-card">
+                    <h3>🔢 행렬 덧셈/뺄셈</h3>
+                    <p>같은 크기의 행렬에서 대응하는 원소끼리 연산합니다.</p>
+                    <div class="formula">
+                        [a b] + [e f] = [a+e b+f]<br>
+                        [c d]   [g h]   [c+g d+h]
+                    </div>
+                </div>
+                
+                <div class="example-card">
+                    <h3>✖️ 행렬 곱셈</h3>
+                    <p>A의 열 수와 B의 행 수가 같아야 곱셈이 가능합니다.</p>
+                    <div class="formula">
+                        (A × B)ᵢⱼ = Σ(Aᵢₖ × Bₖⱼ)
+                    </div>
+                    <p><small>2×2 행렬: (m×n) × (n×p) = (m×p)</small></p>
+                </div>
+                
+                <div class="example-card">
+                    <h3>🎯 행렬식 (Determinant)</h3>
+                    <p>정사각행렬의 특성을 나타내는 스칼라 값입니다.</p>
+                    <div class="formula">
+                        det([a b]) = ad - bc<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;([c d])
+                    </div>
+                </div>
+                
+                <div class="example-card">
+                    <h3>🔄 역행렬 (Inverse)</h3>
+                    <p>A × A⁻¹ = I가 되는 행렬입니다. (det(A) ≠ 0일 때만 존재)</p>
+                    <div class="formula">
+                        A⁻¹ = (1/det(A)) × adj(A)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>행렬 공식 모음</h2>
+            <div class="properties-info">
+                <h3>2×2 행렬 공식</h3>
+                <div class="formula">
+                    <strong>행렬식:</strong> det(A) = a₁₁a₂₂ - a₁₂a₂₁<br><br>
+                    <strong>역행렬:</strong> A⁻¹ = (1/det(A)) × [a₂₂ -a₁₂; -a₂₁ a₁₁]<br><br>
+                    <strong>전치행렬:</strong> Aᵀ = [a₁₁ a₂₁; a₁₂ a₂₂]
+                </div>
+            </div>
+            
+            <div class="properties-info">
+                <h3>3×3 행렬 공식</h3>
+                <div class="formula">
+                    <strong>행렬식 (사루스 법칙):</strong><br>
+                    det(A) = a₁₁(a₂₂a₃₃ - a₂₃a₃₂) - a₁₂(a₂₁a₃₃ - a₂₃a₃₁) + a₁₃(a₂₁a₃₂ - a₂₂a₃₁)
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>행렬의 성질</h2>
+            <div class="examples-section">
+                <div class="example-card">
+                    <h3>📐 기본 성질</h3>
+                    <ul>
+                        <li>A + B = B + A (교환법칙)</li>
+                        <li>(A + B) + C = A + (B + C) (결합법칙)</li>
+                        <li>A + O = A (영행렬)</li>
+                        <li>k(A + B) = kA + kB (분배법칙)</li>
+                    </ul>
+                </div>
+                
+                <div class="example-card">
+                    <h3>🔄 곱셈 성질</h3>
+                    <ul>
+                        <li>(AB)C = A(BC) (결합법칙)</li>
+                        <li>A(B + C) = AB + AC (분배법칙)</li>
+                        <li>AI = IA = A (단위행렬)</li>
+                        <li>AB ≠ BA (일반적으로 비교환)</li>
+                    </ul>
+                </div>
+                
+                <div class="example-card">
+                    <h3>🎯 행렬식 성질</h3>
+                    <ul>
+                        <li>det(AB) = det(A)det(B)</li>
+                        <li>det(Aᵀ) = det(A)</li>
+                        <li>det(A⁻¹) = 1/det(A)</li>
+                        <li>det(kA) = kⁿdet(A) (n×n 행렬)</li>
+                    </ul>
+                </div>
+                
+                <div class="example-card">
+                    <h3>⚡ 특별한 행렬</h3>
+                    <ul>
+                        <li><strong>대각행렬:</strong> 대각선 외 모든 원소가 0</li>
+                        <li><strong>대칭행렬:</strong> A = Aᵀ</li>
+                        <li><strong>반대칭행렬:</strong> A = -Aᵀ</li>
+                        <li><strong>직교행렬:</strong> AAᵀ = I</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>실생활 응용</h2>
+            <div class="examples-section">
+                <div class="example-card">
+                    <h3>🎮 컴퓨터 그래픽</h3>
+                    <ul>
+                        <li>3D 객체의 회전, 이동, 확대</li>
+                        <li>좌표계 변환</li>
+                        <li>투영 변환</li>
+                        <li>게임 엔진의 핵심</li>
+                    </ul>
+                </div>
+                
+                <div class="example-card">
+                    <h3>🤖 인공지능</h3>
+                    <ul>
+                        <li>신경망의 가중치 계산</li>
+                        <li>이미지 처리</li>
+                        <li>머신러닝 알고리즘</li>
+                        <li>데이터 차원 축소</li>
+                    </ul>
+                </div>
+                
+                <div class="example-card">
+                    <h3>📊 데이터 분석</h3>
+                    <ul>
+                        <li>주성분 분석(PCA)</li>
+                        <li>선형 회귀 분석</li>
+                        <li>상관관계 분석</li>
+                        <li>최적화 문제 해결</li>
+                    </ul>
+                </div>
+                
+                <div class="example-card">
+                    <h3>🔬 과학 계산</h3>
+                    <ul>
+                        <li>물리학의 상태 벡터</li>
+                        <li>양자역학 계산</li>
+                        <li>회로 분석</li>
+                        <li>구조 역학</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../js/calculator-common.js"></script>
+    <script>
+        let currentSize = 2;
+        
+        function changeMatrixSize() {
+            const size = document.querySelector('input[name="matrixSize"]:checked').value;
+            currentSize = parseInt(size);
+            createMatrixInputs();
+            document.getElementById('result').innerHTML = '';
+        }
+        
+        function createMatrixInputs() {
+            const container = document.getElementById('matrixContainer');
+            
+            container.innerHTML = `
+                <div class="matrix-input">
+                    <div class="matrix-title">행렬 A</div>
+                    <div class="matrix-brackets">
+                        <div class="matrix-grid matrix-${currentSize}x${currentSize}" id="matrixA">
+                            ${createMatrixCells('A')}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="matrix-input">
+                    <div class="matrix-title">행렬 B</div>
+                    <div class="matrix-brackets">
+                        <div class="matrix-grid matrix-${currentSize}x${currentSize}" id="matrixB">
+                            ${createMatrixCells('B')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function createMatrixCells(matrixName) {
+            let html = '';
+            for (let i = 0; i < currentSize; i++) {
+                for (let j = 0; j < currentSize; j++) {
+                    html += `<input type="number" class="matrix-cell" id="${matrixName}_${i}_${j}" 
+                             placeholder="${matrixName.toLowerCase()}${i+1}${j+1}" step="any">`;
+                }
+            }
+            return html;
+        }
+        
+        function getMatrixValues(matrixName) {
+            const matrix = [];
+            for (let i = 0; i < currentSize; i++) {
+                matrix[i] = [];
+                for (let j = 0; j < currentSize; j++) {
+                    const value = parseFloat(document.getElementById(`${matrixName}_${i}_${j}`).value) || 0;
+                    matrix[i][j] = value;
+                }
+            }
+            return matrix;
+        }
+        
+        function performOperation(operation) {
+            const matrixA = getMatrixValues('A');
+            const matrixB = getMatrixValues('B');
+            
+            let result, steps = '';
+            
+            try {
+                switch (operation) {
+                    case 'add':
+                        result = addMatrices(matrixA, matrixB);
+                        steps = getAdditionSteps(matrixA, matrixB, result);
+                        break;
+                    case 'subtract':
+                        result = subtractMatrices(matrixA, matrixB);
+                        steps = getSubtractionSteps(matrixA, matrixB, result);
+                        break;
+                    case 'multiply':
+                        result = multiplyMatrices(matrixA, matrixB);
+                        steps = getMultiplicationSteps(matrixA, matrixB, result);
+                        break;
+                    case 'determinantA':
+                        result = calculateDeterminant(matrixA);
+                        steps = getDeterminantSteps(matrixA, result, 'A');
+                        break;
+                    case 'determinantB':
+                        result = calculateDeterminant(matrixB);
+                        steps = getDeterminantSteps(matrixB, result, 'B');
+                        break;
+                    case 'inverseA':
+                        result = calculateInverse(matrixA);
+                        steps = getInverseSteps(matrixA, result, 'A');
+                        break;
+                    case 'inverseB':
+                        result = calculateInverse(matrixB);
+                        steps = getInverseSteps(matrixB, result, 'B');
+                        break;
+                    case 'transposeA':
+                        result = transposeMatrix(matrixA);
+                        steps = getTransposeSteps(matrixA, result, 'A');
+                        break;
+                }
+                
+                displayResult(result, steps, operation);
+                
+                // Google Analytics 이벤트 추적
+                gtag('event', 'matrix_calculation', {
+                    'event_category': 'Math Calculator',
+                    'event_label': operation
+                });
+                
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+        
+        function addMatrices(A, B) {
+            const result = [];
+            for (let i = 0; i < currentSize; i++) {
+                result[i] = [];
+                for (let j = 0; j < currentSize; j++) {
+                    result[i][j] = A[i][j] + B[i][j];
+                }
+            }
+            return result;
+        }
+        
+        function subtractMatrices(A, B) {
+            const result = [];
+            for (let i = 0; i < currentSize; i++) {
+                result[i] = [];
+                for (let j = 0; j < currentSize; j++) {
+                    result[i][j] = A[i][j] - B[i][j];
+                }
+            }
+            return result;
+        }
+        
+        function multiplyMatrices(A, B) {
+            const result = [];
+            for (let i = 0; i < currentSize; i++) {
+                result[i] = [];
+                for (let j = 0; j < currentSize; j++) {
+                    result[i][j] = 0;
+                    for (let k = 0; k < currentSize; k++) {
+                        result[i][j] += A[i][k] * B[k][j];
+                    }
+                }
+            }
+            return result;
+        }
+        
+        function calculateDeterminant(matrix) {
+            if (currentSize === 2) {
+                return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+            } else {
+                // 3×3 행렬 - 사루스 법칙
+                return matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1]) -
+                       matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0]) +
+                       matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+            }
+        }
+        
+        function calculateInverse(matrix) {
+            const det = calculateDeterminant(matrix);
+            if (Math.abs(det) < 1e-10) {
+                throw new Error('행렬식이 0이므로 역행렬이 존재하지 않습니다.');
+            }
+            
+            if (currentSize === 2) {
+                return [
+                    [matrix[1][1] / det, -matrix[0][1] / det],
+                    [-matrix[1][0] / det, matrix[0][0] / det]
+                ];
+            } else {
+                // 3×3 역행렬 - 여인수 행렬 이용
+                const adj = calculateAdjugate(matrix);
+                const inverse = [];
+                for (let i = 0; i < 3; i++) {
+                    inverse[i] = [];
+                    for (let j = 0; j < 3; j++) {
+                        inverse[i][j] = adj[i][j] / det;
+                    }
+                }
+                return inverse;
+            }
+        }
+        
+        function calculateAdjugate(matrix) {
+            const adj = [];
+            for (let i = 0; i < 3; i++) {
+                adj[i] = [];
+                for (let j = 0; j < 3; j++) {
+                    const minor = getMinor(matrix, i, j);
+                    adj[i][j] = Math.pow(-1, i + j) * calculateDeterminant2x2(minor);
+                }
+            }
+            return transposeMatrix(adj);
+        }
+        
+        function getMinor(matrix, row, col) {
+            const minor = [];
+            for (let i = 0; i < 3; i++) {
+                if (i === row) continue;
+                const minorRow = [];
+                for (let j = 0; j < 3; j++) {
+                    if (j === col) continue;
+                    minorRow.push(matrix[i][j]);
+                }
+                minor.push(minorRow);
+            }
+            return minor;
+        }
+        
+        function calculateDeterminant2x2(matrix) {
+            return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+        }
+        
+        function transposeMatrix(matrix) {
+            const result = [];
+            for (let i = 0; i < currentSize; i++) {
+                result[i] = [];
+                for (let j = 0; j < currentSize; j++) {
+                    result[i][j] = matrix[j][i];
+                }
+            }
+            return result;
+        }
+        
+        function displayResult(result, steps, operation) {
+            let resultHTML = '';
+            
+            if (typeof result === 'number') {
+                // 행렬식 결과
+                resultHTML = `
+                    <div class="result-matrix">
+                        <div class="result-title">${operation.includes('determinant') ? '행렬식' : '결과'}</div>
+                        <div style="text-align: center; font-size: 1.5em; font-weight: bold;">
+                            ${formatNumber(result)}
+                        </div>
+                    </div>
+                `;
+            } else if (Array.isArray(result)) {
+                // 행렬 결과
+                resultHTML = `
+                    <div class="result-matrix">
+                        <div class="result-title">결과 행렬</div>
+                        <div class="matrix-brackets" style="display: flex; justify-content: center;">
+                            <div class="matrix-grid matrix-${currentSize}x${currentSize}">
+                                ${result.flat().map(val => 
+                                    `<div style="padding: 8px; text-align: center; font-family: monospace; font-weight: bold;">
+                                        ${formatNumber(val)}
+                                    </div>`
+                                ).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (steps) {
+                resultHTML += `
+                    <div class="step-by-step">
+                        <div class="step-title">📝 단계별 풀이</div>
+                        ${steps}
+                    </div>
+                `;
+            }
+            
+            document.getElementById('result').innerHTML = resultHTML;
+        }
+        
+        function getAdditionSteps(A, B, result) {
+            let steps = '<p><strong>행렬 덧셈:</strong> 대응하는 각 원소를 더합니다.</p>';
+            
+            for (let i = 0; i < currentSize; i++) {
+                for (let j = 0; j < currentSize; j++) {
+                    steps += `<p>위치 (${i+1},${j+1}): ${A[i][j]} + ${B[i][j]} = ${result[i][j]}</p>`;
+                }
+            }
+            
+            return steps;
+        }
+        
+        function getSubtractionSteps(A, B, result) {
+            let steps = '<p><strong>행렬 뺄셈:</strong> 대응하는 각 원소를 뺍니다.</p>';
+            
+            for (let i = 0; i < currentSize; i++) {
+                for (let j = 0; j < currentSize; j++) {
+                    steps += `<p>위치 (${i+1},${j+1}): ${A[i][j]} - ${B[i][j]} = ${result[i][j]}</p>`;
+                }
+            }
+            
+            return steps;
+        }
+        
+        function getMultiplicationSteps(A, B, result) {
+            let steps = '<p><strong>행렬 곱셈:</strong> A의 행과 B의 열을 내적합니다.</p>';
+            
+            for (let i = 0; i < currentSize; i++) {
+                for (let j = 0; j < currentSize; j++) {
+                    let calculation = '';
+                    for (let k = 0; k < currentSize; k++) {
+                        if (k > 0) calculation += ' + ';
+                        calculation += `${A[i][k]}×${B[k][j]}`;
+                    }
+                    steps += `<p>위치 (${i+1},${j+1}): ${calculation} = ${result[i][j]}</p>`;
+                }
+            }
+            
+            return steps;
+        }
+        
+        function getDeterminantSteps(matrix, result, name) {
+            let steps = `<p><strong>행렬 ${name}의 행렬식 계산:</strong></p>`;
+            
+            if (currentSize === 2) {
+                steps += `
+                    <p>det(${name}) = a₁₁×a₂₂ - a₁₂×a₂₁</p>
+                    <p>= ${matrix[0][0]}×${matrix[1][1]} - ${matrix[0][1]}×${matrix[1][0]}</p>
+                    <p>= ${matrix[0][0] * matrix[1][1]} - ${matrix[0][1] * matrix[1][0]}</p>
+                    <p>= ${result}</p>
+                `;
+            } else {
+                steps += `
+                    <p>사루스 법칙 사용:</p>
+                    <p>det(${name}) = a₁₁(a₂₂a₃₃ - a₂₃a₃₂) - a₁₂(a₂₁a₃₃ - a₂₃a₃₁) + a₁₃(a₂₁a₃₂ - a₂₂a₃₁)</p>
+                    <p>= ${matrix[0][0]}(${matrix[1][1]}×${matrix[2][2]} - ${matrix[1][2]}×${matrix[2][1]}) - ${matrix[0][1]}(${matrix[1][0]}×${matrix[2][2]} - ${matrix[1][2]}×${matrix[2][0]}) + ${matrix[0][2]}(${matrix[1][0]}×${matrix[2][1]} - ${matrix[1][1]}×${matrix[2][0]})</p>
+                    <p>= ${result}</p>
+                `;
+            }
+            
+            return steps;
+        }
+        
+        function getInverseSteps(matrix, result, name) {
+            const det = calculateDeterminant(matrix);
+            
+            let steps = `
+                <p><strong>역행렬 ${name}⁻¹ 계산:</strong></p>
+                <p>1단계: 행렬식 계산 → det(${name}) = ${formatNumber(det)}</p>
+                <p>2단계: 행렬식이 0이 아니므로 역행렬이 존재합니다.</p>
+            `;
+            
+            if (currentSize === 2) {
+                steps += `
+                    <p>3단계: 2×2 역행렬 공식 적용</p>
+                    <p>${name}⁻¹ = (1/det(${name})) × [a₂₂ -a₁₂; -a₂₁ a₁₁]</p>
+                    <p>= (1/${formatNumber(det)}) × [${matrix[1][1]} ${-matrix[0][1]}; ${-matrix[1][0]} ${matrix[0][0]}]</p>
+                `;
+            } else {
+                steps += `
+                    <p>3단계: 여인수 행렬 계산 후 전치하여 수반 행렬 구함</p>
+                    <p>4단계: ${name}⁻¹ = (1/det(${name})) × adj(${name})</p>
+                `;
+            }
+            
+            return steps;
+        }
+        
+        function getTransposeSteps(matrix, result, name) {
+            return `
+                <p><strong>전치행렬 ${name}ᵀ:</strong> 행과 열을 바꿉니다.</p>
+                <p>원래 (i,j) 위치의 원소가 (j,i) 위치로 이동합니다.</p>
+            `;
+        }
+        
+        function formatNumber(num) {
+            if (Number.isInteger(num)) {
+                return num.toString();
+            } else {
+                return Number(num.toFixed(6)).toString();
+            }
+        }
+        
+        function showError(message) {
+            document.getElementById('result').innerHTML = 
+                `<div class="error-message">${message}</div>`;
+        }
+        
+        function setExample(exampleType) {
+            if (exampleType === 'basic2x2') {
+                document.getElementById('A_0_0').value = 2;
+                document.getElementById('A_0_1').value = 3;
+                document.getElementById('A_1_0').value = 1;
+                document.getElementById('A_1_1').value = 4;
+                
+                document.getElementById('B_0_0').value = 5;
+                document.getElementById('B_0_1').value = 2;
+                document.getElementById('B_1_0').value = 3;
+                document.getElementById('B_1_1').value = 1;
+            }
+        }
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            createMatrixInputs();
+            
+            // 예시 버튼 추가
+            const exampleDiv = document.createElement('div');
+            exampleDiv.innerHTML = `
+                <div style="text-align: center; margin: 15px 0; padding: 15px; background: #e3f2fd; border-radius: 8px;">
+                    <strong>💡 예시 행렬:</strong>
+                    <button onclick="setExample('basic2x2')" 
+                            style="margin: 5px; padding: 8px 15px; border: 1px solid #2196f3; border-radius: 4px; background: #f8f9fa;">
+                        기본 2×2 행렬
+                    </button>
+                </div>
+            `;
+            document.querySelector('.calculator-container').appendChild(exampleDiv);
+        });
+    </script>
+</body>
+</html>

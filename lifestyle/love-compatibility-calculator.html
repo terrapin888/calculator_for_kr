@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사랑 궁합 계산기 - 커플 궁합도 측정 | CalcHub</title>
+    <meta name="description" content="이름과 생년월일로 사랑 궁합을 계산하세요. 재미있는 커플 궁합도 측정기로 연인과의 호환성을 확인해보세요!">
+    <meta name="keywords" content="사랑궁합, 커플궁합, 이름궁합, 연애궁합, 궁합계산기, 사랑점수, 궁합측정, 커플테스트">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "사랑 궁합 계산기",
+      "description": "이름과 생년월일로 사랑 궁합을 계산하세요. 재미있는 커플 궁합도 측정기로 연인과의 호환성을 확인해보세요!",
+      "url": "https://www.calcforkr.com/lifestyle/love-compatibility-calculator.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser"
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+    
+    <style>
+        .love-hearts {
+            text-align: center;
+            font-size: 24px;
+            margin: 20px 0;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .compatibility-bar {
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #8b5cf6);
+            border-radius: 15px;
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .compatibility-indicator {
+            position: absolute;
+            top: -5px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 3px solid #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: left 0.5s ease;
+        }
+        
+        .couple-input {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 20px;
+            align-items: end;
+            margin: 30px 0;
+        }
+        
+        .person-section {
+            text-align: center;
+        }
+        
+        .person-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+        
+        .love-icon {
+            font-size: 48px;
+            color: #e11d48;
+        }
+        
+        .result-message {
+            background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+            border: 2px solid #f9a8d4;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .compatibility-score {
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #e11d48, #be185d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .love-advice {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff7ed;
+            border-left: 4px solid #ea580c;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header-simple">
+                <h1 class="calculator-title-simple">💕 사랑 궁합 계산기</h1>
+                <p class="calculator-description">이름과 생년월일로 재미있는 사랑 궁합을 계산해보세요!</p>
+                <div class="love-hearts">💖 💝 💗 💕 💘</div>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">커플 정보 입력</h2>
+                    
+                    <div class="couple-input">
+                        <div class="person-section">
+                            <div class="person-title">👨 첫 번째 사람</div>
+                            <div class="input-group">
+                                <input type="text" id="name1" class="input-field" placeholder="이름을 입력하세요">
+                            </div>
+                            <div class="input-group">
+                                <input type="date" id="birth1" class="input-field">
+                            </div>
+                        </div>
+                        
+                        <div class="love-icon">💑</div>
+                        
+                        <div class="person-section">
+                            <div class="person-title">👩 두 번째 사람</div>
+                            <div class="input-group">
+                                <input type="text" id="name2" class="input-field" placeholder="이름을 입력하세요">
+                            </div>
+                            <div class="input-group">
+                                <input type="date" id="birth2" class="input-field">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="calculateLoveCompatibility()" class="btn btn-primary" style="background: linear-gradient(45deg, #e11d48, #be185d);">💘 궁합 계산하기</button>
+                </div>
+
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <div class="result-message">
+                        <div class="compatibility-score" id="loveScore">0%</div>
+                        <div style="font-size: 20px; font-weight: 600; color: #831843; margin: 10px 0;">
+                            <span id="coupleName">-</span>의 사랑 궁합
+                        </div>
+                        <div class="compatibility-bar">
+                            <div class="compatibility-indicator" id="indicator">❤️</div>
+                        </div>
+                        <div id="compatibilityLevel" style="font-size: 18px; font-weight: 600; color: #be185d; margin: 15px 0;">-</div>
+                        <div id="loveMessage" style="font-size: 16px; color: #831843;">-</div>
+                    </div>
+                    
+                    <div class="result-simple">
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">이름 궁합</div>
+                            <div id="nameCompatibility" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">생년월일 궁합</div>
+                            <div id="birthCompatibility" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">나이 차이</div>
+                            <div id="ageDifference" class="result-value-simple">-</div>
+                        </div>
+                    </div>
+                    
+                    <div class="love-advice">
+                        <h4 style="color: #ea580c; margin-bottom: 10px;">💡 사랑 조언</h4>
+                        <div id="loveAdvice" style="color: #9a3412; line-height: 1.6;">-</div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button onclick="copyResult()" class="btn btn-secondary" id="copyBtn">결과 공유</button>
+                        <button onclick="calculateAgain()" class="btn btn-secondary" style="margin-left: 10px;">다시 계산</button>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3 class="info-title">💕 사랑 궁합이란?</h3>
+                    <div class="info-content">
+                        <p><strong>사랑 궁합</strong>은 두 사람의 이름과 생년월일을 바탕으로 연애 호환성을 재미있게 계산하는 방법입니다.</p>
+                        
+                        <h4>계산 방식</h4>
+                        <ul>
+                            <li><strong>이름 궁합:</strong> 각 글자의 자음/모음 분석</li>
+                            <li><strong>생년월일 궁합:</strong> 숫자의 조화와 리듬</li>
+                            <li><strong>나이 차이:</strong> 연령대 호환성</li>
+                            <li><strong>종합 점수:</strong> 모든 요소를 종합한 궁합도</li>
+                        </ul>
+                        
+                        <h4>궁합도 해석</h4>
+                        <ul>
+                            <li><strong>90-100%:</strong> 천생연분! 완벽한 궁합 💕</li>
+                            <li><strong>80-89%:</strong> 환상의 커플! 매우 좋은 궁합 💖</li>
+                            <li><strong>70-79%:</strong> 좋은 궁합! 서로를 이해 💗</li>
+                            <li><strong>60-69%:</strong> 보통 궁합, 노력하면 OK 💛</li>
+                            <li><strong>50-59%:</strong> 약간 아쉬운 궁합 💙</li>
+                            <li><strong>50% 미만:</strong> 많은 노력이 필요 💚</li>
+                        </ul>
+                        
+                        <h4>⚠️ 주의사항</h4>
+                        <ul>
+                            <li>이 계산기는 <strong>재미와 오락을 위한 도구</strong>입니다</li>
+                            <li>실제 연애나 결혼 결정의 근거로 사용하지 마세요</li>
+                            <li>진정한 사랑은 서로의 노력과 이해가 더 중요합니다</li>
+                            <li>궁합 결과에 너무 의존하지 말고 재미로만 즐기세요</li>
+                        </ul>
+                        
+                        <h4>💝 사랑을 키우는 팁</h4>
+                        <ul>
+                            <li>서로의 차이점을 인정하고 존중하기</li>
+                            <li>솔직하고 열린 소통하기</li>
+                            <li>함께 새로운 추억 만들기</li>
+                            <li>상대방의 장점에 집중하기</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateLoveCompatibility() {
+            const name1 = document.getElementById('name1').value.trim();
+            const name2 = document.getElementById('name2').value.trim();
+            const birth1 = document.getElementById('birth1').value;
+            const birth2 = document.getElementById('birth2').value;
+            
+            if (!name1 || !name2) {
+                showError('두 사람의 이름을 모두 입력해주세요.');
+                return;
+            }
+            
+            if (!birth1 || !birth2) {
+                showError('두 사람의 생년월일을 모두 입력해주세요.');
+                return;
+            }
+            
+            // 이름 궁합 계산 (글자 수, 자음/모음 분석)
+            const nameScore = calculateNameCompatibility(name1, name2);
+            
+            // 생년월일 궁합 계산
+            const birthScore = calculateBirthCompatibility(birth1, birth2);
+            
+            // 나이 차이 계산
+            const ageDiff = calculateAgeDifference(birth1, birth2);
+            const ageScore = calculateAgeCompatibility(ageDiff);
+            
+            // 종합 점수 (가중평균)
+            const totalScore = Math.round((nameScore * 0.4) + (birthScore * 0.4) + (ageScore * 0.2));
+            
+            // 결과 표시
+            displayResults(name1, name2, totalScore, nameScore, birthScore, ageDiff);
+        }
+        
+        function calculateNameCompatibility(name1, name2) {
+            // 이름 길이와 글자 조합으로 호환성 계산
+            const len1 = name1.length;
+            const len2 = name2.length;
+            const lengthDiff = Math.abs(len1 - len2);
+            
+            // 기본 점수
+            let score = 70;
+            
+            // 길이 차이가 작을수록 좋음
+            if (lengthDiff === 0) score += 15;
+            else if (lengthDiff === 1) score += 10;
+            else if (lengthDiff === 2) score += 5;
+            
+            // 첫 글자 호환성
+            const first1 = name1.charAt(0);
+            const first2 = name2.charAt(0);
+            const firstCharCode = (first1.charCodeAt(0) + first2.charCodeAt(0)) % 10;
+            if (firstCharCode >= 7) score += 10;
+            else if (firstCharCode >= 5) score += 5;
+            
+            // 전체 이름의 문자 코드 합
+            let sum1 = 0, sum2 = 0;
+            for (let i = 0; i < name1.length; i++) {
+                sum1 += name1.charCodeAt(i);
+            }
+            for (let i = 0; i < name2.length; i++) {
+                sum2 += name2.charCodeAt(i);
+            }
+            
+            const compatibility = (sum1 + sum2) % 100;
+            if (compatibility >= 80) score += 10;
+            else if (compatibility >= 60) score += 5;
+            
+            return Math.min(100, Math.max(30, score));
+        }
+        
+        function calculateBirthCompatibility(birth1, birth2) {
+            const date1 = new Date(birth1);
+            const date2 = new Date(birth2);
+            
+            // 월 호환성
+            const month1 = date1.getMonth();
+            const month2 = date2.getMonth();
+            const monthDiff = Math.abs(month1 - month2);
+            
+            let score = 60;
+            
+            // 같은 월이면 보너스
+            if (monthDiff === 0) score += 20;
+            else if (monthDiff <= 2 || monthDiff >= 10) score += 15;
+            else if (monthDiff <= 4 || monthDiff >= 8) score += 10;
+            
+            // 일 호환성
+            const day1 = date1.getDate();
+            const day2 = date2.getDate();
+            const daySum = day1 + day2;
+            
+            if (daySum % 7 === 0) score += 15;
+            else if (daySum % 3 === 0) score += 10;
+            else if (daySum % 2 === 0) score += 5;
+            
+            // 년도 끝자리 호환성
+            const year1 = date1.getFullYear() % 10;
+            const year2 = date2.getFullYear() % 10;
+            const yearCompatibility = (year1 + year2) % 10;
+            
+            if (yearCompatibility >= 8) score += 10;
+            else if (yearCompatibility >= 6) score += 5;
+            
+            return Math.min(100, Math.max(40, score));
+        }
+        
+        function calculateAgeDifference(birth1, birth2) {
+            const date1 = new Date(birth1);
+            const date2 = new Date(birth2);
+            const diffTime = Math.abs(date2 - date1);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return Math.floor(diffDays / 365.25);
+        }
+        
+        function calculateAgeCompatibility(ageDiff) {
+            if (ageDiff === 0) return 95;
+            else if (ageDiff <= 2) return 90;
+            else if (ageDiff <= 5) return 80;
+            else if (ageDiff <= 10) return 70;
+            else if (ageDiff <= 15) return 60;
+            else if (ageDiff <= 20) return 50;
+            else return 40;
+        }
+        
+        function displayResults(name1, name2, totalScore, nameScore, birthScore, ageDiff) {
+            document.getElementById('loveScore').textContent = totalScore + '%';
+            document.getElementById('coupleName').textContent = `${name1} ♥ ${name2}`;
+            document.getElementById('nameCompatibility').textContent = nameScore + '%';
+            document.getElementById('birthCompatibility').textContent = birthScore + '%';
+            document.getElementById('ageDifference').textContent = ageDiff + '살 차이';
+            
+            // 궁합도 레벨과 메시지
+            let level, message, advice;
+            if (totalScore >= 90) {
+                level = "천생연분! 완벽한 궁합 💕";
+                message = "정말 환상적인 궁합입니다! 두 분은 서로에게 완벽한 파트너예요.";
+                advice = "이미 완벽한 궁합이니 현재 상태를 유지하며 서로를 더욱 아껴주세요!";
+            } else if (totalScore >= 80) {
+                level = "환상의 커플! 매우 좋은 궁합 💖";
+                message = "매우 좋은 궁합이네요! 서로를 잘 이해하고 보완해주는 관계입니다.";
+                advice = "서로의 장점을 인정하고 작은 차이점들은 매력으로 받아들이세요.";
+            } else if (totalScore >= 70) {
+                level = "좋은 궁합! 서로를 이해 💗";
+                message = "좋은 궁합입니다! 조금의 노력으로 더욱 좋은 관계를 만들 수 있어요.";
+                advice = "서로의 취미와 관심사를 공유하며 더 많은 공통점을 만들어보세요.";
+            } else if (totalScore >= 60) {
+                level = "보통 궁합, 노력하면 OK 💛";
+                message = "보통의 궁합이에요. 서로의 차이를 인정하고 이해한다면 좋은 관계가 될 수 있습니다.";
+                advice = "소통을 늘리고 서로의 입장을 이해하려고 노력해보세요.";
+            } else if (totalScore >= 50) {
+                level = "약간 아쉬운 궁합 💙";
+                message = "약간 아쉬운 궁합이지만 진정한 사랑은 궁합을 뛰어넘을 수 있어요!";
+                advice = "서로의 다른 점을 장점으로 바라보고 많은 대화를 나누세요.";
+            } else {
+                level = "많은 노력이 필요 💚";
+                message = "궁합상으로는 어려움이 있지만, 진실한 마음과 노력이 있다면 극복할 수 있습니다.";
+                advice = "서로를 깊이 이해하고 존중하며 천천히 관계를 발전시켜 나가세요.";
+            }
+            
+            document.getElementById('compatibilityLevel').textContent = level;
+            document.getElementById('loveMessage').textContent = message;
+            document.getElementById('loveAdvice').textContent = advice;
+            
+            // 호환성 바 표시기 위치 설정
+            const indicator = document.getElementById('indicator');
+            const position = (totalScore / 100) * (indicator.parentElement.offsetWidth - 40);
+            indicator.style.left = position + 'px';
+            
+            showResult('resultSection');
+        }
+        
+        function copyResult() {
+            const coupleName = document.getElementById('coupleName').textContent;
+            const loveScore = document.getElementById('loveScore').textContent;
+            const level = document.getElementById('compatibilityLevel').textContent;
+            const message = document.getElementById('loveMessage').textContent;
+            
+            const result = `💕 사랑 궁합 결과 💕
+${coupleName}
+궁합도: ${loveScore}
+${level}
+
+${message}
+
+❤️ CalcHub 사랑 궁합 계산기`;
+            
+            copyToClipboard(result, 'copyBtn');
+        }
+        
+        function calculateAgain() {
+            document.getElementById('name1').value = '';
+            document.getElementById('name2').value = '';
+            document.getElementById('birth1').value = '';
+            document.getElementById('birth2').value = '';
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('name1').focus();
+        }
+        
+        // 엔터키로 계산
+        bindEnterKey(['name1', 'name2', 'birth1', 'birth2'], calculateLoveCompatibility);
+    </script>
+</body>
+</html>

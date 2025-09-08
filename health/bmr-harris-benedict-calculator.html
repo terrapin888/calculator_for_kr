@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기초대사율 계산기 - Harris-Benedict 공식 | CalcHub</title>
+    <meta name="description" content="Harris-Benedict 공식으로 기초대사율(BMR)과 일일 칼로리 소비량을 계산하세요. 성별, 나이, 키, 몸무게, 활동량을 고려합니다.">
+    <meta name="keywords" content="기초대사율, BMR, 칼로리계산, 해리스베네딕트, 일일칼로리소비량, 다이어트, 건강계산기">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "기초대사율 계산기 - Harris-Benedict",
+      "description": "Harris-Benedict 공식으로 기초대사율(BMR)과 일일 칼로리 소비량을 계산하세요. 성별, 나이, 키, 몸무게, 활동량을 고려합니다.",
+      "url": "https://www.calcforkr.com/health/bmr-harris-benedict-calculator.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header-simple">
+                <h1 class="calculator-title-simple">기초대사율 계산기 (Harris-Benedict)</h1>
+                <p class="calculator-description">기초대사율과 일일 칼로리 소비량을 계산합니다</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">개인 정보</h2>
+                    
+                    <div class="input-group">
+                        <label class="input-label">성별</label>
+                        <select id="gender" class="input-field">
+                            <option value="male">남성</option>
+                            <option value="female">여성</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">나이</label>
+                        <input type="number" id="age" class="input-field" placeholder="30" step="1" min="10" max="120">
+                        <div class="input-unit">세</div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">키</label>
+                        <input type="number" id="height" class="input-field" placeholder="170" step="0.1" min="100" max="250">
+                        <div class="input-unit">cm</div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">몸무게</label>
+                        <input type="number" id="weight" class="input-field" placeholder="70" step="0.1" min="20" max="300">
+                        <div class="input-unit">kg</div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">활동량 수준</label>
+                        <select id="activityLevel" class="input-field">
+                            <option value="1.2">좌식 생활 (운동 안함)</option>
+                            <option value="1.375">가벼운 활동 (주 1-3회 운동)</option>
+                            <option value="1.55">보통 활동 (주 3-5회 운동)</option>
+                            <option value="1.725">활발한 활동 (주 6-7회 운동)</option>
+                            <option value="1.9">매우 활발 (하루 2회 운동 or 육체적 직업)</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="calculateBMR()" class="btn btn-primary">계산하기</button>
+                </div>
+
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <div class="result-simple">
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">기초대사율 (BMR)</div>
+                            <div id="bmr" class="result-value-simple highlight">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">일일 칼로리 소비량 (TDEE)</div>
+                            <div id="tdee" class="result-value-simple">-</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="section-title" style="margin-top: 30px;">목표별 칼로리 가이드</h3>
+                    <div class="result-simple">
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">극심한 체중감소 (-1kg/주)</div>
+                            <div id="extremeLoss" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">체중감소 (-0.5kg/주)</div>
+                            <div id="weightLoss" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">체중유지</div>
+                            <div id="maintenance" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">체중증가 (+0.5kg/주)</div>
+                            <div id="weightGain" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">빠른 체중증가 (+1kg/주)</div>
+                            <div id="fastGain" class="result-value-simple">-</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button onclick="copyResult()" class="btn btn-secondary" id="copyBtn">결과 복사</button>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3 class="info-title">기초대사율(BMR)이란?</h3>
+                    <div class="info-content">
+                        <p><strong>기초대사율(BMR)</strong>은 생명을 유지하는 데 필요한 최소한의 에너지량으로, 완전히 안정된 상태에서 24시간 동안 소비하는 칼로리입니다.</p>
+                        
+                        <h4>Harris-Benedict 공식</h4>
+                        <p><strong>남성:</strong> BMR = 88.362 + (13.397 × 체중kg) + (4.799 × 키cm) - (5.677 × 나이)</p>
+                        <p><strong>여성:</strong> BMR = 447.593 + (9.247 × 체중kg) + (3.098 × 키cm) - (4.330 × 나이)</p>
+                        
+                        <h4>일일 칼로리 소비량 (TDEE)</h4>
+                        <p>BMR에 활동량 계수를 곱하여 실제 하루 칼로리 소비량을 계산합니다:</p>
+                        <ul>
+                            <li><strong>좌식 생활</strong>: BMR × 1.2</li>
+                            <li><strong>가벼운 활동</strong>: BMR × 1.375</li>
+                            <li><strong>보통 활동</strong>: BMR × 1.55</li>
+                            <li><strong>활발한 활동</strong>: BMR × 1.725</li>
+                            <li><strong>매우 활발</strong>: BMR × 1.9</li>
+                        </ul>
+                        
+                        <h4>체중 변화 원리</h4>
+                        <ul>
+                            <li><strong>체중 감소</strong>: 섭취 칼로리 < 소비 칼로리</li>
+                            <li><strong>체중 유지</strong>: 섭취 칼로리 = 소비 칼로리</li>
+                            <li><strong>체중 증가</strong>: 섭취 칼로리 > 소비 칼로리</li>
+                            <li><strong>1kg 변화</strong>: 약 7,700kcal 차이 필요</li>
+                        </ul>
+                        
+                        <h4>활용 방법</h4>
+                        <ul>
+                            <li>다이어트 계획 수립 (목표 칼로리 설정)</li>
+                            <li>운동량과 식단 계획</li>
+                            <li>건강한 체중 관리</li>
+                            <li>영양소 균형 계산</li>
+                        </ul>
+                        
+                        <h4>주의사항</h4>
+                        <ul>
+                            <li>개인차가 있으므로 참고용으로만 사용하세요</li>
+                            <li>극단적인 칼로리 제한은 건강에 해로울 수 있습니다</li>
+                            <li>전문의와 상담 후 체중 관리를 시작하세요</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateBMR() {
+            const gender = document.getElementById('gender').value;
+            const age = parseFloat(document.getElementById('age').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const activityLevel = parseFloat(document.getElementById('activityLevel').value);
+            
+            // 입력값 검증
+            if (isNaN(age) || age < 10 || age > 120) {
+                showError('나이를 올바르게 입력해주세요. (10-120세)');
+                return;
+            }
+            
+            if (isNaN(height) || height < 100 || height > 250) {
+                showError('키를 올바르게 입력해주세요. (100-250cm)');
+                return;
+            }
+            
+            if (isNaN(weight) || weight < 20 || weight > 300) {
+                showError('몸무게를 올바르게 입력해주세요. (20-300kg)');
+                return;
+            }
+            
+            let bmr;
+            
+            // Harris-Benedict 공식 적용
+            if (gender === 'male') {
+                bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+            } else {
+                bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+            }
+            
+            // 일일 칼로리 소비량 (TDEE)
+            const tdee = bmr * activityLevel;
+            
+            // 목표별 칼로리 계산
+            const extremeLoss = tdee - 1000; // 1kg/주 감소 (-7700kcal/주 ÷ 7일 ≈ -1100kcal/일, 안전상 -1000으로 조정)
+            const weightLoss = tdee - 500;   // 0.5kg/주 감소 (-3850kcal/주 ÷ 7일 ≈ -550kcal/일, -500으로 조정)
+            const maintenance = tdee;        // 체중 유지
+            const weightGain = tdee + 500;   // 0.5kg/주 증가
+            const fastGain = tdee + 1000;    // 1kg/주 증가
+            
+            // 결과 표시
+            document.getElementById('bmr').textContent = Math.round(bmr) + ' kcal';
+            document.getElementById('tdee').textContent = Math.round(tdee) + ' kcal';
+            document.getElementById('extremeLoss').textContent = Math.max(1200, Math.round(extremeLoss)) + ' kcal'; // 최소 1200kcal 보장
+            document.getElementById('weightLoss').textContent = Math.round(weightLoss) + ' kcal';
+            document.getElementById('maintenance').textContent = Math.round(maintenance) + ' kcal';
+            document.getElementById('weightGain').textContent = Math.round(weightGain) + ' kcal';
+            document.getElementById('fastGain').textContent = Math.round(fastGain) + ' kcal';
+            
+            showResult('resultSection');
+        }
+        
+        function copyResult() {
+            const bmr = document.getElementById('bmr').textContent;
+            const tdee = document.getElementById('tdee').textContent;
+            const extremeLoss = document.getElementById('extremeLoss').textContent;
+            const weightLoss = document.getElementById('weightLoss').textContent;
+            const maintenance = document.getElementById('maintenance').textContent;
+            const weightGain = document.getElementById('weightGain').textContent;
+            const fastGain = document.getElementById('fastGain').textContent;
+            const gender = document.getElementById('gender').value === 'male' ? '남성' : '여성';
+            const age = document.getElementById('age').value;
+            const height = document.getElementById('height').value;
+            const weight = document.getElementById('weight').value;
+            
+            const result = `기초대사율(BMR) 계산 결과:
+성별: ${gender}, 나이: ${age}세, 키: ${height}cm, 몸무게: ${weight}kg
+
+기초대사율 (BMR): ${bmr}
+일일 칼로리 소비량 (TDEE): ${tdee}
+
+목표별 칼로리 가이드:
+- 극심한 체중감소 (-1kg/주): ${extremeLoss}
+- 체중감소 (-0.5kg/주): ${weightLoss}
+- 체중유지: ${maintenance}
+- 체중증가 (+0.5kg/주): ${weightGain}
+- 빠른 체중증가 (+1kg/주): ${fastGain}`;
+            
+            copyToClipboard(result, 'copyBtn');
+        }
+        
+        // 엔터키로 계산
+        bindEnterKey(['age', 'height', 'weight'], calculateBMR);
+        
+        // 실시간 계산
+        bindRealtimeCalculation(['age', 'height', 'weight'], () => {
+            const age = document.getElementById('age').value;
+            const height = document.getElementById('height').value;
+            const weight = document.getElementById('weight').value;
+            
+            if (age && height && weight && 
+                !isNaN(parseFloat(age)) && !isNaN(parseFloat(height)) && !isNaN(parseFloat(weight)) &&
+                parseFloat(age) >= 10 && parseFloat(age) <= 120 &&
+                parseFloat(height) >= 100 && parseFloat(height) <= 250 &&
+                parseFloat(weight) >= 20 && parseFloat(weight) <= 300) {
+                calculateBMR();
+            }
+        }, 500);
+        
+        // 선택 변경시 자동 계산
+        ['gender', 'activityLevel'].forEach(id => {
+            document.getElementById(id).addEventListener('change', () => {
+                const age = document.getElementById('age').value;
+                const height = document.getElementById('height').value;
+                const weight = document.getElementById('weight').value;
+                
+                if (age && height && weight && 
+                    !isNaN(parseFloat(age)) && !isNaN(parseFloat(height)) && !isNaN(parseFloat(weight)) &&
+                    parseFloat(age) >= 10 && parseFloat(age) <= 120 &&
+                    parseFloat(height) >= 100 && parseFloat(height) <= 250 &&
+                    parseFloat(weight) >= 20 && parseFloat(weight) <= 300) {
+                    calculateBMR();
+                }
+            });
+        });
+    </script>
+
+    <!-- 정보 섹션 -->
+    <div class="container">
+        <div class="info-section">
+            <div class="info-card">
+                <h2>📖 BMR계산기 사용 메뉴얼</h2>
+                <ul>
+                    <li><strong>성별 선택:</strong> 남성과 여성의 BMR 계산 공식이 다르므로 정확한 성별 선택 필수</li>
+                    <li><strong>나이 입력:</strong> 만 나이를 정확히 입력하세요 (10-120세 범위)</li>
+                    <li><strong>키 입력:</strong> 신장을 cm 단위로 입력하세요 (예: 170cm)</li>
+                    <li><strong>체중 입력:</strong> 현재 체중을 kg 단위로 입력하세요 (예: 65kg)</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h2>💡 실제 BMR 계산 예시</h2>
+                <div class="example-box">
+                    <h3>👨 30대 남성 사례</h3>
+                    <p><strong>정보:</strong> 35세 남성, 키 175cm, 체중 70kg</p>
+                    <p><strong>계산:</strong></p>
+                    <ul>
+                        <li>Harris-Benedict 공식 적용</li>
+                        <li>BMR = 88.362 + (13.397 × 70) + (4.799 × 175) - (5.677 × 35)</li>
+                        <li>기초대사율: 약 1,680kcal/일</li>
+                        <li>활동량별 권장 칼로리: 2,016~2,688kcal/일</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h3>👩 20대 여성 사례</h3>
+                    <p><strong>정보:</strong> 28세 여성, 키 160cm, 체중 55kg</p>
+                    <p><strong>계산:</strong></p>
+                    <ul>
+                        <li>Harris-Benedict 공식 적용</li>
+                        <li>BMR = 447.593 + (9.247 × 55) + (3.098 × 160) - (4.330 × 28)</li>
+                        <li>기초대사율: 약 1,320kcal/일</li>
+                        <li>활동량별 권장 칼로리: 1,584~2,112kcal/일</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h2>🔥 기초대사율 활용 꿀팁</h2>
+                <ul>
+                    <li><strong>다이어트 계획:</strong> BMR보다 300-500kcal 적게 섭취하면 주 0.5kg 감량 가능</li>
+                    <li><strong>근력운동 중요:</strong> 근육량 증가 시 BMR이 높아져 살빠지기 쉬운 체질 형성</li>
+                    <li><strong>활동량 고려:</strong> 사무직(1.2배), 가벼운 운동(1.375배), 적극적 운동(1.55배) 곱하기</li>
+                    <li><strong>식사 횟수:</strong> 하루 3-5회 소량 다식으로 기초대사율 향상</li>
+                    <li><strong>충분한 수면:</strong> 7-8시간 숙면으로 호르몬 밸런스 및 대사율 유지</li>
+                    <li><strong>단백질 섭취:</strong> 체중 1kg당 1g 이상 단백질로 근육량 유지</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h2>📚 BMR 관련 용어 정리</h2>
+                <div class="term-grid">
+                    <div class="term-item">
+                        <h3>기초대사율(BMR)</h3>
+                        <p>생명 유지를 위해 24시간 안정 상태에서 소비하는 최소한의 에너지</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>Harris-Benedict</h3>
+                        <p>성별, 나이, 키, 체중을 이용해 BMR을 계산하는 가장 널리 쓰이는 공식</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>TDEE</h3>
+                        <p>총 일일 에너지 소비량으로 BMR에 활동량 지수를 곱한 값</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>대사증후군</h3>
+                        <p>기초대사율 저하와 관련된 복부비만, 고혈압, 당뇨 등의 질환군</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>근육량</h3>
+                        <p>기초대사율에 가장 큰 영향을 미치는 요소로 근육 1kg당 13kcal 소모</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>열효과</h3>
+                        <p>음식 섭취 후 소화, 흡수, 대사 과정에서 소모되는 추가 에너지</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

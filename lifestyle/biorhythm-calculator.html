@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>바이오리듬 계산기 - 신체, 감정, 지성 주기 분석</title>
+    <meta name="description" content="생년월일을 기반으로 신체, 감정, 지성 바이오리듬을 계산하고 분석하는 무료 온라인 계산기입니다. 최적의 컨디션 관리와 일정 계획에 활용하세요.">
+    <meta name="keywords" content="바이오리듬 계산기, 바이오리듬, 생체리듬, 신체주기, 감정주기, 지성주기, 컨디션 관리">
+    <meta name="author" content="calcforkr.com">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="바이오리듬 계산기 - 신체, 감정, 지성 주기 분석">
+    <meta property="og:description" content="생년월일을 기반으로 신체, 감정, 지성 바이오리듬을 계산하고 분석하는 무료 온라인 계산기입니다.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://calcforkr.com/lifestyle/biorhythm-calculator.html">
+    <meta property="og:site_name" content="calcforkr.com">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191" crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="canonical" href="https://calcforkr.com/lifestyle/biorhythm-calculator.html">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "바이오리듬 계산기",
+        "description": "생년월일을 기반으로 신체, 감정, 지성 바이오리듬을 계산하고 분석하는 온라인 계산기",
+        "url": "https://calcforkr.com/lifestyle/biorhythm-calculator.html",
+        "applicationCategory": "LifestyleApplication",
+        "operatingSystem": "All",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "KRW"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>바이오리듬 계산기</h1>
+        <p class="description">생년월일을 기반으로 신체, 감정, 지성 바이오리듬을 계산하여 최적의 컨디션 관리와 일정 계획에 도움을 드립니다.</p>
+        
+        <div class="calculator-container">
+            <div class="input-group">
+                <label for="birthDate">생년월일</label>
+                <input type="date" id="birthDate" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="targetDate">확인할 날짜 (기본값: 오늘)</label>
+                <input type="date" id="targetDate">
+            </div>
+            
+            <button onclick="calculateBiorhythm()" class="calculate-btn">바이오리듬 계산하기</button>
+            
+            <div id="result" class="result"></div>
+        </div>
+        
+        <div class="info-section">
+            <h2>바이오리듬이란?</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>바이오리듬 개념</h3>
+                    <p>1900년대 초 독일의 의사들이 발견한 인간의 생체주기로, 3가지 기본 주기가 있습니다.</p>
+                    <ul>
+                        <li>신체주기: 체력과 건강 상태</li>
+                        <li>감정주기: 기분과 감성 상태</li>
+                        <li>지성주기: 사고력과 학습 능력</li>
+                    </ul>
+                </div>
+                
+                <div class="info-item">
+                    <h3>주기 특성</h3>
+                    <ul>
+                        <li><strong>신체주기:</strong> 23일 주기</li>
+                        <li><strong>감정주기:</strong> 28일 주기</li>
+                        <li><strong>지성주기:</strong> 33일 주기</li>
+                        <li>각 주기는 사인 곡선 형태로 변화</li>
+                        <li>+100% ~ -100% 범위에서 변동</li>
+                    </ul>
+                </div>
+                
+                <div class="info-item">
+                    <h3>바이오리듬 상태</h3>
+                    <ul>
+                        <li><strong>고점기 (80~100%):</strong> 최상의 컨디션</li>
+                        <li><strong>상승기 (0~80%):</strong> 점진적 향상</li>
+                        <li><strong>임계일 (0%):</strong> 변화의 전환점</li>
+                        <li><strong>하강기 (0~-80%):</strong> 점진적 저하</li>
+                        <li><strong>저점기 (-80~-100%):</strong> 휴식 필요</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cycles-section">
+            <h2>바이오리듬 3주기 상세</h2>
+            <div class="cycles-grid">
+                <div class="cycle-item physical">
+                    <h3>🏃‍♂️ 신체주기 (23일)</h3>
+                    <div class="cycle-details">
+                        <p><strong>영향 분야:</strong></p>
+                        <ul>
+                            <li>체력과 지구력</li>
+                            <li>면역력</li>
+                            <li>운동 능력</li>
+                            <li>신체 회복력</li>
+                            <li>질병 저항력</li>
+                        </ul>
+                        <p><strong>고점기 활용:</strong></p>
+                        <ul>
+                            <li>격렬한 운동</li>
+                            <li>체력이 필요한 일</li>
+                            <li>수술이나 시술</li>
+                            <li>다이어트 시작</li>
+                        </ul>
+                        <p><strong>저점기 주의:</strong></p>
+                        <ul>
+                            <li>과로 피하기</li>
+                            <li>충분한 휴식</li>
+                            <li>면역력 관리</li>
+                            <li>무리한 운동 금지</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="cycle-item emotional">
+                    <h3>💝 감정주기 (28일)</h3>
+                    <div class="cycle-details">
+                        <p><strong>영향 분야:</strong></p>
+                        <ul>
+                            <li>기분과 감정</li>
+                            <li>대인관계</li>
+                            <li>창의력</li>
+                            <li>협력과 팀워크</li>
+                            <li>예술적 감성</li>
+                        </ul>
+                        <p><strong>고점기 활용:</strong></p>
+                        <ul>
+                            <li>중요한 만남</li>
+                            <li>협상과 상담</li>
+                            <li>창작 활동</li>
+                            <li>팀 프로젝트</li>
+                        </ul>
+                        <p><strong>저점기 주의:</strong></p>
+                        <ul>
+                            <li>감정 조절 어려움</li>
+                            <li>대인관계 갈등</li>
+                            <li>우울감 증가</li>
+                            <li>충동적 결정 금지</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="cycle-item intellectual">
+                    <h3>🧠 지성주기 (33일)</h3>
+                    <div class="cycle-details">
+                        <p><strong>영향 분야:</strong></p>
+                        <ul>
+                            <li>사고력과 분석력</li>
+                            <li>학습 능력</li>
+                            <li>기억력</li>
+                            <li>판단력</li>
+                            <li>문제 해결력</li>
+                        </ul>
+                        <p><strong>고점기 활용:</strong></p>
+                        <ul>
+                            <li>시험과 학습</li>
+                            <li>중요한 결정</li>
+                            <li>전략 수립</li>
+                            <li>분석적 업무</li>
+                        </ul>
+                        <p><strong>저점기 주의:</strong></p>
+                        <ul>
+                            <li>집중력 저하</li>
+                            <li>판단 실수 증가</li>
+                            <li>기억력 감퇴</li>
+                            <li>복잡한 일 연기</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="application-section">
+            <h2>바이오리듬 활용 방법</h2>
+            <div class="application-grid">
+                <div class="app-item">
+                    <h3>🏥 건강 관리</h3>
+                    <ul>
+                        <li><strong>신체 고점:</strong> 운동, 다이어트 시작</li>
+                        <li><strong>신체 저점:</strong> 휴식, 회복에 집중</li>
+                        <li><strong>감정 고점:</strong> 스트레스 관리 용이</li>
+                        <li><strong>감정 저점:</strong> 정신건강 케어</li>
+                        <li>정기검진은 신체주기 고점에</li>
+                    </ul>
+                </div>
+                
+                <div class="app-item">
+                    <h3>💼 업무 계획</h3>
+                    <ul>
+                        <li><strong>지성 고점:</strong> 중요 회의, 기획</li>
+                        <li><strong>감정 고점:</strong> 협상, 프레젠테이션</li>
+                        <li><strong>신체 고점:</strong> 체력 소모 업무</li>
+                        <li>임계일에는 신중한 판단</li>
+                        <li>저점기에는 루틴 업무 위주</li>
+                    </ul>
+                </div>
+                
+                <div class="app-item">
+                    <h3>📚 학습 전략</h3>
+                    <ul>
+                        <li><strong>지성 고점:</strong> 새로운 개념 학습</li>
+                        <li><strong>지성 저점:</strong> 복습, 암기 위주</li>
+                        <li><strong>감정 고점:</strong> 그룹 스터디</li>
+                        <li>시험일정을 바이오리듬에 맞춤</li>
+                        <li>집중력이 떨어질 때 휴식</li>
+                    </ul>
+                </div>
+                
+                <div class="app-item">
+                    <h3>💑 인간관계</h3>
+                    <ul>
+                        <li><strong>감정 고점:</strong> 중요한 대화</li>
+                        <li><strong>감정 저점:</strong> 갈등 상황 회피</li>
+                        <li>상대방의 바이오리듬도 고려</li>
+                        <li>감정 임계일에 신중함</li>
+                        <li>고점기에 인맥 확장</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="critical-days">
+            <h2>임계일 (Critical Days) 관리</h2>
+            <div class="critical-info">
+                <div class="critical-item">
+                    <h3>⚠️ 단일 임계일</h3>
+                    <p>한 주기가 0%를 지나는 날</p>
+                    <ul>
+                        <li>컨디션 변화 시작점</li>
+                        <li>평소보다 신중한 행동</li>
+                        <li>중요한 결정 연기 고려</li>
+                        <li>안전사고 주의</li>
+                    </ul>
+                </div>
+                
+                <div class="critical-item">
+                    <h3>🚨 이중 임계일</h3>
+                    <p>두 주기가 동시에 0%를 지나는 날</p>
+                    <ul>
+                        <li>더욱 주의가 필요한 시기</li>
+                        <li>감정 기복이 클 수 있음</li>
+                        <li>체력과 판단력 동시 저하</li>
+                        <li>가능한 중요 일정 피하기</li>
+                    </ul>
+                </div>
+                
+                <div class="critical-item">
+                    <h3>💥 삼중 임계일</h3>
+                    <p>세 주기 모두 0%를 지나는 날 (매우 드묾)</p>
+                    <ul>
+                        <li>극도로 주의가 필요</li>
+                        <li>전체적인 컨디션 불안정</li>
+                        <li>휴식과 안정 우선</li>
+                        <li>위험한 활동 절대 금지</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tips-section">
+            <h2>바이오리듬 활용 팁</h2>
+            <div class="tips-grid">
+                <div class="tip-item">
+                    <h3>✅ 효과적 활용법</h3>
+                    <ul>
+                        <li>장기적인 일정 계획시 참고</li>
+                        <li>개인의 경험과 결합하여 해석</li>
+                        <li>스트레스 관리 도구로 활용</li>
+                        <li>컨디션 변화 패턴 파악</li>
+                        <li>자기 관리의 보조 수단</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-item">
+                    <h3>⚠️ 주의사항</h3>
+                    <ul>
+                        <li>절대적 기준이 아닌 참고용</li>
+                        <li>개인차가 존재함</li>
+                        <li>외부 환경 요인도 중요</li>
+                        <li>과도한 의존은 금물</li>
+                        <li>과학적 근거는 제한적</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-item">
+                    <h3>📈 기록과 분석</h3>
+                    <ul>
+                        <li>일기와 함께 컨디션 기록</li>
+                        <li>실제 경험과 예측 비교</li>
+                        <li>개인별 패턴 발견</li>
+                        <li>월별, 분기별 검토</li>
+                        <li>생활습관 개선에 활용</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="faq-section">
+            <h2>자주 묻는 질문</h2>
+            <div class="faq-item">
+                <h3>바이오리듬이 정말 정확한가요?</h3>
+                <p>바이오리듬은 과학적으로 완전히 입증된 이론은 아니지만, 개인의 컨디션 관리와 일정 계획에 참고할 수 있는 도구입니다.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>임계일에는 정말 사고가 많이 날까요?</h3>
+                <p>통계적으로 유의한 차이는 입증되지 않았지만, 컨디션 변화 시기이므로 평소보다 신중한 행동이 도움됩니다.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>바이오리듬이 낮을 때는 아무것도 하지 말아야 하나요?</h3>
+                <p>그렇지 않습니다. 다만 무리하지 않고, 휴식을 충분히 취하며, 중요한 결정은 신중하게 내리시기 바랍니다.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>다른 사람과 바이오리듬이 맞지 않으면 어떻게 해야 하나요?</h3>
+                <p>서로의 바이오리듬을 이해하고 배려하는 것이 중요합니다. 상대방의 컨디션을 고려한 소통을 시도해보세요.</p>
+            </div>
+        </div>
+        
+        <div class="related-calculators">
+            <h2>관련 계산기</h2>
+            <div class="calculator-links">
+                <a href="love-compatibility-calculator.html" class="calc-link">궁합 계산기</a>
+                <a href="../datetime/age-calculator.html" class="calc-link">나이 계산기</a>
+                <a href="../health/bmi-calculator.html" class="calc-link">BMI 계산기</a>
+                <a href="../utility/random-number-generator.html" class="calc-link">랜덤 생성기</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    // 오늘 날짜를 기본값으로 설정
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date();
+        document.getElementById('targetDate').value = today.toISOString().split('T')[0];
+    });
+    
+    function calculateBiorhythm() {
+        const birthDate = new Date(document.getElementById('birthDate').value);
+        const targetDate = new Date(document.getElementById('targetDate').value || new Date());
+        
+        if (!document.getElementById('birthDate').value) {
+            document.getElementById('result').innerHTML = 
+                '<div class="error">생년월일을 입력해주세요.</div>';
+            return;
+        }
+        
+        if (birthDate > targetDate) {
+            document.getElementById('result').innerHTML = 
+                '<div class="error">생년월일이 확인 날짜보다 늦을 수 없습니다.</div>';
+            return;
+        }
+        
+        const daysDiff = Math.floor((targetDate - birthDate) / (1000 * 60 * 60 * 24));
+        
+        // 바이오리듬 계산
+        const physical = Math.sin((2 * Math.PI * daysDiff) / 23) * 100;
+        const emotional = Math.sin((2 * Math.PI * daysDiff) / 28) * 100;
+        const intellectual = Math.sin((2 * Math.PI * daysDiff) / 33) * 100;
+        
+        // 임계일 확인
+        const criticalDays = checkCriticalDays(daysDiff);
+        
+        // 7일간의 바이오리듬 데이터 생성
+        const weekData = generateWeekData(birthDate, targetDate);
+        
+        displayResults(birthDate, targetDate, daysDiff, physical, emotional, intellectual, criticalDays, weekData);
+    }
+    
+    function generateWeekData(birthDate, targetDate) {
+        const data = [];
+        const baseDate = new Date(targetDate);
+        baseDate.setDate(baseDate.getDate() - 3); // 3일 전부터 시작
+        
+        for (let i = 0; i < 7; i++) {
+            const currentDate = new Date(baseDate);
+            currentDate.setDate(currentDate.getDate() + i);
+            
+            const daysDiff = Math.floor((currentDate - birthDate) / (1000 * 60 * 60 * 24));
+            
+            data.push({
+                date: currentDate,
+                day: i - 3, // -3일부터 +3일
+                physical: Math.sin((2 * Math.PI * daysDiff) / 23) * 100,
+                emotional: Math.sin((2 * Math.PI * daysDiff) / 28) * 100,
+                intellectual: Math.sin((2 * Math.PI * daysDiff) / 33) * 100,
+                critical: checkCriticalDays(daysDiff)
+            });
+        }
+        
+        return data;
+    }
+    
+    function checkCriticalDays(daysDiff) {
+        const physicalCritical = Math.abs(Math.sin((2 * Math.PI * daysDiff) / 23)) < 0.05;
+        const emotionalCritical = Math.abs(Math.sin((2 * Math.PI * daysDiff) / 28)) < 0.05;
+        const intellectualCritical = Math.abs(Math.sin((2 * Math.PI * daysDiff) / 33)) < 0.05;
+        
+        const criticalCount = [physicalCritical, emotionalCritical, intellectualCritical].filter(Boolean).length;
+        
+        return {
+            physical: physicalCritical,
+            emotional: emotionalCritical,
+            intellectual: intellectualCritical,
+            count: criticalCount,
+            types: []
+                .concat(physicalCritical ? ['신체'] : [])
+                .concat(emotionalCritical ? ['감정'] : [])
+                .concat(intellectualCritical ? ['지성'] : [])
+        };
+    }
+    
+    function getBiorhythmStatus(value) {
+        const absValue = Math.abs(value);
+        
+        if (absValue >= 80) {
+            return value > 0 ? 
+                { status: 'peak', text: '최고점', color: '#28a745' } :
+                { status: 'low', text: '최저점', color: '#dc3545' };
+        } else if (absValue >= 50) {
+            return value > 0 ? 
+                { status: 'high', text: '상승기', color: '#20c997' } :
+                { status: 'descending', text: '하강기', color: '#fd7e14' };
+        } else if (absValue >= 20) {
+            return value > 0 ? 
+                { status: 'rising', text: '회복기', color: '#6f42c1' } :
+                { status: 'declining', text: '저하기', color: '#e83e8c' };
+        } else {
+            return { status: 'critical', text: '임계점', color: '#6c757d' };
+        }
+    }
+    
+    function displayResults(birthDate, targetDate, daysDiff, physical, emotional, intellectual, criticalDays, weekData) {
+        const physicalStatus = getBiorhythmStatus(physical);
+        const emotionalStatus = getBiorhythmStatus(emotional);
+        const intellectualStatus = getBiorhythmStatus(intellectual);
+        
+        let resultHTML = `
+            <div class="biorhythm-results">
+                <div class="date-info">
+                    <h3>분석 정보</h3>
+                    <div class="date-details">
+                        <div class="detail-item">
+                            <span>생년월일:</span>
+                            <span><strong>${formatDate(birthDate)}</strong></span>
+                        </div>
+                        <div class="detail-item">
+                            <span>확인 날짜:</span>
+                            <span><strong>${formatDate(targetDate)}</strong></span>
+                        </div>
+                        <div class="detail-item">
+                            <span>생존 일수:</span>
+                            <span><strong>${daysDiff.toLocaleString()}일</strong></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="biorhythm-chart">
+                    <h3>현재 바이오리듬 상태</h3>
+                    <div class="rhythm-bars">
+                        <div class="rhythm-bar">
+                            <div class="bar-header">
+                                <span class="bar-label">🏃‍♂️ 신체주기</span>
+                                <span class="bar-value">${physical.toFixed(1)}%</span>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar-fill physical" style="width: ${Math.abs(physical)}%; ${physical < 0 ? 'margin-left: ' + (50 - Math.abs(physical)) + '%;' : 'margin-left: 50%;'}"></div>
+                            </div>
+                            <div class="bar-status" style="color: ${physicalStatus.color};">
+                                ${physicalStatus.text}
+                            </div>
+                        </div>
+                        
+                        <div class="rhythm-bar">
+                            <div class="bar-header">
+                                <span class="bar-label">💝 감정주기</span>
+                                <span class="bar-value">${emotional.toFixed(1)}%</span>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar-fill emotional" style="width: ${Math.abs(emotional)}%; ${emotional < 0 ? 'margin-left: ' + (50 - Math.abs(emotional)) + '%;' : 'margin-left: 50%;'}"></div>
+                            </div>
+                            <div class="bar-status" style="color: ${emotionalStatus.color};">
+                                ${emotionalStatus.text}
+                            </div>
+                        </div>
+                        
+                        <div class="rhythm-bar">
+                            <div class="bar-header">
+                                <span class="bar-label">🧠 지성주기</span>
+                                <span class="bar-value">${intellectual.toFixed(1)}%</span>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar-fill intellectual" style="width: ${Math.abs(intellectual)}%; ${intellectual < 0 ? 'margin-left: ' + (50 - Math.abs(intellectual)) + '%;' : 'margin-left: 50%;'}"></div>
+                            </div>
+                            <div class="bar-status" style="color: ${intellectualStatus.color};">
+                                ${intellectualStatus.text}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        `;
+        
+        // 임계일 정보
+        if (criticalDays.count > 0) {
+            const criticalLevel = criticalDays.count === 1 ? 'single' : 
+                                 criticalDays.count === 2 ? 'double' : 'triple';
+            const criticalText = criticalDays.count === 1 ? '단일 임계일' :
+                                criticalDays.count === 2 ? '이중 임계일' : '삼중 임계일';
+            const criticalColor = criticalDays.count === 1 ? '#ffc107' :
+                                 criticalDays.count === 2 ? '#fd7e14' : '#dc3545';
+            
+            resultHTML += `
+                <div class="critical-alert" style="border-left-color: ${criticalColor};">
+                    <h3>⚠️ ${criticalText}</h3>
+                    <p><strong>${criticalDays.types.join(', ')} 주기</strong>가 임계점을 지나고 있습니다.</p>
+                    <div class="critical-advice">
+                        <p>오늘은 평소보다 신중한 행동이 필요한 날입니다.</p>
+                        <ul>
+                            <li>중요한 결정은 가능한 연기하세요</li>
+                            <li>컨디션 변화에 주의하세요</li>
+                            <li>안전사고 예방에 특히 신경쓰세요</li>
+                            <li>충분한 휴식과 안정을 취하세요</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 주간 전망
+        resultHTML += `
+                <div class="week-forecast">
+                    <h3>주간 바이오리듬 전망</h3>
+                    <div class="week-chart">
+                        <table class="forecast-table">
+                            <thead>
+                                <tr>
+                                    <th>날짜</th>
+                                    <th>신체</th>
+                                    <th>감정</th>
+                                    <th>지성</th>
+                                    <th>특이사항</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+        `;
+        
+        weekData.forEach(day => {
+            const isToday = day.day === 0;
+            const rowClass = isToday ? 'today-row' : '';
+            const criticalMark = day.critical.count > 0 ? '⚠️' : '';
+            
+            resultHTML += `
+                                <tr class="${rowClass}">
+                                    <td>${day.day === 0 ? '오늘' : 
+                                        day.day > 0 ? `+${day.day}일` : `${day.day}일`}</td>
+                                    <td class="rhythm-cell">
+                                        <span class="rhythm-value" style="color: ${getBiorhythmColor(day.physical)};">
+                                            ${day.physical.toFixed(0)}%
+                                        </span>
+                                    </td>
+                                    <td class="rhythm-cell">
+                                        <span class="rhythm-value" style="color: ${getBiorhythmColor(day.emotional)};">
+                                            ${day.emotional.toFixed(0)}%
+                                        </span>
+                                    </td>
+                                    <td class="rhythm-cell">
+                                        <span class="rhythm-value" style="color: ${getBiorhythmColor(day.intellectual)};">
+                                            ${day.intellectual.toFixed(0)}%
+                                        </span>
+                                    </td>
+                                    <td class="special-note">
+                                        ${criticalMark} ${day.critical.count > 0 ? `${day.critical.types.join(',')} 임계` : ''}
+                                    </td>
+                                </tr>
+            `;
+        });
+        
+        resultHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+        `;
+        
+        // 개인별 조언
+        const advice = generatePersonalAdvice(physical, emotional, intellectual, criticalDays);
+        resultHTML += `
+                <div class="personal-advice">
+                    <h3>오늘의 조언</h3>
+                    <div class="advice-content">
+                        ${advice}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('result').innerHTML = resultHTML;
+    }
+    
+    function getBiorhythmColor(value) {
+        if (value >= 50) return '#28a745';
+        if (value >= 0) return '#20c997';
+        if (value >= -50) return '#fd7e14';
+        return '#dc3545';
+    }
+    
+    function generatePersonalAdvice(physical, emotional, intellectual, criticalDays) {
+        let advice = [];
+        
+        // 신체주기 조언
+        if (physical >= 70) {
+            advice.push("💪 <strong>신체컨디션이 최상입니다.</strong> 운동이나 체력이 필요한 일을 하기에 좋은 시기입니다.");
+        } else if (physical <= -70) {
+            advice.push("😴 <strong>신체적으로 피로한 시기입니다.</strong> 무리하지 마시고 충분한 휴식을 취하세요.");
+        }
+        
+        // 감정주기 조언
+        if (emotional >= 70) {
+            advice.push("😊 <strong>감정상태가 안정적입니다.</strong> 중요한 대화나 인간관계 개선에 좋은 때입니다.");
+        } else if (emotional <= -70) {
+            advice.push("💭 <strong>감정기복이 있을 수 있습니다.</strong> 중요한 결정은 미루고 마음의 안정을 찾으세요.");
+        }
+        
+        // 지성주기 조언
+        if (intellectual >= 70) {
+            advice.push("🎯 <strong>집중력과 판단력이 뛰어난 시기입니다.</strong> 학습이나 중요한 업무에 집중하세요.");
+        } else if (intellectual <= -70) {
+            advice.push("🤔 <strong>사고력이 저하될 수 있습니다.</strong> 복잡한 결정보다는 단순한 업무에 집중하세요.");
+        }
+        
+        // 임계일 조언
+        if (criticalDays.count > 0) {
+            advice.unshift("⚠️ <strong>임계일입니다.</strong> 평소보다 신중하게 행동하고, 중요한 일은 가능한 피하세요.");
+        }
+        
+        // 일반적 조언
+        if (advice.length === 0) {
+            advice.push("🌟 <strong>균형잡힌 상태입니다.</strong> 꾸준히 자기관리에 신경쓰며 하루를 보내세요.");
+        }
+        
+        return advice.map(item => `<div class="advice-item">${item}</div>`).join('');
+    }
+    
+    function formatDate(date) {
+        return date.toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+    
+    // 엔터키로 계산
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            calculateBiorhythm();
+        }
+    });
+    </script>
+    
+    <style>
+    .biorhythm-results {
+        margin-top: 30px;
+    }
+    
+    .date-info {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        border-left: 5px solid #007bff;
+    }
+    
+    .date-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+    
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        background: white;
+        border-radius: 5px;
+    }
+    
+    .biorhythm-chart {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .rhythm-bars {
+        margin-top: 20px;
+    }
+    
+    .rhythm-bar {
+        margin-bottom: 25px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .bar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    .bar-label {
+        font-size: 16px;
+        font-weight: bold;
+    }
+    
+    .bar-value {
+        font-size: 18px;
+        font-weight: bold;
+        color: #007bff;
+    }
+    
+    .bar-container {
+        height: 20px;
+        background: linear-gradient(to right, #dc3545 0%, #fd7e14 25%, #6c757d 50%, #20c997 75%, #28a745 100%);
+        border-radius: 10px;
+        position: relative;
+        margin-bottom: 8px;
+    }
+    
+    .bar-fill {
+        height: 100%;
+        border-radius: 10px;
+        position: absolute;
+        top: 0;
+        transition: all 0.5s ease;
+    }
+    
+    .bar-fill.physical {
+        background: rgba(0, 123, 255, 0.8);
+        border: 2px solid #007bff;
+    }
+    
+    .bar-fill.emotional {
+        background: rgba(220, 53, 69, 0.8);
+        border: 2px solid #dc3545;
+    }
+    
+    .bar-fill.intellectual {
+        background: rgba(40, 167, 69, 0.8);
+        border: 2px solid #28a745;
+    }
+    
+    .bar-status {
+        text-align: center;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    
+    .critical-alert {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-left: 5px solid #ffc107;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+    }
+    
+    .critical-advice {
+        margin-top: 15px;
+        padding: 15px;
+        background: rgba(255,255,255,0.7);
+        border-radius: 5px;
+    }
+    
+    .critical-advice ul {
+        margin: 10px 0 0 20px;
+    }
+    
+    .week-forecast {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .forecast-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+    
+    .forecast-table th,
+    .forecast-table td {
+        padding: 12px 8px;
+        text-align: center;
+        border: 1px solid #e0e0e0;
+    }
+    
+    .forecast-table th {
+        background: #007bff;
+        color: white;
+        font-weight: bold;
+    }
+    
+    .forecast-table .today-row {
+        background: #e7f3ff;
+        font-weight: bold;
+    }
+    
+    .rhythm-cell {
+        font-family: 'Courier New', monospace;
+    }
+    
+    .rhythm-value {
+        font-weight: bold;
+        font-size: 14px;
+    }
+    
+    .special-note {
+        font-size: 12px;
+        color: #666;
+    }
+    
+    .personal-advice {
+        background: #e8f5e8;
+        padding: 25px;
+        border-radius: 10px;
+        border-left: 5px solid #28a745;
+    }
+    
+    .advice-content {
+        margin-top: 15px;
+    }
+    
+    .advice-item {
+        background: white;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        border-left: 4px solid #28a745;
+    }
+    
+    .advice-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    .cycles-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 30px;
+        margin-top: 30px;
+    }
+    
+    .cycle-item {
+        padding: 25px;
+        border-radius: 12px;
+        border: 2px solid;
+    }
+    
+    .cycle-item.physical {
+        background: #e3f2fd;
+        border-color: #2196f3;
+    }
+    
+    .cycle-item.emotional {
+        background: #fce4ec;
+        border-color: #e91e63;
+    }
+    
+    .cycle-item.intellectual {
+        background: #e8f5e9;
+        border-color: #4caf50;
+    }
+    
+    .cycle-details p {
+        margin: 15px 0 8px 0;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .cycle-details ul {
+        margin: 8px 0 15px 20px;
+        color: #555;
+    }
+    
+    .cycle-details li {
+        margin-bottom: 5px;
+    }
+    
+    .application-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        margin-top: 25px;
+    }
+    
+    .app-item {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 10px;
+        border-left: 5px solid #007bff;
+    }
+    
+    .app-item h3 {
+        color: #007bff;
+        margin-bottom: 15px;
+    }
+    
+    .app-item ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .app-item li {
+        padding: 8px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .app-item li:last-child {
+        border-bottom: none;
+    }
+    
+    .critical-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-top: 25px;
+    }
+    
+    .critical-item {
+        background: #fff8e1;
+        padding: 25px;
+        border-radius: 10px;
+        border-left: 5px solid #ff9800;
+    }
+    
+    .critical-item h3 {
+        color: #f57c00;
+        margin-bottom: 15px;
+    }
+    
+    .critical-item p {
+        color: #666;
+        margin-bottom: 15px;
+        font-style: italic;
+    }
+    
+    .tips-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-top: 25px;
+    }
+    
+    .tip-item {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 10px;
+        border-left: 5px solid #6c757d;
+    }
+    
+    .tip-item h3 {
+        color: #495057;
+        margin-bottom: 15px;
+    }
+    
+    .tip-item ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .tip-item li {
+        padding: 8px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .tip-item li:last-child {
+        border-bottom: none;
+    }
+    
+    @media (max-width: 768px) {
+        .date-details {
+            grid-template-columns: 1fr;
+        }
+        
+        .detail-item {
+            flex-direction: column;
+            gap: 5px;
+            text-align: center;
+        }
+        
+        .bar-header {
+            flex-direction: column;
+            gap: 5px;
+            text-align: center;
+        }
+        
+        .forecast-table {
+            font-size: 12px;
+        }
+        
+        .forecast-table th,
+        .forecast-table td {
+            padding: 8px 4px;
+        }
+        
+        .cycles-grid,
+        .application-grid,
+        .critical-info,
+        .tips-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    </style>
+</body>
+</html>

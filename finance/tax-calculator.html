@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>세금 계산기 - 소득세, 부가가치세, 종합소득세 계산 | CalcHub</title>
+    <meta name="description" content="무료 세금 계산기로 소득세, 부가가치세, 종합소득세를 계산하세요. 2024년 세율표 기준으로 정확한 세금을 계산하고 절세 방법을 알아보세요.">
+    <meta name="keywords" content="온라인계산기, 무료계산기, 세금계산기, 소득세계산기, 부가가치세계산기, 종합소득세계산기, 세율계산기, 절세계산기, 근로소득세계산기">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+</head>
+<body>
+    <!-- 공통 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header">
+                <h1 class="calculator-title">세금 계산기</h1>
+                <p class="calculator-subtitle">소득세, 부가가치세 등 다양한 세금을 계산하세요</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">세금 종류 선택</h2>
+                    <div class="input-group">
+                        <label class="input-label">계산할 세금</label>
+                        <select id="taxType" class="input-field" onchange="updateInputFields()">
+                            <option value="income">근로소득세</option>
+                            <option value="comprehensive">종합소득세</option>
+                            <option value="vat">부가가치세</option>
+                            <option value="business">사업소득세</option>
+                        </select>
+                    </div>
+
+                    <!-- 근로소득세 입력 -->
+                    <div id="incomeInputs" class="tax-inputs">
+                        <h3>근로소득 정보</h3>
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="annualIncome" class="input-label">연봉 (원)</label>
+                                <input type="text" id="annualIncome" class="input-field" placeholder="예: 50000000, 5천만원">
+                            </div>
+                            <div class="input-group">
+                                <label for="dependents" class="input-label">부양가족 수</label>
+                                <input type="number" id="dependents" class="input-field" placeholder="본인 포함" value="1">
+                            </div>
+                            <div class="input-group">
+                                <label for="isNonTaxable" class="input-label">비과세 소득</label>
+                                <input type="text" id="isNonTaxable" class="input-field" placeholder="예: 1000000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 부가가치세 입력 -->
+                    <div id="vatInputs" class="tax-inputs" style="display: none;">
+                        <h3>부가가치세 정보</h3>
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="vatAmount" class="input-label">공급가액 (원)</label>
+                                <input type="text" id="vatAmount" class="input-field" placeholder="예: 1000000">
+                            </div>
+                            <div class="input-group">
+                                <label for="vatRate" class="input-label">부가가치세율</label>
+                                <select id="vatRate" class="input-field">
+                                    <option value="10">10% (일반세율)</option>
+                                    <option value="0">0% (면세)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 종합소득세 입력 -->
+                    <div id="comprehensiveInputs" class="tax-inputs" style="display: none;">
+                        <h3>종합소득 정보</h3>
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="totalIncome" class="input-label">총 소득 (원)</label>
+                                <input type="text" id="totalIncome" class="input-field" placeholder="예: 100000000">
+                            </div>
+                            <div class="input-group">
+                                <label for="deductions" class="input-label">소득공제 (원)</label>
+                                <input type="text" id="deductions" class="input-field" placeholder="예: 20000000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 사업소득세 입력 -->
+                    <div id="businessInputs" class="tax-inputs" style="display: none;">
+                        <h3>사업소득 정보</h3>
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="businessRevenue" class="input-label">사업수입 (원)</label>
+                                <input type="text" id="businessRevenue" class="input-field" placeholder="예: 100000000">
+                            </div>
+                            <div class="input-group">
+                                <label for="businessExpenses" class="input-label">필요경비 (원)</label>
+                                <input type="text" id="businessExpenses" class="input-field" placeholder="예: 30000000">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="calculate()" class="btn btn-primary">세금 계산</button>
+                    <button onclick="clearInputs()" class="btn btn-secondary">초기화</button>
+                </div>
+
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">계산 결과</h2>
+                    <div id="taxResults" class="result-grid">
+                        <!-- 동적으로 생성됨 -->
+                    </div>
+                    
+                    <div id="taxBreakdown" class="tax-breakdown">
+                        <!-- 세금 상세 내역 -->
+                    </div>
+                    
+                    <button onclick="copyResults()" class="btn btn-secondary">결과 복사</button>
+                </div>
+
+                <div class="info-section">
+                    <h2 class="section-title">2024년 세율 정보</h2>
+                    <div class="info-content">
+                        <h3>근로소득세 세율 (2024년):</h3>
+                        <div class="tax-table">
+                            <table>
+                                <tr><th>과세표준</th><th>세율</th><th>누진공제</th></tr>
+                                <tr><td>1,400만원 이하</td><td>6%</td><td>-</td></tr>
+                                <tr><td>1,400만원 ~ 5,000만원</td><td>15%</td><td>126만원</td></tr>
+                                <tr><td>5,000만원 ~ 8,800만원</td><td>24%</td><td>576만원</td></tr>
+                                <tr><td>8,800만원 ~ 1억5천만원</td><td>35%</td><td>1,544만원</td></tr>
+                                <tr><td>1억5천만원 ~ 3억원</td><td>38%</td><td>1,994만원</td></tr>
+                                <tr><td>3억원 ~ 5억원</td><td>40%</td><td>2,594만원</td></tr>
+                                <tr><td>5억원 ~ 10억원</td><td>42%</td><td>3,594만원</td></tr>
+                                <tr><td>10억원 초과</td><td>45%</td><td>6,594만원</td></tr>
+                            </table>
+                        </div>
+
+                        <h3>부가가치세:</h3>
+                        <ul>
+                            <li><strong>일반세율:</strong> 10%</li>
+                            <li><strong>면세대상:</strong> 의료, 교육, 금융 서비스 등</li>
+                        </ul>
+
+                        <h3>근로소득 공제:</h3>
+                        <ul>
+                            <li><strong>기본공제:</strong> 본인 150만원, 부양가족 1인당 150만원</li>
+                            <li><strong>근로소득공제:</strong> 소득에 따른 차등 공제</li>
+                            <li><strong>표준공제:</strong> 200만원 (미혼) / 300만원 (기혼)</li>
+                        </ul>
+
+                        <h3>절세 팁:</h3>
+                        <ul>
+                            <li>연말정산 소득공제 항목 활용</li>
+                            <li>개인연금, 퇴직연금 세액공제</li>
+                            <li>의료비, 교육비 특별공제</li>
+                            <li>주택청약저축, 장기주택마련저축</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .tax-inputs {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .tax-inputs h3 {
+            margin-top: 0;
+            color: #374151;
+        }
+        
+        .tax-table table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        .tax-table th,
+        .tax-table td {
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .tax-table th {
+            background: #4f46e5;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .tax-breakdown {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            font-size: 18px;
+            color: #4f46e5;
+        }
+    </style>
+
+    <script>
+        // 고급 숫자 파싱 함수
+        function parseNumber(input) {
+            if (typeof input === 'number') return input;
+            if (!input || typeof input !== 'string') return 0;
+            
+            let cleaned = input.replace(/[,\s]/g, '').toLowerCase();
+            
+            const koreanUnits = {
+                '천': 1000, '만': 10000, '십만': 100000, '백만': 1000000,
+                '천만': 10000000, '억': 100000000, '십억': 1000000000
+            };
+            
+            const sortedUnits = Object.entries(koreanUnits).sort((a, b) => b[0].length - a[0].length);
+            for (let [unit, multiplier] of sortedUnits) {
+                if (cleaned.includes(unit)) {
+                    const numPart = cleaned.replace(unit, '') || '1';
+                    const number = parseFloat(numPart.replace(/[_원명개]/g, '')) || 1;
+                    return number * multiplier;
+                }
+            }
+            
+            cleaned = cleaned.replace(/[_원명개]/g, '');
+            return parseFloat(cleaned) || 0;
+        }
+
+        function updateInputFields() {
+            const taxType = document.getElementById('taxType').value;
+            const inputs = document.querySelectorAll('.tax-inputs');
+            
+            inputs.forEach(input => input.style.display = 'none');
+            
+            switch(taxType) {
+                case 'income':
+                    document.getElementById('incomeInputs').style.display = 'block';
+                    break;
+                case 'vat':
+                    document.getElementById('vatInputs').style.display = 'block';
+                    break;
+                case 'comprehensive':
+                    document.getElementById('comprehensiveInputs').style.display = 'block';
+                    break;
+                case 'business':
+                    document.getElementById('businessInputs').style.display = 'block';
+                    break;
+            }
+        }
+
+        function calculateIncomeTax(income, dependents, nonTaxable) {
+            const taxableIncome = Math.max(0, income - nonTaxable);
+            
+            // 근로소득공제
+            let earnedIncomeDeduction;
+            if (taxableIncome <= 5000000) {
+                earnedIncomeDeduction = taxableIncome * 0.7;
+            } else if (taxableIncome <= 15000000) {
+                earnedIncomeDeduction = 3500000 + (taxableIncome - 5000000) * 0.4;
+            } else if (taxableIncome <= 45000000) {
+                earnedIncomeDeduction = 7500000 + (taxableIncome - 15000000) * 0.15;
+            } else if (taxableIncome <= 100000000) {
+                earnedIncomeDeduction = 12000000 + (taxableIncome - 45000000) * 0.05;
+            } else {
+                earnedIncomeDeduction = Math.min(14750000, 14750000 + (taxableIncome - 100000000) * 0.02);
+            }
+            
+            // 기본공제
+            const basicDeduction = dependents * 1500000;
+            
+            // 표준공제 (간소화)
+            const standardDeduction = 2000000;
+            
+            // 과세표준
+            const taxBase = Math.max(0, taxableIncome - earnedIncomeDeduction - basicDeduction - standardDeduction);
+            
+            // 소득세 계산 (2024년 세율)
+            let tax = 0;
+            if (taxBase <= 14000000) {
+                tax = taxBase * 0.06;
+            } else if (taxBase <= 50000000) {
+                tax = taxBase * 0.15 - 1260000;
+            } else if (taxBase <= 88000000) {
+                tax = taxBase * 0.24 - 5760000;
+            } else if (taxBase <= 150000000) {
+                tax = taxBase * 0.35 - 15440000;
+            } else if (taxBase <= 300000000) {
+                tax = taxBase * 0.38 - 19940000;
+            } else if (taxBase <= 500000000) {
+                tax = taxBase * 0.40 - 25940000;
+            } else if (taxBase <= 1000000000) {
+                tax = taxBase * 0.42 - 35940000;
+            } else {
+                tax = taxBase * 0.45 - 65940000;
+            }
+            
+            // 지방소득세 (소득세의 10%)
+            const localTax = tax * 0.1;
+            
+            return {
+                taxBase: taxBase,
+                incomeTax: Math.max(0, tax),
+                localTax: Math.max(0, localTax),
+                totalTax: Math.max(0, tax + localTax),
+                effectiveRate: taxableIncome > 0 ? ((tax + localTax) / taxableIncome * 100) : 0,
+                breakdown: {
+                    taxableIncome: taxableIncome,
+                    earnedIncomeDeduction: earnedIncomeDeduction,
+                    basicDeduction: basicDeduction,
+                    standardDeduction: standardDeduction
+                }
+            };
+        }
+
+        function calculateVAT(amount, rate) {
+            const vatAmount = amount * (rate / 100);
+            const totalAmount = amount + vatAmount;
+            
+            return {
+                supplyValue: amount,
+                vatAmount: vatAmount,
+                totalAmount: totalAmount,
+                vatRate: rate
+            };
+        }
+
+        function calculate() {
+            const taxType = document.getElementById('taxType').value;
+            let results;
+            
+            try {
+                switch(taxType) {
+                    case 'income':
+                        const income = parseNumber(document.getElementById('annualIncome').value);
+                        const dependents = parseInt(document.getElementById('dependents').value) || 1;
+                        const nonTaxable = parseNumber(document.getElementById('isNonTaxable').value);
+                        
+                        if (!income) {
+                            alert('연봉을 입력해주세요.');
+                            return;
+                        }
+                        
+                        results = calculateIncomeTax(income, dependents, nonTaxable);
+                        displayIncomeResults(results);
+                        break;
+                        
+                    case 'vat':
+                        const vatAmount = parseNumber(document.getElementById('vatAmount').value);
+                        const vatRate = parseFloat(document.getElementById('vatRate').value);
+                        
+                        if (!vatAmount) {
+                            alert('공급가액을 입력해주세요.');
+                            return;
+                        }
+                        
+                        results = calculateVAT(vatAmount, vatRate);
+                        displayVATResults(results);
+                        break;
+                        
+                    case 'comprehensive':
+                    case 'business':
+                        alert('해당 세금 계산기는 준비 중입니다.');
+                        return;
+                }
+                
+                document.getElementById('resultSection').classList.add('fade-in');
+                
+            } catch (error) {
+                alert('계산 중 오류가 발생했습니다.');
+            }
+        }
+
+        function displayIncomeResults(results) {
+            const resultsContainer = document.getElementById('taxResults');
+            resultsContainer.innerHTML = `
+                <div class="result-item">
+                    <div class="result-label">과세표준</div>
+                    <div class="result-value">${results.taxBase.toLocaleString()}원</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">소득세</div>
+                    <div class="result-value highlight">${results.incomeTax.toLocaleString()}원</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">지방소득세</div>
+                    <div class="result-value">${results.localTax.toLocaleString()}원</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">총 세액</div>
+                    <div class="result-value highlight">${results.totalTax.toLocaleString()}원</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">실효세율</div>
+                    <div class="result-value">${results.effectiveRate.toFixed(2)}%</div>
+                </div>
+            `;
+            
+            const breakdownContainer = document.getElementById('taxBreakdown');
+            breakdownContainer.innerHTML = `
+                <h3>세금 계산 상세</h3>
+                <div class="breakdown-item">
+                    <span>과세 소득:</span>
+                    <span>${results.breakdown.taxableIncome.toLocaleString()}원</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>근로소득공제:</span>
+                    <span>-${results.breakdown.earnedIncomeDeduction.toLocaleString()}원</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>기본공제:</span>
+                    <span>-${results.breakdown.basicDeduction.toLocaleString()}원</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>표준공제:</span>
+                    <span>-${results.breakdown.standardDeduction.toLocaleString()}원</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>최종 세액:</span>
+                    <span>${results.totalTax.toLocaleString()}원</span>
+                </div>
+            `;
+        }
+
+        function displayVATResults(results) {
+            const resultsContainer = document.getElementById('taxResults');
+            resultsContainer.innerHTML = `
+                <div class="result-item">
+                    <div class="result-label">공급가액</div>
+                    <div class="result-value">${results.supplyValue.toLocaleString()}원</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">부가가치세</div>
+                    <div class="result-value highlight">${results.vatAmount.toLocaleString()}원</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">총 금액</div>
+                    <div class="result-value highlight">${results.totalAmount.toLocaleString()}원</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">세율</div>
+                    <div class="result-value">${results.vatRate}%</div>
+                </div>
+            `;
+            
+            document.getElementById('taxBreakdown').innerHTML = '';
+        }
+
+        function clearInputs() {
+            document.querySelectorAll('input').forEach(input => {
+                if (input.type !== 'number' || input.id !== 'dependents') {
+                    input.value = '';
+                }
+            });
+            document.getElementById('dependents').value = 1;
+        }
+
+        function copyResults() {
+            const taxType = document.getElementById('taxType').value;
+            const results = document.getElementById('taxResults').textContent;
+            
+            navigator.clipboard.writeText(`세금 계산 결과:\n${results}`).then(() => {
+                alert('결과가 클립보드에 복사되었습니다!');
+            });
+        }
+
+        // 초기화
+        updateInputFields();
+
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+    </script>
+
+    <!-- 정보 섹션 -->
+    <div class="container">
+        <div class="info-section">
+            <div class="info-card">
+                <h2>📖 세금계산기 사용 메뉴얼</h2>
+                <ul>
+                    <li><strong>세금 유형 선택:</strong> 소득세, 종부세, 양도세, 상속세 중 계산할 세금 선택</li>
+                    <li><strong>기본 정보 입력:</strong> 연소득, 자산 가액 등 해당 세금 계산에 필요한 금액 입력</li>
+                    <li><strong>공제 항목:</strong> 인적공제, 특별공제 등 적용 가능한 공제 항목 확인</li>
+                    <li><strong>세율 적용:</strong> 현행 세법에 따른 누진세율이 자동 적용됩니다</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h2>💡 실제 세금 계산 예시</h2>
+                <div class="example-box">
+                    <h3>💼 직장인 종합소득세</h3>
+                    <p><strong>상황:</strong> 연봉 6,000만원 직장인 (부양가족 2명)</p>
+                    <p><strong>계산:</strong></p>
+                    <ul>
+                        <li>총 급여: 60,000,000원</li>
+                        <li>급여소득공제: 14,400,000원</li>
+                        <li>인적공제(3명): 4,500,000원</li>
+                        <li>표준공제: 1,300,000원</li>
+                        <li>과세표준: 39,800,000원</li>
+                        <li>산출세액: 약 3,940,000원</li>
+                        <li>실제 세부담: 약 2,800,000원</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h3>🏠 주택 종합부동산세</h3>
+                    <p><strong>상황:</strong> 공시가격 12억원 주택 1채 보유</p>
+                    <p><strong>계산:</strong></p>
+                    <ul>
+                        <li>공시가격: 1,200,000,000원</li>
+                        <li>공제금액: 600,000,000원 (1주택)</li>
+                        <li>과세표준: 600,000,000원</li>
+                        <li>세율: 0.5~3.0% (누진)</li>
+                        <li>산출세액: 약 9,000,000원</li>
+                        <li>추가 부담: 지방세 포함</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h2>🔥 세금 절약 생활 꿀팁</h2>
+                <ul>
+                    <li><strong>연말정산 준비:</strong> 의료비, 교육비, 기부금 영수증 미리미리 준비</li>
+                    <li><strong>청약저축 활용:</strong> 연 240만원까지 소득공제 받을 수 있는 청약저축 활용</li>
+                    <li><strong>IRP 연금저축:</strong> 연 700만원까지 세액공제 받을 수 있는 퇴직연금 활용</li>
+                    <li><strong>종부세 절약:</strong> 공시가격 기준이므로 실거래가와 차이 확인</li>
+                    <li><strong>양도세 절약:</strong> 1세대 1주택 2년 거주 시 양도세 면제 활용</li>
+                    <li><strong>홈택스 활용:</strong> 국세청 홈택스에서 각종 세금 계산 및 신고</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h2>📚 세금 관련 용어 정리</h2>
+                <div class="term-grid">
+                    <div class="term-item">
+                        <h3>소득세</h3>
+                        <p>개인의 1년간 소득에 대해 부과하는 국세로 누진세율 적용</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>종합부동산세</h3>
+                        <p>공시가격 기준으로 일정 금액 이상 부동산 보유 시 부과되는 보유세</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>양도소득세</h3>
+                        <p>부동산이나 주식 등 자산을 양도할 때 발생한 이익에 대한 세금</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>누진세율</h3>
+                        <p>소득이나 자산이 많을수록 더 높은 세율이 적용되는 과세 방식</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>소득공제</h3>
+                        <p>과세표준을 계산할 때 소득에서 빼주는 항목</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>세액공제</h3>
+                        <p>산출된 세액에서 직접 빼주는 공제 항목</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

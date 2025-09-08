@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>속도 변환기 - km/h, m/s, mph, knots | CalcHub</title>
+    <meta name="description" content="시속(km/h), 초속(m/s), 마일(mph), 노트(knots) 간의 속도 변환을 즉시 계산하세요. 다양한 속도 단위를 지원합니다.">
+    <meta name="keywords" content="속도변환, 시속, 초속, 마일, 노트, 속력변환기, 단위변환">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "속도 변환기",
+      "description": "시속(km/h), 초속(m/s), 마일(mph), 노트(knots) 간의 속도 변환을 즉시 계산하세요. 다양한 속도 단위를 지원합니다.",
+      "url": "https://www.calcforkr.com/converter/speed-converter.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header-simple">
+                <h1 class="calculator-title-simple">속도 변환기</h1>
+                <p class="calculator-description">다양한 속도 단위 간의 변환을 수행합니다</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">속도 입력</h2>
+                    
+                    <div class="input-group">
+                        <label class="input-label">속도</label>
+                        <input type="number" id="speedInput" class="input-field" placeholder="100" step="any" min="0">
+                        <select id="inputUnit" class="input-field" style="width: auto; margin-left: 10px;" onchange="convertSpeed()">
+                            <option value="kmh" selected>km/h (킬로미터/시간)</option>
+                            <option value="ms">m/s (미터/초)</option>
+                            <option value="mph">mph (마일/시간)</option>
+                            <option value="knots">knots (노트)</option>
+                            <option value="fps">ft/s (피트/초)</option>
+                            <option value="mach">Mach (마하)</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="convertSpeed()" class="btn btn-primary">변환하기</button>
+                </div>
+
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <div class="result-simple">
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">km/h (시속)</div>
+                            <div id="kmh" class="result-value-simple highlight">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">m/s (초속)</div>
+                            <div id="ms" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">mph (마일/시간)</div>
+                            <div id="mph" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">knots (노트)</div>
+                            <div id="knots" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">ft/s (피트/초)</div>
+                            <div id="fps" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">Mach (마하)</div>
+                            <div id="mach" class="result-value-simple">-</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <h3 class="section-title">속도 비교</h3>
+                        <div class="result-simple">
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">도보 (5 km/h)</div>
+                                <div class="result-value-simple" id="walkingComparison">-</div>
+                            </div>
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">자전거 (20 km/h)</div>
+                                <div class="result-value-simple" id="bikeComparison">-</div>
+                            </div>
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">자동차 (60 km/h)</div>
+                                <div class="result-value-simple" id="carComparison">-</div>
+                            </div>
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">고속도로 (100 km/h)</div>
+                                <div class="result-value-simple" id="highwayComparison">-</div>
+                            </div>
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">고속열차 (300 km/h)</div>
+                                <div class="result-value-simple" id="trainComparison">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="speedContext" style="margin-top: 30px;">
+                        <h3 class="section-title">속도 분류</h3>
+                        <div class="result-simple">
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">분류</div>
+                                <div id="speedCategory" class="result-value-simple">-</div>
+                            </div>
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">예시</div>
+                                <div id="speedExample" class="result-value-simple">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button onclick="copyResult()" class="btn btn-secondary" id="copyBtn">결과 복사</button>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3 class="info-title">속도 변환 공식</h3>
+                    <div class="info-content">
+                        <p><strong>속도 변환</strong>은 거리와 시간 단위의 비율을 이용하여 계산됩니다.</p>
+                        
+                        <h4>기본 변환 공식</h4>
+                        <ul>
+                            <li><strong>km/h → m/s:</strong> km/h ÷ 3.6</li>
+                            <li><strong>m/s → km/h:</strong> m/s × 3.6</li>
+                            <li><strong>mph → km/h:</strong> mph × 1.609344</li>
+                            <li><strong>km/h → mph:</strong> km/h ÷ 1.609344</li>
+                            <li><strong>knots → km/h:</strong> knots × 1.852</li>
+                            <li><strong>km/h → knots:</strong> km/h ÷ 1.852</li>
+                        </ul>
+                        
+                        <h4>단위 설명</h4>
+                        <ul>
+                            <li><strong>km/h (킬로미터/시간)</strong>: 가장 일반적인 속도 단위</li>
+                            <li><strong>m/s (미터/초)</strong>: SI 단위계의 속도 단위</li>
+                            <li><strong>mph (마일/시간)</strong>: 주로 미국에서 사용</li>
+                            <li><strong>knots (노트)</strong>: 항공, 해상에서 사용 (1 노트 = 1 해리/시간)</li>
+                            <li><strong>ft/s (피트/초)</strong>: 공학 분야에서 사용</li>
+                            <li><strong>Mach (마하)</strong>: 음속 기준 (약 343 m/s)</li>
+                        </ul>
+                        
+                        <h4>일상 속도 참고</h4>
+                        <ul>
+                            <li><strong>걸음</strong>: 4-6 km/h</li>
+                            <li><strong>달리기</strong>: 10-15 km/h</li>
+                            <li><strong>자전거</strong>: 15-25 km/h</li>
+                            <li><strong>시내 운전</strong>: 30-50 km/h</li>
+                            <li><strong>고속도로</strong>: 100-110 km/h</li>
+                            <li><strong>KTX</strong>: 300 km/h</li>
+                        </ul>
+                        
+                        <h4>교통수단별 속도</h4>
+                        <ul>
+                            <li><strong>지하철</strong>: 평균 35 km/h</li>
+                            <li><strong>시내버스</strong>: 평균 18 km/h</li>
+                            <li><strong>고속버스</strong>: 평균 80 km/h</li>
+                            <li><strong>여객기</strong>: 800-900 km/h</li>
+                            <li><strong>헬리콥터</strong>: 200-250 km/h</li>
+                        </ul>
+                        
+                        <h4>특수 속도</h4>
+                        <ul>
+                            <li><strong>음속</strong>: 1,235 km/h (343 m/s)</li>
+                            <li><strong>빛의 속도</strong>: 299,792,458 m/s</li>
+                            <li><strong>지구 자전 속도</strong>: 1,674 km/h (적도 기준)</li>
+                            <li><strong>지구 공전 속도</strong>: 107,000 km/h</li>
+                        </ul>
+                        
+                        <h4>속도 제한</h4>
+                        <ul>
+                            <li><strong>고속도로</strong>: 100-110 km/h</li>
+                            <li><strong>자동차 전용도로</strong>: 80-90 km/h</li>
+                            <li><strong>일반도로</strong>: 60 km/h</li>
+                            <li><strong>시내도로</strong>: 50 km/h</li>
+                            <li><strong>주택가</strong>: 30 km/h</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function convertToKmh(speed, unit) {
+            switch(unit) {
+                case 'kmh':
+                    return speed;
+                case 'ms':
+                    return speed * 3.6;
+                case 'mph':
+                    return speed * 1.609344;
+                case 'knots':
+                    return speed * 1.852;
+                case 'fps':
+                    return speed * 1.09728; // ft/s to km/h
+                case 'mach':
+                    return speed * 1235.5; // 마하 1 ≈ 1235.5 km/h (해수면 기준)
+                default:
+                    return speed;
+            }
+        }
+        
+        function convertFromKmh(speed, unit) {
+            switch(unit) {
+                case 'kmh':
+                    return speed;
+                case 'ms':
+                    return speed / 3.6;
+                case 'mph':
+                    return speed / 1.609344;
+                case 'knots':
+                    return speed / 1.852;
+                case 'fps':
+                    return speed / 1.09728; // km/h to ft/s
+                case 'mach':
+                    return speed / 1235.5; // km/h to mach
+                default:
+                    return speed;
+            }
+        }
+        
+        function getSpeedCategory(kmh) {
+            if (kmh < 5) {
+                return { category: "매우 느림", example: "걸음보다 느림" };
+            } else if (kmh < 15) {
+                return { category: "도보/조깅", example: "걸음, 조깅 속도" };
+            } else if (kmh < 30) {
+                return { category: "자전거", example: "자전거, 킥보드" };
+            } else if (kmh < 60) {
+                return { category: "시내 운전", example: "시내 도로 운전" };
+            } else if (kmh < 120) {
+                return { category: "고속 운전", example: "고속도로, 자동차 전용도로" };
+            } else if (kmh < 300) {
+                return { category: "고속 교통", example: "KTX, 고속열차" };
+            } else if (kmh < 1000) {
+                return { category: "항공기", example: "여객기, 전투기" };
+            } else {
+                return { category: "초음속", example: "초음속 항공기" };
+            }
+        }
+        
+        function convertSpeed() {
+            const inputSpeed = parseFloat(document.getElementById('speedInput').value);
+            const inputUnit = document.getElementById('inputUnit').value;
+            
+            if (isNaN(inputSpeed) || inputSpeed < 0) {
+                showError('0 이상의 속도 값을 입력해주세요.');
+                return;
+            }
+            
+            // 입력 속도를 km/h로 변환
+            const speedKmh = convertToKmh(inputSpeed, inputUnit);
+            
+            // 각 단위로 변환
+            const kmhResult = speedKmh;
+            const msResult = convertFromKmh(speedKmh, 'ms');
+            const mphResult = convertFromKmh(speedKmh, 'mph');
+            const knotsResult = convertFromKmh(speedKmh, 'knots');
+            const fpsResult = convertFromKmh(speedKmh, 'fps');
+            const machResult = convertFromKmh(speedKmh, 'mach');
+            
+            // 결과 표시
+            document.getElementById('kmh').textContent = formatNumberOnly(kmhResult, 3) + ' km/h';
+            document.getElementById('ms').textContent = formatNumberOnly(msResult, 3) + ' m/s';
+            document.getElementById('mph').textContent = formatNumberOnly(mphResult, 3) + ' mph';
+            document.getElementById('knots').textContent = formatNumberOnly(knotsResult, 3) + ' knots';
+            document.getElementById('fps').textContent = formatNumberOnly(fpsResult, 3) + ' ft/s';
+            document.getElementById('mach').textContent = formatNumberOnly(machResult, 6) + ' Mach';
+            
+            // 속도 비교 (배수로 표시)
+            const walkingRatio = speedKmh / 5;
+            const bikeRatio = speedKmh / 20;
+            const carRatio = speedKmh / 60;
+            const highwayRatio = speedKmh / 100;
+            const trainRatio = speedKmh / 300;
+            
+            document.getElementById('walkingComparison').textContent = formatNumberOnly(walkingRatio, 1) + '배';
+            document.getElementById('bikeComparison').textContent = formatNumberOnly(bikeRatio, 1) + '배';
+            document.getElementById('carComparison').textContent = formatNumberOnly(carRatio, 1) + '배';
+            document.getElementById('highwayComparison').textContent = formatNumberOnly(highwayRatio, 1) + '배';
+            document.getElementById('trainComparison').textContent = formatNumberOnly(trainRatio, 1) + '배';
+            
+            // 속도 분류
+            const speedInfo = getSpeedCategory(speedKmh);
+            document.getElementById('speedCategory').textContent = speedInfo.category;
+            document.getElementById('speedExample').textContent = speedInfo.example;
+            
+            showResult('resultSection');
+        }
+        
+        function copyResult() {
+            const kmh = document.getElementById('kmh').textContent;
+            const ms = document.getElementById('ms').textContent;
+            const mph = document.getElementById('mph').textContent;
+            const knots = document.getElementById('knots').textContent;
+            const fps = document.getElementById('fps').textContent;
+            const mach = document.getElementById('mach').textContent;
+            const category = document.getElementById('speedCategory').textContent;
+            const example = document.getElementById('speedExample').textContent;
+            
+            const result = `속도 변환 결과:
+시속: ${kmh}
+초속: ${ms}
+마일/시간: ${mph}
+노트: ${knots}
+피트/초: ${fps}
+마하: ${mach}
+
+분류: ${category}
+예시: ${example}
+
+참고 속도:
+- 도보: 5 km/h
+- 자전거: 20 km/h  
+- 시내 운전: 60 km/h
+- 고속도로: 100 km/h
+- KTX: 300 km/h`;
+            
+            copyToClipboard(result, 'copyBtn');
+        }
+        
+        // 엔터키로 계산
+        bindEnterKey(['speedInput'], convertSpeed);
+        
+        // 실시간 계산
+        bindRealtimeCalculation(['speedInput'], () => {
+            const value = document.getElementById('speedInput').value;
+            if (value && !isNaN(parseFloat(value)) && parseFloat(value) >= 0) {
+                convertSpeed();
+            }
+        }, 500);
+    </script>
+</body>
+</html>

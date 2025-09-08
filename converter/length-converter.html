@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>길이 단위 변환기 - 미터, 인치, 피트, 야드, 킬로미터 변환</title>
+    <meta name="description" content="미터, 센티미터, 인치, 피트, 야드, 킬로미터 등 다양한 길이 단위를 빠르고 정확하게 변환하는 무료 온라인 계산기입니다.">
+    <meta name="keywords" content="길이 변환, 단위 변환, 미터 변환, 인치 변환, 피트 변환, 센티미터, 킬로미터, 야드">
+    <meta name="author" content="calcforkr.com">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="길이 단위 변환기 - 미터, 인치, 피트, 야드, 킬로미터 변환">
+    <meta property="og:description" content="미터, 센티미터, 인치, 피트, 야드, 킬로미터 등 다양한 길이 단위를 빠르고 정확하게 변환하는 무료 온라인 계산기입니다.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://calcforkr.com/converter/length-converter.html">
+    <meta property="og:site_name" content="calcforkr.com">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191" crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="canonical" href="https://calcforkr.com/converter/length-converter.html">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "길이 단위 변환기",
+        "description": "미터, 센티미터, 인치, 피트, 야드, 킬로미터 등 다양한 길이 단위를 변환하는 온라인 계산기",
+        "url": "https://calcforkr.com/converter/length-converter.html",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "All",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "KRW"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>길이 단위 변환기</h1>
+        <p class="description">미터, 센티미터, 인치, 피트, 야드, 킬로미터 등 다양한 길이 단위를 빠르고 정확하게 변환합니다.</p>
+        
+        <div class="calculator-container">
+            <div class="converter-section">
+                <div class="input-section">
+                    <div class="input-group">
+                        <label for="fromValue">변환할 값</label>
+                        <input type="number" id="fromValue" step="any" placeholder="변환할 길이를 입력하세요">
+                    </div>
+                    
+                    <div class="select-group">
+                        <div class="select-item">
+                            <label for="fromUnit">변환 전 단위</label>
+                            <select id="fromUnit">
+                                <optgroup label="미터법">
+                                    <option value="mm">밀리미터 (mm)</option>
+                                    <option value="cm">센티미터 (cm)</option>
+                                    <option value="m" selected>미터 (m)</option>
+                                    <option value="km">킬로미터 (km)</option>
+                                </optgroup>
+                                <optgroup label="영국/미국 단위">
+                                    <option value="in">인치 (in)</option>
+                                    <option value="ft">피트 (ft)</option>
+                                    <option value="yd">야드 (yd)</option>
+                                    <option value="mi">마일 (mi)</option>
+                                </optgroup>
+                                <optgroup label="기타 단위">
+                                    <option value="nm">나노미터 (nm)</option>
+                                    <option value="μm">마이크로미터 (μm)</option>
+                                    <option value="ly">광년 (ly)</option>
+                                    <option value="au">천문단위 (AU)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        
+                        <button onclick="swapUnits()" class="swap-btn" title="단위 교환">⇄</button>
+                        
+                        <div class="select-item">
+                            <label for="toUnit">변환 후 단위</label>
+                            <select id="toUnit">
+                                <optgroup label="미터법">
+                                    <option value="mm">밀리미터 (mm)</option>
+                                    <option value="cm">센티미터 (cm)</option>
+                                    <option value="m">미터 (m)</option>
+                                    <option value="km" selected>킬로미터 (km)</option>
+                                </optgroup>
+                                <optgroup label="영국/미국 단위">
+                                    <option value="in">인치 (in)</option>
+                                    <option value="ft">피트 (ft)</option>
+                                    <option value="yd">야드 (yd)</option>
+                                    <option value="mi">마일 (mi)</option>
+                                </optgroup>
+                                <optgroup label="기타 단위">
+                                    <option value="nm">나노미터 (nm)</option>
+                                    <option value="μm">마이크로미터 (μm)</option>
+                                    <option value="ly">광년 (ly)</option>
+                                    <option value="au">천문단위 (AU)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="convertLength()" class="calculate-btn">변환하기</button>
+                
+                <div id="result" class="result"></div>
+            </div>
+            
+            <div class="quick-convert">
+                <h3>빠른 변환</h3>
+                <div class="quick-buttons">
+                    <button onclick="quickConvert('1 m to cm')" class="quick-btn">1m → cm</button>
+                    <button onclick="quickConvert('1 ft to cm')" class="quick-btn">1ft → cm</button>
+                    <button onclick="quickConvert('1 in to cm')" class="quick-btn">1in → cm</button>
+                    <button onclick="quickConvert('1 km to mi')" class="quick-btn">1km → mile</button>
+                    <button onclick="quickConvert('1 mi to km')" class="quick-btn">1mile → km</button>
+                    <button onclick="quickConvert('1 yd to m')" class="quick-btn">1yd → m</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>주요 길이 단위</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>미터법 (SI 단위)</h3>
+                    <ul>
+                        <li><strong>나노미터 (nm):</strong> 10⁻⁹ m</li>
+                        <li><strong>마이크로미터 (μm):</strong> 10⁻⁶ m</li>
+                        <li><strong>밀리미터 (mm):</strong> 10⁻³ m</li>
+                        <li><strong>센티미터 (cm):</strong> 10⁻² m</li>
+                        <li><strong>미터 (m):</strong> 기본 단위</li>
+                        <li><strong>킬로미터 (km):</strong> 10³ m</li>
+                    </ul>
+                </div>
+                
+                <div class="info-item">
+                    <h3>영국/미국 단위</h3>
+                    <ul>
+                        <li><strong>인치 (inch):</strong> 2.54 cm</li>
+                        <li><strong>피트 (foot):</strong> 12 인치 = 30.48 cm</li>
+                        <li><strong>야드 (yard):</strong> 3 피트 = 91.44 cm</li>
+                        <li><strong>마일 (mile):</strong> 1,760 야드 = 1.609 km</li>
+                    </ul>
+                </div>
+                
+                <div class="info-item">
+                    <h3>특수 단위</h3>
+                    <ul>
+                        <li><strong>천문단위 (AU):</strong> 약 1.496×10¹¹ m</li>
+                        <li><strong>광년 (ly):</strong> 약 9.461×10¹⁵ m</li>
+                        <li><strong>파섹 (pc):</strong> 약 3.086×10¹⁶ m</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="conversion-table">
+            <h2>길이 변환표</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>단위</th>
+                            <th>mm</th>
+                            <th>cm</th>
+                            <th>m</th>
+                            <th>km</th>
+                            <th>inch</th>
+                            <th>feet</th>
+                            <th>yard</th>
+                            <th>mile</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1 mm</strong></td>
+                            <td>1</td>
+                            <td>0.1</td>
+                            <td>0.001</td>
+                            <td>0.000001</td>
+                            <td>0.0394</td>
+                            <td>0.00328</td>
+                            <td>0.00109</td>
+                            <td>0.00000062</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1 cm</strong></td>
+                            <td>10</td>
+                            <td>1</td>
+                            <td>0.01</td>
+                            <td>0.00001</td>
+                            <td>0.394</td>
+                            <td>0.0328</td>
+                            <td>0.0109</td>
+                            <td>0.0000062</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1 m</strong></td>
+                            <td>1,000</td>
+                            <td>100</td>
+                            <td>1</td>
+                            <td>0.001</td>
+                            <td>39.37</td>
+                            <td>3.281</td>
+                            <td>1.094</td>
+                            <td>0.00062</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1 km</strong></td>
+                            <td>1,000,000</td>
+                            <td>100,000</td>
+                            <td>1,000</td>
+                            <td>1</td>
+                            <td>39,370</td>
+                            <td>3,281</td>
+                            <td>1,094</td>
+                            <td>0.621</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1 inch</strong></td>
+                            <td>25.4</td>
+                            <td>2.54</td>
+                            <td>0.0254</td>
+                            <td>0.0000254</td>
+                            <td>1</td>
+                            <td>0.0833</td>
+                            <td>0.0278</td>
+                            <td>0.0000158</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1 feet</strong></td>
+                            <td>304.8</td>
+                            <td>30.48</td>
+                            <td>0.3048</td>
+                            <td>0.0003048</td>
+                            <td>12</td>
+                            <td>1</td>
+                            <td>0.333</td>
+                            <td>0.000189</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1 yard</strong></td>
+                            <td>914.4</td>
+                            <td>91.44</td>
+                            <td>0.9144</td>
+                            <td>0.0009144</td>
+                            <td>36</td>
+                            <td>3</td>
+                            <td>1</td>
+                            <td>0.000568</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1 mile</strong></td>
+                            <td>1,609,344</td>
+                            <td>160,934</td>
+                            <td>1,609.34</td>
+                            <td>1.609</td>
+                            <td>63,360</td>
+                            <td>5,280</td>
+                            <td>1,760</td>
+                            <td>1</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="examples-section">
+            <h2>실생활 길이 비교</h2>
+            <div class="example-grid">
+                <div class="example-item">
+                    <h3>일상 물체</h3>
+                    <ul>
+                        <li><strong>신용카드:</strong> 8.5 × 5.4 cm</li>
+                        <li><strong>A4 용지:</strong> 21 × 29.7 cm</li>
+                        <li><strong>스마트폰:</strong> 약 15 cm</li>
+                        <li><strong>책상:</strong> 약 120 cm</li>
+                        <li><strong>문 높이:</strong> 약 210 cm</li>
+                    </ul>
+                </div>
+                
+                <div class="example-item">
+                    <h3>스포츠 경기장</h3>
+                    <ul>
+                        <li><strong>축구장 길이:</strong> 90-120 m</li>
+                        <li><strong>축구장 너비:</strong> 45-90 m</li>
+                        <li><strong>농구 코트:</strong> 28 × 15 m</li>
+                        <li><strong>테니스 코트:</strong> 23.77 × 8.23 m</li>
+                        <li><strong>수영장 (올림픽):</strong> 50 × 25 m</li>
+                    </ul>
+                </div>
+                
+                <div class="example-item">
+                    <h3>건축물</h3>
+                    <ul>
+                        <li><strong>63빌딩:</strong> 249 m</li>
+                        <li><strong>롯데월드타워:</strong> 554.5 m</li>
+                        <li><strong>에펠탑:</strong> 330 m</li>
+                        <li><strong>부르즈 할리파:</strong> 828 m</li>
+                        <li><strong>한강 폭:</strong> 약 1 km</li>
+                    </ul>
+                </div>
+                
+                <div class="example-item">
+                    <h3>교통/거리</h3>
+                    <ul>
+                        <li><strong>마라톤:</strong> 42.195 km</li>
+                        <li><strong>서울-부산:</strong> 약 325 km</li>
+                        <li><strong>한국 동서 폭:</strong> 약 220 km</li>
+                        <li><strong>한국 남북 길이:</strong> 약 500 km</li>
+                        <li><strong>지구 둘레:</strong> 약 40,075 km</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tips-section">
+            <h2>길이 변환 팁</h2>
+            <div class="tips-grid">
+                <div class="tip-item">
+                    <h3>암산으로 빠른 변환</h3>
+                    <ul>
+                        <li><strong>인치 → 센티미터:</strong> × 2.5 (근사값)</li>
+                        <li><strong>피트 → 미터:</strong> ÷ 3.3 (근사값)</li>
+                        <li><strong>마일 → 킬로미터:</strong> × 1.6 (근사값)</li>
+                        <li><strong>야드 → 미터:</strong> × 0.9 (근사값)</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-item">
+                    <h3>기억하기 좋은 변환</h3>
+                    <ul>
+                        <li><strong>1 인치 = 2.54 cm</strong> (정확한 값)</li>
+                        <li><strong>1 피트 = 30 cm</strong> (근사값)</li>
+                        <li><strong>1 마일 = 1.6 km</strong> (근사값)</li>
+                        <li><strong>1 야드 ≈ 1 미터</strong> (근사값)</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-item">
+                    <h3>정밀도가 중요한 분야</h3>
+                    <ul>
+                        <li><strong>건축/건설:</strong> 밀리미터 단위까지</li>
+                        <li><strong>기계 가공:</strong> 마이크로미터 단위</li>
+                        <li><strong>과학 실험:</strong> 나노미터 단위</li>
+                        <li><strong>일상 생활:</strong> 센티미터 단위</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="faq-section">
+            <h2>자주 묻는 질문</h2>
+            <div class="faq-item">
+                <h3>인치와 센티미터 중 어느 것이 더 정확한가요?</h3>
+                <p>정확도는 측정 도구에 따라 달라집니다. 다만 센티미터가 10진법 기반이라 계산하기 더 편리합니다.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>왜 미국은 아직도 인치, 피트를 사용하나요?</h3>
+                <p>역사적, 문화적 이유로 야드파운드법을 사용합니다. 하지만 과학 분야에서는 미터법을 사용합니다.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>온라인 쇼핑할 때 사이즈 변환 팁은?</h3>
+                <p>의류: 인치 표기시 2.54를 곱해 cm로 변환. 신발: 각국 사이즈 표준이 다르므로 변환표를 참고하세요.</p>
+            </div>
+        </div>
+        
+        <div class="related-calculators">
+            <h2>관련 변환기</h2>
+            <div class="calculator-links">
+                <a href="../utility/unit-converter.html" class="calc-link">통합 단위 변환기</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    // 길이 단위를 미터로 변환하는 계수들
+    const lengthUnits = {
+        // 미터법
+        'nm': 1e-9,        // 나노미터
+        'μm': 1e-6,        // 마이크로미터
+        'mm': 0.001,       // 밀리미터
+        'cm': 0.01,        // 센티미터
+        'm': 1,            // 미터 (기준)
+        'km': 1000,        // 킬로미터
+        
+        // 영국/미국 단위
+        'in': 0.0254,      // 인치
+        'ft': 0.3048,      // 피트
+        'yd': 0.9144,      // 야드
+        'mi': 1609.344,    // 마일
+        
+        // 천문학적 단위
+        'au': 1.496e11,    // 천문단위
+        'ly': 9.461e15     // 광년
+    };
+    
+    const unitNames = {
+        'nm': '나노미터',
+        'μm': '마이크로미터', 
+        'mm': '밀리미터',
+        'cm': '센티미터',
+        'm': '미터',
+        'km': '킬로미터',
+        'in': '인치',
+        'ft': '피트',
+        'yd': '야드',
+        'mi': '마일',
+        'au': '천문단위',
+        'ly': '광년'
+    };
+    
+    function convertLength() {
+        const fromValue = parseFloat(document.getElementById('fromValue').value);
+        const fromUnit = document.getElementById('fromUnit').value;
+        const toUnit = document.getElementById('toUnit').value;
+        
+        if (!fromValue) {
+            document.getElementById('result').innerHTML = 
+                '<div class="error">변환할 값을 입력해주세요.</div>';
+            return;
+        }
+        
+        // 입력값을 미터로 변환
+        const meterValue = fromValue * lengthUnits[fromUnit];
+        
+        // 미터값을 목표 단위로 변환
+        const result = meterValue / lengthUnits[toUnit];
+        
+        displayResult(fromValue, fromUnit, result, toUnit, meterValue);
+    }
+    
+    function displayResult(fromValue, fromUnit, result, toUnit, meterValue) {
+        const fromUnitName = unitNames[fromUnit];
+        const toUnitName = unitNames[toUnit];
+        
+        let resultHTML = `
+            <div class="conversion-result">
+                <div class="main-result">
+                    <h3>변환 결과</h3>
+                    <p class="conversion-equation">
+                        ${formatNumber(fromValue)} ${fromUnitName} = 
+                        <span class="result-value">${formatNumber(result)} ${toUnitName}</span>
+                    </p>
+                </div>
+                
+                <div class="detailed-info">
+                    <div class="conversion-details">
+                        <h4>상세 정보</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span>입력값:</span>
+                                <span>${formatNumber(fromValue)} ${fromUnitName}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>미터 환산:</span>
+                                <span>${formatScientific(meterValue)} m</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>결과값:</span>
+                                <span>${formatNumber(result)} ${toUnitName}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>변환 계수:</span>
+                                <span>1 ${fromUnitName} = ${lengthUnits[fromUnit]} m</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        `;
+        
+        // 추가 변환 결과들
+        const commonUnits = ['mm', 'cm', 'm', 'km', 'in', 'ft', 'yd', 'mi'];
+        const additionalResults = commonUnits
+            .filter(unit => unit !== toUnit)
+            .map(unit => {
+                const convertedValue = meterValue / lengthUnits[unit];
+                return {
+                    unit: unit,
+                    name: unitNames[unit],
+                    value: convertedValue
+                };
+            })
+            .slice(0, 6); // 최대 6개까지만 표시
+        
+        if (additionalResults.length > 0) {
+            resultHTML += `
+                <div class="additional-conversions">
+                    <h4>다른 단위로도 변환</h4>
+                    <div class="additional-grid">
+            `;
+            
+            additionalResults.forEach(item => {
+                resultHTML += `
+                    <div class="additional-item">
+                        <span class="unit-name">${item.name}:</span>
+                        <span class="unit-value">${formatNumber(item.value)}</span>
+                    </div>
+                `;
+            });
+            
+            resultHTML += `
+                    </div>
+                </div>
+            `;
+        }
+        
+        resultHTML += '</div>';
+        
+        document.getElementById('result').innerHTML = resultHTML;
+    }
+    
+    function formatNumber(value) {
+        if (Math.abs(value) >= 1e6 || Math.abs(value) < 1e-3) {
+            return value.toExponential(4);
+        } else if (value % 1 === 0 && Math.abs(value) < 1e6) {
+            return value.toLocaleString();
+        } else {
+            return parseFloat(value.toFixed(6)).toLocaleString();
+        }
+    }
+    
+    function formatScientific(value) {
+        if (Math.abs(value) >= 1e3 || Math.abs(value) < 1e-2) {
+            return value.toExponential(3);
+        } else {
+            return parseFloat(value.toFixed(6)).toString();
+        }
+    }
+    
+    function swapUnits() {
+        const fromUnit = document.getElementById('fromUnit').value;
+        const toUnit = document.getElementById('toUnit').value;
+        
+        document.getElementById('fromUnit').value = toUnit;
+        document.getElementById('toUnit').value = fromUnit;
+        
+        // 값이 있다면 자동으로 변환
+        if (document.getElementById('fromValue').value) {
+            convertLength();
+        }
+    }
+    
+    function quickConvert(conversion) {
+        const conversions = {
+            '1 m to cm': { value: 1, from: 'm', to: 'cm' },
+            '1 ft to cm': { value: 1, from: 'ft', to: 'cm' },
+            '1 in to cm': { value: 1, from: 'in', to: 'cm' },
+            '1 km to mi': { value: 1, from: 'km', to: 'mi' },
+            '1 mi to km': { value: 1, from: 'mi', to: 'km' },
+            '1 yd to m': { value: 1, from: 'yd', to: 'm' }
+        };
+        
+        const conv = conversions[conversion];
+        if (conv) {
+            document.getElementById('fromValue').value = conv.value;
+            document.getElementById('fromUnit').value = conv.from;
+            document.getElementById('toUnit').value = conv.to;
+            convertLength();
+        }
+    }
+    
+    // 실시간 변환
+    document.getElementById('fromValue').addEventListener('input', function() {
+        if (this.value) {
+            convertLength();
+        } else {
+            document.getElementById('result').innerHTML = '';
+        }
+    });
+    
+    document.getElementById('fromUnit').addEventListener('change', function() {
+        if (document.getElementById('fromValue').value) {
+            convertLength();
+        }
+    });
+    
+    document.getElementById('toUnit').addEventListener('change', function() {
+        if (document.getElementById('fromValue').value) {
+            convertLength();
+        }
+    });
+    
+    // 엔터키로 변환
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            convertLength();
+        }
+    });
+    </script>
+    
+    <style>
+    .converter-section {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+    
+    .select-group {
+        display: flex;
+        align-items: end;
+        gap: 15px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+    }
+    
+    .select-item {
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .select-item select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        background: white;
+    }
+    
+    .swap-btn {
+        background: #17a2b8;
+        color: white;
+        border: none;
+        padding: 12px 15px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        min-width: 45px;
+        height: 45px;
+        transition: all 0.3s;
+    }
+    
+    .swap-btn:hover {
+        background: #138496;
+        transform: rotate(180deg);
+    }
+    
+    .quick-convert {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        margin-top: 20px;
+        border: 1px solid #e0e0e0;
+    }
+    
+    .quick-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .quick-btn {
+        background: #e9ecef;
+        border: 1px solid #ced4da;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+    
+    .quick-btn:hover {
+        background: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+    
+    .conversion-result {
+        margin-top: 30px;
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+    }
+    
+    .main-result {
+        text-align: center;
+        margin-bottom: 25px;
+        padding: 20px;
+        background: #e7f3ff;
+        border-radius: 8px;
+    }
+    
+    .conversion-equation {
+        font-size: 20px;
+        margin: 0;
+        font-weight: bold;
+    }
+    
+    .result-value {
+        color: #007bff;
+        background: white;
+        padding: 8px 15px;
+        border-radius: 5px;
+        display: inline-block;
+        margin: 5px;
+    }
+    
+    .detailed-info {
+        margin-bottom: 20px;
+    }
+    
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+    
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        background: #f8f9fa;
+        border-radius: 5px;
+        border-left: 4px solid #007bff;
+    }
+    
+    .detail-item span:first-child {
+        font-weight: bold;
+        color: #666;
+    }
+    
+    .detail-item span:last-child {
+        color: #333;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .additional-conversions {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+    
+    .additional-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin-top: 15px;
+    }
+    
+    .additional-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        background: white;
+        border-radius: 5px;
+        border: 1px solid #e0e0e0;
+    }
+    
+    .unit-name {
+        font-weight: bold;
+        color: #666;
+    }
+    
+    .unit-value {
+        font-family: 'Courier New', monospace;
+        color: #007bff;
+        font-weight: bold;
+    }
+    
+    .conversion-table {
+        margin: 40px 0;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .table-responsive table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+    
+    .table-responsive th,
+    .table-responsive td {
+        padding: 12px 8px;
+        text-align: center;
+        border: 1px solid #e0e0e0;
+    }
+    
+    .table-responsive th {
+        background: #007bff;
+        color: white;
+        font-weight: bold;
+    }
+    
+    .table-responsive tr:nth-child(even) {
+        background: #f8f9fa;
+    }
+    
+    .table-responsive tr:hover {
+        background: #e7f3ff;
+    }
+    
+    .table-responsive td:first-child {
+        background: #e9ecef;
+        font-weight: bold;
+        text-align: left;
+    }
+    
+    @media (max-width: 768px) {
+        .select-group {
+            flex-direction: column;
+        }
+        
+        .select-item {
+            min-width: auto;
+        }
+        
+        .swap-btn {
+            align-self: center;
+            transform: rotate(90deg);
+        }
+        
+        .quick-buttons {
+            justify-content: center;
+        }
+        
+        .quick-btn {
+            font-size: 12px;
+            padding: 8px 12px;
+        }
+        
+        .detail-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .additional-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .conversion-equation {
+            font-size: 16px;
+        }
+        
+        .detail-item {
+            flex-direction: column;
+            gap: 5px;
+            text-align: center;
+        }
+        
+        .table-responsive {
+            font-size: 12px;
+        }
+        
+        .table-responsive th,
+        .table-responsive td {
+            padding: 8px 4px;
+        }
+    }
+    </style>
+</body>
+</html>

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수학근 계산기 - 제곱근, 세제곱근, n제곱근 계산</title>
+    <meta name="description" content="제곱근, 세제곱근, n제곱근을 계산하는 무료 온라인 계산기입니다. 양수와 음수의 근을 모두 계산할 수 있습니다.">
+    <meta name="keywords" content="제곱근, 세제곱근, n제곱근, 루트 계산기, 거듭제곱근, 수학근, 근호">
+    <meta name="author" content="Calculator for KR">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="수학근 계산기 - 제곱근, 세제곱근, n제곱근 계산">
+    <meta property="og:description" content="제곱근, 세제곱근, n제곱근을 쉽게 계산하세요. 양수와 음수 모두 지원합니다.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://calcforkr.com/math/nth-root-calculator.html">
+    
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "수학근 계산기",
+        "description": "제곱근, 세제곱근, n제곱근을 계산하는 무료 온라인 계산기",
+        "url": "https://calcforkr.com/math/nth-root-calculator.html",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "KRW"
+        }
+    }
+    </script>
+
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="canonical" href="https://calcforkr.com/math/nth-root-calculator.html">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-68VLJL7XXD');
+    </script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <nav>
+                <a href="../index.html">🏠 홈</a>
+                <a href="../index.html#calculators">📐 수학</a>
+                <a href="../index.html#calculators">💰 금융</a>
+                <a href="../index.html#calculators">🏥 건강</a>
+                <a href="../index.html#calculators">🔧 유틸리티</a>
+            </nav>
+        </header>
+
+        <main>
+            <h1>√ 수학근 계산기</h1>
+            <p class="description">제곱근, 세제곱근, n제곱근을 계산합니다. 양수와 음수의 근을 모두 구할 수 있습니다.</p>
+
+            <div class="calculator">
+                <div class="input-section">
+                    <h2>근 계산 입력</h2>
+                    
+                    <div class="root-inputs">
+                        <div class="input-group">
+                            <label for="radicand">피제곱근 (수)</label>
+                            <input type="number" id="radicand" step="any" placeholder="예: 64">
+                            <small>근을 구할 수</small>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="index">근의 지수 (n)</label>
+                            <input type="number" id="index" step="1" min="2" placeholder="예: 3" value="2">
+                            <small>n제곱근의 n (2=제곱근, 3=세제곱근)</small>
+                        </div>
+                    </div>
+
+                    <div class="root-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="showAllRoots">
+                            <span>모든 복소수 근 표시 (실근과 허근)</span>
+                        </label>
+                    </div>
+
+                    <button onclick="calculateRoot()" class="calculate-btn">근 계산하기</button>
+                    <button onclick="clearAll()" class="clear-btn">모두 지우기</button>
+                </div>
+
+                <div class="result-section" id="resultSection">
+                    <!-- 결과가 여기에 표시됩니다 -->
+                </div>
+
+                <!-- AdSense Display Ad -->
+                <div class="ad-container" style="text-align: center; margin: 20px 0;">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-2277280131930191"
+                         data-ad-slot="1234567890"
+                         data-ad-format="auto"></ins>
+                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                </div>
+            </div>
+
+            <div class="quick-examples">
+                <h3>🎯 빠른 예제</h3>
+                <div class="examples-grid">
+                    <button onclick="loadExample('sqrt-16')" class="example-btn">√16 (제곱근)</button>
+                    <button onclick="loadExample('cbrt-27')" class="example-btn">∛27 (세제곱근)</button>
+                    <button onclick="loadExample('fourth-81')" class="example-btn">⁴√81</button>
+                    <button onclick="loadExample('fifth-32')" class="example-btn">⁵√32</button>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h2>📚 수학근이란?</h2>
+                <p>n제곱근은 어떤 수를 n번 곱해서 주어진 수가 되는 값을 찾는 연산입니다.</p>
+
+                <h3>🔍 근의 종류와 표기</h3>
+                <div class="formula-box">
+                    <p><strong>기본 표기법:</strong></p>
+                    <ul>
+                        <li><strong>제곱근:</strong> √a 또는 a^(1/2)</li>
+                        <li><strong>세제곱근:</strong> ∛a 또는 a^(1/3)</li>
+                        <li><strong>n제곱근:</strong> ⁿ√a 또는 a^(1/n)</li>
+                    </ul>
+                    
+                    <p><strong>정의:</strong></p>
+                    <p>ⁿ√a = x라면, x^n = a</p>
+                </div>
+
+                <h3>📐 근의 성질</h3>
+                <div class="example-box">
+                    <p><strong>기본 성질:</strong></p>
+                    <ul>
+                        <li>ⁿ√(ab) = ⁿ√a × ⁿ√b</li>
+                        <li>ⁿ√(a/b) = ⁿ√a / ⁿ√b (b ≠ 0)</li>
+                        <li>ᵐ√(ⁿ√a) = ᵐⁿ√a</li>
+                        <li>(ⁿ√a)^n = a</li>
+                    </ul>
+                    
+                    <p><strong>지수 법칙:</strong></p>
+                    <ul>
+                        <li>ⁿ√a = a^(1/n)</li>
+                        <li>ⁿ√(a^m) = a^(m/n)</li>
+                    </ul>
+                </div>
+
+                <h3>🎯 완전제곱수와 완전세제곱수</h3>
+                <div class="example-box">
+                    <p><strong>완전제곱수 (1~100):</strong></p>
+                    <p>1²=1, 2²=4, 3²=9, 4²=16, 5²=25, 6²=36, 7²=49, 8²=64, 9²=81, 10²=100</p>
+                    
+                    <p><strong>완전세제곱수:</strong></p>
+                    <p>1³=1, 2³=8, 3³=27, 4³=64, 5³=125, 6³=216</p>
+                    
+                    <p><strong>완전네제곱수:</strong></p>
+                    <p>1⁴=1, 2⁴=16, 3⁴=81, 4⁴=256</p>
+                </div>
+
+                <h3>💡 실근과 복소수근</h3>
+                <div class="formula-box">
+                    <p><strong>실근의 존재:</strong></p>
+                    <ul>
+                        <li><strong>짝수 지수:</strong> a ≥ 0일 때만 실근 존재</li>
+                        <li><strong>홀수 지수:</strong> 모든 실수 a에 대해 실근 존재</li>
+                    </ul>
+                    
+                    <p><strong>근의 개수:</strong></p>
+                    <ul>
+                        <li><strong>n제곱근:</strong> 복소수 범위에서 n개의 근</li>
+                        <li><strong>주근:</strong> 절댓값이 가장 작은 양의 실근</li>
+                    </ul>
+                </div>
+
+                <h3>🌟 근삿값 구하기</h3>
+                <div class="example-box">
+                    <p><strong>바빌로니아 방법 (제곱근):</strong></p>
+                    <p>√N을 구하려면:</p>
+                    <ol>
+                        <li>초기값 x₀ 설정</li>
+                        <li>xₙ₊₁ = (xₙ + N/xₙ) / 2</li>
+                        <li>수렴할 때까지 반복</li>
+                    </ol>
+                    
+                    <p><strong>뉴턴 방법 (일반화):</strong></p>
+                    <p>ⁿ√N을 구하려면:</p>
+                    <p>xₙ₊₁ = ((n-1)xₙ + N/xₙⁿ⁻¹) / n</p>
+                </div>
+
+                <h3>🔧 계산 팁</h3>
+                <ul>
+                    <li>소인수분해를 이용하여 근을 간단히 만들기</li>
+                    <li>완전제곱인수를 근호 밖으로 빼내기</li>
+                    <li>분모의 무리수 제거 (유리화)</li>
+                    <li>계산기나 로그를 이용한 근삿값 구하기</li>
+                </ul>
+
+                <h3>💡 실생활 활용</h3>
+                <ul>
+                    <li><strong>기하학:</strong> 정사각형의 한 변 길이 구하기</li>
+                    <li><strong>물리학:</strong> 자유낙하 시간, 진동 주기 계산</li>
+                    <li><strong>통계학:</strong> 표준편차, RMS 값 계산</li>
+                    <li><strong>공학:</strong> 평균값, 기하평균 계산</li>
+                </ul>
+
+                <h3>⚠️ 주의사항</h3>
+                <ul>
+                    <li>짝수 지수에서 음수의 실근은 존재하지 않음</li>
+                    <li>0의 0제곱근은 정의되지 않음</li>
+                    <li>복소수근은 극형식으로 표현하면 이해하기 쉬움</li>
+                    <li>계산기의 정밀도 한계를 고려해야 함</li>
+                </ul>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Calculator for KR. All rights reserved.</p>
+            <p><a href="../privacy-policy.html">개인정보처리방침</a> | <a href="../terms-of-service.html">이용약관</a></p>
+        </footer>
+    </div>
+
+    <style>
+        .root-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .input-group input {
+            padding: 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .input-group small {
+            margin-top: 3px;
+            color: #7f8c8d;
+            font-style: italic;
+            font-size: 12px;
+        }
+
+        .root-options {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .clear-btn {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        .clear-btn:hover {
+            background: #7f8c8d;
+        }
+
+        .quick-examples {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .example-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .example-btn:hover {
+            background: #2980b9;
+        }
+
+        .formula-box, .example-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .result-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #e74c3c;
+        }
+
+        .result-item h4 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        .root-display {
+            font-family: 'Times New Roman', serif;
+            font-size: 24px;
+            text-align: center;
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .complex-roots {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        .complex-root {
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 5px 10px;
+            margin: 5px 0;
+            border-radius: 3px;
+        }
+
+        .simplification {
+            background: #e8f5e8;
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .root-inputs {
+                grid-template-columns: 1fr;
+            }
+            
+            .clear-btn {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
+    </style>
+
+    <script src="../common/js/common-functions.js"></script>
+    <script>
+        function calculateRoot() {
+            const radicand = parseFloat(document.getElementById('radicand').value);
+            const index = parseInt(document.getElementById('index').value);
+            const showAllRoots = document.getElementById('showAllRoots').checked;
+
+            if (isNaN(radicand)) {
+                alert('피제곱근을 입력해주세요.');
+                return;
+            }
+
+            if (isNaN(index) || index < 2) {
+                alert('근의 지수를 2 이상의 정수로 입력해주세요.');
+                return;
+            }
+
+            // 실근 계산
+            let principalRoot;
+            let isRealRoot = true;
+
+            if (index % 2 === 0 && radicand < 0) {
+                // 짝수 지수에서 음수 - 실근 없음
+                isRealRoot = false;
+                principalRoot = Math.pow(Math.abs(radicand), 1/index); // 복소수 계산용
+            } else if (index % 2 === 1 && radicand < 0) {
+                // 홀수 지수에서 음수
+                principalRoot = -Math.pow(Math.abs(radicand), 1/index);
+            } else {
+                // 양수 또는 0
+                principalRoot = Math.pow(radicand, 1/index);
+            }
+
+            // 근의 간소화 시도
+            const simplification = simplifyRoot(radicand, index);
+
+            displayResult(radicand, index, principalRoot, isRealRoot, showAllRoots, simplification);
+        }
+
+        function simplifyRoot(radicand, index) {
+            if (radicand < 0 && index % 2 === 0) {
+                return null; // 짝수 지수의 음수는 간소화 불가
+            }
+
+            const absRadicand = Math.abs(radicand);
+            let coefficient = 1;
+            let remainingRadicand = absRadicand;
+
+            // 소인수분해를 통한 간소화
+            for (let i = 2; i <= Math.sqrt(absRadicand); i++) {
+                let count = 0;
+                while (remainingRadicand % i === 0) {
+                    remainingRadicand /= i;
+                    count++;
+                }
+                
+                if (count >= index) {
+                    const extracted = Math.floor(count / index);
+                    coefficient *= Math.pow(i, extracted);
+                    
+                    // 남은 지수만큼 다시 곱하기
+                    const remaining = count % index;
+                    for (let j = 0; j < remaining; j++) {
+                        remainingRadicand *= i;
+                    }
+                }
+            }
+
+            // 완전제곱수 확인
+            const rootCheck = Math.pow(remainingRadicand, 1/index);
+            const isExact = Math.abs(rootCheck - Math.round(rootCheck)) < 1e-10;
+
+            return {
+                coefficient: coefficient * (radicand < 0 && index % 2 === 1 ? -1 : 1),
+                remainingRadicand: remainingRadicand,
+                isSimplified: coefficient > 1 || isExact,
+                isExact: isExact && coefficient === 1
+            };
+        }
+
+        function generateComplexRoots(radicand, index) {
+            const roots = [];
+            const r = Math.pow(Math.abs(radicand), 1/index);
+            const baseAngle = radicand >= 0 ? 0 : Math.PI;
+
+            for (let k = 0; k < index; k++) {
+                const angle = (baseAngle + 2 * Math.PI * k) / index;
+                const real = r * Math.cos(angle);
+                const imag = r * Math.sin(angle);
+                
+                roots.push({
+                    real: real,
+                    imag: imag,
+                    magnitude: r,
+                    angle: angle
+                });
+            }
+
+            return roots;
+        }
+
+        function displayResult(radicand, index, principalRoot, isRealRoot, showAllRoots, simplification) {
+            let rootSymbol = '';
+            switch(index) {
+                case 2: rootSymbol = '√'; break;
+                case 3: rootSymbol = '∛'; break;
+                case 4: rootSymbol = '⁴√'; break;
+                case 5: rootSymbol = '⁵√'; break;
+                default: rootSymbol = `^${index}√`; break;
+            }
+
+            let resultHTML = `
+                <h3>🎯 계산 결과</h3>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <h4>입력값</h4>
+                        <div class="root-display">${rootSymbol}${radicand}</div>
+                        <small>${index}제곱근</small>
+                    </div>
+                    
+                    <div class="result-item">
+                        <h4>주근 (Principal Root)</h4>
+                        ${isRealRoot ? 
+                            `<p><strong>${principalRoot.toFixed(6)}</strong></p>` :
+                            `<p style="color: #e74c3c;"><strong>실근 없음</strong></p>
+                             <small>짝수 지수의 음수</small>`
+                        }
+                    </div>
+                    
+                    <div class="result-item">
+                        <h4>검증</h4>
+                        ${isRealRoot ? 
+                            `<p>(${principalRoot.toFixed(3)})^${index} = ${Math.pow(principalRoot, index).toFixed(6)}</p>
+                             <small>원래 값: ${radicand}</small>` :
+                            `<p>실수 범위에서 해가 없음</p>`
+                        }
+                    </div>
+                </div>
+            `;
+
+            // 간소화 표시
+            if (simplification && simplification.isSimplified) {
+                let simplifiedForm = '';
+                
+                if (simplification.isExact) {
+                    simplifiedForm = `<strong>${principalRoot.toFixed(0)}</strong>`;
+                } else {
+                    const coef = Math.abs(simplification.coefficient);
+                    const sign = simplification.coefficient < 0 ? '-' : '';
+                    
+                    if (coef === 1) {
+                        simplifiedForm = `${sign}${rootSymbol}${simplification.remainingRadicand}`;
+                    } else {
+                        simplifiedForm = `${sign}${coef}${rootSymbol}${simplification.remainingRadicand}`;
+                    }
+                }
+
+                resultHTML += `
+                    <div class="simplification">
+                        <h4>🔧 간소화된 형태</h4>
+                        <div class="root-display">${simplifiedForm}</div>
+                        ${!simplification.isExact ? 
+                            `<p>근사값: ${principalRoot.toFixed(6)}</p>` : 
+                            '<p>정확한 값</p>'
+                        }
+                    </div>
+                `;
+            }
+
+            // 복소수근 표시
+            if (showAllRoots) {
+                const complexRoots = generateComplexRoots(radicand, index);
+                resultHTML += `
+                    <div class="complex-roots">
+                        <h4>🌐 모든 복소수 근</h4>
+                        <p>${index}제곱근은 ${index}개의 복소수 근을 가집니다:</p>
+                `;
+                
+                complexRoots.forEach((root, i) => {
+                    const realPart = Math.abs(root.real) < 1e-10 ? 0 : root.real;
+                    const imagPart = Math.abs(root.imag) < 1e-10 ? 0 : root.imag;
+                    
+                    let rootStr = '';
+                    if (imagPart === 0) {
+                        rootStr = realPart.toFixed(6);
+                    } else if (realPart === 0) {
+                        rootStr = `${imagPart.toFixed(6)}i`;
+                    } else {
+                        const sign = imagPart >= 0 ? '+' : '';
+                        rootStr = `${realPart.toFixed(6)} ${sign} ${imagPart.toFixed(6)}i`;
+                    }
+                    
+                    resultHTML += `<div class="complex-root">x₋${i+1} = ${rootStr}</div>`;
+                });
+                
+                resultHTML += `</div>`;
+            }
+
+            // 계산 과정
+            resultHTML += `
+                <div class="calculation-steps">
+                    <h4>📝 계산 과정</h4>
+                    <div class="formula-box">
+                        <p><strong>공식:</strong></p>
+                        <p>${rootSymbol}${radicand} = ${radicand}^(1/${index})</p>
+                        
+                        ${isRealRoot ? `
+                            <p><strong>계산:</strong></p>
+                            <p>${radicand}^(1/${index}) = ${principalRoot.toFixed(6)}</p>
+                            
+                            <p><strong>검증:</strong></p>
+                            <p>(${principalRoot.toFixed(6)})^${index} = ${Math.pow(principalRoot, index).toFixed(6)} ≈ ${radicand}</p>
+                        ` : `
+                            <p><strong>참고:</strong></p>
+                            <p>짝수 지수에서 음수의 실근은 존재하지 않습니다.</p>
+                            <p>복소수 범위에서는 ${index}개의 근이 존재합니다.</p>
+                        `}
+                    </div>
+                </div>
+                
+                <button onclick="copyResult()" class="copy-btn">📋 결과 복사</button>
+            `;
+
+            document.getElementById('resultSection').innerHTML = resultHTML;
+            document.getElementById('resultSection').style.display = 'block';
+
+            // Google Analytics 이벤트
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'calculate', {
+                    'event_category': 'Nth Root Calculator',
+                    'event_label': `${index}th root`
+                });
+            }
+        }
+
+        function copyResult() {
+            const radicand = parseFloat(document.getElementById('radicand').value);
+            const index = parseInt(document.getElementById('index').value);
+            
+            let principalRoot;
+            let isRealRoot = true;
+
+            if (index % 2 === 0 && radicand < 0) {
+                isRealRoot = false;
+            } else if (index % 2 === 1 && radicand < 0) {
+                principalRoot = -Math.pow(Math.abs(radicand), 1/index);
+            } else {
+                principalRoot = Math.pow(radicand, 1/index);
+            }
+
+            const result = `수학근 계산 결과
+
+계산식: ${index}제곱근 ${radicand}
+결과: ${isRealRoot ? principalRoot.toFixed(6) : '실근 없음 (짝수 지수의 음수)'}
+
+${isRealRoot ? `검증: (${principalRoot.toFixed(6)})^${index} = ${Math.pow(principalRoot, index).toFixed(6)}` : ''}
+
+계산 출처: https://calcforkr.com/math/nth-root-calculator.html`;
+
+            copyToClipboard(result);
+        }
+
+        function clearAll() {
+            document.getElementById('radicand').value = '';
+            document.getElementById('index').value = '2';
+            document.getElementById('showAllRoots').checked = false;
+            document.getElementById('resultSection').style.display = 'none';
+        }
+
+        function loadExample(example) {
+            const examples = {
+                'sqrt-16': { radicand: 16, index: 2 },
+                'cbrt-27': { radicand: 27, index: 3 },
+                'fourth-81': { radicand: 81, index: 4 },
+                'fifth-32': { radicand: 32, index: 5 }
+            };
+
+            if (examples[example]) {
+                document.getElementById('radicand').value = examples[example].radicand;
+                document.getElementById('index').value = examples[example].index;
+            }
+        }
+
+        // 엔터키로 계산
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateRoot();
+            }
+        });
+
+        // 페이지 로드시 기본값 설정
+        window.onload = function() {
+            document.getElementById('radicand').value = 64;
+            document.getElementById('index').value = 3;
+        };
+    </script>
+</body>
+</html>

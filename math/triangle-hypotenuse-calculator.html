@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>삼각형 빗변 계산기 - 피타고라스 정리</title>
+    <meta name="description" content="직각삼각형의 빗변과 직각변을 피타고라스 정리로 계산하는 무료 온라인 계산기입니다. a² + b² = c² 공식을 이용하여 빗변의 길이를 구할 수 있습니다.">
+    <meta name="keywords" content="빗변 계산기, 피타고라스 정리, 직각삼각형, 삼각형 계산기, 직각변, 피타고라스 공식">
+    <meta name="author" content="Calculator for KR">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="삼각형 빗변 계산기 - 피타고라스 정리">
+    <meta property="og:description" content="직각삼각형의 빗변을 피타고라스 정리로 쉽게 계산하세요. 두 직각변을 입력하면 빗변을 자동으로 계산합니다.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://calcforkr.com/math/triangle-hypotenuse-calculator.html">
+    
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "삼각형 빗변 계산기",
+        "description": "직각삼각형의 빗변과 직각변을 피타고라스 정리로 계산하는 무료 온라인 계산기",
+        "url": "https://calcforkr.com/math/triangle-hypotenuse-calculator.html",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "KRW"
+        }
+    }
+    </script>
+
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="canonical" href="https://calcforkr.com/math/triangle-hypotenuse-calculator.html">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-68VLJL7XXD');
+    </script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <nav>
+                <a href="../index.html">🏠 홈</a>
+                <a href="../index.html#calculators">📐 수학</a>
+                <a href="../index.html#calculators">💰 금융</a>
+                <a href="../index.html#calculators">🏥 건강</a>
+                <a href="../index.html#calculators">🔧 유틸리티</a>
+            </nav>
+        </header>
+
+        <main>
+            <h1>📐 삼각형 빗변 계산기</h1>
+            <p class="description">직각삼각형의 빗변과 직각변을 피타고라스 정리 (a² + b² = c²)로 계산합니다.</p>
+
+            <div class="calculator">
+                <div class="calculation-type">
+                    <h2>계산할 변 선택</h2>
+                    <div class="type-selector">
+                        <label class="type-option">
+                            <input type="radio" name="calcType" value="hypotenuse" checked>
+                            <span class="option-text">빗변 계산 (두 직각변 → 빗변)</span>
+                        </label>
+                        <label class="type-option">
+                            <input type="radio" name="calcType" value="leg">
+                            <span class="option-text">직각변 계산 (빗변과 한 직각변 → 다른 직각변)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="input-section">
+                    <!-- 빗변 계산 -->
+                    <div id="hypotenuse-inputs" class="calc-inputs active">
+                        <h3>두 직각변으로 빗변 계산</h3>
+                        <div class="triangle-inputs">
+                            <div class="input-group">
+                                <label for="sideA">직각변 a</label>
+                                <input type="number" id="sideA" step="any" min="0" placeholder="예: 3">
+                                <small>첫 번째 직각변의 길이</small>
+                            </div>
+                            <div class="input-group">
+                                <label for="sideB">직각변 b</label>
+                                <input type="number" id="sideB" step="any" min="0" placeholder="예: 4">
+                                <small>두 번째 직각변의 길이</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 직각변 계산 -->
+                    <div id="leg-inputs" class="calc-inputs">
+                        <h3>빗변과 한 직각변으로 다른 직각변 계산</h3>
+                        <div class="triangle-inputs">
+                            <div class="input-group">
+                                <label for="hypotenuse">빗변 c</label>
+                                <input type="number" id="hypotenuse" step="any" min="0" placeholder="예: 5">
+                                <small>빗변의 길이</small>
+                            </div>
+                            <div class="input-group">
+                                <label for="knownLeg">알려진 직각변</label>
+                                <input type="number" id="knownLeg" step="any" min="0" placeholder="예: 3">
+                                <small>알고 있는 직각변의 길이</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="calculateTriangle()" class="calculate-btn">계산하기</button>
+                    <button onclick="clearAll()" class="clear-btn">모두 지우기</button>
+                </div>
+
+                <div class="result-section" id="resultSection">
+                    <!-- 결과가 여기에 표시됩니다 -->
+                </div>
+
+                <!-- AdSense Display Ad -->
+                <div class="ad-container" style="text-align: center; margin: 20px 0;">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-2277280131930191"
+                         data-ad-slot="1234567890"
+                         data-ad-format="auto"></ins>
+                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                </div>
+            </div>
+
+            <div class="triangle-diagram">
+                <h3>📊 직각삼각형 구조</h3>
+                <div class="diagram-container">
+                    <svg width="300" height="250" viewBox="0 0 300 250">
+                        <!-- 삼각형 -->
+                        <polygon points="50,200 200,200 50,80" fill="#e8f4fd" stroke="#3498db" stroke-width="2"/>
+                        
+                        <!-- 직각 표시 -->
+                        <rect x="50" y="80" width="15" height="15" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                        
+                        <!-- 변 라벨 -->
+                        <text x="125" y="220" font-size="14" fill="#27ae60" text-anchor="middle">b (직각변)</text>
+                        <text x="30" y="140" font-size="14" fill="#27ae60" text-anchor="middle" transform="rotate(-90, 30, 140)">a (직각변)</text>
+                        <text x="125" y="130" font-size="14" fill="#e74c3c" text-anchor="middle" transform="rotate(-30, 125, 130)">c (빗변)</text>
+                        
+                        <!-- 공식 표시 -->
+                        <text x="150" y="50" font-size="16" fill="#2c3e50" font-weight="bold" text-anchor="middle">a² + b² = c²</text>
+                        
+                        <!-- 각도 표시 -->
+                        <text x="60" y="95" font-size="12" fill="#f39c12">90°</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="quick-examples">
+                <h3>🎯 유명한 피타고라스 수 예제</h3>
+                <div class="examples-grid">
+                    <button onclick="loadExample('3-4-5')" class="example-btn">3-4-5 삼각형</button>
+                    <button onclick="loadExample('5-12-13')" class="example-btn">5-12-13 삼각형</button>
+                    <button onclick="loadExample('8-15-17')" class="example-btn">8-15-17 삼각형</button>
+                    <button onclick="loadExample('7-24-25')" class="example-btn">7-24-25 삼각형</button>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h2>📚 피타고라스 정리란?</h2>
+                <p>피타고라스 정리는 직각삼각형에서 두 직각변의 제곱의 합이 빗변의 제곱과 같다는 수학 정리입니다.</p>
+
+                <h3>🔍 피타고라스 정리 공식</h3>
+                <div class="formula-box">
+                    <p><strong>기본 공식:</strong> a² + b² = c²</p>
+                    <ul>
+                        <li>a, b: 직각변의 길이</li>
+                        <li>c: 빗변의 길이 (가장 긴 변)</li>
+                    </ul>
+                    
+                    <p><strong>변형 공식:</strong></p>
+                    <ul>
+                        <li>c = √(a² + b²) (빗변 계산)</li>
+                        <li>a = √(c² - b²) (직각변 계산)</li>
+                        <li>b = √(c² - a²) (직각변 계산)</li>
+                    </ul>
+                </div>
+
+                <h3>🎯 피타고라스 수</h3>
+                <div class="example-box">
+                    <p>피타고라스 수는 a² + b² = c²를 만족하는 자연수 조합입니다.</p>
+                    <ul>
+                        <li><strong>(3, 4, 5):</strong> 3² + 4² = 9 + 16 = 25 = 5²</li>
+                        <li><strong>(5, 12, 13):</strong> 5² + 12² = 25 + 144 = 169 = 13²</li>
+                        <li><strong>(8, 15, 17):</strong> 8² + 15² = 64 + 225 = 289 = 17²</li>
+                        <li><strong>(7, 24, 25):</strong> 7² + 24² = 49 + 576 = 625 = 25²</li>
+                    </ul>
+                </div>
+
+                <h3>🌟 실생활 활용</h3>
+                <ul>
+                    <li><strong>건축:</strong> 건물의 수직성 확인, 지붕 경사 계산</li>
+                    <li><strong>측량:</strong> 직접 측정이 어려운 거리 계산</li>
+                    <li><strong>항해:</strong> 최단 거리 계산</li>
+                    <li><strong>스포츠:</strong> 야구장 베이스 간 거리</li>
+                </ul>
+
+                <h3>💡 계산 예제</h3>
+                <div class="example-box">
+                    <p><strong>예제 1:</strong> 직각변이 6과 8인 경우</p>
+                    <p>c = √(6² + 8²) = √(36 + 64) = √100 = 10</p>
+                    
+                    <p><strong>예제 2:</strong> 빗변이 13, 한 직각변이 5인 경우</p>
+                    <p>b = √(13² - 5²) = √(169 - 25) = √144 = 12</p>
+                    
+                    <p><strong>예제 3:</strong> 사다리 문제</p>
+                    <p>높이 3m 벽에 5m 사다리를 기댈 때 바닥에서의 거리</p>
+                    <p>거리 = √(5² - 3²) = √(25 - 9) = √16 = 4m</p>
+                </div>
+
+                <h3>🔧 검증 방법</h3>
+                <div class="formula-box">
+                    <p><strong>직각삼각형 확인:</strong></p>
+                    <p>세 변 a, b, c가 주어졌을 때 (c가 가장 큰 변)</p>
+                    <p>a² + b² = c² 이면 직각삼각형</p>
+                    <p>a² + b² > c² 이면 예각삼각형</p>
+                    <p>a² + b² < c² 이면 둔각삼각형</p>
+                </div>
+
+                <h3>🎨 기하학적 증명</h3>
+                <div class="example-box">
+                    <p><strong>면적을 이용한 증명:</strong></p>
+                    <p>한 변이 (a + b)인 정사각형 안에 직각삼각형 4개를 배치하면:</p>
+                    <ul>
+                        <li>큰 정사각형 면적: (a + b)²</li>
+                        <li>= 작은 정사각형 면적 + 직각삼각형 4개 면적</li>
+                        <li>= c² + 4 × (1/2)ab</li>
+                        <li>(a + b)² = c² + 2ab</li>
+                        <li>a² + 2ab + b² = c² + 2ab</li>
+                        <li>∴ a² + b² = c²</li>
+                    </ul>
+                </div>
+
+                <h3>⚠️ 주의사항</h3>
+                <ul>
+                    <li>피타고라스 정리는 직각삼각형에만 적용됩니다</li>
+                    <li>모든 변의 길이는 양수여야 합니다</li>
+                    <li>빗변은 항상 가장 긴 변입니다</li>
+                    <li>계산 시 제곱근의 정확한 값을 확인하세요</li>
+                </ul>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Calculator for KR. All rights reserved.</p>
+            <p><a href="../privacy-policy.html">개인정보처리방침</a> | <a href="../terms-of-service.html">이용약관</a></p>
+        </footer>
+    </div>
+
+    <style>
+        .calculation-type {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .type-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .type-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .type-option:hover {
+            border-color: #3498db;
+            background: #f8f9fa;
+        }
+
+        .type-option input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .type-option input[type="radio"]:checked + .option-text {
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        .calc-inputs {
+            display: none;
+        }
+
+        .calc-inputs.active {
+            display: block;
+        }
+
+        .triangle-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .input-group input {
+            padding: 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .input-group small {
+            margin-top: 3px;
+            color: #7f8c8d;
+            font-style: italic;
+            font-size: 12px;
+        }
+
+        .clear-btn {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        .clear-btn:hover {
+            background: #7f8c8d;
+        }
+
+        .triangle-diagram {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .diagram-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .quick-examples {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .example-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .example-btn:hover {
+            background: #2980b9;
+        }
+
+        .formula-box, .example-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .result-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #e74c3c;
+        }
+
+        .result-item h4 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        .calculation-display {
+            font-family: monospace;
+            background: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 768px) {
+            .triangle-inputs {
+                grid-template-columns: 1fr;
+            }
+            
+            .type-selector {
+                flex-direction: column;
+            }
+            
+            .clear-btn {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
+    </style>
+
+    <script src="../common/js/common-functions.js"></script>
+    <script>
+        // 계산 타입 변경 감지
+        document.querySelectorAll('input[name="calcType"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const calcInputs = document.querySelectorAll('.calc-inputs');
+                calcInputs.forEach(input => input.classList.remove('active'));
+                
+                document.getElementById(this.value + '-inputs').classList.add('active');
+                clearResult();
+            });
+        });
+
+        function calculateTriangle() {
+            const calcType = document.querySelector('input[name="calcType"]:checked').value;
+            
+            if (calcType === 'hypotenuse') {
+                calculateHypotenuse();
+            } else {
+                calculateLeg();
+            }
+        }
+
+        function calculateHypotenuse() {
+            const sideA = parseFloat(document.getElementById('sideA').value);
+            const sideB = parseFloat(document.getElementById('sideB').value);
+
+            if (isNaN(sideA) || sideA <= 0) {
+                alert('첫 번째 직각변을 양수로 입력해주세요.');
+                return;
+            }
+
+            if (isNaN(sideB) || sideB <= 0) {
+                alert('두 번째 직각변을 양수로 입력해주세요.');
+                return;
+            }
+
+            const hypotenuse = Math.sqrt(sideA * sideA + sideB * sideB);
+            const area = 0.5 * sideA * sideB;
+            const perimeter = sideA + sideB + hypotenuse;
+
+            // 각도 계산
+            const angleA = Math.atan(sideA / sideB) * 180 / Math.PI;
+            const angleB = Math.atan(sideB / sideA) * 180 / Math.PI;
+
+            displayHypotenuseResult(sideA, sideB, hypotenuse, area, perimeter, angleA, angleB);
+        }
+
+        function calculateLeg() {
+            const hypotenuse = parseFloat(document.getElementById('hypotenuse').value);
+            const knownLeg = parseFloat(document.getElementById('knownLeg').value);
+
+            if (isNaN(hypotenuse) || hypotenuse <= 0) {
+                alert('빗변을 양수로 입력해주세요.');
+                return;
+            }
+
+            if (isNaN(knownLeg) || knownLeg <= 0) {
+                alert('알려진 직각변을 양수로 입력해주세요.');
+                return;
+            }
+
+            if (knownLeg >= hypotenuse) {
+                alert('직각변은 빗변보다 작아야 합니다.');
+                return;
+            }
+
+            const unknownLeg = Math.sqrt(hypotenuse * hypotenuse - knownLeg * knownLeg);
+            const area = 0.5 * knownLeg * unknownLeg;
+            const perimeter = knownLeg + unknownLeg + hypotenuse;
+
+            // 각도 계산
+            const angleKnown = Math.asin(knownLeg / hypotenuse) * 180 / Math.PI;
+            const angleUnknown = Math.asin(unknownLeg / hypotenuse) * 180 / Math.PI;
+
+            displayLegResult(knownLeg, unknownLeg, hypotenuse, area, perimeter, angleKnown, angleUnknown);
+        }
+
+        function displayHypotenuseResult(a, b, c, area, perimeter, angleA, angleB) {
+            const resultHTML = `
+                <h3>🎯 계산 결과 (빗변 계산)</h3>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <h4>입력값</h4>
+                        <p>직각변 a: <strong>${a}</strong></p>
+                        <p>직각변 b: <strong>${b}</strong></p>
+                    </div>
+                    
+                    <div class="result-item">
+                        <h4>빗변 c</h4>
+                        <p><strong>${c.toFixed(6)}</strong></p>
+                        <small>√(a² + b²)</small>
+                    </div>
+                    
+                    <div class="result-item">
+                        <h4>삼각형 면적</h4>
+                        <p><strong>${area.toFixed(6)}</strong></p>
+                        <small>(1/2) × a × b</small>
+                    </div>
+                    
+                    <div class="result-item">
+                        <h4>둘레</h4>
+                        <p><strong>${perimeter.toFixed(6)}</strong></p>
+                        <small>a + b + c</small>
+                    </div>
+                    
+                    <div class="result-item">
+                        <h4>내각</h4>
+                        <p>∠A (변 a 대각): <strong>${angleA.toFixed(2)}°</strong></p>
+                        <p>∠B (변 b 대각): <strong>${angleB.toFixed(2)}°</strong></p>
+                        <p>∠C (직각): <strong>90°</strong></p>
+                    </div>
+                </div>
+                
+                <div class="calculation-steps">
+                    <h4>📝 계산 과정</h4>
+                    <div class="formula-box">
+                        <p><strong>피타고라스 정리 적용:</strong></p>
+                        <div class="calculation-display">
+                            c² = a² + b²<br>
+                            c² = ${a}² + ${b}²<br>
+                            c² = ${(a*a).toFixed(2)} + ${(b*b).toFixed(2)}<br>
+                            c² = ${(a*a + b*b).toFixed(2)}<br>
+                            c = √${(a*a + b*b).toFixed(2)} = ${c.toFixed(6)}
+                        </div>
+                        
+                        <p><strong>검증:</strong></p>
+                        <p>${a.toFixed(2)}² + ${b.toFixed(2)}² = ${(a*a).toFixed(2)} + ${(b*b).toFixed(2)} = ${(a*a + b*b).toFixed(2)}</p>
+                        <p>${c.toFixed(2)}² = ${(c*c).toFixed(2)} ✓</p>
+                    </div>
+                </div>
+                
+                <button onclick="copyResult()" class="copy-btn">📋 결과 복사</button>
+            `;
+
+            displayResult(resultHTML);
+        }
+
+        function displayLegResult(knownLeg, unknownLeg, hypotenuse, area, perimeter, angleKnown, angleUnknown) {
+            const resultHTML = `
+                <h3>🎯 계산 결과 (직각변 계산)</h3>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <h4>입력값</h4>
+                        <p>빗변 c: <strong>${hypotenuse}</strong></p>
+                        <p>알려진 직각변: <strong>${knownLeg}</strong></p>
+                    </div>
+                    
+                    <div class="result-item">
+                        <h4>구하는 직각변</h4>
+                        <p><strong>${unknownLeg.toFixed(6)}</strong></p>
+                        <small>√(c² - 알려진변²)</small>
+                    </div>
+                    
+                    <div class="result-item">
+                        <h4>삼각형 면적</h4>
+                        <p><strong>${area.toFixed(6)}</strong></p>
+                        <small>(1/2) × 두 직각변</small>
+                    </div>
+                    
+                    <div class="result-item">
+                        <h4>둘레</h4>
+                        <p><strong>${perimeter.toFixed(6)}</strong></p>
+                        <small>세 변의 합</small>
+                    </div>
+                    
+                    <div class="result-item">
+                        <h4>내각</h4>
+                        <p>알려진변 대각: <strong>${angleKnown.toFixed(2)}°</strong></p>
+                        <p>구한변 대각: <strong>${angleUnknown.toFixed(2)}°</strong></p>
+                        <p>직각: <strong>90°</strong></p>
+                    </div>
+                </div>
+                
+                <div class="calculation-steps">
+                    <h4>📝 계산 과정</h4>
+                    <div class="formula-box">
+                        <p><strong>피타고라스 정리 적용:</strong></p>
+                        <div class="calculation-display">
+                            a² + b² = c²<br>
+                            구하는변² = c² - 알려진변²<br>
+                            구하는변² = ${hypotenuse}² - ${knownLeg}²<br>
+                            구하는변² = ${(hypotenuse*hypotenuse).toFixed(2)} - ${(knownLeg*knownLeg).toFixed(2)}<br>
+                            구하는변² = ${(hypotenuse*hypotenuse - knownLeg*knownLeg).toFixed(2)}<br>
+                            구하는변 = √${(hypotenuse*hypotenuse - knownLeg*knownLeg).toFixed(2)} = ${unknownLeg.toFixed(6)}
+                        </div>
+                        
+                        <p><strong>검증:</strong></p>
+                        <p>${knownLeg.toFixed(2)}² + ${unknownLeg.toFixed(2)}² = ${(knownLeg*knownLeg).toFixed(2)} + ${(unknownLeg*unknownLeg).toFixed(2)} = ${(knownLeg*knownLeg + unknownLeg*unknownLeg).toFixed(2)}</p>
+                        <p>${hypotenuse.toFixed(2)}² = ${(hypotenuse*hypotenuse).toFixed(2)} ✓</p>
+                    </div>
+                </div>
+                
+                <button onclick="copyResult()" class="copy-btn">📋 결과 복사</button>
+            `;
+
+            displayResult(resultHTML);
+        }
+
+        function displayResult(html) {
+            document.getElementById('resultSection').innerHTML = html;
+            document.getElementById('resultSection').style.display = 'block';
+
+            // Google Analytics 이벤트
+            if (typeof gtag !== 'undefined') {
+                const calcType = document.querySelector('input[name="calcType"]:checked').value;
+                gtag('event', 'calculate', {
+                    'event_category': 'Hypotenuse Calculator',
+                    'event_label': calcType
+                });
+            }
+        }
+
+        function copyResult() {
+            const calcType = document.querySelector('input[name="calcType"]:checked').value;
+            let result = '';
+
+            if (calcType === 'hypotenuse') {
+                const a = parseFloat(document.getElementById('sideA').value);
+                const b = parseFloat(document.getElementById('sideB').value);
+                const c = Math.sqrt(a*a + b*b);
+                
+                result = `빗변 계산 결과
+
+입력값:
+- 직각변 a: ${a}
+- 직각변 b: ${b}
+
+결과:
+- 빗변 c: ${c.toFixed(6)}
+- 면적: ${(0.5*a*b).toFixed(6)}
+
+공식: c = √(a² + b²)
+
+계산 출처: https://calcforkr.com/math/triangle-hypotenuse-calculator.html`;
+            } else {
+                const c = parseFloat(document.getElementById('hypotenuse').value);
+                const known = parseFloat(document.getElementById('knownLeg').value);
+                const unknown = Math.sqrt(c*c - known*known);
+                
+                result = `직각변 계산 결과
+
+입력값:
+- 빗변 c: ${c}
+- 알려진 직각변: ${known}
+
+결과:
+- 구하는 직각변: ${unknown.toFixed(6)}
+- 면적: ${(0.5*known*unknown).toFixed(6)}
+
+공식: a = √(c² - b²)
+
+계산 출처: https://calcforkr.com/math/triangle-hypotenuse-calculator.html`;
+            }
+
+            copyToClipboard(result);
+        }
+
+        function clearAll() {
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.value = '';
+            });
+            clearResult();
+        }
+
+        function clearResult() {
+            document.getElementById('resultSection').style.display = 'none';
+        }
+
+        function loadExample(example) {
+            // 빗변 계산 모드로 전환
+            document.querySelector('input[name="calcType"][value="hypotenuse"]').checked = true;
+            document.querySelectorAll('.calc-inputs').forEach(input => input.classList.remove('active'));
+            document.getElementById('hypotenuse-inputs').classList.add('active');
+
+            const examples = {
+                '3-4-5': { a: 3, b: 4 },
+                '5-12-13': { a: 5, b: 12 },
+                '8-15-17': { a: 8, b: 15 },
+                '7-24-25': { a: 7, b: 24 }
+            };
+
+            if (examples[example]) {
+                document.getElementById('sideA').value = examples[example].a;
+                document.getElementById('sideB').value = examples[example].b;
+            }
+        }
+
+        // 엔터키로 계산
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateTriangle();
+            }
+        });
+
+        // 페이지 로드시 기본값 설정
+        window.onload = function() {
+            document.getElementById('sideA').value = 3;
+            document.getElementById('sideB').value = 4;
+        };
+    </script>
+</body>
+</html>

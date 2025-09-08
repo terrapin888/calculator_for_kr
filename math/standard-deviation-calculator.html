@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>표준편차 계산기 - 모집단/표본 표준편차 | CalcHub</title>
+    <meta name="description" content="데이터의 표준편차와 분산을 즉시 계산하세요. 모집단과 표본 표준편차를 모두 지원하며, 평균과 함께 결과를 제공합니다.">
+    <meta name="keywords" content="표준편차, 분산, 평균, 통계, 데이터분석, 모집단, 표본, 수학계산기, 통계계산기">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "표준편차 계산기",
+      "description": "데이터의 표준편차와 분산을 즉시 계산하세요. 모집단과 표본 표준편차를 모두 지원하며, 평균과 함께 결과를 제공합니다.",
+      "url": "https://www.calcforkr.com/math/standard-deviation-calculator.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header-simple">
+                <h1 class="calculator-title-simple">표준편차 계산기</h1>
+                <p class="calculator-description">데이터의 표준편차, 분산, 평균을 계산합니다</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">데이터 입력</h2>
+                    
+                    <div class="input-group">
+                        <label class="input-label">계산 타입</label>
+                        <select id="calculationType" class="input-field">
+                            <option value="sample">표본 표준편차 (n-1)</option>
+                            <option value="population">모집단 표준편차 (n)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">데이터 입력 방법</label>
+                        <select id="inputMethod" class="input-field" onchange="updateInputMethod()">
+                            <option value="list">리스트 형태 (쉼표로 구분)</option>
+                            <option value="individual">개별 입력</option>
+                        </select>
+                    </div>
+                    
+                    <div id="listInput" class="input-group">
+                        <label class="input-label">데이터 (쉼표로 구분)</label>
+                        <textarea id="dataList" class="input-field" placeholder="1, 2, 3, 4, 5 형태로 입력하세요" rows="3"></textarea>
+                    </div>
+                    
+                    <div id="individualInput" class="input-group" style="display: none;">
+                        <label class="input-label">데이터 개수</label>
+                        <input type="number" id="dataCount" class="input-field" placeholder="데이터 개수" min="1" max="100" onchange="createInputFields()">
+                        <div id="inputFields"></div>
+                    </div>
+                    
+                    <button onclick="calculateStandardDeviation()" class="btn btn-primary">계산하기</button>
+                </div>
+
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <div class="result-simple">
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">데이터 개수 (n)</div>
+                            <div id="count" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">평균 (μ)</div>
+                            <div id="mean" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">분산 (σ²)</div>
+                            <div id="variance" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">표준편차 (σ)</div>
+                            <div id="standardDeviation" class="result-value-simple highlight">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">최솟값</div>
+                            <div id="min" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">최댓값</div>
+                            <div id="max" class="result-value-simple">-</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button onclick="copyResult()" class="btn btn-secondary" id="copyBtn">결과 복사</button>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3 class="info-title">표준편차란?</h3>
+                    <div class="info-content">
+                        <p><strong>표준편차</strong>는 데이터가 평균으로부터 얼마나 퍼져있는지를 나타내는 통계량입니다.</p>
+                        
+                        <h4>표본 vs 모집단</h4>
+                        <ul>
+                            <li><strong>표본 표준편차</strong>: 전체 데이터 중 일부만 가지고 있을 때 사용 (n-1로 나눔)</li>
+                            <li><strong>모집단 표준편차</strong>: 전체 데이터를 모두 가지고 있을 때 사용 (n으로 나눔)</li>
+                        </ul>
+                        
+                        <h4>계산 공식</h4>
+                        <p><strong>표본 표준편차:</strong></p>
+                        <p>s = √(Σ(xi - x̄)² / (n-1))</p>
+                        
+                        <p><strong>모집단 표준편차:</strong></p>
+                        <p>σ = √(Σ(xi - μ)² / n)</p>
+                        
+                        <h4>표준편차 해석</h4>
+                        <ul>
+                            <li><strong>작은 표준편차</strong>: 데이터가 평균 주변에 집중</li>
+                            <li><strong>큰 표준편차</strong>: 데이터가 넓게 분산</li>
+                            <li><strong>0에 가까울 때</strong>: 모든 값이 거의 동일</li>
+                        </ul>
+                        
+                        <h4>실생활 활용</h4>
+                        <ul>
+                            <li>시험 성적 분석 (학생들의 점수 분포)</li>
+                            <li>품질 관리 (제품 규격의 일관성)</li>
+                            <li>주식 투자 (가격 변동성 측정)</li>
+                            <li>연구 데이터 분석 (실험 결과의 신뢰성)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateInputMethod() {
+            const method = document.getElementById('inputMethod').value;
+            const listInput = document.getElementById('listInput');
+            const individualInput = document.getElementById('individualInput');
+            
+            if (method === 'list') {
+                listInput.style.display = 'block';
+                individualInput.style.display = 'none';
+            } else {
+                listInput.style.display = 'none';
+                individualInput.style.display = 'block';
+            }
+        }
+        
+        function createInputFields() {
+            const count = parseInt(document.getElementById('dataCount').value);
+            const container = document.getElementById('inputFields');
+            
+            if (isNaN(count) || count < 1 || count > 100) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            for (let i = 1; i <= count; i++) {
+                html += `<input type="number" class="input-field data-input" placeholder="값 ${i}" step="any" style="margin-top: 5px;">`;
+            }
+            container.innerHTML = html;
+        }
+        
+        function calculateStandardDeviation() {
+            let data = [];
+            const method = document.getElementById('inputMethod').value;
+            const calculationType = document.getElementById('calculationType').value;
+            
+            // 데이터 수집
+            if (method === 'list') {
+                const dataString = document.getElementById('dataList').value;
+                if (!dataString.trim()) {
+                    showError('데이터를 입력해주세요.');
+                    return;
+                }
+                
+                data = dataString.split(',').map(item => {
+                    const num = parseFloat(item.trim());
+                    if (isNaN(num)) {
+                        throw new Error('모든 값이 숫자여야 합니다.');
+                    }
+                    return num;
+                });
+            } else {
+                const inputs = document.querySelectorAll('.data-input');
+                if (inputs.length === 0) {
+                    showError('데이터 개수를 입력하고 값들을 입력해주세요.');
+                    return;
+                }
+                
+                for (let input of inputs) {
+                    const value = parseFloat(input.value);
+                    if (isNaN(value)) {
+                        showError('모든 필드에 숫자를 입력해주세요.');
+                        return;
+                    }
+                    data.push(value);
+                }
+            }
+            
+            if (data.length < 2) {
+                showError('최소 2개 이상의 데이터가 필요합니다.');
+                return;
+            }
+            
+            try {
+                // 기본 통계량 계산
+                const n = data.length;
+                const sum = data.reduce((a, b) => a + b, 0);
+                const mean = sum / n;
+                const min = Math.min(...data);
+                const max = Math.max(...data);
+                
+                // 분산 계산
+                const squaredDifferences = data.map(x => Math.pow(x - mean, 2));
+                const sumSquaredDifferences = squaredDifferences.reduce((a, b) => a + b, 0);
+                
+                let variance, standardDeviation;
+                if (calculationType === 'sample') {
+                    // 표본 분산 (n-1로 나눔)
+                    variance = sumSquaredDifferences / (n - 1);
+                } else {
+                    // 모집단 분산 (n으로 나눔)
+                    variance = sumSquaredDifferences / n;
+                }
+                
+                standardDeviation = Math.sqrt(variance);
+                
+                // 결과 표시
+                document.getElementById('count').textContent = n.toString();
+                document.getElementById('mean').textContent = formatNumberOnly(mean, 6);
+                document.getElementById('variance').textContent = formatNumberOnly(variance, 6);
+                document.getElementById('standardDeviation').textContent = formatNumberOnly(standardDeviation, 6);
+                document.getElementById('min').textContent = formatNumberOnly(min, 6);
+                document.getElementById('max').textContent = formatNumberOnly(max, 6);
+                
+                showResult('resultSection');
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+        
+        function copyResult() {
+            const count = document.getElementById('count').textContent;
+            const mean = document.getElementById('mean').textContent;
+            const variance = document.getElementById('variance').textContent;
+            const standardDeviation = document.getElementById('standardDeviation').textContent;
+            const min = document.getElementById('min').textContent;
+            const max = document.getElementById('max').textContent;
+            const type = document.getElementById('calculationType').value === 'sample' ? '표본' : '모집단';
+            
+            const result = `${type} 표준편차 계산 결과:
+데이터 개수: ${count}
+평균: ${mean}
+분산: ${variance}
+표준편차: ${standardDeviation}
+최솟값: ${min}
+최댓값: ${max}`;
+            
+            copyToClipboard(result, 'copyBtn');
+        }
+        
+        // 엔터키로 계산 (텍스트에어리어용)
+        document.getElementById('dataList').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                calculateStandardDeviation();
+            }
+        });
+        
+        // 실시간 계산
+        bindRealtimeCalculation(['dataList'], () => {
+            const value = document.getElementById('dataList').value;
+            if (value && value.trim()) {
+                calculateStandardDeviation();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

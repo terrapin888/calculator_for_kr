@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>온도 변환기 - 섭씨, 화씨, 절대온도(K) | CalcHub</title>
+    <meta name="description" content="섭씨(℃), 화씨(℉), 절대온도(K), 랭킨(°R) 간의 온도 변환을 즉시 계산하세요. 정확한 공식을 사용한 온도 변환기입니다.">
+    <meta name="keywords" content="온도변환, 섭씨, 화씨, 켈빈, 절대온도, 랭킨, 변환기, 단위변환">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "온도 변환기",
+      "description": "섭씨(℃), 화씨(℉), 절대온도(K), 랭킨(°R) 간의 온도 변환을 즉시 계산하세요. 정확한 공식을 사용한 온도 변환기입니다.",
+      "url": "https://www.calcforkr.com/converter/temperature-converter.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header-simple">
+                <h1 class="calculator-title-simple">온도 변환기</h1>
+                <p class="calculator-description">다양한 온도 단위 간의 변환을 수행합니다</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">온도 입력</h2>
+                    
+                    <div class="input-group">
+                        <label class="input-label">온도</label>
+                        <input type="number" id="temperatureInput" class="input-field" placeholder="25" step="any">
+                        <select id="inputUnit" class="input-field" style="width: auto; margin-left: 10px;" onchange="convertTemperature()">
+                            <option value="celsius">섭씨 (℃)</option>
+                            <option value="fahrenheit">화씨 (℉)</option>
+                            <option value="kelvin">켈빈 (K)</option>
+                            <option value="rankine">랭킨 (°R)</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="convertTemperature()" class="btn btn-primary">변환하기</button>
+                </div>
+
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <div class="result-simple">
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">섭씨 (℃)</div>
+                            <div id="celsius" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">화씨 (℉)</div>
+                            <div id="fahrenheit" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">켈빈 (K)</div>
+                            <div id="kelvin" class="result-value-simple highlight">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">랭킨 (°R)</div>
+                            <div id="rankine" class="result-value-simple">-</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <h3 class="section-title">온도 기준점</h3>
+                        <div class="result-simple">
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">물의 어는점</div>
+                                <div class="result-value-simple">0℃ / 32℉ / 273.15K</div>
+                            </div>
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">물의 끓는점</div>
+                                <div class="result-value-simple">100℃ / 212℉ / 373.15K</div>
+                            </div>
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">절대영도</div>
+                                <div class="result-value-simple">-273.15℃ / -459.67℉ / 0K</div>
+                            </div>
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">실온 (평균)</div>
+                                <div class="result-value-simple">20℃ / 68℉ / 293.15K</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="temperatureContext" style="margin-top: 30px;">
+                        <h3 class="section-title">온도 상황</h3>
+                        <div class="result-simple">
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">상황</div>
+                                <div id="temperatureSituation" class="result-value-simple">-</div>
+                            </div>
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">상태</div>
+                                <div id="temperatureState" class="result-value-simple">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button onclick="copyResult()" class="btn btn-secondary" id="copyBtn">결과 복사</button>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3 class="info-title">온도 변환 공식</h3>
+                    <div class="info-content">
+                        <p><strong>온도 변환</strong>은 서로 다른 척도 간의 정확한 공식을 사용합니다.</p>
+                        
+                        <h4>변환 공식</h4>
+                        <p><strong>섭씨 → 화씨:</strong> ℉ = (℃ × 9/5) + 32</p>
+                        <p><strong>화씨 → 섭씨:</strong> ℃ = (℉ - 32) × 5/9</p>
+                        <p><strong>섭씨 → 켈빈:</strong> K = ℃ + 273.15</p>
+                        <p><strong>켈빈 → 섭씨:</strong> ℃ = K - 273.15</p>
+                        <p><strong>화씨 → 랭킨:</strong> °R = ℉ + 459.67</p>
+                        <p><strong>랭킨 → 화씨:</strong> ℉ = °R - 459.67</p>
+                        
+                        <h4>온도 단위 설명</h4>
+                        <ul>
+                            <li><strong>섭씨 (Celsius, ℃)</strong>: 물의 어는점 0°, 끓는점 100°</li>
+                            <li><strong>화씨 (Fahrenheit, ℉)</strong>: 물의 어는점 32°, 끓는점 212°</li>
+                            <li><strong>켈빈 (Kelvin, K)</strong>: 절대온도, 절대영도가 0K</li>
+                            <li><strong>랭킨 (Rankine, °R)</strong>: 화씨 기반 절대온도</li>
+                        </ul>
+                        
+                        <h4>세계 각국의 온도 표기</h4>
+                        <ul>
+                            <li><strong>섭씨 사용국</strong>: 한국, 중국, 유럽 대부분, 캐나다 등</li>
+                            <li><strong>화씨 사용국</strong>: 미국, 미얀마, 라이베리아</li>
+                            <li><strong>과학/공학</strong>: 켈빈 (SI 단위계 표준)</li>
+                        </ul>
+                        
+                        <h4>일상생활 온도 참고</h4>
+                        <ul>
+                            <li><strong>혹독한 추위</strong>: -20℃ (-4℉)</li>
+                            <li><strong>추운 날씨</strong>: 0℃ (32℉)</li>
+                            <li><strong>서늘한 날씨</strong>: 10℃ (50℉)</li>
+                            <li><strong>쾌적한 온도</strong>: 20℃ (68℉)</li>
+                            <li><strong>따뜻한 날씨</strong>: 30℃ (86℉)</li>
+                            <li><strong>더운 날씨</strong>: 40℃ (104℉)</li>
+                        </ul>
+                        
+                        <h4>특수 온도</h4>
+                        <ul>
+                            <li><strong>인체 체온</strong>: 36.5℃ (97.7℉)</li>
+                            <li><strong>발열</strong>: 38℃ (100.4℉) 이상</li>
+                            <li><strong>고열</strong>: 39℃ (102.2℉) 이상</li>
+                            <li><strong>냉장고</strong>: 4℃ (39℉)</li>
+                            <li><strong>냉동고</strong>: -18℃ (0℉)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function celsiusToFahrenheit(celsius) {
+            return (celsius * 9/5) + 32;
+        }
+        
+        function fahrenheitToCelsius(fahrenheit) {
+            return (fahrenheit - 32) * 5/9;
+        }
+        
+        function celsiusToKelvin(celsius) {
+            return celsius + 273.15;
+        }
+        
+        function kelvinToCelsius(kelvin) {
+            return kelvin - 273.15;
+        }
+        
+        function fahrenheitToRankine(fahrenheit) {
+            return fahrenheit + 459.67;
+        }
+        
+        function rankinToFahrenheit(rankine) {
+            return rankine - 459.67;
+        }
+        
+        function getTemperatureSituation(celsius) {
+            if (celsius < -40) {
+                return { situation: "극한 추위 (남극 수준)", state: "매우 위험" };
+            } else if (celsius < -20) {
+                return { situation: "혹독한 추위", state: "위험" };
+            } else if (celsius < -10) {
+                return { situation: "매우 추움", state: "주의" };
+            } else if (celsius < 0) {
+                return { situation: "추위 (물 결빙)", state: "추움" };
+            } else if (celsius < 10) {
+                return { situation: "서늘함", state: "선선함" };
+            } else if (celsius < 20) {
+                return { situation: "쾌적함", state: "적당함" };
+            } else if (celsius < 30) {
+                return { situation: "따뜻함", state: "포근함" };
+            } else if (celsius < 40) {
+                return { situation: "더움", state: "주의" };
+            } else if (celsius < 50) {
+                return { situation: "매우 더움", state: "위험" };
+            } else {
+                return { situation: "극한 더위", state: "매우 위험" };
+            }
+        }
+        
+        function convertTemperature() {
+            const inputTemp = parseFloat(document.getElementById('temperatureInput').value);
+            const inputUnit = document.getElementById('inputUnit').value;
+            
+            if (isNaN(inputTemp)) {
+                showError('온도 값을 입력해주세요.');
+                return;
+            }
+            
+            let celsius, fahrenheit, kelvin, rankine;
+            
+            // 입력값을 섭씨로 변환
+            switch(inputUnit) {
+                case 'celsius':
+                    celsius = inputTemp;
+                    break;
+                case 'fahrenheit':
+                    celsius = fahrenheitToCelsius(inputTemp);
+                    break;
+                case 'kelvin':
+                    celsius = kelvinToCelsius(inputTemp);
+                    break;
+                case 'rankine':
+                    fahrenheit = rankinToFahrenheit(inputTemp);
+                    celsius = fahrenheitToCelsius(fahrenheit);
+                    break;
+            }
+            
+            // 절대영도보다 낮은 온도 체크 (-273.15℃)
+            if (celsius < -273.15) {
+                showError('절대영도(-273.15℃)보다 낮은 온도는 존재할 수 없습니다.');
+                return;
+            }
+            
+            // 모든 단위로 변환
+            fahrenheit = celsiusToFahrenheit(celsius);
+            kelvin = celsiusToKelvin(celsius);
+            rankine = fahrenheitToRankine(fahrenheit);
+            
+            // 결과 표시
+            document.getElementById('celsius').textContent = formatNumberOnly(celsius, 2) + '℃';
+            document.getElementById('fahrenheit').textContent = formatNumberOnly(fahrenheit, 2) + '℉';
+            document.getElementById('kelvin').textContent = formatNumberOnly(kelvin, 2) + 'K';
+            document.getElementById('rankine').textContent = formatNumberOnly(rankine, 2) + '°R';
+            
+            // 온도 상황 표시
+            const situation = getTemperatureSituation(celsius);
+            document.getElementById('temperatureSituation').textContent = situation.situation;
+            document.getElementById('temperatureState').textContent = situation.state;
+            
+            showResult('resultSection');
+        }
+        
+        function copyResult() {
+            const celsius = document.getElementById('celsius').textContent;
+            const fahrenheit = document.getElementById('fahrenheit').textContent;
+            const kelvin = document.getElementById('kelvin').textContent;
+            const rankine = document.getElementById('rankine').textContent;
+            const situation = document.getElementById('temperatureSituation').textContent;
+            const state = document.getElementById('temperatureState').textContent;
+            
+            const result = `온도 변환 결과:
+섭씨: ${celsius}
+화씨: ${fahrenheit}
+켈빈: ${kelvin}
+랭킨: ${rankine}
+
+상황: ${situation}
+상태: ${state}
+
+기준점:
+물의 어는점: 0℃ / 32℉ / 273.15K
+물의 끓는점: 100℃ / 212℉ / 373.15K
+절대영도: -273.15℃ / -459.67℉ / 0K`;
+            
+            copyToClipboard(result, 'copyBtn');
+        }
+        
+        // 엔터키로 계산
+        bindEnterKey(['temperatureInput'], convertTemperature);
+        
+        // 실시간 계산
+        bindRealtimeCalculation(['temperatureInput'], () => {
+            const value = document.getElementById('temperatureInput').value;
+            if (value && !isNaN(parseFloat(value))) {
+                convertTemperature();
+            }
+        }, 500);
+    </script>
+</body>
+</html>

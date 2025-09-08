@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>걸음수 칼로리 계산기 - 걸음수를 칼로리로 변환 | CalcHub</title>
+    <meta name="description" content="무료 걸음수 칼로리 계산기로 하루 걸음수를 소모 칼로리로 변환하세요. 체중, 걸음 속도, 걸음 길이를 고려하여 정확한 칼로리 소모량을 계산합니다.">
+    <meta name="keywords" content="온라인계산기, 무료계산기, 걸음수칼로리계산기, 칼로리소모계산기, 운동칼로리계산기, 걷기칼로리계산기, 만보기칼로리계산기, 건강계산기">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+</head>
+<body>
+    <!-- 공통 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header">
+                <h1 class="calculator-title">걸음수 칼로리 계산기</h1>
+                <p class="calculator-subtitle">걸음수를 칼로리 소모량으로 변환하세요</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">개인 정보</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="steps" class="input-label">걸음수</label>
+                            <input type="number" id="steps" class="input-field" placeholder="예: 10000">
+                        </div>
+                        <div class="input-group">
+                            <label for="weight" class="input-label">체중 (kg)</label>
+                            <input type="number" id="weight" class="input-field" placeholder="예: 70" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="height" class="input-label">키 (cm)</label>
+                            <input type="number" id="height" class="input-field" placeholder="예: 170" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="pace" class="input-label">걸음 속도</label>
+                            <select id="pace" class="input-field">
+                                <option value="slow">천천히 (3km/h)</option>
+                                <option value="normal" selected>보통 (5km/h)</option>
+                                <option value="fast">빠르게 (6.5km/h)</option>
+                                <option value="brisk">매우 빠르게 (8km/h)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button onclick="calculate()" class="btn btn-primary">계산하기</button>
+                    <button onclick="clearInputs()" class="btn btn-secondary">초기화</button>
+                </div>
+
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">계산 결과</h2>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">소모 칼로리</div>
+                            <div id="calories" class="result-value highlight">- kcal</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">걸은 거리</div>
+                            <div id="distance" class="result-value">- km</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">운동 시간</div>
+                            <div id="duration" class="result-value">- 분</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">MET 값</div>
+                            <div id="metValue" class="result-value">-</div>
+                        </div>
+                    </div>
+                    <button onclick="copyResults()" class="btn btn-secondary">결과 복사</button>
+                </div>
+
+                <div class="info-section">
+                    <h2 class="section-title">걸음수와 칼로리</h2>
+                    <div class="info-content">
+                        <h3>계산 공식:</h3>
+                        <p><strong>칼로리 = MET × 체중(kg) × 시간(시간)</strong></p>
+                        
+                        <h3>MET 값 (걷기 속도별):</h3>
+                        <ul>
+                            <li><strong>천천히 걷기 (3km/h):</strong> 2.5 MET</li>
+                            <li><strong>보통 걸음 (5km/h):</strong> 3.5 MET</li>
+                            <li><strong>빠른 걸음 (6.5km/h):</strong> 4.3 MET</li>
+                            <li><strong>매우 빠른 걸음 (8km/h):</strong> 5.0 MET</li>
+                        </ul>
+
+                        <h3>걸음수 목표:</h3>
+                        <ul>
+                            <li><strong>건강 유지:</strong> 일일 8,000~10,000보</li>
+                            <li><strong>체중 감량:</strong> 일일 12,000~15,000보</li>
+                            <li><strong>고강도 운동:</strong> 일일 15,000보 이상</li>
+                        </ul>
+
+                        <h3>걸음 길이 계산:</h3>
+                        <p>평균 걸음 길이는 키의 약 0.4~0.45배입니다.</p>
+                        <ul>
+                            <li><strong>남성:</strong> 키 × 0.45</li>
+                            <li><strong>여성:</strong> 키 × 0.41</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const steps = parseFloat(document.getElementById('steps').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const pace = document.getElementById('pace').value;
+            
+            if (!steps || !weight || !height) {
+                alert('모든 정보를 입력해주세요.');
+                return;
+            }
+            
+            // MET 값 설정
+            const metValues = {
+                'slow': 2.5,
+                'normal': 3.5,
+                'fast': 4.3,
+                'brisk': 5.0
+            };
+            
+            const speeds = {
+                'slow': 3,
+                'normal': 5,
+                'fast': 6.5,
+                'brisk': 8
+            };
+            
+            const metValue = metValues[pace];
+            const speed = speeds[pace]; // km/h
+            
+            // 걸음 길이 계산 (cm)
+            const strideLength = height * 0.43; // 평균값 사용
+            
+            // 걸은 거리 계산 (km)
+            const distance = (steps * strideLength / 100) / 1000;
+            
+            // 운동 시간 계산 (시간)
+            const duration = distance / speed;
+            const durationMinutes = duration * 60;
+            
+            // 칼로리 계산
+            const calories = metValue * weight * duration;
+            
+            // 결과 표시
+            document.getElementById('calories').textContent = Math.round(calories) + ' kcal';
+            document.getElementById('distance').textContent = distance.toFixed(2) + ' km';
+            document.getElementById('duration').textContent = Math.round(durationMinutes) + ' 분';
+            document.getElementById('metValue').textContent = metValue + ' MET';
+            
+            document.getElementById('resultSection').classList.add('fade-in');
+        }
+
+        function clearInputs() {
+            document.getElementById('steps').value = '';
+            document.getElementById('weight').value = '';
+            document.getElementById('height').value = '';
+            document.getElementById('pace').value = 'normal';
+        }
+
+        function copyResults() {
+            const calories = document.getElementById('calories').textContent;
+            const distance = document.getElementById('distance').textContent;
+            const duration = document.getElementById('duration').textContent;
+            const metValue = document.getElementById('metValue').textContent;
+            
+            const result = `걸음수 칼로리 계산 결과:
+소모 칼로리: ${calories}
+걸은 거리: ${distance}
+운동 시간: ${duration}
+MET 값: ${metValue}`;
+            
+            navigator.clipboard.writeText(result).then(() => {
+                alert('결과가 클립보드에 복사되었습니다!');
+            });
+        }
+
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+    </script>
+</body>
+</html>

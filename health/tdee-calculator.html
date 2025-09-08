@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TDEE 계산기 - 일일 총 에너지 소비량 계산 | CalcHub</title>
+    <meta name="description" content="TDEE(일일 총 에너지 소비량)를 정확하게 계산하세요. 기초대사율과 활동량을 고려하여 하루 필요 칼로리를 구하는 무료 TDEE 계산기입니다.">
+    <meta name="keywords" content="TDEE계산기, 일일소비칼로리, 기초대사율, 활동대사량, 다이어트칼로리, 벌크업칼로리, BMR계산">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "TDEE 계산기",
+      "description": "TDEE(일일 총 에너지 소비량)를 정확하게 계산하세요. 기초대사율과 활동량을 고려하여 하루 필요 칼로리를 구하는 무료 TDEE 계산기입니다.",
+      "url": "https://www.calcforkr.com/health/tdee-calculator.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser"
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header-simple">
+                <h1 class="calculator-title-simple">TDEE 계산기</h1>
+                <p class="calculator-description">일일 총 에너지 소비량을 계산하여 다이어트/벌크업 칼로리를 구합니다</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">기본 정보 입력</h2>
+                    
+                    <div class="input-group">
+                        <label class="input-label">성별</label>
+                        <select id="gender" class="input-field">
+                            <option value="male">남성</option>
+                            <option value="female">여성</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">나이</label>
+                        <input type="number" id="age" class="input-field" placeholder="나이를 입력하세요" min="10" max="100">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">키 (cm)</label>
+                        <input type="number" id="height" class="input-field" placeholder="키를 입력하세요" min="100" max="250" step="0.1">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">체중 (kg)</label>
+                        <input type="number" id="weight" class="input-field" placeholder="체중을 입력하세요" min="20" max="300" step="0.1">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">활동 수준</label>
+                        <select id="activityLevel" class="input-field">
+                            <option value="1.2">앉아서 생활 (운동 안함)</option>
+                            <option value="1.375">가벼운 활동 (주 1-3회 가벼운 운동)</option>
+                            <option value="1.55">보통 활동 (주 3-5회 적당한 운동)</option>
+                            <option value="1.725">활발한 활동 (주 6-7회 강한 운동)</option>
+                            <option value="1.9">매우 활발 (하루 2회 운동 또는 육체노동)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">BMR 계산 방식</label>
+                        <select id="bmrFormula" class="input-field">
+                            <option value="mifflin">Mifflin-St Jeor (권장)</option>
+                            <option value="harris">Harris-Benedict</option>
+                            <option value="katch">Katch-McArdle (체지방률 필요)</option>
+                        </select>
+                    </div>
+                    
+                    <div id="bodyFatGroup" class="input-group" style="display: none;">
+                        <label class="input-label">체지방률 (%)</label>
+                        <input type="number" id="bodyFat" class="input-field" placeholder="체지방률을 입력하세요 (선택)" min="3" max="50" step="0.1">
+                    </div>
+                    
+                    <button onclick="calculateTDEE()" class="btn btn-primary">TDEE 계산</button>
+                </div>
+
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <div class="result-simple">
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">기초대사율 (BMR)</div>
+                            <div id="bmrResult" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">일일 총 소비칼로리 (TDEE)</div>
+                            <div id="tdeeResult" class="result-value-simple highlight">-</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <h3 style="text-align: center; color: #1e293b; margin-bottom: 20px;">목적별 권장 칼로리</h3>
+                        <div class="result-simple">
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">극한 다이어트 (-25%)</div>
+                                <div id="extremeCutting" class="result-value-simple" style="color: #dc2626;">-</div>
+                            </div>
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">빠른 다이어트 (-20%)</div>
+                                <div id="fastCutting" class="result-value-simple" style="color: #ea580c;">-</div>
+                            </div>
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">적당한 다이어트 (-15%)</div>
+                                <div id="moderateCutting" class="result-value-simple" style="color: #f59e0b;">-</div>
+                            </div>
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">체중 유지 (±0%)</div>
+                                <div id="maintenance" class="result-value-simple" style="color: #059669;">-</div>
+                            </div>
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">적당한 벌크업 (+15%)</div>
+                                <div id="moderateBulking" class="result-value-simple" style="color: #0284c7;">-</div>
+                            </div>
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">빠른 벌크업 (+20%)</div>
+                                <div id="fastBulking" class="result-value-simple" style="color: #7c3aed;">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button onclick="copyResult()" class="btn btn-secondary" id="copyBtn">결과 복사</button>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3 class="info-title">TDEE란?</h3>
+                    <div class="info-content">
+                        <p><strong>TDEE(Total Daily Energy Expenditure)</strong>는 일일 총 에너지 소비량으로, 하루 동안 몸이 소비하는 모든 칼로리를 의미합니다.</p>
+                        
+                        <h4>TDEE 구성 요소</h4>
+                        <ul>
+                            <li><strong>BMR (기초대사율)</strong>: 생존을 위한 최소 칼로리 (60-75%)</li>
+                            <li><strong>활동 대사량</strong>: 운동으로 소비되는 칼로리 (15-30%)</li>
+                            <li><strong>열효과</strong>: 음식 소화에 드는 칼로리 (8-15%)</li>
+                            <li><strong>비활동 열생산</strong>: 일상적인 움직임 (15-30%)</li>
+                        </ul>
+                        
+                        <h4>BMR 계산 공식</h4>
+                        <p><strong>Mifflin-St Jeor (권장):</strong></p>
+                        <ul>
+                            <li>남성: BMR = 10 × 체중(kg) + 6.25 × 키(cm) - 5 × 나이 + 5</li>
+                            <li>여성: BMR = 10 × 체중(kg) + 6.25 × 키(cm) - 5 × 나이 - 161</li>
+                        </ul>
+                        
+                        <h4>다이어트/벌크업 가이드</h4>
+                        <ul>
+                            <li><strong>다이어트:</strong> TDEE보다 10-25% 적게 섭취</li>
+                            <li><strong>체중 유지:</strong> TDEE와 동일하게 섭취</li>
+                            <li><strong>벌크업:</strong> TDEE보다 10-20% 많이 섭취</li>
+                            <li><strong>주의:</strong> 극한 다이어트는 건강에 위험할 수 있습니다</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // BMR 공식 변경시 체지방률 입력 필드 토글
+        document.getElementById('bmrFormula').addEventListener('change', function() {
+            const bodyFatGroup = document.getElementById('bodyFatGroup');
+            if (this.value === 'katch') {
+                bodyFatGroup.style.display = 'block';
+            } else {
+                bodyFatGroup.style.display = 'none';
+            }
+        });
+        
+        function calculateTDEE() {
+            // 입력값 가져오기
+            const gender = document.getElementById('gender').value;
+            const age = parseFloat(document.getElementById('age').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const activityLevel = parseFloat(document.getElementById('activityLevel').value);
+            const bmrFormula = document.getElementById('bmrFormula').value;
+            const bodyFat = parseFloat(document.getElementById('bodyFat').value);
+            
+            // 입력값 검증
+            if (isNaN(age) || isNaN(height) || isNaN(weight)) {
+                showError('나이, 키, 체중을 모두 입력해주세요.');
+                return;
+            }
+            
+            if (age < 10 || age > 100) {
+                showError('나이는 10-100세 범위로 입력해주세요.');
+                return;
+            }
+            
+            if (height < 100 || height > 250) {
+                showError('키는 100-250cm 범위로 입력해주세요.');
+                return;
+            }
+            
+            if (weight < 20 || weight > 300) {
+                showError('체중은 20-300kg 범위로 입력해주세요.');
+                return;
+            }
+            
+            // BMR 계산
+            let bmr = 0;
+            
+            switch(bmrFormula) {
+                case 'mifflin':
+                    // Mifflin-St Jeor 공식
+                    if (gender === 'male') {
+                        bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+                    } else {
+                        bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+                    }
+                    break;
+                    
+                case 'harris':
+                    // Harris-Benedict 공식
+                    if (gender === 'male') {
+                        bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+                    } else {
+                        bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+                    }
+                    break;
+                    
+                case 'katch':
+                    // Katch-McArdle 공식 (체지방률 필요)
+                    if (isNaN(bodyFat) || bodyFat < 3 || bodyFat > 50) {
+                        showError('Katch-McArdle 공식을 사용하려면 정확한 체지방률(3-50%)을 입력해주세요.');
+                        return;
+                    }
+                    const leanMass = weight * (1 - bodyFat / 100);
+                    bmr = 370 + (21.6 * leanMass);
+                    break;
+            }
+            
+            // TDEE 계산
+            const tdee = bmr * activityLevel;
+            
+            // 목적별 칼로리 계산
+            const extremeCutting = tdee * 0.75;  // -25%
+            const fastCutting = tdee * 0.8;      // -20%
+            const moderateCutting = tdee * 0.85; // -15%
+            const maintenance = tdee;            // ±0%
+            const moderateBulking = tdee * 1.15; // +15%
+            const fastBulking = tdee * 1.2;     // +20%
+            
+            // 결과 표시
+            document.getElementById('bmrResult').textContent = Math.round(bmr) + ' kcal';
+            document.getElementById('tdeeResult').textContent = Math.round(tdee) + ' kcal';
+            document.getElementById('extremeCutting').textContent = Math.round(extremeCutting) + ' kcal';
+            document.getElementById('fastCutting').textContent = Math.round(fastCutting) + ' kcal';
+            document.getElementById('moderateCutting').textContent = Math.round(moderateCutting) + ' kcal';
+            document.getElementById('maintenance').textContent = Math.round(maintenance) + ' kcal';
+            document.getElementById('moderateBulking').textContent = Math.round(moderateBulking) + ' kcal';
+            document.getElementById('fastBulking').textContent = Math.round(fastBulking) + ' kcal';
+            
+            showResult('resultSection');
+        }
+        
+        function copyResult() {
+            const bmr = document.getElementById('bmrResult').textContent;
+            const tdee = document.getElementById('tdeeResult').textContent;
+            const extremeCutting = document.getElementById('extremeCutting').textContent;
+            const fastCutting = document.getElementById('fastCutting').textContent;
+            const moderateCutting = document.getElementById('moderateCutting').textContent;
+            const maintenance = document.getElementById('maintenance').textContent;
+            const moderateBulking = document.getElementById('moderateBulking').textContent;
+            const fastBulking = document.getElementById('fastBulking').textContent;
+            
+            const result = `TDEE 계산 결과:
+기초대사율 (BMR): ${bmr}
+일일 총 소비칼로리 (TDEE): ${tdee}
+
+목적별 권장 칼로리:
+극한 다이어트 (-25%): ${extremeCutting}
+빠른 다이어트 (-20%): ${fastCutting}
+적당한 다이어트 (-15%): ${moderateCutting}
+체중 유지 (±0%): ${maintenance}
+적당한 벌크업 (+15%): ${moderateBulking}
+빠른 벌크업 (+20%): ${fastBulking}`;
+            
+            copyToClipboard(result, 'copyBtn');
+        }
+        
+        // 엔터키로 계산
+        bindEnterKey(['age', 'height', 'weight', 'bodyFat'], calculateTDEE);
+        
+        // 실시간 계산
+        bindRealtimeCalculation(['age', 'height', 'weight'], () => {
+            const age = document.getElementById('age').value;
+            const height = document.getElementById('height').value;
+            const weight = document.getElementById('weight').value;
+            
+            if (age && height && weight && 
+                !isNaN(parseFloat(age)) && !isNaN(parseFloat(height)) && !isNaN(parseFloat(weight))) {
+                calculateTDEE();
+            }
+        }, 800);
+        
+        // 활동 수준 변경시 자동 계산
+        document.getElementById('activityLevel').addEventListener('change', () => {
+            const age = document.getElementById('age').value;
+            const height = document.getElementById('height').value;
+            const weight = document.getElementById('weight').value;
+            
+            if (age && height && weight) {
+                calculateTDEE();
+            }
+        });
+    </script>
+</body>
+</html>

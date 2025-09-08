@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>투자 수익률 계산기 - ROI 수익률 | CalcHub</title>
+    <meta name="description" content="투자 수익률(ROI)을 계산하고 다양한 투자 시나리오를 비교하세요. 연평균 수익률, 절대 수익, 큼세지 수익 계산.">
+    <meta name="keywords" content="투자수익률, ROI, 연평균수익률, 투자계산, 수익률계산, 투자수익">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "투자 수익률 계산기",
+      "description": "투자 수익률(ROI)을 계산하고 다양한 투자 시나리오를 비교하세요. 연평균 수익률, 절대 수익, 큼세지 수익 계산.",
+      "url": "https://www.calcforkr.com/finance/investment-return-calculator.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="calculator-container">
+            <div class="calculator-header">
+                <h1>투자 수익률 계산기</h1>
+                <p>투자 수익률(ROI)과 연평균 수익률을 계산합니다</p>
+            </div>
+            
+            <div class="calculator-wrapper">
+                <div class="input-section">
+                    <h2>투자 정보</h2>
+                    <div class="input-group">
+                        <label for="initial-investment">초기 투자금</label>
+                        <input type="number" id="initial-investment" min="0" step="10000" placeholder="초기 투자 금액">
+                        <span class="unit-text">단위: 원</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="final-value">최종 가치</label>
+                        <input type="number" id="final-value" min="0" step="10000" placeholder="현재 또는 최종 가치">
+                        <span class="unit-text">단위: 원</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="additional-investment">추가 투자금 (선택사항)</label>
+                        <input type="number" id="additional-investment" min="0" step="10000" placeholder="추가로 투자한 금액">
+                        <span class="unit-text">단위: 원</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="investment-period">투자 기간</label>
+                        <input type="number" id="investment-period" min="0" step="0.1" placeholder="투자 기간">
+                        <select id="period-unit">
+                            <option value="years">년</option>
+                            <option value="months">개월</option>
+                            <option value="days">일</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="dividends">배당금/이자 (선택사항)</label>
+                        <input type="number" id="dividends" min="0" step="1000" placeholder="받은 배당금 또는 이자">
+                        <span class="unit-text">단위: 원</span>
+                    </div>
+                    
+                    <button onclick="calculateInvestmentReturn()" class="calculate-btn">수익률 계산</button>
+                </div>
+                
+                <div class="result-section" id="result" style="display:none;">
+                    <h3>투자 수익률 계산 결과</h3>
+                    <div id="return-summary"></div>
+                    <div id="return-breakdown"></div>
+                    <div id="annualized-returns"></div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3>투자 수익률에 대해</h3>
+                <div class="info-content">
+                    <h4>기본 개념</h4>
+                    <ul>
+                        <li><strong>ROI (Return on Investment)</strong>: 투자 수익률</li>
+                        <li><strong>총 수익률</strong> = (최종가치 - 초기투자금) / 초기투자금 × 100</li>
+                        <li><strong>연평균 수익률</strong> = ((최종가치 / 초기투자금)^(1/기간) - 1) × 100</li>
+                    </ul>
+                    
+                    <h4>수익률 유형</h4>
+                    <ul>
+                        <li><strong>절대 수익률</strong>: 전체 기간 동안의 총 수익률</li>
+                        <li><strong>연평균 수익률 (CAGR)</strong>: 복리 기준 연평균 성장률</li>
+                        <li><strong>실질 수익률</strong>: 인플레이션 고려 수익률</li>
+                        <li><strong>위험 조정 수익률</strong>: 위험 대비 수익률</li>
+                    </ul>
+                    
+                    <h4>투자 수익의 구성</h4>
+                    <ul>
+                        <li><strong>자본 수익</strong>: 주가 또는 자산 가치 상승</li>
+                        <li><strong>소득 수익</strong>: 배당금, 이자, 임대료 등</li>
+                        <li><strong>화폐 수익</strong>: 환율 변동에 따른 수익 (해외 투자)</li>
+                    </ul>
+                    
+                    <h4>성과 평가 기준</h4>
+                    <ul>
+                        <li><strong>우수</strong>: 연 10% 이상 (고위험 투자)</li>
+                        <li><strong>양호</strong>: 연 7-10% (중위험 투자)</li>
+                        <li><strong>보통</strong>: 연 4-7% (안정형 투자)</li>
+                        <li><strong>저조</strong>: 연 4% 미만 (저위험 투자)</li>
+                    </ul>
+                    
+                    <h4>수익률 향상 전략</h4>
+                    <ul>
+                        <li><strong>분산 투자</strong>: 다양한 자산에 분산</li>
+                        <li><strong>장기 투자</strong>: 복리 효과 극대화</li>
+                        <li><strong>정기 투자</strong>: 달러코스트 평균법</li>
+                        <li><strong>리밸래싱</strong>: 자산 재배분으로 위험 조절</li>
+                    </ul>
+                    
+                    <h4>주의사항</h4>
+                    <ul>
+                        <li>과거 수익률은 미래를 보장하지 않음</li>
+                        <li>세금, 수수료 등 비용 고려 필요</li>
+                        <li>인플레이션 영향 고려</li>
+                        <li>위험 대비 수익 구조 분석</li>
+                        <li>시장 주기와 개인 투자 성향 고려</li>
+                    </ul>
+                    
+                    <h4>비교 기준</h4>
+                    <ul>
+                        <li><strong>무위험 수익률</strong>: 국채 3년 금리 (현재 약 3-4%)</li>
+                        <li><strong>시장 수익률</strong>: 코스피 200 지수 (연평균 약 8-10%)</li>
+                        <li><strong>예금 금리</strong>: 연 2-3% (인플레이션 고려시 실질 마이너스)</li>
+                        <li><strong>부동산</strong>: 지역과 시기에 따라 차이</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+    function calculateInvestmentReturn() {
+        const initialInvestment = parseFloat(document.getElementById('initial-investment').value);
+        const finalValue = parseFloat(document.getElementById('final-value').value);
+        const additionalInvestment = parseFloat(document.getElementById('additional-investment').value) || 0;
+        const investmentPeriod = parseFloat(document.getElementById('investment-period').value);
+        const periodUnit = document.getElementById('period-unit').value;
+        const dividends = parseFloat(document.getElementById('dividends').value) || 0;
+        
+        // 입력 값 검증
+        if (isNaN(initialInvestment) || isNaN(finalValue) || isNaN(investmentPeriod) || 
+            initialInvestment <= 0 || finalValue <= 0 || investmentPeriod <= 0) {
+            alert('초기 투자금, 최종 가치, 투자 기간을 올바르게 입력해주세요.');
+            return;
+        }
+        
+        // 기간을 년 단위로 변환
+        let periodInYears;
+        switch (periodUnit) {
+            case 'months':
+                periodInYears = investmentPeriod / 12;
+                break;
+            case 'days':
+                periodInYears = investmentPeriod / 365;
+                break;
+            default:
+                periodInYears = investmentPeriod;
+        }
+        
+        // 총 투자금 (초기 + 추가)
+        const totalInvestment = initialInvestment + additionalInvestment;
+        
+        // 총 수익 (가치 상승 + 배당금)
+        const capitalGain = finalValue - totalInvestment;
+        const totalReturn = capitalGain + dividends;
+        
+        // 수익률 계산
+        const absoluteReturnRate = (totalReturn / totalInvestment) * 100;
+        const capitalGainRate = (capitalGain / totalInvestment) * 100;
+        const dividendYield = (dividends / totalInvestment) * 100;
+        
+        // 연평균 수익률 (CAGR)
+        const annualizedReturn = (Math.pow(finalValue / totalInvestment, 1 / periodInYears) - 1) * 100;
+        
+        // 결과 표시
+        displayReturnSummary({
+            totalInvestment,
+            finalValue,
+            totalReturn,
+            absoluteReturnRate,
+            annualizedReturn,
+            periodInYears,
+            investmentPeriod,
+            periodUnit
+        });
+        
+        displayReturnBreakdown({
+            capitalGain,
+            capitalGainRate,
+            dividends,
+            dividendYield,
+            totalInvestment
+        });
+        
+        displayAnnualizedReturns(annualizedReturn, periodInYears);
+        
+        document.getElementById('result').style.display = 'block';
+    }
+    
+    function displayReturnSummary(data) {
+        const { totalInvestment, finalValue, totalReturn, absoluteReturnRate, annualizedReturn, periodInYears, investmentPeriod, periodUnit } = data;
+        
+        const periodText = {
+            'years': '년',
+            'months': '개월',
+            'days': '일'
+        };
+        
+        let summaryHtml = `
+            <div class="return-summary-card">
+                <div class="summary-header">
+                    <h4>투자 성과 요약</h4>
+                    <div class="investment-period">${investmentPeriod}${periodText[periodUnit]} 투자</div>
+                </div>
+                
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <span class="label">총 투자금</span>
+                        <span class="value">${totalInvestment.toLocaleString()}원</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">최종 가치</span>
+                        <span class="value">${finalValue.toLocaleString()}원</span>
+                    </div>
+                    <div class="summary-item highlight">
+                        <span class="label">총 수익</span>
+                        <span class="value ${totalReturn >= 0 ? 'positive' : 'negative'}">${totalReturn.toLocaleString()}원</span>
+                    </div>
+                    <div class="summary-item highlight">
+                        <span class="label">절대 수익률</span>
+                        <span class="value ${absoluteReturnRate >= 0 ? 'positive' : 'negative'}">${absoluteReturnRate.toFixed(2)}%</span>
+                    </div>
+                    <div class="summary-item major">
+                        <span class="label">연평균 수익률</span>
+                        <span class="value ${annualizedReturn >= 0 ? 'positive' : 'negative'}">${annualizedReturn.toFixed(2)}%</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('return-summary').innerHTML = summaryHtml;
+    }
+    
+    function displayReturnBreakdown(data) {
+        const { capitalGain, capitalGainRate, dividends, dividendYield, totalInvestment } = data;
+        
+        let breakdownHtml = `
+            <h4>수익 구성 분석</h4>
+            <div class="breakdown-container">
+                <div class="breakdown-item">
+                    <div class="breakdown-header">
+                        <span class="breakdown-title">자본 수익 (Capital Gain)</span>
+                        <span class="breakdown-percentage">${capitalGainRate.toFixed(2)}%</span>
+                    </div>
+                    <div class="breakdown-details">
+                        <span class="breakdown-amount ${capitalGain >= 0 ? 'positive' : 'negative'}">${capitalGain.toLocaleString()}원</span>
+                        <span class="breakdown-description">자산 가치 변동에 따른 수익</span>
+                    </div>
+                </div>
+                
+                <div class="breakdown-item">
+                    <div class="breakdown-header">
+                        <span class="breakdown-title">소득 수익 (Income)</span>
+                        <span class="breakdown-percentage">${dividendYield.toFixed(2)}%</span>
+                    </div>
+                    <div class="breakdown-details">
+                        <span class="breakdown-amount positive">${dividends.toLocaleString()}원</span>
+                        <span class="breakdown-description">배당금, 이자 등 수익</span>
+                    </div>
+                </div>
+                
+                <div class="breakdown-chart">
+                    <div class="chart-bar">
+                        <div class="chart-segment capital-gain" style="width: ${Math.abs(capitalGainRate) / (Math.abs(capitalGainRate) + dividendYield) * 100}%">
+                            자본수익
+                        </div>
+                        <div class="chart-segment dividend" style="width: ${dividendYield / (Math.abs(capitalGainRate) + dividendYield) * 100}%">
+                            소득수익
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('return-breakdown').innerHTML = breakdownHtml;
+    }
+    
+    function displayAnnualizedReturns(annualizedReturn, periodInYears) {
+        let analysisHtml = '<h4>수익률 분석 및 평가</h4>';
+        
+        // 성과 평가
+        let performance, performanceClass;
+        if (annualizedReturn >= 10) {
+            performance = '우수';
+            performanceClass = 'excellent';
+        } else if (annualizedReturn >= 7) {
+            performance = '양호';
+            performanceClass = 'good';
+        } else if (annualizedReturn >= 4) {
+            performance = '보통';
+            performanceClass = 'average';
+        } else if (annualizedReturn >= 0) {
+            performance = '저조';
+            performanceClass = 'below-average';
+        } else {
+            performance = '손실';
+            performanceClass = 'loss';
+        }
+        
+        analysisHtml += `
+            <div class="analysis-container">
+                <div class="performance-rating">
+                    <div class="rating-label">투자 성과 평가</div>
+                    <div class="rating-value ${performanceClass}">${performance}</div>
+                    <div class="rating-description">연평균 ${annualizedReturn.toFixed(2)}% 수익률</div>
+                </div>
+                
+                <div class="benchmark-comparison">
+                    <h5>비교 기준 대비 성과</h5>
+                    <div class="benchmark-item">
+                        <span class="benchmark-name">예금 금리 (3%)</span>
+                        <span class="benchmark-diff ${annualizedReturn > 3 ? 'positive' : 'negative'}">${(annualizedReturn - 3).toFixed(2)}%p</span>
+                    </div>
+                    <div class="benchmark-item">
+                        <span class="benchmark-name">국채 3년 (4%)</span>
+                        <span class="benchmark-diff ${annualizedReturn > 4 ? 'positive' : 'negative'}">${(annualizedReturn - 4).toFixed(2)}%p</span>
+                    </div>
+                    <div class="benchmark-item">
+                        <span class="benchmark-name">코스피 200 (9%)</span>
+                        <span class="benchmark-diff ${annualizedReturn > 9 ? 'positive' : 'negative'}">${(annualizedReturn - 9).toFixed(2)}%p</span>
+                    </div>
+                </div>
+                
+                <div class="projection">
+                    <h5>1만원 투자 시 미래 가치 예상</h5>
+                    <div class="projection-grid">
+                        <div class="projection-item">
+                            <span class="projection-period">5년 후</span>
+                            <span class="projection-value">${(10000 * Math.pow(1 + annualizedReturn / 100, 5)).toLocaleString()}원</span>
+                        </div>
+                        <div class="projection-item">
+                            <span class="projection-period">10년 후</span>
+                            <span class="projection-value">${(10000 * Math.pow(1 + annualizedReturn / 100, 10)).toLocaleString()}원</span>
+                        </div>
+                        <div class="projection-item">
+                            <span class="projection-period">20년 후</span>
+                            <span class="projection-value">${(10000 * Math.pow(1 + annualizedReturn / 100, 20)).toLocaleString()}원</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('annualized-returns').innerHTML = analysisHtml;
+    }
+    </script>
+    
+    <style>
+    .return-summary-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .summary-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .summary-header h4 {
+        margin: 0;
+        font-size: 1.3em;
+    }
+    
+    .investment-period {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 500;
+    }
+    
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+    
+    .summary-item {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        text-align: center;
+    }
+    
+    .summary-item.highlight {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 15px;
+        border-radius: 8px;
+    }
+    
+    .summary-item.major {
+        background: rgba(255, 255, 255, 0.25);
+        padding: 20px;
+        border-radius: 8px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .summary-item .label {
+        font-size: 0.9em;
+        opacity: 0.9;
+    }
+    
+    .summary-item .value {
+        font-size: 1.2em;
+        font-weight: bold;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .value.positive {
+        color: #4CAF50;
+    }
+    
+    .value.negative {
+        color: #f44336;
+    }
+    
+    .return-summary-card .value.positive,
+    .return-summary-card .value.negative {
+        color: white;
+    }
+    
+    .breakdown-container {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 10px;
+    }
+    
+    .breakdown-item {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .breakdown-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    .breakdown-title {
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .breakdown-percentage {
+        font-weight: bold;
+        font-size: 1.1em;
+        color: #007bff;
+    }
+    
+    .breakdown-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .breakdown-amount {
+        font-size: 1.3em;
+        font-weight: bold;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .breakdown-amount.positive {
+        color: #28a745;
+    }
+    
+    .breakdown-amount.negative {
+        color: #dc3545;
+    }
+    
+    .breakdown-description {
+        font-size: 0.9em;
+        color: #6c757d;
+    }
+    
+    .breakdown-chart {
+        margin-top: 20px;
+    }
+    
+    .chart-bar {
+        display: flex;
+        height: 30px;
+        border-radius: 15px;
+        overflow: hidden;
+        background: #e9ecef;
+    }
+    
+    .chart-segment {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.85em;
+        font-weight: bold;
+    }
+    
+    .chart-segment.capital-gain {
+        background: #007bff;
+    }
+    
+    .chart-segment.dividend {
+        background: #28a745;
+    }
+    
+    .analysis-container {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 15px;
+    }
+    
+    .performance-rating {
+        text-align: center;
+        margin-bottom: 25px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .rating-label {
+        font-size: 0.9em;
+        color: #6c757d;
+        margin-bottom: 5px;
+    }
+    
+    .rating-value {
+        font-size: 2em;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .rating-value.excellent {
+        color: #28a745;
+    }
+    
+    .rating-value.good {
+        color: #20c997;
+    }
+    
+    .rating-value.average {
+        color: #ffc107;
+    }
+    
+    .rating-value.below-average {
+        color: #fd7e14;
+    }
+    
+    .rating-value.loss {
+        color: #dc3545;
+    }
+    
+    .benchmark-comparison {
+        margin-bottom: 25px;
+    }
+    
+    .benchmark-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f3f4;
+    }
+    
+    .benchmark-item:last-child {
+        border-bottom: none;
+    }
+    
+    .benchmark-name {
+        color: #495057;
+    }
+    
+    .benchmark-diff {
+        font-weight: bold;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .benchmark-diff.positive {
+        color: #28a745;
+    }
+    
+    .benchmark-diff.positive:before {
+        content: '+';
+    }
+    
+    .benchmark-diff.negative {
+        color: #dc3545;
+    }
+    
+    .projection-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-top: 10px;
+    }
+    
+    .projection-item {
+        text-align: center;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border: 2px solid #e9ecef;
+    }
+    
+    .projection-period {
+        display: block;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 5px;
+    }
+    
+    .projection-value {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #007bff;
+        font-family: 'Courier New', monospace;
+    }
+    </style>
+
+    <!-- 교육 콘텐츠 섹션 추가 -->
+    <div class="content-section" style="margin-top: 40px; padding: 30px; background: #f8f9fa; border-radius: 12px;">
+        
+        <!-- 1. 메뉴얼 (사용법 가이드) -->
+        <div class="manual-section" style="margin-bottom: 30px;">
+            <h2 style="color: #333; font-size: 24px; margin-bottom: 15px;">📖 투자 수익률 계산기 사용 가이드</h2>
+            <p style="line-height: 1.8; color: #666;">
+                투자 수익률 계산기는 다양한 투자 상품의 수익률을 정확하게 분석하는 전문 도구입니다. 
+                주식, 부동산, 펀드 등 모든 투자 상품의 실제 수익률과 위험도를 객관적으로 평가할 수 있습니다.
+            </p>
+            <ul style="line-height: 1.8; color: #666; margin-left: 20px;">
+                <li><strong>단순 수익률:</strong> 투자 기간과 수익금액으로 연환산 수익률 계산</li>
+                <li><strong>복합 지표 분석:</strong> 샤프 비율, 최대 낙폭, 변동성까지 종합 평가</li>
+                <li><strong>세후 수익률:</strong> 세금과 수수료를 반영한 실질 수익률 산출</li>
+            </ul>
+            <p style="line-height: 1.8; color: #666;">
+                과거 수익률 데이터를 통해 미래 투자 전략을 수립하고 포트폴리오 최적화에 활용하세요.
+            </p>
+        </div>
+
+        <!-- 2. 실제 예시 -->
+        <div class="example-section" style="margin-bottom: 30px;">
+            <h2 style="color: #333; font-size: 24px; margin-bottom: 15px;">💡 실제 활용 예시</h2>
+            
+            <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                <h3 style="color: #007bff; font-size: 18px; margin-bottom: 10px;">📈 주식 투자 분석</h3>
+                <p style="line-height: 1.8; color: #666;">
+                    • 삼성전자 1년간 투자: 100만원→120만원 → <strong>연 수익률 20%</strong><br>
+                    • KOSPI vs 개별 종목 수익률 비교 분석<br>
+                    • 배당금 포함 총 수익률(Total Return) 계산
+                </p>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                <h3 style="color: #28a745; font-size: 18px; margin-bottom: 10px;">🏠 부동산 투자 수익</h3>
+                <p style="line-height: 1.8; color: #666;">
+                    • 아파트 5억→6억 (3년) → <strong>연평균 7.2% 상승</strong><br>
+                    • 임대수익 포함 실질 수익률 계산<br>
+                    • 취득세, 양도세 고려한 순수익 분석
+                </p>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 8px;">
+                <h3 style="color: #dc3545; font-size: 18px; margin-bottom: 10px;">💰 펀드 & 적금 비교</h3>
+                <p style="line-height: 1.8; color: #666;">
+                    • S&P500 인덱스펀드 5년 평균 → <strong>연 12.3% 수익</strong><br>
+                    • 은행 적금 vs 주식형 펀드 수익률 비교<br>
+                    • 달러 투자 시 환율 수익 별도 계산
+                </p>
+            </div>
+        </div>
+
+        <!-- 3. 생활 꿀팁 -->
+        <div class="tips-section" style="margin-bottom: 30px;">
+            <h2 style="color: #333; font-size: 24px; margin-bottom: 15px;">🔥 알아두면 유용한 꿀팁</h2>
+            <div style="background: #fff3cd; padding: 20px; border-radius: 8px; border-left: 4px solid #ffc107;">
+                <ul style="line-height: 2; color: #666; margin-left: 20px;">
+                    <li><strong>연환산 수익률:</strong> 단기 수익을 1년 기준으로 환산하여 비교 분석</li>
+                    <li><strong>실질 수익률:</strong> 인플레이션(물가상승률) 2-3%를 차감한 실제 구매력</li>
+                    <li><strong>세후 수익률:</strong> 양도소득세 22%, 배당소득세 14% 고려</li>
+                    <li><strong>변동성 확인:</strong> 높은 수익률일수록 변동성(리스크)도 크다</li>
+                    <li><strong>분산 투자:</strong> 한 종목 집중보다 여러 자산 분산이 안전</li>
+                    <li><strong>장기 관점:</strong> 단기 변동에 휘둘리지 말고 5년 이상 장기 투자</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 4. 관련 용어 정리 -->
+        <div class="korean-special-section">
+            <h2 style="color: #333; font-size: 24px; margin-bottom: 15px;">📚 관련 용어 정리</h2>
+            <div style="background: #e8f4fd; padding: 20px; border-radius: 8px; border-left: 4px solid #007bff;">
+                <p style="line-height: 1.8; color: #666; margin-bottom: 10px;">
+                    <strong>✅ 연환산 수익률:</strong> 투자 기간에 관계없이 1년 기준으로 환산한 수익률<br>
+                    <strong>✅ 샤프 비율:</strong> 위험 대비 수익률을 나타내는 투자 효율성 지표<br>
+                    <strong>✅ 최대 낙폭(MDD):</strong> 투자 기간 중 최고점에서 최저점까지의 하락률<br>
+                    <strong>✅ 변동성:</strong> 투자 수익률이 평균에서 벗어나는 정도(표준편차)<br>
+                    <strong>✅ 토탈 리턴:</strong> 자본 이득과 배당수익을 합한 총 수익률
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>혈압 분류 계산기 - 고혈압 진단 기준 | 건강 계산기</title>
+    <meta name="description" content="혈압 수치를 입력하여 정상, 고혈압 전단계, 고혈압 1단계, 2단계를 판단하세요. WHO, 대한고혈압학회 기준으로 혈압을 분류하고 건강 관리 방법을 제공합니다.">
+    <meta name="keywords" content="혈압계산기, 고혈압진단, 혈압분류, 수축기혈압, 이완기혈압, 혈압기준, 건강계산기">
+    <meta name="author" content="계산기 For 한국인">
+    <meta property="og:title" content="혈압 분류 계산기 - 고혈압 진단 기준">
+    <meta property="og:description" content="혈압 수치로 정상, 고혈압 전단계, 고혈압 단계를 판단하는 계산기">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://calcforkr.com/health/blood-pressure-calculator.html">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+            crossorigin="anonymous"></script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "혈압 분류 계산기",
+      "description": "혈압 수치를 입력하여 정상, 고혈압 전단계, 고혈압 단계를 판단하는 계산기",
+      "url": "https://calcforkr.com/health/blood-pressure-calculator.html",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+        .blood-pressure-result {
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .normal { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; }
+        .elevated { background: linear-gradient(135deg, #FF9800, #f57c00); color: white; }
+        .stage1 { background: linear-gradient(135deg, #FF5722, #e64a19); color: white; }
+        .stage2 { background: linear-gradient(135deg, #F44336, #d32f2f); color: white; }
+        .crisis { background: linear-gradient(135deg, #9C27B0, #7b1fa2); color: white; }
+        
+        .bp-ranges {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .bp-range {
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .tip-card {
+            padding: 20px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>혈압 분류 계산기</h1>
+        <p class="description">혈압 수치를 입력하여 정상, 고혈압 전단계, 고혈압 1단계, 2단계를 판단하세요. WHO와 대한고혈압학회 기준을 적용합니다.</p>
+        
+        <div class="calculator-container">
+            <div class="input-group">
+                <label for="systolic">수축기 혈압 (mmHg):</label>
+                <input type="number" id="systolic" min="60" max="300" placeholder="120">
+                <small>정상 범위: 90-140 mmHg</small>
+            </div>
+            
+            <div class="input-group">
+                <label for="diastolic">이완기 혈압 (mmHg):</label>
+                <input type="number" id="diastolic" min="40" max="200" placeholder="80">
+                <small>정상 범위: 60-90 mmHg</small>
+            </div>
+            
+            <button onclick="classifyBloodPressure()" class="calculate-btn">혈압 분류하기</button>
+            
+            <div id="result"></div>
+        </div>
+        
+        <div class="info-section">
+            <h2>혈압 분류 기준 (대한고혈압학회)</h2>
+            <div class="bp-ranges">
+                <div class="bp-range normal">
+                    <h3>정상 혈압</h3>
+                    <p>수축기: 120mmHg 미만<br>이완기: 80mmHg 미만</p>
+                </div>
+                <div class="bp-range elevated">
+                    <h3>고혈압 전단계</h3>
+                    <p>수축기: 120-139mmHg<br>이완기: 80-89mmHg</p>
+                </div>
+                <div class="bp-range stage1">
+                    <h3>1단계 고혈압</h3>
+                    <p>수축기: 140-159mmHg<br>이완기: 90-99mmHg</p>
+                </div>
+                <div class="bp-range stage2">
+                    <h3>2단계 고혈압</h3>
+                    <p>수축기: 160mmHg 이상<br>이완기: 100mmHg 이상</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>혈압 관리 방법</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <h3>🍎 식이요법</h3>
+                    <ul>
+                        <li>나트륨 섭취량 줄이기 (하루 6g 이하)</li>
+                        <li>칼륨이 풍부한 과일, 채소 섭취</li>
+                        <li>DASH 식단 (채소, 과일, 저지방 유제품)</li>
+                        <li>금주 또는 음주량 제한</li>
+                    </ul>
+                </div>
+                <div class="tip-card">
+                    <h3>🏃‍♂️ 운동 요법</h3>
+                    <ul>
+                        <li>유산소 운동 주 5회 이상, 30분 이상</li>
+                        <li>걷기, 조깅, 수영, 자전거 타기</li>
+                        <li>근력 운동 주 2-3회</li>
+                        <li>점진적 강도 증가</li>
+                    </ul>
+                </div>
+                <div class="tip-card">
+                    <h3>🧘‍♀️ 생활습관</h3>
+                    <ul>
+                        <li>금연</li>
+                        <li>스트레스 관리 (명상, 요가)</li>
+                        <li>충분한 수면 (7-8시간)</li>
+                        <li>체중 관리 (BMI 25 이하)</li>
+                    </ul>
+                </div>
+                <div class="tip-card">
+                    <h3>🩺 정기 검진</h3>
+                    <ul>
+                        <li>가정에서 정기적 혈압 측정</li>
+                        <li>의료진과 상담</li>
+                        <li>약물 복용 시 지시사항 준수</li>
+                        <li>합병증 예방 검사</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>혈압 측정 방법</h2>
+            <div class="measurement-guide">
+                <h3>올바른 측정을 위한 준비</h3>
+                <ul>
+                    <li><strong>휴식:</strong> 5분 이상 안정을 취한 후 측정</li>
+                    <li><strong>자세:</strong> 등받이가 있는 의자에 앉아 발을 바닥에</li>
+                    <li><strong>팔 위치:</strong> 심장 높이에 팔꿈치를 놓고 측정</li>
+                    <li><strong>커프 크기:</strong> 팔 둘레에 맞는 적절한 크기 사용</li>
+                    <li><strong>측정 시간:</strong> 아침, 저녁 같은 시간에 측정</li>
+                    <li><strong>기록:</strong> 여러 번 측정하여 평균값 기록</li>
+                </ul>
+                
+                <h3>측정 시 주의사항</h3>
+                <ul>
+                    <li>카페인, 운동, 흡연 30분 전 금지</li>
+                    <li>측정 중 말하지 않기</li>
+                    <li>화장실을 미리 다녀온 후 측정</li>
+                    <li>스마트폰이나 TV 시청 중 측정 금지</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>고혈압 합병증</h2>
+            <div class="complications-info">
+                <h3>심혈관계 합병증</h3>
+                <ul>
+                    <li><strong>관상동맥질환:</strong> 심근경색, 협심증</li>
+                    <li><strong>뇌혈관질환:</strong> 뇌졸중, 뇌출혈</li>
+                    <li><strong>심부전:</strong> 심장 기능 저하</li>
+                    <li><strong>대동맥질환:</strong> 대동맥박리, 동맥경화</li>
+                </ul>
+                
+                <h3>기타 장기 손상</h3>
+                <ul>
+                    <li><strong>신장질환:</strong> 만성신부전, 단백뇨</li>
+                    <li><strong>눈 합병증:</strong> 망막병증, 시력 저하</li>
+                    <li><strong>말초혈관질환:</strong> 다리 혈관 폐색</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="disclaimer">
+            <p><strong>주의:</strong> 이 계산기는 참고용으로만 사용하시고, 정확한 진단과 치료는 반드시 의료진과 상담하시기 바랍니다. 고혈압이 의심되는 경우 즉시 병원을 방문하세요.</p>
+        </div>
+    </div>
+    
+    <script src="../js/calculator-common.js"></script>
+    <script>
+        function classifyBloodPressure() {
+            const systolic = parseInt(document.getElementById('systolic').value);
+            const diastolic = parseInt(document.getElementById('diastolic').value);
+            
+            if (!systolic || !diastolic) {
+                showError('수축기 혈압과 이완기 혈압을 모두 입력해주세요.');
+                return;
+            }
+            
+            if (systolic < 60 || systolic > 300 || diastolic < 40 || diastolic > 200) {
+                showError('혈압 수치를 다시 확인해주세요.');
+                return;
+            }
+            
+            let category, className, advice, risk;
+            
+            if (systolic >= 180 || diastolic >= 110) {
+                category = '고혈압 위기 (응급상황)';
+                className = 'crisis';
+                advice = '즉시 응급실을 방문하세요!';
+                risk = '매우 높음';
+            } else if (systolic >= 160 || diastolic >= 100) {
+                category = '2단계 고혈압';
+                className = 'stage2';
+                advice = '즉시 의료진과 상담하고 치료를 시작해야 합니다.';
+                risk = '높음';
+            } else if (systolic >= 140 || diastolic >= 90) {
+                category = '1단계 고혈압';
+                className = 'stage1';
+                advice = '생활습관 개선과 함께 의료진 상담이 필요합니다.';
+                risk = '보통';
+            } else if (systolic >= 120 || diastolic >= 80) {
+                category = '고혈압 전단계';
+                className = 'elevated';
+                advice = '생활습관 개선을 통해 정상 혈압을 유지하세요.';
+                risk = '약간 높음';
+            } else {
+                category = '정상 혈압';
+                className = 'normal';
+                advice = '현재 혈압을 유지하기 위해 건강한 생활습관을 계속하세요.';
+                risk = '낮음';
+            }
+            
+            const resultHTML = `
+                <div class="blood-pressure-result ${className}">
+                    <h3>${category}</h3>
+                    <p>수축기: ${systolic}mmHg / 이완기: ${diastolic}mmHg</p>
+                    <p>심혈관 위험도: ${risk}</p>
+                </div>
+                <div class="detailed-result">
+                    <h4>권장사항</h4>
+                    <p>${advice}</p>
+                    <div class="measurement-tips">
+                        <h4>추가 정보</h4>
+                        <ul>
+                            <li>혈압은 하루 중 시간대에 따라 변할 수 있습니다</li>
+                            <li>여러 번 측정하여 평균값을 기록하세요</li>
+                            <li>가정용 혈압계를 사용하여 정기적으로 측정하세요</li>
+                            <li>약물 복용 중인 경우 의료진과 상담 후 조절하세요</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('result').innerHTML = resultHTML;
+            
+            // Google Analytics 이벤트 추적
+            gtag('event', 'blood_pressure_calculation', {
+                'event_category': 'Health Calculator',
+                'event_label': category
+            });
+        }
+        
+        function showError(message) {
+            document.getElementById('result').innerHTML = 
+                `<div class="error-message">${message}</div>`;
+        }
+        
+        // 엔터 키로 계산 실행
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                classifyBloodPressure();
+            }
+        });
+    </script>
+
+    <!-- 정보 섹션 -->
+    <div class="container">
+        <div class="info-section">
+            <div class="info-card">
+                <h2>📖 혈압계산기 사용 메뉴얼</h2>
+                <ul>
+                    <li><strong>수축기 혈압 입력:</strong> 심장이 수축할 때 측정되는 높은 수치를 입력하세요 (예: 120mmHg)</li>
+                    <li><strong>이완기 혈압 입력:</strong> 심장이 이완할 때 측정되는 낮은 수치를 입력하세요 (예: 80mmHg)</li>
+                    <li><strong>정확한 측정:</strong> 안정된 상태에서 측정한 값을 입력하는 것이 중요합니다</li>
+                    <li><strong>분류 확인:</strong> 대한고혈압학회 기준에 따른 혈압 분류와 관리 방법을 확인하세요</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h2>💡 실제 혈압 분류 예시</h2>
+                <div class="example-box">
+                    <h3>✅ 정상 혈압 예시</h3>
+                    <p><strong>상황:</strong> 건강한 30대 성인의 혈압 측정</p>
+                    <p><strong>측정값:</strong></p>
+                    <ul>
+                        <li>수축기 혈압: 115mmHg</li>
+                        <li>이완기 혈압: 75mmHg</li>
+                        <li>분류: 정상 혈압</li>
+                        <li>권장사항: 현재 생활습관 유지, 정기 검진</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h3>⚠️ 고혈압 1단계 예시</h3>
+                    <p><strong>상황:</strong> 50대 직장인의 건강검진 결과</p>
+                    <p><strong>측정값:</strong></p>
+                    <ul>
+                        <li>수축기 혈압: 145mmHg</li>
+                        <li>이완기 혈압: 92mmHg</li>
+                        <li>분류: 고혈압 1단계</li>
+                        <li>권장사항: 의사 상담, 생활습관 개선, 약물치료 고려</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h2>🔥 혈압 관리 생활 꿀팁</h2>
+                <ul>
+                    <li><strong>정확한 측정:</strong> 측정 30분 전 금연·금주, 5분 안정 후 측정</li>
+                    <li><strong>나트륨 줄이기:</strong> 하루 소금 섭취량 6g 이하로 제한 (라면, 찌개 주의)</li>
+                    <li><strong>규칙적 운동:</strong> 주 3-4회 30분 이상 유산소 운동 (걷기, 수영 등)</li>
+                    <li><strong>체중 관리:</strong> 적정 체중 유지로 혈압 5-20mmHg 감소 효과</li>
+                    <li><strong>스트레스 관리:</strong> 충분한 수면, 명상, 취미활동으로 스트레스 해소</li>
+                    <li><strong>금연·절주:</strong> 흡연은 즉시 금지, 음주는 남성 2잔/여성 1잔 이하</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h2>📚 혈압 관련 용어 정리</h2>
+                <div class="term-grid">
+                    <div class="term-item">
+                        <h3>수축기 혈압</h3>
+                        <p>심장이 수축하여 혈액을 펌프질할 때 동맥벽에 가해지는 최고 압력</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>이완기 혈압</h3>
+                        <p>심장이 이완되어 혈액을 받아들일 때 동맥벽에 가해지는 최저 압력</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>고혈압</h3>
+                        <p>수축기 혈압 140mmHg 이상 또는 이완기 혈압 90mmHg 이상인 상태</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>백의 고혈압</h3>
+                        <p>병원에서만 높고 집에서는 정상인 혈압으로, 스트레스가 원인</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>가면 고혈압</h3>
+                        <p>병원에서는 정상이지만 실제로는 고혈압인 상태</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>맥압</h3>
+                        <p>수축기 혈압에서 이완기 혈압을 뺀 값으로 혈관 탄성도를 나타냄</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

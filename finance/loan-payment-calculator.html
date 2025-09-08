@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대출 상환 계산기 - 원리금균등, 원금균등 상환 | 금융 계산기</title>
+    <meta name="description" content="대출 원금, 금리, 기간을 입력하여 월 상환액, 총 이자, 상환 일정을 계산합니다. 원리금균등상환과 원금균등상환 방식을 비교하여 최적의 상환 계획을 세우세요.">
+    <meta name="keywords" content="대출계산기, 대출상환, 원리금균등, 원금균등, 월상환액, 대출금리, 주택담보대출">
+    <meta name="author" content="계산기 For 한국인">
+    <meta property="og:title" content="대출 상환 계산기 - 원리금균등, 원금균등 상환">
+    <meta property="og:description" content="대출 상환 방식별 월 납입액과 총 이자를 비교 계산하는 금융 계산기">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://calcforkr.com/finance/loan-payment-calculator.html">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+            crossorigin="anonymous"></script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "대출 상환 계산기",
+      "description": "대출 원금, 금리, 기간을 입력하여 월 상환액과 총 이자를 계산하는 금융 도구",
+      "url": "https://calcforkr.com/finance/loan-payment-calculator.html",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+        .loan-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .repayment-methods {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .method-buttons {
+            display: inline-flex;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .method-button {
+            padding: 12px 20px;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .method-button.active {
+            background: #007bff;
+            color: white;
+        }
+        
+        .comparison-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .result-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .equal-payment {
+            border-color: #28a745;
+        }
+        
+        .equal-principal {
+            border-color: #17a2b8;
+        }
+        
+        .method-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+        
+        .payment-info {
+            display: grid;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .payment-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .payment-label {
+            font-weight: bold;
+        }
+        
+        .payment-value {
+            font-size: 1.1em;
+            color: #007bff;
+            font-weight: bold;
+        }
+        
+        .schedule-table {
+            margin: 30px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .schedule-header {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .schedule-content {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .schedule-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .schedule-table th,
+        .schedule-table td {
+            padding: 10px;
+            text-align: right;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .schedule-table th:first-child,
+        .schedule-table td:first-child {
+            text-align: center;
+        }
+        
+        .schedule-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+        
+        .schedule-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .summary-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .summary-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .tips-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .tip-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .bank-rates {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #28a745;
+        }
+        
+        .rates-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .rates-table th,
+        .rates-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .rates-table th {
+            background: #28a745;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .comparison-highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #ffeaa7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>대출 상환 계산기</h1>
+        <p class="description">대출 원금, 금리, 기간을 입력하여 원리금균등상환과 원금균등상환 방식의 월 상환액과 총 이자를 비교해보세요.</p>
+        
+        <div class="calculator-container">
+            <div class="loan-inputs">
+                <div class="input-section">
+                    <h3>💰 대출 조건</h3>
+                    <div class="input-group">
+                        <label for="loanAmount">대출 원금 (만원):</label>
+                        <input type="number" id="loanAmount" min="100" step="100" placeholder="30000" value="30000">
+                        <small>최소 100만원 이상</small>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="interestRate">연 이자율 (%):</label>
+                        <input type="number" id="interestRate" min="0.1" max="20" step="0.01" placeholder="3.5" value="3.5">
+                        <small>0.1% ~ 20%</small>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="loanTerm">대출 기간 (년):</label>
+                        <input type="number" id="loanTerm" min="1" max="50" placeholder="30" value="30">
+                        <small>1년 ~ 50년</small>
+                    </div>
+                </div>
+                
+                <div class="input-section">
+                    <h3>📊 상환 방식</h3>
+                    <div class="repayment-methods">
+                        <div class="method-buttons">
+                            <button class="method-button active" onclick="selectMethod('both')">전체 비교</button>
+                            <button class="method-button" onclick="selectMethod('equal-payment')">원리금균등</button>
+                            <button class="method-button" onclick="selectMethod('equal-principal')">원금균등</button>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>상환 방식 설명:</label>
+                        <div style="font-size: 14px; color: #666; margin-top: 5px;">
+                            <p><strong>원리금균등:</strong> 매월 같은 금액 상환</p>
+                            <p><strong>원금균등:</strong> 매월 같은 원금 + 변동 이자</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="calculateLoan()" class="calculate-btn">대출 상환 계산하기</button>
+            
+            <div id="result"></div>
+        </div>
+        
+        <div class="info-section">
+            <h2>대출 상환 방식 비교</h2>
+            <div class="tips-section">
+                <div class="tip-card">
+                    <h3>📈 원리금균등상환</h3>
+                    <ul>
+                        <li><strong>특징:</strong> 매월 동일한 상환액</li>
+                        <li><strong>장점:</strong> 상환액 예측 가능, 가계부 관리 용이</li>
+                        <li><strong>단점:</strong> 초기 이자 비중 높음, 총 이자 많음</li>
+                        <li><strong>적합:</strong> 소득이 일정한 직장인</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-card">
+                    <h3>📉 원금균등상환</h3>
+                    <ul>
+                        <li><strong>특징:</strong> 매월 원금은 동일, 이자는 감소</li>
+                        <li><strong>장점:</strong> 총 이자 적음, 시간이 갈수록 부담 감소</li>
+                        <li><strong>단점:</strong> 초기 상환 부담 큼, 변동 상환액</li>
+                        <li><strong>적합:</strong> 초기 소득이 높은 경우</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-card">
+                    <h3>💡 선택 기준</h3>
+                    <ul>
+                        <li><strong>현재 소득 수준:</strong> 초기 부담 감당 가능성</li>
+                        <li><strong>소득 전망:</strong> 향후 소득 증가 예상 여부</li>
+                        <li><strong>가계 현금 흐름:</strong> 일정한 지출 선호도</li>
+                        <li><strong>총 이자 절약:</strong> 장기적 비용 절감 중요도</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-card">
+                    <h3>🎯 상환 전략</h3>
+                    <ul>
+                        <li><strong>중도상환:</strong> 여유 자금 시 원금 상환</li>
+                        <li><strong>금리 변동 대비:</strong> 고정금리 vs 변동금리</li>
+                        <li><strong>세금 혜택:</strong> 주택담보대출 이자 소득공제</li>
+                        <li><strong>재융자:</strong> 금리 하락 시 갈아타기</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>주요 은행 대출 금리 (참고)</h2>
+            <div class="bank-rates">
+                <h3>💳 주택담보대출 기준 금리 (2024년 기준)</h3>
+                <table class="rates-table">
+                    <thead>
+                        <tr>
+                            <th>은행명</th>
+                            <th>고정금리</th>
+                            <th>변동금리</th>
+                            <th>우대금리</th>
+                            <th>특징</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>KB국민은행</td>
+                            <td>4.5-6.5%</td>
+                            <td>3.8-5.8%</td>
+                            <td>최대 -1.5%</td>
+                            <td>주거래 고객 우대</td>
+                        </tr>
+                        <tr>
+                            <td>신한은행</td>
+                            <td>4.4-6.4%</td>
+                            <td>3.7-5.7%</td>
+                            <td>최대 -1.6%</td>
+                            <td>디지털 이용 우대</td>
+                        </tr>
+                        <tr>
+                            <td>하나은행</td>
+                            <td>4.6-6.6%</td>
+                            <td>3.9-5.9%</td>
+                            <td>최대 -1.4%</td>
+                            <td>종합자산 관리</td>
+                        </tr>
+                        <tr>
+                            <td>우리은행</td>
+                            <td>4.3-6.3%</td>
+                            <td>3.6-5.6%</td>
+                            <td>최대 -1.7%</td>
+                            <td>급여이체 우대</td>
+                        </tr>
+                        <tr>
+                            <td>NH농협은행</td>
+                            <td>4.4-6.2%</td>
+                            <td>3.7-5.5%</td>
+                            <td>최대 -1.5%</td>
+                            <td>농협조합원 우대</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <small>※ 실제 금리는 개인 신용도, 담보 조건, 대출 금액에 따라 차이가 있을 수 있습니다.</small>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>대출 관련 세금 혜택</h2>
+            <div class="tax-benefits">
+                <h3>📋 주택담보대출 이자 소득공제</h3>
+                <ul>
+                    <li><strong>대상:</strong> 무주택자 또는 1주택자의 주택 구입 대출</li>
+                    <li><strong>공제한도:</strong> 연간 최대 1,800만원</li>
+                    <li><strong>공제율:</strong> 소득세율에 따라 6-46%</li>
+                    <li><strong>조건:</strong> 주택 가격 5억원 이하, 전용면적 85㎡ 이하</li>
+                </ul>
+                
+                <h3>🏠 주택청약종합저축</h3>
+                <ul>
+                    <li><strong>소득공제:</strong> 연간 납입액의 40%, 최대 96만원</li>
+                    <li><strong>대상:</strong> 무주택 세대주</li>
+                    <li><strong>조건:</strong> 연소득 7천만원 이하</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="disclaimer">
+            <p><strong>주의사항:</strong> 이 계산기는 참고용으로만 사용하시고, 실제 대출 조건은 은행별로 다를 수 있습니다. 정확한 대출 조건과 금리는 해당 금융기관에 직접 문의하시기 바랍니다.</p>
+        </div>
+    </div>
+    
+    <script src="../js/calculator-common.js"></script>
+    <script>
+        let currentMethod = 'both';
+        
+        function selectMethod(method) {
+            currentMethod = method;
+            
+            // 버튼 상태 업데이트
+            document.querySelectorAll('.method-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        function calculateLoan() {
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value) * 10000; // 만원 -> 원
+            const annualRate = parseFloat(document.getElementById('interestRate').value) / 100;
+            const loanTermYears = parseInt(document.getElementById('loanTerm').value);
+            
+            if (!loanAmount || !annualRate || !loanTermYears) {
+                showError('모든 필드를 입력해주세요.');
+                return;
+            }
+            
+            if (loanAmount < 1000000) {
+                showError('대출 원금은 최소 100만원 이상이어야 합니다.');
+                return;
+            }
+            
+            if (annualRate < 0.001 || annualRate > 0.2) {
+                showError('이자율은 0.1%~20% 범위에서 입력해주세요.');
+                return;
+            }
+            
+            if (loanTermYears < 1 || loanTermYears > 50) {
+                showError('대출 기간은 1년~50년 범위에서 입력해주세요.');
+                return;
+            }
+            
+            const monthlyRate = annualRate / 12;
+            const totalMonths = loanTermYears * 12;
+            
+            // 원리금균등상환 계산
+            const equalPaymentResult = calculateEqualPayment(loanAmount, monthlyRate, totalMonths);
+            
+            // 원금균등상환 계산
+            const equalPrincipalResult = calculateEqualPrincipal(loanAmount, monthlyRate, totalMonths);
+            
+            displayResults(equalPaymentResult, equalPrincipalResult, loanAmount, annualRate, loanTermYears);
+            
+            // Google Analytics 이벤트 추적
+            gtag('event', 'loan_calculation', {
+                'event_category': 'Finance Calculator',
+                'event_label': currentMethod
+            });
+        }
+        
+        function calculateEqualPayment(principal, monthlyRate, totalMonths) {
+            // 원리금균등상환 공식: PMT = P * [r(1+r)^n] / [(1+r)^n - 1]
+            const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / 
+                                  (Math.pow(1 + monthlyRate, totalMonths) - 1);
+            
+            const totalPayment = monthlyPayment * totalMonths;
+            const totalInterest = totalPayment - principal;
+            
+            // 월별 상세 계산
+            const schedule = [];
+            let remainingBalance = principal;
+            
+            for (let month = 1; month <= totalMonths; month++) {
+                const interestPayment = remainingBalance * monthlyRate;
+                const principalPayment = monthlyPayment - interestPayment;
+                remainingBalance -= principalPayment;
+                
+                if (month <= 60 || month % 12 === 0 || month > totalMonths - 12) { // 처음 5년, 매년, 마지막 1년
+                    schedule.push({
+                        month,
+                        payment: monthlyPayment,
+                        principal: principalPayment,
+                        interest: interestPayment,
+                        balance: Math.max(0, remainingBalance)
+                    });
+                }
+            }
+            
+            return {
+                monthlyPayment,
+                totalPayment,
+                totalInterest,
+                schedule,
+                type: '원리금균등상환'
+            };
+        }
+        
+        function calculateEqualPrincipal(principal, monthlyRate, totalMonths) {
+            const monthlyPrincipal = principal / totalMonths;
+            let totalPayment = 0;
+            let remainingBalance = principal;
+            
+            const schedule = [];
+            
+            for (let month = 1; month <= totalMonths; month++) {
+                const interestPayment = remainingBalance * monthlyRate;
+                const monthlyPayment = monthlyPrincipal + interestPayment;
+                totalPayment += monthlyPayment;
+                remainingBalance -= monthlyPrincipal;
+                
+                if (month <= 60 || month % 12 === 0 || month > totalMonths - 12) { // 처음 5년, 매년, 마지막 1년
+                    schedule.push({
+                        month,
+                        payment: monthlyPayment,
+                        principal: monthlyPrincipal,
+                        interest: interestPayment,
+                        balance: Math.max(0, remainingBalance)
+                    });
+                }
+            }
+            
+            const totalInterest = totalPayment - principal;
+            const firstPayment = monthlyPrincipal + (principal * monthlyRate);
+            const lastPayment = monthlyPrincipal + (monthlyPrincipal * monthlyRate);
+            
+            return {
+                firstPayment,
+                lastPayment,
+                monthlyPrincipal,
+                totalPayment,
+                totalInterest,
+                schedule,
+                type: '원금균등상환'
+            };
+        }
+        
+        function displayResults(equalPayment, equalPrincipal, loanAmount, annualRate, loanTermYears) {
+            let resultHTML = '';
+            
+            // 요약 카드
+            resultHTML += `
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="summary-value">${formatCurrency(loanAmount)}</div>
+                        <div class="summary-label">대출 원금</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value">${(annualRate * 100).toFixed(2)}%</div>
+                        <div class="summary-label">연 이자율</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value">${loanTermYears}년</div>
+                        <div class="summary-label">대출 기간</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value">${formatCurrency(equalPrincipal.totalInterest - equalPayment.totalInterest)}</div>
+                        <div class="summary-label">원금균등 이자절약</div>
+                    </div>
+                </div>
+            `;
+            
+            if (currentMethod === 'both') {
+                // 비교 결과 표시
+                resultHTML += `
+                    <div class="comparison-results">
+                        <div class="result-card equal-payment">
+                            <div class="method-title">💳 원리금균등상환</div>
+                            <div class="payment-info">
+                                <div class="payment-item">
+                                    <span class="payment-label">월 상환액</span>
+                                    <span class="payment-value">${formatCurrency(equalPayment.monthlyPayment)}</span>
+                                </div>
+                                <div class="payment-item">
+                                    <span class="payment-label">총 상환액</span>
+                                    <span class="payment-value">${formatCurrency(equalPayment.totalPayment)}</span>
+                                </div>
+                                <div class="payment-item">
+                                    <span class="payment-label">총 이자</span>
+                                    <span class="payment-value">${formatCurrency(equalPayment.totalInterest)}</span>
+                                </div>
+                            </div>
+                            <div style="font-size: 14px; color: #666; margin-top: 10px;">
+                                매월 동일한 ${formatCurrency(equalPayment.monthlyPayment)} 상환
+                            </div>
+                        </div>
+                        
+                        <div class="result-card equal-principal">
+                            <div class="method-title">📊 원금균등상환</div>
+                            <div class="payment-info">
+                                <div class="payment-item">
+                                    <span class="payment-label">첫 월 상환액</span>
+                                    <span class="payment-value">${formatCurrency(equalPrincipal.firstPayment)}</span>
+                                </div>
+                                <div class="payment-item">
+                                    <span class="payment-label">마지막 상환액</span>
+                                    <span class="payment-value">${formatCurrency(equalPrincipal.lastPayment)}</span>
+                                </div>
+                                <div class="payment-item">
+                                    <span class="payment-label">총 상환액</span>
+                                    <span class="payment-value">${formatCurrency(equalPrincipal.totalPayment)}</span>
+                                </div>
+                                <div class="payment-item">
+                                    <span class="payment-label">총 이자</span>
+                                    <span class="payment-value">${formatCurrency(equalPrincipal.totalInterest)}</span>
+                                </div>
+                            </div>
+                            <div style="font-size: 14px; color: #666; margin-top: 10px;">
+                                매월 원금 ${formatCurrency(equalPrincipal.monthlyPrincipal)} + 변동이자
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // 비교 하이라이트
+                const savings = equalPayment.totalInterest - equalPrincipal.totalInterest;
+                const savingsPercent = ((savings / equalPayment.totalInterest) * 100).toFixed(1);
+                
+                resultHTML += `
+                    <div class="comparison-highlight">
+                        <h4>💰 원금균등상환 선택 시 절약 효과</h4>
+                        <ul>
+                            <li><strong>이자 절약:</strong> ${formatCurrency(savings)} (${savingsPercent}% 절약)</li>
+                            <li><strong>초기 부담:</strong> 첫 달 ${formatCurrency(equalPrincipal.firstPayment - equalPayment.monthlyPayment)} 더 지불</li>
+                            <li><strong>균등점:</strong> ${Math.round(loanTermYears * 12 / 2)}개월 후 원리금균등과 비슷한 수준</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // 상환 일정표
+            const displayMethod = currentMethod === 'both' ? 'equal-payment' : currentMethod;
+            const scheduleData = displayMethod === 'equal-principal' ? equalPrincipal : equalPayment;
+            
+            resultHTML += createScheduleTable(scheduleData, displayMethod);
+            
+            document.getElementById('result').innerHTML = resultHTML;
+        }
+        
+        function createScheduleTable(data, method) {
+            let tableHTML = `
+                <div class="schedule-table">
+                    <div class="schedule-header">
+                        📅 ${data.type} 상환 일정표 (주요 시점)
+                    </div>
+                    <div class="schedule-content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>회차</th>
+                                    <th>상환액</th>
+                                    <th>원금</th>
+                                    <th>이자</th>
+                                    <th>잔액</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            `;
+            
+            data.schedule.forEach(item => {
+                tableHTML += `
+                    <tr>
+                        <td>${item.month}회</td>
+                        <td>${formatCurrency(item.payment)}</td>
+                        <td>${formatCurrency(item.principal)}</td>
+                        <td>${formatCurrency(item.interest)}</td>
+                        <td>${formatCurrency(item.balance)}</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="padding: 15px; background: #f8f9fa; text-align: center; font-size: 14px; color: #666;">
+                        ※ 처음 5년, 매년 단위, 마지막 1년의 주요 시점만 표시됩니다.
+                    </div>
+                </div>
+            `;
+            
+            return tableHTML;
+        }
+        
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('ko-KR', {
+                style: 'currency',
+                currency: 'KRW',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+        
+        function showError(message) {
+            document.getElementById('result').innerHTML = 
+                `<div class="error-message">${message}</div>`;
+        }
+        
+        function setExample(type) {
+            if (type === 'house') {
+                document.getElementById('loanAmount').value = 30000; // 3억원
+                document.getElementById('interestRate').value = 3.5;
+                document.getElementById('loanTerm').value = 30;
+            } else if (type === 'jeonse') {
+                document.getElementById('loanAmount').value = 20000; // 2억원
+                document.getElementById('interestRate').value = 2.8;
+                document.getElementById('loanTerm').value = 2;
+            } else if (type === 'business') {
+                document.getElementById('loanAmount').value = 10000; // 1억원
+                document.getElementById('interestRate').value = 4.2;
+                document.getElementById('loanTerm').value = 10;
+            }
+            calculateLoan();
+        }
+        
+        // 엔터 키로 계산 실행
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                calculateLoan();
+            }
+        });
+        
+        // 페이지 로드 시 예시 버튼 추가
+        document.addEventListener('DOMContentLoaded', function() {
+            const exampleDiv = document.createElement('div');
+            exampleDiv.innerHTML = `
+                <div style="text-align: center; margin: 20px 0; padding: 15px; background: #e3f2fd; border-radius: 8px;">
+                    <strong>💡 대출 유형별 예시:</strong><br>
+                    <button onclick="setExample('house')" 
+                            style="margin: 5px; padding: 8px 15px; border: 1px solid #2196f3; border-radius: 4px; background: #f8f9fa; cursor: pointer;">
+                        주택담보대출 (3억, 3.5%, 30년)
+                    </button>
+                    <button onclick="setExample('jeonse')" 
+                            style="margin: 5px; padding: 8px 15px; border: 1px solid #2196f3; border-radius: 4px; background: #f8f9fa; cursor: pointer;">
+                        전세자금대출 (2억, 2.8%, 2년)
+                    </button>
+                    <button onclick="setExample('business')" 
+                            style="margin: 5px; padding: 8px 15px; border: 1px solid #2196f3; border-radius: 4px; background: #f8f9fa; cursor: pointer;">
+                        사업자대출 (1억, 4.2%, 10년)
+                    </button>
+                </div>
+            `;
+            document.querySelector('.calculator-container').appendChild(exampleDiv);
+        });
+    </script>
+
+    <!-- 정보 섹션 -->
+    <div class="container">
+        <div class="info-section">
+            <div class="info-card">
+                <h2>📖 대출상환계산기 사용 메뉴얼</h2>
+                <ul>
+                    <li><strong>대출금액 입력:</strong> 실제 대출받을 금액을 정확히 입력하세요 (예: 2억원, 200000000)</li>
+                    <li><strong>연이율 확인:</strong> 은행에서 제시한 실제 대출 금리를 입력하세요 (예: 3.5%)</li>
+                    <li><strong>대출기간 설정:</strong> 상환 기간을 년 단위로 입력하세요 (예: 30년)</li>
+                    <li><strong>상환방식 선택:</strong> 원리금균등상환과 원금균등상환 중 선택하세요</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h2>💡 실제 대출 계산 예시</h2>
+                <div class="example-box">
+                    <h3>🏠 주택담보대출 예시</h3>
+                    <p><strong>상황:</strong> 3억원 아파트 매수를 위해 2억원 대출 (연 4.5%, 30년)</p>
+                    <p><strong>원리금균등상환:</strong></p>
+                    <ul>
+                        <li>대출금액: 200,000,000원</li>
+                        <li>연이율: 4.5%</li>
+                        <li>대출기간: 30년</li>
+                        <li>월 상환액: 약 1,013,370원</li>
+                        <li>총 상환액: 약 364,813,200원</li>
+                        <li>총 이자: 약 164,813,200원</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h3>🚗 자동차대출 예시</h3>
+                    <p><strong>상황:</strong> 5천만원 자동차 구매를 위해 4천만원 대출 (연 6.5%, 5년)</p>
+                    <p><strong>계산:</strong></p>
+                    <ul>
+                        <li>대출금액: 40,000,000원</li>
+                        <li>연이율: 6.5%</li>
+                        <li>대출기간: 5년</li>
+                        <li>월 상환액: 약 780,960원</li>
+                        <li>총 상환액: 약 46,857,600원</li>
+                        <li>총 이자: 약 6,857,600원</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h2>🔥 대출 관리 생활 꿀팁</h2>
+                <ul>
+                    <li><strong>금리 비교:</strong> KB국민은행, 신한은행, 우리은행 등 여러 은행 금리 비교 필수</li>
+                    <li><strong>중도상환:</strong> 여유자금 생길 때마다 중도상환으로 이자 부담 줄이기</li>
+                    <li><strong>대출 한도:</strong> 월 소득의 40% 이내로 대출 상환액 제한하는 것이 안전</li>
+                    <li><strong>고정금리 vs 변동금리:</strong> 금리 상승기에는 고정금리, 하락기에는 변동금리 유리</li>
+                    <li><strong>DSR 관리:</strong> 총부채원리금상환비율(DSR) 40% 이내 유지로 건전한 부채 관리</li>
+                    <li><strong>신용등급 관리:</strong> 연체 없이 꾸준한 상환으로 신용등급 개선 및 금리 인하 혜택</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h2>📚 대출 관련 용어 정리</h2>
+                <div class="term-grid">
+                    <div class="term-item">
+                        <h3>원리금균등상환</h3>
+                        <p>매월 동일한 금액(원금+이자)을 상환하는 방식으로 가장 일반적</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>원금균등상환</h3>
+                        <p>매월 동일한 원금과 잔액에 대한 이자를 상환하는 방식</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>LTV</h3>
+                        <p>주택담보인정비율로, 담보물건 가치 대비 대출금액 비율</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>DTI</h3>
+                        <p>총부채상환비율로, 연소득 대비 연간 원리금 상환액 비율</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>DSR</h3>
+                        <p>총부채원리금상환비율로, 소득 대비 모든 대출의 원리금 상환액 비율</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>중도상환수수료</h3>
+                        <p>대출을 약정기간보다 일찍 상환할 때 지불하는 수수료</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

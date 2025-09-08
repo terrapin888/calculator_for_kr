@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>체수분율 계산기 - 몸의 수분 비율 측정 및 관리</title>
+    <meta name="description" content="성별, 나이, 체중에 따른 적정 체수분율을 계산하고 탈수 위험도를 평가하는 무료 온라인 계산기입니다. 건강한 수분 관리 가이드를 제공합니다.">
+    <meta name="keywords" content="체수분율 계산기, 체수분, 수분율, 탈수, 수분 관리, 건강 계산기, 수분 섭취">
+    <meta name="author" content="calcforkr.com">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="체수분율 계산기 - 몸의 수분 비율 측정 및 관리">
+    <meta property="og:description" content="성별, 나이, 체중에 따른 적정 체수분율을 계산하고 탈수 위험도를 평가하는 무료 온라인 계산기입니다.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://calcforkr.com/health/body-water-percentage-calculator.html">
+    <meta property="og:site_name" content="calcforkr.com">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191" crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="canonical" href="https://calcforkr.com/health/body-water-percentage-calculator.html">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "체수분율 계산기",
+        "description": "성별, 나이, 체중에 따른 적정 체수분율을 계산하고 탈수 위험도를 평가하는 온라인 건강 계산기",
+        "url": "https://calcforkr.com/health/body-water-percentage-calculator.html",
+        "applicationCategory": "HealthApplication",
+        "operatingSystem": "All",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "KRW"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>체수분율 계산기</h1>
+        <p class="description">성별, 나이, 체중에 따른 적정 체수분율을 계산하고 탈수 위험도를 평가합니다. 건강한 수분 관리를 위한 개인별 가이드를 제공합니다.</p>
+        
+        <div class="calculator-container">
+            <div class="input-group">
+                <label for="gender">성별</label>
+                <select id="gender">
+                    <option value="male">남성</option>
+                    <option value="female">여성</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label for="age">나이</label>
+                <input type="number" id="age" min="1" max="120" placeholder="예: 30">
+                <span class="unit">세</span>
+            </div>
+            
+            <div class="input-group">
+                <label for="weight">체중</label>
+                <input type="number" id="weight" min="20" max="300" step="0.1" placeholder="예: 70">
+                <span class="unit">kg</span>
+            </div>
+            
+            <div class="input-group">
+                <label for="height">신장 (선택사항)</label>
+                <input type="number" id="height" min="100" max="250" placeholder="예: 170">
+                <span class="unit">cm</span>
+            </div>
+            
+            <div class="input-group">
+                <label for="currentWater">현재 체수분율 (있는 경우)</label>
+                <input type="number" id="currentWater" min="30" max="80" step="0.1" placeholder="예: 60">
+                <span class="unit">%</span>
+            </div>
+            
+            <button onclick="calculateBodyWater()" class="calculate-btn">체수분율 계산하기</button>
+            
+            <div id="result" class="result"></div>
+        </div>
+        
+        <div class="info-section">
+            <h2>체수분율 이해하기</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>체수분율이란?</h3>
+                    <p>체중에서 수분이 차지하는 비율입니다.</p>
+                    <ul>
+                        <li>성인 남성: 55-65%</li>
+                        <li>성인 여성: 50-60%</li>
+                        <li>신생아: 약 75%</li>
+                        <li>노인: 45-55%</li>
+                    </ul>
+                </div>
+                
+                <div class="info-item">
+                    <h3>연령별 변화</h3>
+                    <ul>
+                        <li><strong>신생아:</strong> 75-80%</li>
+                        <li><strong>영유아:</strong> 65-70%</li>
+                        <li><strong>청소년:</strong> 60-65%</li>
+                        <li><strong>성인:</strong> 50-65%</li>
+                        <li><strong>노인:</strong> 45-55%</li>
+                    </ul>
+                </div>
+                
+                <div class="info-item">
+                    <h3>성별 차이</h3>
+                    <p><strong>남성이 더 높은 이유:</strong></p>
+                    <ul>
+                        <li>근육량이 많음 (근육에 수분 많음)</li>
+                        <li>지방량이 상대적으로 적음</li>
+                        <li>체격이 일반적으로 큼</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="levels-section">
+            <h2>체수분율 수준별 평가</h2>
+            <div class="levels-grid">
+                <div class="level-item low">
+                    <h3>낮음 (탈수 위험)</h3>
+                    <p><strong>남성:</strong> 50% 미만</p>
+                    <p><strong>여성:</strong> 45% 미만</p>
+                    <div class="symptoms">
+                        <h4>증상</h4>
+                        <ul>
+                            <li>갈증, 구강건조</li>
+                            <li>피로감, 두통</li>
+                            <li>소변량 감소</li>
+                            <li>피부탄력 저하</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="level-item normal">
+                    <h3>정상</h3>
+                    <p><strong>남성:</strong> 55-65%</p>
+                    <p><strong>여성:</strong> 50-60%</p>
+                    <div class="benefits">
+                        <h4>효과</h4>
+                        <ul>
+                            <li>정상적인 신진대사</li>
+                            <li>체온 조절 원활</li>
+                            <li>영양소 운반 활발</li>
+                            <li>노폐물 배출 순조</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="level-item high">
+                    <h3>높음</h3>
+                    <p><strong>남성:</strong> 70% 이상</p>
+                    <p><strong>여성:</strong> 65% 이상</p>
+                    <div class="causes">
+                        <h4>원인</h4>
+                        <ul>
+                            <li>신장 질환</li>
+                            <li>심장 질환</li>
+                            <li>내분비 장애</li>
+                            <li>약물 부작용</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hydration-guide">
+            <h2>수분 섭취 가이드</h2>
+            <div class="guide-grid">
+                <div class="guide-item">
+                    <h3>일일 수분 섭취량</h3>
+                    <ul>
+                        <li><strong>성인 남성:</strong> 2.5-3L</li>
+                        <li><strong>성인 여성:</strong> 2-2.5L</li>
+                        <li><strong>임산부:</strong> 2.3L</li>
+                        <li><strong>수유부:</strong> 2.6L</li>
+                        <li><strong>운동 시:</strong> +500-700ml</li>
+                    </ul>
+                </div>
+                
+                <div class="guide-item">
+                    <h3>수분 공급원</h3>
+                    <ul>
+                        <li><strong>물:</strong> 80% (1.6-2.4L)</li>
+                        <li><strong>음식:</strong> 20% (400-600ml)</li>
+                        <li>과일, 채소에 많은 수분</li>
+                        <li>국물, 차, 커피도 포함</li>
+                    </ul>
+                </div>
+                
+                <div class="guide-item">
+                    <h3>수분 섭취 타이밍</h3>
+                    <ul>
+                        <li><strong>기상 후:</strong> 200-300ml</li>
+                        <li><strong>식사 전:</strong> 100-200ml</li>
+                        <li><strong>운동 전후:</strong> 150-250ml</li>
+                        <li><strong>취침 전:</strong> 100ml</li>
+                        <li>소량씩 자주 마시기</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="factors-section">
+            <h2>체수분율 영향 요인</h2>
+            <div class="factors-grid">
+                <div class="factor-item">
+                    <h3>증가 요인</h3>
+                    <ul>
+                        <li><strong>근육량 증가:</strong> 근육에 수분 많음</li>
+                        <li><strong>충분한 수분 섭취</strong></li>
+                        <li><strong>젊은 나이</strong></li>
+                        <li><strong>남성</strong></li>
+                        <li><strong>운동 후 수분 보충</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="factor-item">
+                    <h3>감소 요인</h3>
+                    <ul>
+                        <li><strong>나이 증가:</strong> 수분 보유 능력 감소</li>
+                        <li><strong>체지방 증가</strong></li>
+                        <li><strong>탈수 상태</strong></li>
+                        <li><strong>질병 (당뇨, 신장병)</strong></li>
+                        <li><strong>이뇨제 복용</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="factor-item">
+                    <h3>측정 시 주의사항</h3>
+                    <ul>
+                        <li><strong>측정 시간:</strong> 아침 기상 후</li>
+                        <li><strong>식사 전:</strong> 공복 상태</li>
+                        <li><strong>배뇨 후</strong></li>
+                        <li><strong>운동 전</strong></li>
+                        <li><strong>동일한 조건</strong>에서 측정</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="management-tips">
+            <h2>체수분 관리 방법</h2>
+            <div class="tips-grid">
+                <div class="tip-item">
+                    <h3>✅ 권장사항</h3>
+                    <ul>
+                        <li>하루 8잔 이상의 물 마시기</li>
+                        <li>수분이 많은 과일, 채소 섭취</li>
+                        <li>규칙적인 운동으로 근육량 유지</li>
+                        <li>정기적인 체수분율 측정</li>
+                        <li>충분한 수면</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-item">
+                    <h3>❌ 피해야 할 것</h3>
+                    <ul>
+                        <li>과도한 알코올 섭취</li>
+                        <li>카페인 과다 섭취</li>
+                        <li>고나트륨 식품</li>
+                        <li>장시간 수분 섭취 중단</li>
+                        <li>과도한 다이어트</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-item">
+                    <h3>🚨 의료진 상담</h3>
+                    <ul>
+                        <li>체수분율이 급격히 변화할 때</li>
+                        <li>만성적인 탈수 증상</li>
+                        <li>부종이 지속될 때</li>
+                        <li>신장, 심장 질환 의심</li>
+                        <li>약물 부작용 의심</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="faq-section">
+            <h2>자주 묻는 질문</h2>
+            <div class="faq-item">
+                <h3>체수분율은 언제 측정하는 것이 좋나요?</h3>
+                <p>아침 기상 후 공복 상태에서 측정하는 것이 가장 정확합니다. 동일한 시간, 동일한 조건에서 측정하세요.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>물을 많이 마시면 체수분율이 바로 올라가나요?</h3>
+                <p>단기간에는 일시적으로 증가할 수 있지만, 진정한 의미의 체수분율 개선은 꾸준한 관리가 필요합니다.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>체수분율이 높으면 무조건 좋은 건가요?</h3>
+                <p>적정 범위 내에서는 좋지만, 너무 높으면 질병의 신호일 수 있으므로 의료진과 상담이 필요합니다.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>나이가 들면 체수분율이 왜 감소하나요?</h3>
+                <p>근육량 감소, 신장 기능 저하, 수분 보유 능력 감소 등으로 인해 자연스럽게 체수분율이 감소합니다.</p>
+            </div>
+        </div>
+        
+        <div class="related-calculators">
+            <h2>관련 계산기</h2>
+            <div class="calculator-links">
+                <a href="bmi-calculator.html" class="calc-link">BMI 계산기</a>
+                <a href="body-fat-calculator.html" class="calc-link">체지방률 계산기</a>
+                <a href="calorie-calculator.html" class="calc-link">칼로리 계산기</a>
+                <a href="ideal-weight-calculator.html" class="calc-link">적정체중 계산기</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    function calculateBodyWater() {
+        const gender = document.getElementById('gender').value;
+        const age = parseInt(document.getElementById('age').value);
+        const weight = parseFloat(document.getElementById('weight').value);
+        const height = parseFloat(document.getElementById('height').value) || null;
+        const currentWater = parseFloat(document.getElementById('currentWater').value) || null;
+        
+        if (!age || !weight || age < 1 || age > 120 || weight < 20 || weight > 300) {
+            document.getElementById('result').innerHTML = 
+                '<div class="error">올바른 나이(1-120세)와 체중(20-300kg)을 입력해주세요.</div>';
+            return;
+        }
+        
+        // 적정 체수분율 계산
+        const idealWaterPercentage = calculateIdealWaterPercentage(gender, age, weight, height);
+        
+        // 수분량 계산
+        const idealWaterAmount = (idealWaterPercentage / 100) * weight;
+        const currentWaterAmount = currentWater ? (currentWater / 100) * weight : null;
+        
+        // 일일 수분 섭취량 권장량 계산
+        const dailyWaterIntake = calculateDailyWaterIntake(gender, weight, age);
+        
+        displayResults(gender, age, weight, height, idealWaterPercentage, idealWaterAmount, 
+                      currentWater, currentWaterAmount, dailyWaterIntake);
+    }
+    
+    function calculateIdealWaterPercentage(gender, age, weight, height) {
+        let basePercentage;
+        
+        // 성별에 따른 기본 체수분율
+        if (gender === 'male') {
+            basePercentage = 60; // 남성 기본값
+        } else {
+            basePercentage = 55; // 여성 기본값
+        }
+        
+        // 나이에 따른 조정
+        if (age < 18) {
+            basePercentage += 5; // 청소년
+        } else if (age >= 18 && age <= 39) {
+            basePercentage += 0; // 청년층
+        } else if (age >= 40 && age <= 59) {
+            basePercentage -= 2; // 중년층
+        } else if (age >= 60) {
+            basePercentage -= 5; // 노년층
+        }
+        
+        // 체중에 따른 미세 조정 (BMI 추정)
+        if (height) {
+            const bmi = weight / Math.pow(height / 100, 2);
+            if (bmi < 18.5) {
+                basePercentage += 2; // 저체중
+            } else if (bmi >= 25) {
+                basePercentage -= 3; // 과체중/비만
+            }
+        }
+        
+        return Math.max(40, Math.min(75, basePercentage)); // 40-75% 범위로 제한
+    }
+    
+    function calculateDailyWaterIntake(gender, weight, age) {
+        let baseIntake;
+        
+        // 기본 수분 섭취량 (ml)
+        if (gender === 'male') {
+            baseIntake = weight * 35; // 남성: 체중 1kg당 35ml
+        } else {
+            baseIntake = weight * 30; // 여성: 체중 1kg당 30ml
+        }
+        
+        // 나이에 따른 조정
+        if (age >= 65) {
+            baseIntake *= 0.9; // 노인은 90%
+        } else if (age < 18) {
+            baseIntake *= 1.1; // 청소년은 110%
+        }
+        
+        return Math.round(baseIntake);
+    }
+    
+    function getWaterStatus(currentPercentage, idealPercentage, gender) {
+        if (!currentPercentage) return null;
+        
+        const minNormal = gender === 'male' ? 55 : 50;
+        const maxNormal = gender === 'male' ? 65 : 60;
+        const criticalLow = gender === 'male' ? 50 : 45;
+        const criticalHigh = gender === 'male' ? 70 : 65;
+        
+        if (currentPercentage < criticalLow) {
+            return {
+                status: 'critical-low',
+                text: '심각한 탈수 위험',
+                color: '#dc3545',
+                description: '즉시 수분 섭취가 필요합니다. 지속시 의료진 상담을 권합니다.'
+            };
+        } else if (currentPercentage < minNormal) {
+            return {
+                status: 'low',
+                text: '탈수 위험',
+                color: '#fd7e14',
+                description: '수분 섭취량을 늘리고 생활습관을 개선하세요.'
+            };
+        } else if (currentPercentage <= maxNormal) {
+            return {
+                status: 'normal',
+                text: '정상',
+                color: '#28a745',
+                description: '건강한 체수분율을 유지하고 있습니다.'
+            };
+        } else if (currentPercentage <= criticalHigh) {
+            return {
+                status: 'high',
+                text: '약간 높음',
+                color: '#ffc107',
+                description: '일반적으로 문제없지만 지속 관찰이 필요합니다.'
+            };
+        } else {
+            return {
+                status: 'critical-high',
+                text: '과도하게 높음',
+                color: '#dc3545',
+                description: '질병의 신호일 수 있으므로 의료진 상담을 권합니다.'
+            };
+        }
+    }
+    
+    function displayResults(gender, age, weight, height, idealPercentage, idealWaterAmount, 
+                           currentPercentage, currentWaterAmount, dailyIntake) {
+        const genderText = gender === 'male' ? '남성' : '여성';
+        const waterStatus = getWaterStatus(currentPercentage, idealPercentage, gender);
+        
+        let resultHTML = `
+            <div class="water-results">
+                <div class="basic-info">
+                    <h3>기본 정보</h3>
+                    <div class="info-grid-result">
+                        <div class="info-item-result">
+                            <span>성별:</span>
+                            <span><strong>${genderText}</strong></span>
+                        </div>
+                        <div class="info-item-result">
+                            <span>나이:</span>
+                            <span><strong>${age}세</strong></span>
+                        </div>
+                        <div class="info-item-result">
+                            <span>체중:</span>
+                            <span><strong>${weight}kg</strong></span>
+                        </div>
+        `;
+        
+        if (height) {
+            const bmi = (weight / Math.pow(height / 100, 2)).toFixed(1);
+            resultHTML += `
+                        <div class="info-item-result">
+                            <span>신장:</span>
+                            <span><strong>${height}cm</strong></span>
+                        </div>
+                        <div class="info-item-result">
+                            <span>BMI:</span>
+                            <span><strong>${bmi}</strong></span>
+                        </div>
+            `;
+        }
+        
+        resultHTML += `
+                    </div>
+                </div>
+                
+                <div class="ideal-water">
+                    <h3>적정 체수분율</h3>
+                    <div class="ideal-result">
+                        <div class="percentage-display">
+                            <span class="percentage-value">${idealPercentage.toFixed(1)}%</span>
+                            <span class="percentage-label">권장 체수분율</span>
+                        </div>
+                        <div class="water-amount">
+                            <p>적정 수분량: <strong>${idealWaterAmount.toFixed(1)}L</strong></p>
+                        </div>
+                    </div>
+                </div>
+        `;
+        
+        // 현재 체수분율이 입력된 경우
+        if (currentPercentage && waterStatus) {
+            const difference = currentPercentage - idealPercentage;
+            const differenceText = difference > 0 ? `+${difference.toFixed(1)}%` : `${difference.toFixed(1)}%`;
+            
+            resultHTML += `
+                <div class="current-status">
+                    <h3>현재 상태 분석</h3>
+                    <div class="status-display">
+                        <div class="status-badge" style="background-color: ${waterStatus.color};">
+                            ${waterStatus.text}
+                        </div>
+                        <div class="current-values">
+                            <p><strong>현재 체수분율:</strong> ${currentPercentage}%</p>
+                            <p><strong>적정값과 차이:</strong> ${differenceText}</p>
+                            <p><strong>현재 수분량:</strong> ${currentWaterAmount.toFixed(1)}L</p>
+                        </div>
+                        <div class="status-description">
+                            <p>${waterStatus.description}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 수분 섭취 권장량
+        resultHTML += `
+                <div class="daily-intake">
+                    <h3>일일 수분 섭취 권장량</h3>
+                    <div class="intake-breakdown">
+                        <div class="total-intake">
+                            <span class="intake-amount">${(dailyIntake / 1000).toFixed(1)}L</span>
+                            <span class="intake-label">하루 총 권장량</span>
+                        </div>
+                        <div class="intake-sources">
+                            <div class="source-item">
+                                <span>물 (80%):</span>
+                                <span><strong>${(dailyIntake * 0.8 / 1000).toFixed(1)}L</strong></span>
+                            </div>
+                            <div class="source-item">
+                                <span>음식 (20%):</span>
+                                <span><strong>${(dailyIntake * 0.2 / 1000).toFixed(1)}L</strong></span>
+                            </div>
+                        </div>
+                        <div class="intake-timing">
+                            <h4>시간대별 섭취량</h4>
+                            <ul>
+                                <li>기상 후: ${Math.round(dailyIntake * 0.1)}ml</li>
+                                <li>오전: ${Math.round(dailyIntake * 0.25)}ml</li>
+                                <li>점심: ${Math.round(dailyIntake * 0.25)}ml</li>
+                                <li>오후: ${Math.round(dailyIntake * 0.25)}ml</li>
+                                <li>저녁: ${Math.round(dailyIntake * 0.15)}ml</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="recommendations">
+                    <h3>개인별 관리 방법</h3>
+                    <div class="recommendation-list">
+        `;
+        
+        // 개인별 추천사항 생성
+        const recommendations = generateRecommendations(gender, age, currentPercentage, idealPercentage, waterStatus);
+        recommendations.forEach(rec => {
+            resultHTML += `<div class="rec-item"><strong>${rec.title}:</strong> ${rec.content}</div>`;
+        });
+        
+        resultHTML += `
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('result').innerHTML = resultHTML;
+    }
+    
+    function generateRecommendations(gender, age, currentPercentage, idealPercentage, waterStatus) {
+        const recommendations = [];
+        
+        // 연령별 추천
+        if (age < 30) {
+            recommendations.push({
+                title: "젊은 연령대",
+                content: "규칙적인 운동으로 근육량을 늘려 체수분율을 높이세요."
+            });
+        } else if (age >= 60) {
+            recommendations.push({
+                title: "시니어 건강",
+                content: "신장 기능 저하를 고려해 적절한 수분 섭취량을 유지하세요."
+            });
+        }
+        
+        // 현재 상태별 추천
+        if (waterStatus) {
+            switch (waterStatus.status) {
+                case 'critical-low':
+                case 'low':
+                    recommendations.push({
+                        title: "수분 보충",
+                        content: "하루 물 섭취량을 늘리고, 수분이 많은 과일과 채소를 섭취하세요."
+                    });
+                    break;
+                case 'normal':
+                    recommendations.push({
+                        title: "현재 상태 유지",
+                        content: "현재의 건강한 수분 관리 습관을 지속하세요."
+                    });
+                    break;
+                case 'high':
+                case 'critical-high':
+                    recommendations.push({
+                        title: "전문의 상담",
+                        content: "체수분율이 높은 원인을 파악하기 위해 의료진과 상담하세요."
+                    });
+                    break;
+            }
+        }
+        
+        // 성별별 추천
+        if (gender === 'female') {
+            recommendations.push({
+                title: "여성 건강",
+                content: "생리 기간 중에는 수분 손실이 많으니 평소보다 더 충분한 수분 섭취를 하세요."
+            });
+        }
+        
+        // 일반적인 추천
+        recommendations.push({
+            title: "생활습관",
+            content: "알코올과 카페인 섭취를 줄이고, 충분한 수면을 취하세요."
+        });
+        
+        return recommendations;
+    }
+    
+    // 엔터키로 계산
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            calculateBodyWater();
+        }
+    });
+    </script>
+    
+    <style>
+    .water-results {
+        margin-top: 30px;
+    }
+    
+    .basic-info,
+    .ideal-water,
+    .current-status,
+    .daily-intake,
+    .recommendations {
+        background: #f8f9fa;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        border-left: 5px solid #007bff;
+    }
+    
+    .info-grid-result {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+    
+    .info-item-result {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background: white;
+        border-radius: 5px;
+    }
+    
+    .ideal-result {
+        text-align: center;
+        margin-top: 15px;
+    }
+    
+    .percentage-display {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .percentage-value {
+        font-size: 36px;
+        font-weight: bold;
+        color: #007bff;
+        background: white;
+        padding: 15px 25px;
+        border-radius: 50px;
+        border: 3px solid #007bff;
+    }
+    
+    .percentage-label {
+        margin-top: 10px;
+        font-size: 16px;
+        color: #666;
+    }
+    
+    .water-amount {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+    }
+    
+    .status-display {
+        margin-top: 15px;
+    }
+    
+    .status-badge {
+        display: inline-block;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+    
+    .current-values {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+    
+    .current-values p {
+        margin: 8px 0;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .status-description {
+        background: rgba(255,255,255,0.7);
+        padding: 15px;
+        border-radius: 8px;
+        font-style: italic;
+    }
+    
+    .intake-breakdown {
+        margin-top: 15px;
+    }
+    
+    .total-intake {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .intake-amount {
+        display: block;
+        font-size: 28px;
+        font-weight: bold;
+        color: #17a2b8;
+    }
+    
+    .intake-label {
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .intake-sources {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+    
+    .source-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .source-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    
+    .intake-timing {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+    }
+    
+    .intake-timing h4 {
+        margin-bottom: 10px;
+        color: #007bff;
+    }
+    
+    .intake-timing ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .intake-timing li {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .recommendation-list {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 15px;
+    }
+    
+    .rec-item {
+        margin-bottom: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .rec-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    
+    .levels-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-top: 25px;
+    }
+    
+    .level-item {
+        padding: 25px;
+        border-radius: 10px;
+        border: 2px solid;
+    }
+    
+    .level-item.low {
+        background: #fff5f5;
+        border-color: #feb2b2;
+    }
+    
+    .level-item.normal {
+        background: #f0fff4;
+        border-color: #9ae6b4;
+    }
+    
+    .level-item.high {
+        background: #fffbf0;
+        border-color: #fbd38d;
+    }
+    
+    .level-item h3 {
+        margin-bottom: 15px;
+        font-size: 18px;
+    }
+    
+    .level-item p {
+        margin: 8px 0;
+        font-weight: bold;
+    }
+    
+    .symptoms,
+    .benefits,
+    .causes {
+        margin-top: 15px;
+    }
+    
+    .symptoms h4,
+    .benefits h4,
+    .causes h4 {
+        color: #666;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+    
+    .symptoms ul,
+    .benefits ul,
+    .causes ul {
+        margin: 0;
+        padding-left: 18px;
+    }
+    
+    .guide-grid,
+    .factors-grid,
+    .tips-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-top: 25px;
+    }
+    
+    .guide-item,
+    .factor-item,
+    .tip-item {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 10px;
+        border-left: 5px solid #007bff;
+    }
+    
+    .guide-item h3,
+    .factor-item h3,
+    .tip-item h3 {
+        color: #007bff;
+        margin-bottom: 15px;
+    }
+    
+    .guide-item ul,
+    .factor-item ul,
+    .tip-item ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .guide-item li,
+    .factor-item li,
+    .tip-item li {
+        padding: 8px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .guide-item li:last-child,
+    .factor-item li:last-child,
+    .tip-item li:last-child {
+        border-bottom: none;
+    }
+    
+    @media (max-width: 768px) {
+        .info-grid-result {
+            grid-template-columns: 1fr;
+        }
+        
+        .levels-grid,
+        .guide-grid,
+        .factors-grid,
+        .tips-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .percentage-value {
+            font-size: 28px;
+            padding: 12px 20px;
+        }
+        
+        .current-values p {
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .source-item,
+        .intake-timing li {
+            flex-direction: column;
+            gap: 5px;
+        }
+    }
+    </style>
+</body>
+</html>

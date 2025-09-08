@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 인코더/디코더 - 텍스트, 이미지, 파일 변환 | 인코딩 도구</title>
+    <meta name="description" content="텍스트, 이미지, 파일을 Base64로 인코딩하거나 디코딩합니다. URL 안전, 이메일 첨부, 웹 개발에 필수적인 Base64 변환 도구입니다.">
+    <meta name="keywords" content="Base64인코더, Base64디코더, 인코딩, 디코딩, 이미지변환, 파일변환, 웹개발도구">
+    <meta name="author" content="계산기 For 한국인">
+    <meta property="og:title" content="Base64 인코더/디코더 - 텍스트, 이미지, 파일 변환">
+    <meta property="og:description" content="다양한 형식의 데이터를 Base64로 변환하거나 원본으로 복구하는 인코딩 도구">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://calcforkr.com/utility/base64-encoder-decoder.html">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/client=ca-pub-2277280131930191"
+            crossorigin="anonymous"></script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Base64 인코더/디코더",
+      "description": "텍스트, 이미지, 파일을 Base64로 변환하거나 원본으로 복구하는 인코딩 도구",
+      "url": "https://calcforkr.com/utility/base64-encoder-decoder.html",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+        .encoder-main {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .operation-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .tab-button.active {
+            background: #007bff;
+            color: white;
+        }
+        
+        .input-methods {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .method-button {
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            background: #f8f9fa;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .method-button.active {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        
+        .text-area {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+            line-height: 1.4;
+        }
+        
+        .file-input-area {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            background: #fafafa;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .file-input-area.dragover {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-info {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .output-section {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 25px;
+        }
+        
+        .output-area {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            background: #f8f9fa;
+            resize: vertical;
+            line-height: 1.4;
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .encode-btn {
+            background: #007bff;
+            color: white;
+        }
+        
+        .decode-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        .copy-btn {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .clear-btn {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .download-btn {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+        }
+        
+        .format-info {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .character-count {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        .examples-section {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #2196f3;
+        }
+        
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .example-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .example-card:hover {
+            background: #f8f9fa;
+            border-color: #007bff;
+        }
+        
+        .tips-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .tip-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .url-safe-info {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Base64 인코더/디코더</h1>
+        <p class="description">텍스트, 이미지, 파일을 Base64로 인코딩하거나 Base64 데이터를 원본으로 디코딩합니다. 웹 개발과 데이터 전송에 필수적인 도구입니다.</p>
+        
+        <div class="calculator-container">
+            <div class="encoder-main">
+                <div class="operation-tabs">
+                    <button class="tab-button active" onclick="switchOperation('encode')">📤 인코딩</button>
+                    <button class="tab-button" onclick="switchOperation('decode')">📥 디코딩</button>
+                </div>
+                
+                <div id="encode-section">
+                    <div class="input-section">
+                        <h3>🔤 입력 데이터</h3>
+                        
+                        <div class="input-methods">
+                            <button class="method-button active" onclick="selectInputMethod('text')">텍스트</button>
+                            <button class="method-button" onclick="selectInputMethod('file')">파일</button>
+                            <button class="method-button" onclick="selectInputMethod('url')">URL</button>
+                        </div>
+                        
+                        <!-- 텍스트 입력 -->
+                        <div id="text-input" class="input-content">
+                            <label for="textInput">텍스트를 입력하세요:</label>
+                            <textarea id="textInput" class="text-area" 
+                                      placeholder="Base64로 인코딩할 텍스트를 입력하세요..."
+                                      oninput="updateCharacterCount('textInput', 'textCount')"></textarea>
+                            <div class="character-count" id="textCount">0 문자</div>
+                        </div>
+                        
+                        <!-- 파일 입력 -->
+                        <div id="file-input" class="input-content" style="display: none;">
+                            <div class="file-input-area" onclick="document.getElementById('fileInput').click()" 
+                                 ondragover="handleDragOver(event)" ondrop="handleFileDrop(event)">
+                                <div style="font-size: 48px; margin-bottom: 15px;">📁</div>
+                                <p><strong>파일을 클릭하거나 드래그하여 업로드하세요</strong></p>
+                                <p>이미지, 문서, 오디오, 비디오 등 모든 파일 형식 지원 (최대 10MB)</p>
+                                <input type="file" id="fileInput" class="file-input" onchange="handleFileSelect(event)">
+                            </div>
+                            <div class="file-info" id="fileInfo"></div>
+                        </div>
+                        
+                        <!-- URL 입력 -->
+                        <div id="url-input" class="input-content" style="display: none;">
+                            <label for="urlInput">URL을 입력하세요:</label>
+                            <input type="url" id="urlInput" style="width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px;" 
+                                   placeholder="https://example.com/image.jpg">
+                            <button onclick="loadFromUrl()" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">URL에서 로드</button>
+                            <div id="urlStatus" style="margin-top: 10px;"></div>
+                        </div>
+                        
+                        <div class="control-buttons">
+                            <button class="control-btn encode-btn" onclick="performEncode()">🔐 인코딩</button>
+                            <button class="control-btn clear-btn" onclick="clearAll()">🗑️ 모두 지우기</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="decode-section" style="display: none;">
+                    <div class="input-section">
+                        <h3>🔓 Base64 데이터</h3>
+                        <label for="base64Input">Base64 문자열을 입력하세요:</label>
+                        <textarea id="base64Input" class="text-area" 
+                                  placeholder="디코딩할 Base64 문자열을 입력하세요..."
+                                  oninput="updateCharacterCount('base64Input', 'base64Count')"></textarea>
+                        <div class="character-count" id="base64Count">0 문자</div>
+                        
+                        <div class="control-buttons">
+                            <button class="control-btn decode-btn" onclick="performDecode()">🔓 디코딩</button>
+                            <button class="control-btn clear-btn" onclick="clearAll()">🗑️ 모두 지우기</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="output-section">
+                    <h3 id="outputTitle">📋 결과</h3>
+                    <textarea id="outputArea" class="output-area" readonly 
+                              placeholder="결과가 여기에 표시됩니다..."></textarea>
+                    <div class="character-count" id="outputCount">0 문자</div>
+                    
+                    <div id="imagePreview" style="display: none;">
+                        <h4>🖼️ 이미지 미리보기</h4>
+                        <img id="previewImage" class="image-preview" alt="미리보기">
+                    </div>
+                    
+                    <div class="control-buttons">
+                        <button class="control-btn copy-btn" onclick="copyToClipboard()">📋 복사</button>
+                        <button class="control-btn download-btn" onclick="downloadResult()">💾 다운로드</button>
+                    </div>
+                    
+                    <div id="formatInfo" class="format-info" style="display: none;"></div>
+                    <div id="messageArea"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>Base64 예시</h2>
+            <div class="examples-section">
+                <h3>📝 다양한 데이터 유형별 예시</h3>
+                <div class="example-grid">
+                    <div class="example-card" onclick="loadExample('hello')">
+                        <h4>🔤 간단한 텍스트</h4>
+                        <p><strong>원본:</strong> "Hello, World!"</p>
+                        <p><strong>Base64:</strong> SGVsbG8sIFdvcmxkIQ==</p>
+                    </div>
+                    <div class="example-card" onclick="loadExample('korean')">
+                        <h4>🇰🇷 한글 텍스트</h4>
+                        <p><strong>원본:</strong> "안녕하세요"</p>
+                        <p><strong>Base64:</strong> 7JWI64WV7ZWY7IS47JqU</p>
+                    </div>
+                    <div class="example-card" onclick="loadExample('json')">
+                        <h4>📋 JSON 데이터</h4>
+                        <p><strong>원본:</strong> {"name":"홍길동","age":30}</p>
+                        <p><strong>Base64:</strong> 인코딩된 JSON 문자열</p>
+                    </div>
+                    <div class="example-card" onclick="loadExample('url')">
+                        <h4>🔗 URL 안전</h4>
+                        <p><strong>설명:</strong> URL에서 안전하게 사용할 수 있는 Base64</p>
+                        <p><small>+ → -, / → _, = 패딩 제거</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>Base64 활용 가이드</h2>
+            <div class="tips-section">
+                <div class="tip-card">
+                    <h3>🎯 Base64란?</h3>
+                    <ul>
+                        <li>바이너리 데이터를 텍스트로 변환하는 인코딩 방식</li>
+                        <li>64개 문자 사용: A-Z, a-z, 0-9, +, /</li>
+                        <li>3바이트 → 4문자로 변환</li>
+                        <li>패딩 문자 = 사용</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-card">
+                    <h3>💻 웹 개발 활용</h3>
+                    <ul>
+                        <li><strong>이미지 임베딩:</strong> CSS, HTML에 직접 포함</li>
+                        <li><strong>API 통신:</strong> JSON에 바이너리 데이터 포함</li>
+                        <li><strong>파일 전송:</strong> 텍스트 기반 프로토콜에서 사용</li>
+                        <li><strong>데이터 URL:</strong> data:image/png;base64,...</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-card">
+                    <h3>📧 이메일 & 보안</h3>
+                    <ul>
+                        <li><strong>MIME 인코딩:</strong> 이메일 첨부파일</li>
+                        <li><strong>Basic 인증:</strong> HTTP 인증 헤더</li>
+                        <li><strong>토큰 저장:</strong> JWT, OAuth 토큰</li>
+                        <li><strong>설정 파일:</strong> 바이너리 설정 데이터</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-card">
+                    <h3>⚠️ 주의사항</h3>
+                    <ul>
+                        <li><strong>크기 증가:</strong> 원본 대비 약 33% 크기 증가</li>
+                        <li><strong>보안 아님:</strong> 인코딩이지 암호화가 아님</li>
+                        <li><strong>URL 안전성:</strong> URL에서는 URL-safe Base64 사용</li>
+                        <li><strong>성능:</strong> 큰 파일은 직접 전송이 효율적</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>프로그래밍 언어별 사용법</h2>
+            <div class="programming-examples">
+                <h3>💾 주요 언어에서의 Base64 처리</h3>
+                
+                <h4>JavaScript</h4>
+                <pre style="background: #f8f9fa; padding: 15px; border-radius: 8px; overflow-x: auto;"><code>// 인코딩
+const encoded = btoa('Hello, World!');
+console.log(encoded); // SGVsbG8sIFdvcmxkIQ==
+
+// 디코딩
+const decoded = atob('SGVsbG8sIFdvcmxkIQ==');
+console.log(decoded); // Hello, World!
+
+// URL-safe Base64
+function urlSafeEncode(str) {
+    return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+}</code></pre>
+                
+                <h4>Python</h4>
+                <pre style="background: #f8f9fa; padding: 15px; border-radius: 8px; overflow-x: auto;"><code>import base64
+
+# 인코딩
+text = "Hello, World!"
+encoded = base64.b64encode(text.encode('utf-8'))
+print(encoded.decode('utf-8'))  # SGVsbG8sIFdvcmxkIQ==
+
+# 디코딩
+decoded = base64.b64decode(encoded)
+print(decoded.decode('utf-8'))  # Hello, World!</code></pre>
+                
+                <h4>Java</h4>
+                <pre style="background: #f8f9fa; padding: 15px; border-radius: 8px; overflow-x: auto;"><code>import java.util.Base64;
+
+// 인코딩
+String text = "Hello, World!";
+String encoded = Base64.getEncoder().encodeToString(text.getBytes());
+System.out.println(encoded); // SGVsbG8sIFdvcmxkIQ==
+
+// 디코딩
+byte[] decoded = Base64.getDecoder().decode(encoded);
+System.out.println(new String(decoded)); // Hello, World!</code></pre>
+            </div>
+        </div>
+        
+        <div class="disclaimer">
+            <p><strong>주의:</strong> Base64는 인코딩 방식이며 암호화가 아닙니다. 보안이 필요한 데이터는 적절한 암호화 방법을 사용하시기 바랍니다.</p>
+        </div>
+    </div>
+    
+    <script src="../js/calculator-common.js"></script>
+    <script>
+        let currentOperation = 'encode';
+        let currentInputMethod = 'text';
+        let currentFileData = null;
+        
+        function switchOperation(operation) {
+            currentOperation = operation;
+            
+            // 탭 버튼 상태 업데이트
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 섹션 표시/숨김
+            document.getElementById('encode-section').style.display = operation === 'encode' ? 'block' : 'none';
+            document.getElementById('decode-section').style.display = operation === 'decode' ? 'block' : 'none';
+            
+            // 제목 업데이트
+            document.getElementById('outputTitle').textContent = operation === 'encode' ? '📋 Base64 결과' : '📋 디코딩 결과';
+            
+            clearResults();
+        }
+        
+        function selectInputMethod(method) {
+            currentInputMethod = method;
+            
+            // 버튼 상태 업데이트
+            document.querySelectorAll('.method-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 입력 방법 표시/숨김
+            document.getElementById('text-input').style.display = method === 'text' ? 'block' : 'none';
+            document.getElementById('file-input').style.display = method === 'file' ? 'block' : 'none';
+            document.getElementById('url-input').style.display = method === 'url' ? 'block' : 'none';
+            
+            clearResults();
+        }
+        
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                processFile(file);
+            }
+        }
+        
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('dragover');
+        }
+        
+        function handleFileDrop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('dragover');
+            
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+        
+        function processFile(file) {
+            if (file.size > 10 * 1024 * 1024) { // 10MB 제한
+                showMessage('파일 크기는 10MB 이하만 지원됩니다.', 'error');
+                return;
+            }
+            
+            const fileInfo = document.getElementById('fileInfo');
+            fileInfo.innerHTML = `
+                <strong>파일명:</strong> ${file.name}<br>
+                <strong>크기:</strong> ${formatFileSize(file.size)}<br>
+                <strong>타입:</strong> ${file.type || '알 수 없음'}<br>
+                <strong>상태:</strong> 로드 완료
+            `;
+            fileInfo.style.display = 'block';
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                currentFileData = {
+                    content: event.target.result,
+                    name: file.name,
+                    type: file.type,
+                    size: file.size
+                };
+                
+                showMessage('파일이 성공적으로 로드되었습니다.', 'success');
+            };
+            
+            reader.onerror = function() {
+                showMessage('파일 읽기 중 오류가 발생했습니다.', 'error');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+        
+        function loadFromUrl() {
+            const url = document.getElementById('urlInput').value.trim();
+            
+            if (!url) {
+                showMessage('URL을 입력해주세요.', 'error');
+                return;
+            }
+            
+            if (!isValidUrl(url)) {
+                showMessage('올바른 URL 형식이 아닙니다.', 'error');
+                return;
+            }
+            
+            document.getElementById('urlStatus').innerHTML = '🔄 로딩 중...';
+            
+            // CORS 문제로 인해 실제 URL 로드는 제한적
+            // 대신 사용자에게 안내 메시지 표시
+            setTimeout(() => {
+                document.getElementById('urlStatus').innerHTML = `
+                    <div class="error-message">
+                        <strong>CORS 제한:</strong> 보안상의 이유로 직접 URL에서 로드할 수 없습니다.<br>
+                        대신 파일을 다운로드하여 파일 업로드 기능을 사용해주세요.
+                    </div>
+                `;
+            }, 1000);
+        }
+        
+        function performEncode() {
+            let dataToEncode = '';
+            
+            try {
+                if (currentInputMethod === 'text') {
+                    const textInput = document.getElementById('textInput').value;
+                    if (!textInput.trim()) {
+                        showMessage('인코딩할 텍스트를 입력해주세요.', 'error');
+                        return;
+                    }
+                    dataToEncode = btoa(unescape(encodeURIComponent(textInput)));
+                    
+                } else if (currentInputMethod === 'file') {
+                    if (!currentFileData) {
+                        showMessage('파일을 선택해주세요.', 'error');
+                        return;
+                    }
+                    // Data URL에서 Base64 부분만 추출
+                    dataToEncode = currentFileData.content.split(',')[1];
+                    
+                    // 파일 정보 표시
+                    showFormatInfo({
+                        type: 'file',
+                        filename: currentFileData.name,
+                        mimetype: currentFileData.type,
+                        size: currentFileData.size,
+                        base64Length: dataToEncode.length
+                    });
+                    
+                } else if (currentInputMethod === 'url') {
+                    showMessage('URL 로드 기능은 CORS 제한으로 인해 사용할 수 없습니다.', 'error');
+                    return;
+                }
+                
+                document.getElementById('outputArea').value = dataToEncode;
+                updateCharacterCount('outputArea', 'outputCount');
+                
+                // 이미지 미리보기
+                if (currentInputMethod === 'file' && currentFileData.type.startsWith('image/')) {
+                    document.getElementById('previewImage').src = currentFileData.content;
+                    document.getElementById('imagePreview').style.display = 'block';
+                } else {
+                    document.getElementById('imagePreview').style.display = 'none';
+                }
+                
+                showMessage('인코딩이 완료되었습니다.', 'success');
+                
+                // Google Analytics 이벤트 추적
+                gtag('event', 'base64_encode', {
+                    'event_category': 'Utility Tool',
+                    'event_label': currentInputMethod
+                });
+                
+            } catch (error) {
+                showMessage('인코딩 중 오류가 발생했습니다: ' + error.message, 'error');
+            }
+        }
+        
+        function performDecode() {
+            const base64Input = document.getElementById('base64Input').value.trim();
+            
+            if (!base64Input) {
+                showMessage('디코딩할 Base64 문자열을 입력해주세요.', 'error');
+                return;
+            }
+            
+            try {
+                // Base64 형식 검증
+                if (!isValidBase64(base64Input)) {
+                    showMessage('올바른 Base64 형식이 아닙니다.', 'error');
+                    return;
+                }
+                
+                // 텍스트로 디코딩 시도
+                try {
+                    const decodedText = decodeURIComponent(escape(atob(base64Input)));
+                    document.getElementById('outputArea').value = decodedText;
+                    updateCharacterCount('outputArea', 'outputCount');
+                    
+                    showFormatInfo({
+                        type: 'text',
+                        originalLength: base64Input.length,
+                        decodedLength: decodedText.length
+                    });
+                    
+                } catch (textError) {
+                    // 텍스트 디코딩 실패 시 바이너리 데이터로 처리
+                    const binaryData = atob(base64Input);
+                    document.getElementById('outputArea').value = `[바이너리 데이터 - ${binaryData.length} 바이트]\n디코딩된 데이터를 다운로드하여 확인하세요.`;
+                    
+                    showFormatInfo({
+                        type: 'binary',
+                        originalLength: base64Input.length,
+                        decodedLength: binaryData.length
+                    });
+                }
+                
+                // 이미지 데이터인지 확인
+                if (base64Input.length > 100 && isLikelyImage(base64Input)) {
+                    try {
+                        const dataUrl = 'data:image/jpeg;base64,' + base64Input;
+                        document.getElementById('previewImage').src = dataUrl;
+                        document.getElementById('imagePreview').style.display = 'block';
+                    } catch (imgError) {
+                        document.getElementById('imagePreview').style.display = 'none';
+                    }
+                } else {
+                    document.getElementById('imagePreview').style.display = 'none';
+                }
+                
+                showMessage('디코딩이 완료되었습니다.', 'success');
+                
+                // Google Analytics 이벤트 추적
+                gtag('event', 'base64_decode', {
+                    'event_category': 'Utility Tool',
+                    'event_label': 'base64_string'
+                });
+                
+            } catch (error) {
+                showMessage('디코딩 중 오류가 발생했습니다: ' + error.message, 'error');
+            }
+        }
+        
+        function copyToClipboard() {
+            const outputArea = document.getElementById('outputArea');
+            
+            if (!outputArea.value.trim()) {
+                showMessage('복사할 내용이 없습니다.', 'error');
+                return;
+            }
+            
+            outputArea.select();
+            outputArea.setSelectionRange(0, 99999);
+            
+            try {
+                document.execCommand('copy');
+                showMessage('클립보드에 복사되었습니다.', 'success');
+            } catch (err) {
+                navigator.clipboard.writeText(outputArea.value).then(() => {
+                    showMessage('클립보드에 복사되었습니다.', 'success');
+                }).catch(() => {
+                    showMessage('복사 중 오류가 발생했습니다.', 'error');
+                });
+            }
+        }
+        
+        function downloadResult() {
+            const outputArea = document.getElementById('outputArea');
+            
+            if (!outputArea.value.trim()) {
+                showMessage('다운로드할 내용이 없습니다.', 'error');
+                return;
+            }
+            
+            let filename, content, mimeType;
+            
+            if (currentOperation === 'encode') {
+                filename = 'encoded_base64.txt';
+                content = outputArea.value;
+                mimeType = 'text/plain';
+            } else {
+                // 디코딩 결과 다운로드
+                try {
+                    const base64Input = document.getElementById('base64Input').value.trim();
+                    const binaryData = atob(base64Input);
+                    
+                    // Uint8Array로 변환
+                    const bytes = new Uint8Array(binaryData.length);
+                    for (let i = 0; i < binaryData.length; i++) {
+                        bytes[i] = binaryData.charCodeAt(i);
+                    }
+                    
+                    filename = 'decoded_data.bin';
+                    content = bytes;
+                    mimeType = 'application/octet-stream';
+                    
+                } catch (error) {
+                    filename = 'decoded_text.txt';
+                    content = outputArea.value;
+                    mimeType = 'text/plain';
+                }
+            }
+            
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showMessage('파일이 다운로드되었습니다.', 'success');
+        }
+        
+        function clearAll() {
+            // 입력 필드 초기화
+            document.getElementById('textInput').value = '';
+            document.getElementById('base64Input').value = '';
+            document.getElementById('urlInput').value = '';
+            document.getElementById('fileInput').value = '';
+            
+            // 파일 정보 초기화
+            document.getElementById('fileInfo').style.display = 'none';
+            document.getElementById('urlStatus').innerHTML = '';
+            currentFileData = null;
+            
+            clearResults();
+            
+            // 문자 수 업데이트
+            updateCharacterCount('textInput', 'textCount');
+            updateCharacterCount('base64Input', 'base64Count');
+        }
+        
+        function clearResults() {
+            document.getElementById('outputArea').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('formatInfo').style.display = 'none';
+            document.getElementById('messageArea').innerHTML = '';
+            updateCharacterCount('outputArea', 'outputCount');
+        }
+        
+        function updateCharacterCount(textareaId, countId) {
+            const textarea = document.getElementById(textareaId);
+            const count = document.getElementById(countId);
+            const length = textarea.value.length;
+            
+            count.textContent = `${length.toLocaleString()} 문자`;
+            
+            if (length > 1000000) {
+                count.style.color = '#dc3545';
+                count.textContent += ' (대용량)';
+            } else if (length > 100000) {
+                count.style.color = '#ffc107';
+                count.textContent += ' (대용량)';
+            } else {
+                count.style.color = '#666';
+            }
+        }
+        
+        function showFormatInfo(info) {
+            const formatInfo = document.getElementById('formatInfo');
+            let html = '<h4>📊 변환 정보</h4>';
+            
+            if (info.type === 'file') {
+                html += `
+                    <ul>
+                        <li><strong>파일명:</strong> ${info.filename}</li>
+                        <li><strong>MIME 타입:</strong> ${info.mimetype}</li>
+                        <li><strong>원본 크기:</strong> ${formatFileSize(info.size)}</li>
+                        <li><strong>Base64 길이:</strong> ${info.base64Length.toLocaleString()} 문자</li>
+                        <li><strong>크기 증가:</strong> ${(((info.base64Length * 0.75) / info.size - 1) * 100).toFixed(1)}%</li>
+                    </ul>
+                `;
+            } else if (info.type === 'text') {
+                html += `
+                    <ul>
+                        <li><strong>원본 길이:</strong> ${info.decodedLength.toLocaleString()} 문자</li>
+                        <li><strong>Base64 길이:</strong> ${info.originalLength.toLocaleString()} 문자</li>
+                        <li><strong>압축률:</strong> ${((1 - info.decodedLength / (info.originalLength * 0.75)) * 100).toFixed(1)}%</li>
+                    </ul>
+                `;
+            } else if (info.type === 'binary') {
+                html += `
+                    <ul>
+                        <li><strong>Base64 길이:</strong> ${info.originalLength.toLocaleString()} 문자</li>
+                        <li><strong>디코딩된 크기:</strong> ${formatFileSize(info.decodedLength)}</li>
+                        <li><strong>데이터 타입:</strong> 바이너리 데이터</li>
+                    </ul>
+                `;
+            }
+            
+            formatInfo.innerHTML = html;
+            formatInfo.style.display = 'block';
+        }
+        
+        function showMessage(message, type) {
+            const messageArea = document.getElementById('messageArea');
+            const className = type === 'error' ? 'error-message' : 'success-message';
+            
+            messageArea.innerHTML = `<div class="${className}">${message}</div>`;
+            
+            // 3초 후 메시지 제거
+            setTimeout(() => {
+                messageArea.innerHTML = '';
+            }, 3000);
+        }
+        
+        function isValidBase64(str) {
+            try {
+                return btoa(atob(str)) === str;
+            } catch (err) {
+                return false;
+            }
+        }
+        
+        function isValidUrl(str) {
+            try {
+                new URL(str);
+                return true;
+            } catch {
+                return false;
+            }
+        }
+        
+        function isLikelyImage(base64) {
+            // 이미지 Base64의 일반적인 시작 패턴 확인
+            const imagePatterns = [
+                '/9j/',     // JPEG
+                'iVBORw0K', // PNG
+                'R0lGOD',   // GIF
+                'UklGR',    // WebP
+                '/9k='      // JPEG alternative
+            ];
+            
+            return imagePatterns.some(pattern => base64.startsWith(pattern));
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function loadExample(type) {
+            clearAll();
+            switchOperation('encode');
+            selectInputMethod('text');
+            
+            const examples = {
+                hello: 'Hello, World!',
+                korean: '안녕하세요',
+                json: '{"name":"홍길동","age":30,"city":"서울"}',
+                url: 'https://example.com/api?param=value&key=123'
+            };
+            
+            if (examples[type]) {
+                document.getElementById('textInput').value = examples[type];
+                updateCharacterCount('textInput', 'textCount');
+                performEncode();
+            }
+        }
+        
+        // 드래그 이벤트 리스너
+        document.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+        
+        document.addEventListener('dragleave', function(e) {
+            if (e.target.classList.contains('file-input-area')) {
+                e.target.classList.remove('dragover');
+            }
+        });
+        
+        // 페이지 로드 시 예시 버튼 추가
+        document.addEventListener('DOMContentLoaded', function() {
+            const exampleDiv = document.createElement('div');
+            exampleDiv.innerHTML = `
+                <div style="text-align: center; margin: 20px 0; padding: 15px; background: #e3f2fd; border-radius: 8px;">
+                    <strong>💡 빠른 예시:</strong>
+                    <button onclick="loadExample('hello')" 
+                            style="margin: 5px; padding: 8px 15px; border: 1px solid #2196f3; border-radius: 4px; background: #f8f9fa; cursor: pointer;">
+                        Hello World
+                    </button>
+                    <button onclick="loadExample('korean')" 
+                            style="margin: 5px; padding: 8px 15px; border: 1px solid #2196f3; border-radius: 4px; background: #f8f9fa; cursor: pointer;">
+                        한글 텍스트
+                    </button>
+                    <button onclick="loadExample('json')" 
+                            style="margin: 5px; padding: 8px 15px; border: 1px solid #2196f3; border-radius: 4px; background: #f8f9fa; cursor: pointer;">
+                        JSON 데이터
+                    </button>
+                </div>
+            `;
+            document.querySelector('.calculator-container').appendChild(exampleDiv);
+        });
+    </script>
+</body>
+</html>

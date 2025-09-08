@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>통계 계산기 - 평균, 중앙값, 표준편차, 분산 계산 | 수학 도구</title>
+    <meta name="description" content="숫자 데이터를 입력하여 평균, 중앙값, 최빈값, 표준편차, 분산, 범위 등의 기술통계량을 계산합니다. 데이터 분석과 통계 학습에 도움이 되는 계산기입니다.">
+    <meta name="keywords" content="통계계산기, 평균계산, 표준편차, 분산, 중앙값, 최빈값, 기술통계, 데이터분석">
+    <meta name="author" content="계산기 For 한국인">
+    <meta property="og:title" content="통계 계산기 - 평균, 중앙값, 표준편차, 분산 계산">
+    <meta property="og:description" content="다양한 기술통계량을 계산하고 데이터 분포를 분석하는 통계 도구">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://calcforkr.com/math/statistics-calculator.html">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+            crossorigin="anonymous"></script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "통계 계산기",
+      "description": "기술통계량을 계산하고 데이터 분포를 분석하는 수학 도구",
+      "url": "https://calcforkr.com/math/statistics-calculator.html",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+        .data-input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            margin: 20px 0;
+        }
+        
+        .input-methods {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .method-button {
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            background: #f8f9fa;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .method-button.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        
+        .data-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        
+        .data-info {
+            background: #e3f2fd;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #1565c0;
+        }
+        
+        .statistics-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .stat-description {
+            font-size: 0.8em;
+            color: #888;
+            line-height: 1.3;
+        }
+        
+        .distribution-viz {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .data-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .sorted-data {
+            font-family: monospace;
+            font-size: 14px;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+        
+        .quartiles-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .quartile-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .quartile-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .quartile-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .frequency-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .frequency-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .frequency-table th,
+        .frequency-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .frequency-table th {
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .frequency-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .interpretation {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #28a745;
+        }
+        
+        .interpretation h4 {
+            color: #155724;
+            margin-bottom: 15px;
+        }
+        
+        .tips-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .tip-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .examples-section {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .example-datasets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .example-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .example-card:hover {
+            background: #f8f9fa;
+            border-color: #007bff;
+        }
+        
+        .histogram {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .histogram-bar {
+            display: inline-block;
+            background: #007bff;
+            margin: 2px;
+            min-height: 20px;
+            width: 30px;
+            vertical-align: bottom;
+            position: relative;
+            border-radius: 2px 2px 0 0;
+        }
+        
+        .histogram-label {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>통계 계산기</h1>
+        <p class="description">숫자 데이터를 입력하여 평균, 중앙값, 표준편차, 분산 등의 기술통계량을 계산하고 데이터 분포를 분석합니다.</p>
+        
+        <div class="calculator-container">
+            <div class="data-input-section">
+                <h3>📊 데이터 입력</h3>
+                
+                <div class="input-methods">
+                    <button class="method-button active" onclick="selectInputMethod('manual')">직접 입력</button>
+                    <button class="method-button" onclick="selectInputMethod('csv')">CSV 형태</button>
+                    <button class="method-button" onclick="selectInputMethod('example')">예시 데이터</button>
+                </div>
+                
+                <div class="input-group">
+                    <label for="dataInput">데이터 입력 (숫자를 입력하세요):</label>
+                    <textarea id="dataInput" class="data-textarea" 
+                              placeholder="숫자를 쉼표, 공백, 또는 줄바꿈으로 구분하여 입력하세요.&#10;예: 1, 2, 3, 4, 5 또는&#10;1 2 3 4 5 또는&#10;1&#10;2&#10;3&#10;4&#10;5"
+                              oninput="processData()"></textarea>
+                </div>
+                
+                <div class="data-info" id="dataInfo" style="display: none;">
+                    데이터 개수: <span id="dataCount">0</span>개
+                </div>
+                
+                <button onclick="clearData()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin-top: 10px;">데이터 지우기</button>
+            </div>
+            
+            <div id="results" style="display: none;">
+                <h3>📈 통계 결과</h3>
+                <div class="statistics-results" id="statisticsResults"></div>
+                
+                <div class="quartiles-info" id="quartilesInfo"></div>
+                
+                <div class="data-list">
+                    <h4>📋 정렬된 데이터</h4>
+                    <div class="sorted-data" id="sortedData"></div>
+                </div>
+                
+                <div class="frequency-table" id="frequencyTable"></div>
+                
+                <div class="distribution-viz" id="distributionViz"></div>
+                
+                <div class="interpretation" id="interpretation"></div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>예시 데이터셋</h2>
+            <div class="examples-section">
+                <h3>📝 다양한 분야의 예시 데이터</h3>
+                <div class="example-datasets">
+                    <div class="example-card" onclick="loadExampleData('test_scores')">
+                        <h4>📚 시험 점수</h4>
+                        <p>학생들의 수학 시험 점수 (100점 만점)</p>
+                        <small>85, 92, 78, 96, 88, 73, 91, 82, 95, 79</small>
+                    </div>
+                    <div class="example-card" onclick="loadExampleData('heights')">
+                        <h4>📏 키 데이터</h4>
+                        <p>성인 남성 키 데이터 (cm)</p>
+                        <small>175, 168, 182, 171, 177, 165, 180, 173, 169, 176</small>
+                    </div>
+                    <div class="example-card" onclick="loadExampleData('sales')">
+                        <h4>💰 매출 데이터</h4>
+                        <p>월별 매출액 (만원)</p>
+                        <small>450, 520, 380, 610, 490, 550, 420, 580, 510, 470</small>
+                    </div>
+                    <div class="example-card" onclick="loadExampleData('temperatures')">
+                        <h4>🌡️ 기온 데이터</h4>
+                        <p>일일 최고기온 (°C)</p>
+                        <small>28, 32, 25, 30, 27, 29, 31, 26, 33, 24</small>
+                    </div>
+                    <div class="example-card" onclick="loadExampleData('skewed')">
+                        <h4>📊 편향 분포</h4>
+                        <p>소득 분포 (만원)</p>
+                        <small>300, 320, 280, 350, 290, 500, 800, 310, 330, 1200</small>
+                    </div>
+                    <div class="example-card" onclick="loadExampleData('large')">
+                        <h4>🔢 큰 데이터셋</h4>
+                        <p>제품 만족도 점수 (30개)</p>
+                        <small>4.2, 3.8, 4.5, 3.9, 4.1...</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>통계량 설명</h2>
+            <div class="tips-section">
+                <div class="tip-card">
+                    <h3>📊 중심경향 측도</h3>
+                    <ul>
+                        <li><strong>평균(Mean):</strong> 모든 값의 합 ÷ 개수</li>
+                        <li><strong>중앙값(Median):</strong> 정렬된 값의 중간값</li>
+                        <li><strong>최빈값(Mode):</strong> 가장 자주 나타나는 값</li>
+                        <li><strong>기하평균:</strong> n개 값의 n제곱근</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-card">
+                    <h3>📏 산포 측도</h3>
+                    <ul>
+                        <li><strong>범위(Range):</strong> 최댓값 - 최솟값</li>
+                        <li><strong>분산(Variance):</strong> 편차 제곱의 평균</li>
+                        <li><strong>표준편차(SD):</strong> 분산의 제곱근</li>
+                        <li><strong>변동계수:</strong> (표준편차 ÷ 평균) × 100</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-card">
+                    <h3>📈 분위수</h3>
+                    <ul>
+                        <li><strong>Q1 (25%):</strong> 하위 25% 지점</li>
+                        <li><strong>Q2 (50%):</strong> 중앙값과 동일</li>
+                        <li><strong>Q3 (75%):</strong> 하위 75% 지점</li>
+                        <li><strong>IQR:</strong> Q3 - Q1 (사분위 범위)</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-card">
+                    <h3>🎯 분포의 형태</h3>
+                    <ul>
+                        <li><strong>왜도(Skewness):</strong> 분포의 비대칭 정도</li>
+                        <li><strong>첨도(Kurtosis):</strong> 분포의 뾰족한 정도</li>
+                        <li><strong>정규성:</strong> 종 모양 분포 여부</li>
+                        <li><strong>이상치:</strong> Q1-1.5×IQR 미만, Q3+1.5×IQR 초과</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>통계의 실생활 활용</h2>
+            <div class="applications">
+                <h3>🎯 다양한 분야에서의 활용</h3>
+                <ul>
+                    <li><strong>교육:</strong> 학생 성적 분석, 평가 기준 설정</li>
+                    <li><strong>비즈니스:</strong> 매출 분석, 품질 관리, 고객 만족도</li>
+                    <li><strong>의학:</strong> 임상시험, 건강 지표 분석</li>
+                    <li><strong>스포츠:</strong> 선수 성적 분석, 팀 전력 평가</li>
+                    <li><strong>제조업:</strong> 품질 관리, 공정 개선</li>
+                    <li><strong>마케팅:</strong> 소비자 행동 분석, A/B 테스트</li>
+                    <li><strong>금융:</strong> 투자 위험도, 포트폴리오 분석</li>
+                    <li><strong>연구:</strong> 실험 결과 분석, 가설 검정</li>
+                </ul>
+                
+                <h3>📋 통계 분석 프로세스</h3>
+                <ol>
+                    <li><strong>데이터 수집:</strong> 신뢰할 수 있는 데이터 확보</li>
+                    <li><strong>데이터 정제:</strong> 이상치, 결측값 처리</li>
+                    <li><strong>기술통계:</strong> 중심경향, 산포 측정</li>
+                    <li><strong>시각화:</strong> 히스토그램, 상자그림 등</li>
+                    <li><strong>해석:</strong> 결과의 의미와 시사점 도출</li>
+                    <li><strong>의사결정:</strong> 분석 결과 기반 행동 계획</li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="disclaimer">
+            <p><strong>참고:</strong> 통계 분석은 데이터의 품질과 표본의 대표성에 크게 의존합니다. 중요한 의사결정을 위해서는 전문적인 통계 분석을 받으시기 바랍니다.</p>
+        </div>
+    </div>
+    
+    <script src="../js/calculator-common.js"></script>
+    <script>
+        let currentData = [];
+        
+        const exampleDatasets = {
+            test_scores: [85, 92, 78, 96, 88, 73, 91, 82, 95, 79],
+            heights: [175, 168, 182, 171, 177, 165, 180, 173, 169, 176],
+            sales: [450, 520, 380, 610, 490, 550, 420, 580, 510, 470],
+            temperatures: [28, 32, 25, 30, 27, 29, 31, 26, 33, 24],
+            skewed: [300, 320, 280, 350, 290, 500, 800, 310, 330, 1200],
+            large: [4.2, 3.8, 4.5, 3.9, 4.1, 4.3, 3.7, 4.0, 4.4, 3.6, 4.6, 3.5, 4.2, 3.9, 4.1, 4.0, 3.8, 4.3, 3.7, 4.4, 4.1, 3.9, 4.2, 4.0, 3.8, 4.5, 3.6, 4.3, 3.7, 4.1]
+        };
+        
+        function selectInputMethod(method) {
+            document.querySelectorAll('.method-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            const textarea = document.getElementById('dataInput');
+            
+            if (method === 'manual') {
+                textarea.placeholder = '숫자를 쉼표, 공백, 또는 줄바꿈으로 구분하여 입력하세요.\n예: 1, 2, 3, 4, 5';
+            } else if (method === 'csv') {
+                textarea.placeholder = 'CSV 형태로 입력하세요.\n예: 1,2,3,4,5 또는\n"값1","값2","값3"';
+            } else if (method === 'example') {
+                textarea.placeholder = '아래 예시 데이터셋 중 하나를 선택하세요.';
+            }
+        }
+        
+        function loadExampleData(datasetName) {
+            const data = exampleDatasets[datasetName];
+            document.getElementById('dataInput').value = data.join(', ');
+            processData();
+        }
+        
+        function processData() {
+            const input = document.getElementById('dataInput').value.trim();
+            
+            if (!input) {
+                currentData = [];
+                hideResults();
+                return;
+            }
+            
+            try {
+                // 다양한 구분자로 데이터 분리
+                const rawData = input.split(/[\s,;\n\r]+/)
+                    .map(str => str.replace(/[^\d.-]/g, '')) // 숫자가 아닌 문자 제거
+                    .filter(str => str !== '')
+                    .map(str => parseFloat(str))
+                    .filter(num => !isNaN(num));
+                
+                if (rawData.length === 0) {
+                    hideResults();
+                    return;
+                }
+                
+                currentData = rawData;
+                updateDataInfo();
+                calculateStatistics();
+                showResults();
+                
+            } catch (error) {
+                showError('데이터 형식이 올바르지 않습니다. 숫자만 입력해주세요.');
+                hideResults();
+            }
+        }
+        
+        function updateDataInfo() {
+            const dataInfo = document.getElementById('dataInfo');
+            const dataCount = document.getElementById('dataCount');
+            
+            dataCount.textContent = currentData.length;
+            dataInfo.style.display = 'block';
+        }
+        
+        function calculateStatistics() {
+            const data = [...currentData].sort((a, b) => a - b);
+            const n = data.length;
+            
+            // 기본 통계량
+            const sum = data.reduce((a, b) => a + b, 0);
+            const mean = sum / n;
+            const min = data[0];
+            const max = data[n - 1];
+            const range = max - min;
+            
+            // 중앙값
+            const median = n % 2 === 0 
+                ? (data[n/2 - 1] + data[n/2]) / 2 
+                : data[Math.floor(n/2)];
+            
+            // 최빈값
+            const frequency = {};
+            data.forEach(val => frequency[val] = (frequency[val] || 0) + 1);
+            const maxFreq = Math.max(...Object.values(frequency));
+            const modes = Object.keys(frequency).filter(key => frequency[key] === maxFreq).map(Number);
+            const mode = modes.length === n ? '없음' : modes.join(', ');
+            
+            // 분산과 표준편차
+            const variance = data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / n;
+            const sampleVariance = data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / (n - 1);
+            const stdDev = Math.sqrt(variance);
+            const sampleStdDev = Math.sqrt(sampleVariance);
+            
+            // 사분위수
+            const q1 = getQuantile(data, 0.25);
+            const q3 = getQuantile(data, 0.75);
+            const iqr = q3 - q1;
+            
+            // 변동계수
+            const cv = (stdDev / mean) * 100;
+            
+            // 기하평균 (양수만)
+            const geometricMean = data.every(x => x > 0) 
+                ? Math.pow(data.reduce((a, b) => a * b, 1), 1/n)
+                : '음수 포함으로 계산 불가';
+            
+            displayStatistics({
+                count: n,
+                sum,
+                mean,
+                median,
+                mode,
+                min,
+                max,
+                range,
+                variance,
+                sampleVariance,
+                stdDev,
+                sampleStdDev,
+                q1,
+                q3,
+                iqr,
+                cv,
+                geometricMean,
+                sortedData: data,
+                frequency
+            });
+        }
+        
+        function getQuantile(sortedData, percentile) {
+            const index = percentile * (sortedData.length - 1);
+            const lower = Math.floor(index);
+            const upper = Math.ceil(index);
+            const weight = index - lower;
+            
+            return sortedData[lower] * (1 - weight) + sortedData[upper] * weight;
+        }
+        
+        function displayStatistics(stats) {
+            // 주요 통계량 카드
+            const resultsHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${stats.count}</div>
+                    <div class="stat-label">데이터 개수</div>
+                    <div class="stat-description">전체 관측값의 수</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.mean.toFixed(2)}</div>
+                    <div class="stat-label">평균 (Mean)</div>
+                    <div class="stat-description">모든 값의 산술평균</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.median.toFixed(2)}</div>
+                    <div class="stat-label">중앙값 (Median)</div>
+                    <div class="stat-description">정렬된 값의 중간값</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.mode}</div>
+                    <div class="stat-label">최빈값 (Mode)</div>
+                    <div class="stat-description">가장 자주 나타나는 값</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.stdDev.toFixed(2)}</div>
+                    <div class="stat-label">표준편차</div>
+                    <div class="stat-description">데이터의 퍼짐 정도</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.variance.toFixed(2)}</div>
+                    <div class="stat-label">분산</div>
+                    <div class="stat-description">편차 제곱의 평균</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.range.toFixed(2)}</div>
+                    <div class="stat-label">범위</div>
+                    <div class="stat-description">최댓값 - 최솟값</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.cv.toFixed(1)}%</div>
+                    <div class="stat-label">변동계수</div>
+                    <div class="stat-description">상대적 변동성</div>
+                </div>
+            `;
+            
+            document.getElementById('statisticsResults').innerHTML = resultsHTML;
+            
+            // 사분위수 정보
+            const quartilesHTML = `
+                <div class="quartile-card">
+                    <div class="quartile-value">${stats.min.toFixed(2)}</div>
+                    <div class="quartile-label">최솟값</div>
+                </div>
+                <div class="quartile-card">
+                    <div class="quartile-value">${stats.q1.toFixed(2)}</div>
+                    <div class="quartile-label">Q1 (25%)</div>
+                </div>
+                <div class="quartile-card">
+                    <div class="quartile-value">${stats.median.toFixed(2)}</div>
+                    <div class="quartile-label">Q2 (50%)</div>
+                </div>
+                <div class="quartile-card">
+                    <div class="quartile-value">${stats.q3.toFixed(2)}</div>
+                    <div class="quartile-label">Q3 (75%)</div>
+                </div>
+                <div class="quartile-card">
+                    <div class="quartile-value">${stats.max.toFixed(2)}</div>
+                    <div class="quartile-label">최댓값</div>
+                </div>
+                <div class="quartile-card">
+                    <div class="quartile-value">${stats.iqr.toFixed(2)}</div>
+                    <div class="quartile-label">사분위 범위</div>
+                </div>
+            `;
+            
+            document.getElementById('quartilesInfo').innerHTML = quartilesHTML;
+            
+            // 정렬된 데이터
+            document.getElementById('sortedData').textContent = stats.sortedData.map(x => x.toFixed(2)).join(', ');
+            
+            // 빈도표
+            createFrequencyTable(stats.frequency);
+            
+            // 간단한 히스토그램
+            createHistogram(stats.sortedData);
+            
+            // 해석
+            createInterpretation(stats);
+            
+            // Google Analytics 이벤트 추적
+            gtag('event', 'statistics_calculation', {
+                'event_category': 'Math Calculator',
+                'event_label': `${stats.count}_data_points`
+            });
+        }
+        
+        function createFrequencyTable(frequency) {
+            const frequencyEntries = Object.entries(frequency)
+                .map(([value, freq]) => ({
+                    value: parseFloat(value),
+                    frequency: freq,
+                    percentage: (freq / currentData.length * 100).toFixed(1)
+                }))
+                .sort((a, b) => a.value - b.value);
+            
+            if (frequencyEntries.length > 20) {
+                // 데이터가 많으면 빈도표는 상위 10개만 표시
+                frequencyEntries.splice(10);
+            }
+            
+            let tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>값</th>
+                            <th>빈도</th>
+                            <th>비율(%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            frequencyEntries.forEach(entry => {
+                tableHTML += `
+                    <tr>
+                        <td>${entry.value.toFixed(2)}</td>
+                        <td>${entry.frequency}</td>
+                        <td>${entry.percentage}%</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+            
+            document.getElementById('frequencyTable').innerHTML = `
+                <h4>📊 빈도표 ${frequencyEntries.length < Object.keys(frequency).length ? '(상위 10개)' : ''}</h4>
+                ${tableHTML}
+            `;
+        }
+        
+        function createHistogram(data) {
+            const bins = Math.min(10, Math.ceil(Math.sqrt(data.length)));
+            const binWidth = (Math.max(...data) - Math.min(...data)) / bins;
+            const minVal = Math.min(...data);
+            
+            const histogram = new Array(bins).fill(0);
+            
+            data.forEach(value => {
+                const binIndex = Math.min(Math.floor((value - minVal) / binWidth), bins - 1);
+                histogram[binIndex]++;
+            });
+            
+            const maxHeight = Math.max(...histogram);
+            const scale = 100 / maxHeight;
+            
+            let histogramHTML = '<h4>📊 히스토그램</h4><div class="histogram">';
+            
+            histogram.forEach((count, i) => {
+                const height = count * scale;
+                const binStart = (minVal + i * binWidth).toFixed(1);
+                const binEnd = (minVal + (i + 1) * binWidth).toFixed(1);
+                
+                histogramHTML += `
+                    <div style="display: inline-block; margin: 0 2px; text-align: center;">
+                        <div class="histogram-bar" style="height: ${height}px;" title="${binStart}~${binEnd}: ${count}개"></div>
+                        <div class="histogram-label">${binStart}</div>
+                    </div>
+                `;
+            });
+            
+            histogramHTML += '</div><p style="font-size: 14px; color: #666;">막대에 마우스를 올리면 상세 정보를 볼 수 있습니다.</p>';
+            
+            document.getElementById('distributionViz').innerHTML = histogramHTML;
+        }
+        
+        function createInterpretation(stats) {
+            let interpretation = '<h4>📋 데이터 해석</h4>';
+            
+            // 중심경향 비교
+            const meanMedianDiff = Math.abs(stats.mean - stats.median);
+            const relativeSkew = meanMedianDiff / stats.stdDev;
+            
+            if (relativeSkew < 0.2) {
+                interpretation += '<p><strong>분포 모양:</strong> 대칭적인 분포로 보입니다. 평균과 중앙값이 비슷합니다.</p>';
+            } else if (stats.mean > stats.median) {
+                interpretation += '<p><strong>분포 모양:</strong> 우편향(positive skew) 분포입니다. 큰 값들이 평균을 끌어올립니다.</p>';
+            } else {
+                interpretation += '<p><strong>분포 모양:</strong> 좌편향(negative skew) 분포입니다. 작은 값들이 평균을 끌어내립니다.</p>';
+            }
+            
+            // 변동성 해석
+            if (stats.cv < 15) {
+                interpretation += '<p><strong>변동성:</strong> 낮은 변동성. 데이터가 평균 주변에 집중되어 있습니다.</p>';
+            } else if (stats.cv < 35) {
+                interpretation += '<p><strong>변동성:</strong> 보통 변동성. 적당히 퍼져 있는 데이터입니다.</p>';
+            } else {
+                interpretation += '<p><strong>변동성:</strong> 높은 변동성. 데이터가 넓게 흩어져 있습니다.</p>';
+            }
+            
+            // 이상치 검출
+            const outlierThresholdLow = stats.q1 - 1.5 * stats.iqr;
+            const outlierThresholdHigh = stats.q3 + 1.5 * stats.iqr;
+            const outliers = currentData.filter(x => x < outlierThresholdLow || x > outlierThresholdHigh);
+            
+            if (outliers.length > 0) {
+                interpretation += `<p><strong>이상치:</strong> ${outliers.length}개의 이상치가 발견되었습니다: ${outliers.map(x => x.toFixed(2)).join(', ')}</p>`;
+            } else {
+                interpretation += '<p><strong>이상치:</strong> 이상치가 발견되지 않았습니다.</p>';
+            }
+            
+            // 표본 크기 평가
+            if (stats.count < 10) {
+                interpretation += '<p><strong>표본 크기:</strong> 작은 표본입니다. 결과 해석 시 주의가 필요합니다.</p>';
+            } else if (stats.count < 30) {
+                interpretation += '<p><strong>표본 크기:</strong> 보통 표본입니다. 통계적 추론에 적절합니다.</p>';
+            } else {
+                interpretation += '<p><strong>표본 크기:</strong> 충분한 표본입니다. 신뢰할 만한 통계 분석이 가능합니다.</p>';
+            }
+            
+            document.getElementById('interpretation').innerHTML = interpretation;
+        }
+        
+        function showResults() {
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function hideResults() {
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('dataInfo').style.display = 'none';
+        }
+        
+        function clearData() {
+            document.getElementById('dataInput').value = '';
+            currentData = [];
+            hideResults();
+        }
+        
+        function showError(message) {
+            console.error(message);
+            // 필요시 사용자에게 에러 메시지 표시
+        }
+        
+        // 페이지 로드 시 예시 버튼 추가
+        document.addEventListener('DOMContentLoaded', function() {
+            const exampleDiv = document.createElement('div');
+            exampleDiv.innerHTML = `
+                <div style="text-align: center; margin: 20px 0; padding: 15px; background: #e3f2fd; border-radius: 8px;">
+                    <strong>💡 빠른 시작:</strong>
+                    <button onclick="loadExampleData('test_scores')" 
+                            style="margin: 5px; padding: 8px 15px; border: 1px solid #2196f3; border-radius: 4px; background: #f8f9fa; cursor: pointer;">
+                        시험 점수 예시
+                    </button>
+                    <button onclick="loadExampleData('sales')" 
+                            style="margin: 5px; padding: 8px 15px; border: 1px solid #2196f3; border-radius: 4px; background: #f8f9fa; cursor: pointer;">
+                        매출 데이터 예시
+                    </button>
+                    <button onclick="loadExampleData('large')" 
+                            style="margin: 5px; padding: 8px 15px; border: 1px solid #2196f3; border-radius: 4px; background: #f8f9fa; cursor: pointer;">
+                        큰 데이터셋 예시
+                    </button>
+                </div>
+            `;
+            document.querySelector('.calculator-container').appendChild(exampleDiv);
+        });
+    </script>
+</body>
+</html>

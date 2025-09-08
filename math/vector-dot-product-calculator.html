@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>벡터 내적 계산기 - 2D/3D 벡터 내적 계산 | CalcHub</title>
+    <meta name="description" content="무료 벡터 내적 계산기로 2차원, 3차원 벡터의 내적을 즉시 계산하세요. 벡터의 좌표를 입력하면 내적값과 벡터 사이의 각도를 자동으로 계산합니다.">
+    <meta name="keywords" content="온라인계산기, 무료계산기, 벡터내적계산기, 벡터계산기, 벡터각도계산기, 2D벡터계산기, 3D벡터계산기, 수학계산기, 선형대수계산기">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+</head>
+<body>
+    <!-- 공통 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <!-- 계산기 헤더 -->
+            <div class="calculator-header">
+                <h1 class="calculator-title">벡터 내적 계산기</h1>
+                <p class="calculator-subtitle">2D/3D 벡터의 내적과 사이각을 계산하세요</p>
+            </div>
+
+            <!-- 계산기 본문 -->
+            <div class="calculator-body">
+                <!-- 입력 섹션 -->
+                <div class="input-section">
+                    <h2 class="section-title">벡터 정보</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label class="input-label">벡터 차원</label>
+                            <select id="dimension" class="input-field" onchange="updateInputs()">
+                                <option value="2">2차원 벡터</option>
+                                <option value="3">3차원 벡터</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label class="input-label">벡터 A</label>
+                            <div id="vectorA" class="vector-inputs">
+                                <input type="number" id="ax" class="input-field" placeholder="x 좌표" step="any">
+                                <input type="number" id="ay" class="input-field" placeholder="y 좌표" step="any">
+                                <input type="number" id="az" class="input-field" placeholder="z 좌표" step="any" style="display: none;">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">벡터 B</label>
+                            <div id="vectorB" class="vector-inputs">
+                                <input type="number" id="bx" class="input-field" placeholder="x 좌표" step="any">
+                                <input type="number" id="by" class="input-field" placeholder="y 좌표" step="any">
+                                <input type="number" id="bz" class="input-field" placeholder="z 좌표" step="any" style="display: none;">
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="calculate()" class="btn btn-primary">계산하기</button>
+                    <button onclick="clearInputs()" class="btn btn-secondary">초기화</button>
+                </div>
+
+                <!-- 결과 섹션 -->
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">계산 결과</h2>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">내적 (A · B)</div>
+                            <div id="dotProduct" class="result-value highlight">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">벡터 A의 크기</div>
+                            <div id="magnitudeA" class="result-value">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">벡터 B의 크기</div>
+                            <div id="magnitudeB" class="result-value">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">사이각 (도)</div>
+                            <div id="angleDegrees" class="result-value">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">사이각 (라디안)</div>
+                            <div id="angleRadians" class="result-value">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">벡터 관계</div>
+                            <div id="vectorRelation" class="result-value">-</div>
+                        </div>
+                    </div>
+                    <button onclick="copyResults()" class="btn btn-secondary">결과 복사</button>
+                </div>
+
+                <!-- 정보 섹션 -->
+                <div class="info-section">
+                    <h2 class="section-title">벡터 내적에 대해</h2>
+                    <div class="info-content">
+                        <p><strong>벡터 내적(Dot Product)</strong>은 두 벡터의 곱셈 연산 중 하나로, 스칼라 값을 결과로 갖습니다.</p>
+                        
+                        <h3>계산 공식:</h3>
+                        <ul>
+                            <li><strong>2D 벡터:</strong> A·B = ax×bx + ay×by</li>
+                            <li><strong>3D 벡터:</strong> A·B = ax×bx + ay×by + az×bz</li>
+                            <li><strong>기하학적 의미:</strong> A·B = |A|×|B|×cos(θ)</li>
+                        </ul>
+
+                        <h3>벡터 관계 해석:</h3>
+                        <ul>
+                            <li><strong>내적 > 0:</strong> 두 벡터가 예각을 이룸 (0° ≤ θ < 90°)</li>
+                            <li><strong>내적 = 0:</strong> 두 벡터가 수직 (θ = 90°)</li>
+                            <li><strong>내적 < 0:</strong> 두 벡터가 둔각을 이룸 (90° < θ ≤ 180°)</li>
+                        </ul>
+
+                        <h3>활용 분야:</h3>
+                        <ul>
+                            <li>물리학: 일(Work) 계산, 힘의 성분 분석</li>
+                            <li>컴퓨터 그래픽스: 조명 계산, 법선 벡터</li>
+                            <li>머신러닝: 코사인 유사도, 벡터 유사성</li>
+                            <li>기하학: 직교성 판별, 각도 계산</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .vector-inputs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .vector-inputs .input-field {
+            flex: 1;
+            min-width: 100px;
+        }
+    </style>
+
+    <script>
+        function updateInputs() {
+            const dimension = document.getElementById('dimension').value;
+            const azField = document.getElementById('az');
+            const bzField = document.getElementById('bz');
+            
+            if (dimension === '3') {
+                azField.style.display = 'block';
+                bzField.style.display = 'block';
+            } else {
+                azField.style.display = 'none';
+                bzField.style.display = 'none';
+                azField.value = '';
+                bzField.value = '';
+            }
+        }
+
+        function calculate() {
+            const dimension = document.getElementById('dimension').value;
+            
+            // 벡터 A 좌표
+            const ax = parseFloat(document.getElementById('ax').value) || 0;
+            const ay = parseFloat(document.getElementById('ay').value) || 0;
+            const az = dimension === '3' ? (parseFloat(document.getElementById('az').value) || 0) : 0;
+            
+            // 벡터 B 좌표
+            const bx = parseFloat(document.getElementById('bx').value) || 0;
+            const by = parseFloat(document.getElementById('by').value) || 0;
+            const bz = dimension === '3' ? (parseFloat(document.getElementById('bz').value) || 0) : 0;
+            
+            // 입력 검증
+            if (ax === 0 && ay === 0 && az === 0) {
+                alert('벡터 A의 좌표를 입력해주세요');
+                return;
+            }
+            if (bx === 0 && by === 0 && bz === 0) {
+                alert('벡터 B의 좌표를 입력해주세요');
+                return;
+            }
+            
+            // 내적 계산
+            const dotProduct = ax * bx + ay * by + az * bz;
+            
+            // 벡터 크기 계산
+            const magnitudeA = Math.sqrt(ax * ax + ay * ay + az * az);
+            const magnitudeB = Math.sqrt(bx * bx + by * by + bz * bz);
+            
+            // 사이각 계산 (라디안)
+            const cosTheta = dotProduct / (magnitudeA * magnitudeB);
+            const angleRadians = Math.acos(Math.max(-1, Math.min(1, cosTheta))); // clamp to avoid numerical errors
+            const angleDegrees = angleRadians * (180 / Math.PI);
+            
+            // 벡터 관계 판별
+            let vectorRelation;
+            if (Math.abs(dotProduct) < 1e-10) {
+                vectorRelation = "수직 (직교)";
+            } else if (dotProduct > 0) {
+                vectorRelation = "예각";
+            } else {
+                vectorRelation = "둔각";
+            }
+            
+            // 결과 표시
+            document.getElementById('dotProduct').textContent = dotProduct.toFixed(6);
+            document.getElementById('magnitudeA').textContent = magnitudeA.toFixed(6);
+            document.getElementById('magnitudeB').textContent = magnitudeB.toFixed(6);
+            document.getElementById('angleDegrees').textContent = angleDegrees.toFixed(2) + '°';
+            document.getElementById('angleRadians').textContent = angleRadians.toFixed(6) + ' rad';
+            document.getElementById('vectorRelation').textContent = vectorRelation;
+            
+            document.getElementById('resultSection').classList.add('fade-in');
+        }
+
+        function clearInputs() {
+            document.getElementById('ax').value = '';
+            document.getElementById('ay').value = '';
+            document.getElementById('az').value = '';
+            document.getElementById('bx').value = '';
+            document.getElementById('by').value = '';
+            document.getElementById('bz').value = '';
+            document.getElementById('dimension').value = '2';
+            updateInputs();
+        }
+
+        function copyResults() {
+            const dotProduct = document.getElementById('dotProduct').textContent;
+            const magnitudeA = document.getElementById('magnitudeA').textContent;
+            const magnitudeB = document.getElementById('magnitudeB').textContent;
+            const angleDegrees = document.getElementById('angleDegrees').textContent;
+            const vectorRelation = document.getElementById('vectorRelation').textContent;
+            
+            const result = `벡터 내적 계산 결과:
+내적: ${dotProduct}
+벡터 A 크기: ${magnitudeA}
+벡터 B 크기: ${magnitudeB}
+사이각: ${angleDegrees}
+벡터 관계: ${vectorRelation}`;
+            
+            navigator.clipboard.writeText(result).then(() => {
+                alert('결과가 클립보드에 복사되었습니다!');
+            });
+        }
+
+        // 엔터키로 계산
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+    </script>
+</body>
+</html>

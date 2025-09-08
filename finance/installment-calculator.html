@@ -92,6 +92,93 @@
         </div>
     </div>
 
+    <!-- 정보 섹션 -->
+    <div class="container">
+        <div class="info-section">
+            <div class="info-card">
+                <h2>📖 할부계산기 사용 메뉴얼</h2>
+                <ul>
+                    <li><strong>구매 금액 입력:</strong> 할부로 구매할 상품의 총액을 입력하세요 (예: 100만원, 1000000)</li>
+                    <li><strong>할부 기간 설정:</strong> 몇 개월에 걸쳐 나누어 낼지 기간을 입력하세요 (예: 12개월, 24개월)</li>
+                    <li><strong>이자율 확인:</strong> 카드사나 판매처의 연이율을 입력하세요 (무이자일 경우 0)</li>
+                    <li><strong>결과 해석:</strong> 월 할부금, 총 할부비용, 총 이자비용을 확인하여 부담 정도를 판단하세요</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h2>💡 실제 할부 계산 예시</h2>
+                <div class="example-box">
+                    <h3>📱 갤럭시 스마트폰 할부 예시</h3>
+                    <p><strong>상황:</strong> 150만원 스마트폰을 24개월 할부(연 15% 이자)로 구매</p>
+                    <p><strong>계산:</strong></p>
+                    <ul>
+                        <li>구매금액: 1,500,000원</li>
+                        <li>할부기간: 24개월</li>
+                        <li>연이율: 15%</li>
+                        <li>월 할부금: 약 72,679원</li>
+                        <li>총 할부비용: 1,744,296원</li>
+                        <li>총 이자: 244,296원</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h3>🚗 자동차 무이자 할부 예시</h3>
+                    <p><strong>상황:</strong> 2,000만원 자동차를 36개월 무이자 할부로 구매</p>
+                    <p><strong>계산:</strong></p>
+                    <ul>
+                        <li>구매금액: 20,000,000원</li>
+                        <li>할부기간: 36개월</li>
+                        <li>연이율: 0% (무이자)</li>
+                        <li>월 할부금: 555,556원</li>
+                        <li>총 할부비용: 20,000,000원</li>
+                        <li>총 이자: 0원</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h2>🔥 할부 계획 생활 꿀팁</h2>
+                <ul>
+                    <li><strong>무이자 할부 우선:</strong> 백화점, 대형마트 등에서 무이자 할부 행사 시기를 노려보세요</li>
+                    <li><strong>소득 대비 할부비율:</strong> 월 소득의 30% 이내로 총 할부금을 제한하는 것이 안전합니다</li>
+                    <li><strong>카드사별 비교:</strong> 삼성카드, 현대카드 등 카드사마다 할부 이자율이 다르니 비교 후 선택하세요</li>
+                    <li><strong>조기 상환 수수료:</strong> 미리 갚을 때 수수료가 있는지 확인하고 할부를 시작하세요</li>
+                    <li><strong>할부 통합 관리:</strong> 여러 할부가 겹치지 않도록 가계부 앱으로 관리하세요</li>
+                    <li><strong>신용등급 영향:</strong> 과도한 할부는 신용등급에 부정적 영향을 줄 수 있어 주의가 필요합니다</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h2>📚 할부 관련 용어 정리</h2>
+                <div class="term-grid">
+                    <div class="term-item">
+                        <h3>할부</h3>
+                        <p>구매 대금을 여러 번에 나누어 지불하는 방식으로, 월 할부금으로 나누어 납부</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>무이자 할부</h3>
+                        <p>이자 없이 구매금액만 개월 수로 나누어 지불하는 할부 방식</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>연이율</h3>
+                        <p>1년 동안 적용되는 이자율로, 할부 이자 계산의 기준이 되는 비율</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>원리금균등상환</h3>
+                        <p>매월 동일한 금액(원금+이자)을 상환하는 방식으로 가장 일반적인 할부 방식</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>할부 수수료</h3>
+                        <p>할부 서비스 이용에 대한 추가 비용으로, 이자와는 별도로 부과될 수 있는 수수료</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>조기상환</h3>
+                        <p>할부 기간이 끝나기 전에 남은 금액을 모두 상환하는 것</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // 숫자 파싱 함수 (한국어 단위 및 다양한 형식 지원)
         function parseNumber(input) {

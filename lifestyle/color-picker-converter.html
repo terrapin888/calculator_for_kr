@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>색상 선택기 & 변환기 - RGB, HEX, HSL 색상 코드 변환 | CalcHub</title>
+    <meta name="description" content="무료 색상 선택기로 RGB, HEX, HSL, CMYK 색상 코드를 변환하세요. 색상 팔레트 생성, 보색 찾기, 색상 조화 등 디자인에 필요한 모든 색상 도구를 제공합니다.">
+    <meta name="keywords" content="온라인계산기, 무료계산기, 색상선택기, 색상변환기, RGB변환, HEX변환, HSL변환, 색상코드변환기, 컬러픽커">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header">
+                <h1 class="calculator-title">색상 선택기 & 변환기</h1>
+                <p class="calculator-subtitle">다양한 색상 형식을 변환하고 선택하세요</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">색상 선택</h2>
+                    <div class="color-picker-container">
+                        <div class="main-color-picker">
+                            <input type="color" id="colorPicker" class="color-input" value="#ff0000" oninput="updateColor(this.value)">
+                            <div id="colorPreview" class="color-preview"></div>
+                        </div>
+                    </div>
+
+                    <div class="color-inputs">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="hexInput" class="input-label">HEX</label>
+                                <input type="text" id="hexInput" class="input-field" placeholder="#FF0000" oninput="updateFromHex()">
+                            </div>
+                            <div class="input-group">
+                                <label for="rgbR" class="input-label">RGB</label>
+                                <div class="rgb-inputs">
+                                    <input type="number" id="rgbR" class="input-field" placeholder="R" min="0" max="255" oninput="updateFromRGB()">
+                                    <input type="number" id="rgbG" class="input-field" placeholder="G" min="0" max="255" oninput="updateFromRGB()">
+                                    <input type="number" id="rgbB" class="input-field" placeholder="B" min="0" max="255" oninput="updateFromRGB()">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="hslH" class="input-label">HSL</label>
+                                <div class="hsl-inputs">
+                                    <input type="number" id="hslH" class="input-field" placeholder="H" min="0" max="360" oninput="updateFromHSL()">
+                                    <input type="number" id="hslS" class="input-field" placeholder="S%" min="0" max="100" oninput="updateFromHSL()">
+                                    <input type="number" id="hslL" class="input-field" placeholder="L%" min="0" max="100" oninput="updateFromHSL()">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="cmykC" class="input-label">CMYK</label>
+                                <div class="cmyk-inputs">
+                                    <input type="number" id="cmykC" class="input-field" placeholder="C%" min="0" max="100" oninput="updateFromCMYK()">
+                                    <input type="number" id="cmykM" class="input-field" placeholder="M%" min="0" max="100" oninput="updateFromCMYK()">
+                                    <input type="number" id="cmykY" class="input-field" placeholder="Y%" min="0" max="100" oninput="updateFromCMYK()">
+                                    <input type="number" id="cmykK" class="input-field" placeholder="K%" min="0" max="100" oninput="updateFromCMYK()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="preset-colors">
+                        <h3>프리셋 색상</h3>
+                        <div class="preset-palette">
+                            <div class="preset-color" style="background-color: #FF0000" onclick="setPresetColor('#FF0000')"></div>
+                            <div class="preset-color" style="background-color: #00FF00" onclick="setPresetColor('#00FF00')"></div>
+                            <div class="preset-color" style="background-color: #0000FF" onclick="setPresetColor('#0000FF')"></div>
+                            <div class="preset-color" style="background-color: #FFFF00" onclick="setPresetColor('#FFFF00')"></div>
+                            <div class="preset-color" style="background-color: #FF00FF" onclick="setPresetColor('#FF00FF')"></div>
+                            <div class="preset-color" style="background-color: #00FFFF" onclick="setPresetColor('#00FFFF')"></div>
+                            <div class="preset-color" style="background-color: #FFA500" onclick="setPresetColor('#FFA500')"></div>
+                            <div class="preset-color" style="background-color: #800080" onclick="setPresetColor('#800080')"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <h2 class="result-title">색상 정보</h2>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">HEX</div>
+                            <div id="hexResult" class="result-value highlight">#FF0000</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">RGB</div>
+                            <div id="rgbResult" class="result-value">rgb(255, 0, 0)</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">HSL</div>
+                            <div id="hslResult" class="result-value">hsl(0, 100%, 50%)</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">CMYK</div>
+                            <div id="cmykResult" class="result-value">cmyk(0%, 100%, 100%, 0%)</div>
+                        </div>
+                    </div>
+
+                    <div class="color-harmonies">
+                        <h3>색상 조화</h3>
+                        <div class="harmony-section">
+                            <h4>보색 (Complementary)</h4>
+                            <div id="complementaryColors" class="color-palette"></div>
+                        </div>
+                        <div class="harmony-section">
+                            <h4>유사색 (Analogous)</h4>
+                            <div id="analogousColors" class="color-palette"></div>
+                        </div>
+                        <div class="harmony-section">
+                            <h4>삼각 조화 (Triadic)</h4>
+                            <div id="triadicColors" class="color-palette"></div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="copyColorCode()" class="btn btn-secondary">색상 코드 복사</button>
+                </div>
+
+                <div class="info-section">
+                    <h2 class="section-title">색상 형식 설명</h2>
+                    <div class="info-content">
+                        <h3>HEX (16진수):</h3>
+                        <p>#RRGGBB 형식으로, 웹 디자인에서 가장 많이 사용됩니다.</p>
+                        <p>예: #FF0000 (빨강), #00FF00 (초록), #0000FF (파랑)</p>
+                        
+                        <h3>RGB (Red, Green, Blue):</h3>
+                        <p>각 색상을 0~255 값으로 표현합니다.</p>
+                        <p>예: rgb(255, 0, 0) - 빨강</p>
+                        
+                        <h3>HSL (Hue, Saturation, Lightness):</h3>
+                        <ul>
+                            <li><strong>Hue (색조):</strong> 0~360도의 색상환</li>
+                            <li><strong>Saturation (채도):</strong> 0~100%의 색상 순수도</li>
+                            <li><strong>Lightness (명도):</strong> 0~100%의 밝기</li>
+                        </ul>
+                        
+                        <h3>CMYK (인쇄용):</h3>
+                        <p>Cyan, Magenta, Yellow, Key(Black)로 구성된 인쇄용 색상 모드입니다.</p>
+
+                        <h3>색상 조화 이론:</h3>
+                        <ul>
+                            <li><strong>보색:</strong> 색상환에서 정반대 위치의 색상</li>
+                            <li><strong>유사색:</strong> 색상환에서 인접한 색상들</li>
+                            <li><strong>삼각 조화:</strong> 색상환에서 120도씩 떨어진 3개 색상</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .color-picker-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .main-color-picker {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .color-input {
+            width: 100px;
+            height: 100px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        
+        .color-preview {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            background-color: #ff0000;
+        }
+        
+        .color-inputs {
+            margin: 20px 0;
+        }
+        
+        .rgb-inputs, .hsl-inputs, .cmyk-inputs {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .rgb-inputs input, .hsl-inputs input, .cmyk-inputs input {
+            flex: 1;
+        }
+        
+        .preset-colors {
+            margin: 20px 0;
+        }
+        
+        .preset-palette {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .preset-color {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid #e5e7eb;
+            transition: transform 0.2s;
+        }
+        
+        .preset-color:hover {
+            transform: scale(1.1);
+        }
+        
+        .color-harmonies {
+            margin: 20px 0;
+        }
+        
+        .harmony-section {
+            margin: 15px 0;
+        }
+        
+        .harmony-section h4 {
+            margin: 10px 0 5px 0;
+            color: #374151;
+        }
+        
+        .color-palette {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .harmony-color {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.2s;
+        }
+        
+        .harmony-color:hover {
+            transform: scale(1.1);
+        }
+        
+        .harmony-color::after {
+            content: attr(data-color);
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: #6b7280;
+            white-space: nowrap;
+        }
+    </style>
+
+    <script>
+        let currentColor = { r: 255, g: 0, b: 0 };
+
+        function updateColor(hexColor) {
+            const rgb = hexToRgb(hexColor);
+            if (rgb) {
+                currentColor = rgb;
+                updateAllValues();
+            }
+        }
+
+        function updateFromHex() {
+            const hex = document.getElementById('hexInput').value;
+            if (hex.match(/^#[0-9A-F]{6}$/i)) {
+                updateColor(hex);
+                document.getElementById('colorPicker').value = hex;
+            }
+        }
+
+        function updateFromRGB() {
+            const r = parseInt(document.getElementById('rgbR').value) || 0;
+            const g = parseInt(document.getElementById('rgbG').value) || 0;
+            const b = parseInt(document.getElementById('rgbB').value) || 0;
+            
+            currentColor = { r, g, b };
+            updateAllValues();
+        }
+
+        function updateFromHSL() {
+            const h = parseInt(document.getElementById('hslH').value) || 0;
+            const s = parseInt(document.getElementById('hslS').value) || 0;
+            const l = parseInt(document.getElementById('hslL').value) || 0;
+            
+            const rgb = hslToRgb(h, s, l);
+            currentColor = rgb;
+            updateAllValues();
+        }
+
+        function updateFromCMYK() {
+            const c = parseInt(document.getElementById('cmykC').value) || 0;
+            const m = parseInt(document.getElementById('cmykM').value) || 0;
+            const y = parseInt(document.getElementById('cmykY').value) || 0;
+            const k = parseInt(document.getElementById('cmykK').value) || 0;
+            
+            const rgb = cmykToRgb(c, m, y, k);
+            currentColor = rgb;
+            updateAllValues();
+        }
+
+        function updateAllValues() {
+            const { r, g, b } = currentColor;
+            const hex = rgbToHex(r, g, b);
+            const hsl = rgbToHsl(r, g, b);
+            const cmyk = rgbToCmyk(r, g, b);
+            
+            // 입력 필드 업데이트
+            document.getElementById('hexInput').value = hex;
+            document.getElementById('rgbR').value = r;
+            document.getElementById('rgbG').value = g;
+            document.getElementById('rgbB').value = b;
+            document.getElementById('hslH').value = Math.round(hsl.h);
+            document.getElementById('hslS').value = Math.round(hsl.s);
+            document.getElementById('hslL').value = Math.round(hsl.l);
+            document.getElementById('cmykC').value = Math.round(cmyk.c);
+            document.getElementById('cmykM').value = Math.round(cmyk.m);
+            document.getElementById('cmykY').value = Math.round(cmyk.y);
+            document.getElementById('cmykK').value = Math.round(cmyk.k);
+            
+            // 결과 표시
+            document.getElementById('hexResult').textContent = hex;
+            document.getElementById('rgbResult').textContent = `rgb(${r}, ${g}, ${b})`;
+            document.getElementById('hslResult').textContent = `hsl(${Math.round(hsl.h)}, ${Math.round(hsl.s)}%, ${Math.round(hsl.l)}%)`;
+            document.getElementById('cmykResult').textContent = `cmyk(${Math.round(cmyk.c)}%, ${Math.round(cmyk.m)}%, ${Math.round(cmyk.y)}%, ${Math.round(cmyk.k)}%)`;
+            
+            // 색상 미리보기
+            document.getElementById('colorPreview').style.backgroundColor = hex;
+            document.getElementById('colorPicker').value = hex;
+            
+            // 색상 조화 생성
+            generateColorHarmonies(hsl.h, hsl.s, hsl.l);
+        }
+
+        function generateColorHarmonies(h, s, l) {
+            // 보색
+            const complementaryHue = (h + 180) % 360;
+            const complementary = hslToRgb(complementaryHue, s, l);
+            displayColorPalette('complementaryColors', [
+                currentColor,
+                complementary
+            ]);
+            
+            // 유사색
+            const analogous = [
+                hslToRgb((h - 30 + 360) % 360, s, l),
+                currentColor,
+                hslToRgb((h + 30) % 360, s, l)
+            ];
+            displayColorPalette('analogousColors', analogous);
+            
+            // 삼각 조화
+            const triadic = [
+                currentColor,
+                hslToRgb((h + 120) % 360, s, l),
+                hslToRgb((h + 240) % 360, s, l)
+            ];
+            displayColorPalette('triadicColors', triadic);
+        }
+
+        function displayColorPalette(containerId, colors) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            colors.forEach(color => {
+                const colorDiv = document.createElement('div');
+                colorDiv.className = 'harmony-color';
+                const hex = rgbToHex(color.r, color.g, color.b);
+                colorDiv.style.backgroundColor = hex;
+                colorDiv.setAttribute('data-color', hex);
+                colorDiv.onclick = () => setPresetColor(hex);
+                container.appendChild(colorDiv);
+            });
+        }
+
+        function setPresetColor(hexColor) {
+            updateColor(hexColor);
+        }
+
+        function copyColorCode() {
+            const hex = document.getElementById('hexResult').textContent;
+            const rgb = document.getElementById('rgbResult').textContent;
+            const hsl = document.getElementById('hslResult').textContent;
+            const cmyk = document.getElementById('cmykResult').textContent;
+            
+            const colorCodes = `색상 코드:
+HEX: ${hex}
+RGB: ${rgb}
+HSL: ${hsl}
+CMYK: ${cmyk}`;
+            
+            navigator.clipboard.writeText(colorCodes).then(() => {
+                alert('색상 코드가 클립보드에 복사되었습니다!');
+            });
+        }
+
+        // 색상 변환 함수들
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        function rgbToHex(r, g, b) {
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        }
+
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return { h: h * 360, s: s * 100, l: l * 100 };
+        }
+
+        function hslToRgb(h, s, l) {
+            h /= 360; s /= 100; l /= 100;
+            const a = s * Math.min(l, 1 - l);
+            const f = n => {
+                const k = (n + h * 12) % 12;
+                return l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+            };
+            return {
+                r: Math.round(f(0) * 255),
+                g: Math.round(f(8) * 255),
+                b: Math.round(f(4) * 255)
+            };
+        }
+
+        function rgbToCmyk(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const k = 1 - Math.max(r, Math.max(g, b));
+            const c = (1 - r - k) / (1 - k) || 0;
+            const m = (1 - g - k) / (1 - k) || 0;
+            const y = (1 - b - k) / (1 - k) || 0;
+            return { c: c * 100, m: m * 100, y: y * 100, k: k * 100 };
+        }
+
+        function cmykToRgb(c, m, y, k) {
+            c /= 100; m /= 100; y /= 100; k /= 100;
+            const r = 255 * (1 - c) * (1 - k);
+            const g = 255 * (1 - m) * (1 - k);
+            const b = 255 * (1 - y) * (1 - k);
+            return { r: Math.round(r), g: Math.round(g), b: Math.round(b) };
+        }
+
+        // 초기화
+        updateAllValues();
+    </script>
+</body>
+</html>

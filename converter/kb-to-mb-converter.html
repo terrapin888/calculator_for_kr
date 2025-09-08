@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KB MB 변환기 - 킬로바이트 메가바이트 변환 | CalcHub</title>
+    <meta name="description" content="KB를 MB로, MB를 KB로 즉시 변환하세요. 컴퓨터 용량 단위를 쉽고 빠르게 계산하는 무료 KB MB 변환기입니다.">
+    <meta name="keywords" content="KB변환, MB변환, 킬로바이트, 메가바이트, 용량변환, 데이터단위변환, 파일크기변환">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "KB MB 변환기",
+      "description": "KB를 MB로, MB를 KB로 즉시 변환하세요. 컴퓨터 용량 단위를 쉽고 빠르게 계산하는 무료 KB MB 변환기입니다.",
+      "url": "https://www.calcforkr.com/converter/kb-to-mb-converter.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser"
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+    
+    <style>
+        .conversion-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .conversion-arrow {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+        
+        .conversion-arrow:hover {
+            background: #1d4ed8;
+            transform: scale(1.1);
+        }
+        
+        .unit-input {
+            position: relative;
+        }
+        
+        .unit-label {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-weight: 600;
+            pointer-events: none;
+        }
+        
+        .quick-convert {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .quick-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quick-item:hover {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+        
+        .quick-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+        
+        .quick-desc {
+            font-size: 14px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header-simple">
+                <h1 class="calculator-title-simple">KB ↔ MB 변환기</h1>
+                <p class="calculator-description">킬로바이트와 메가바이트 간 변환을 계산합니다</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">용량 단위 변환</h2>
+                    
+                    <div class="conversion-row">
+                        <div class="unit-input">
+                            <input type="number" id="kbValue" class="input-field" placeholder="0" step="any" min="0" oninput="convertKBtoMB()">
+                            <span class="unit-label">KB</span>
+                        </div>
+                        <button class="conversion-arrow" onclick="swapValues()" title="값 바꾸기">↔</button>
+                        <div class="unit-input">
+                            <input type="number" id="mbValue" class="input-field" placeholder="0" step="any" min="0" oninput="convertMBtoKB()">
+                            <span class="unit-label">MB</span>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-convert">
+                        <div class="quick-item" onclick="setKBValue(1024)">
+                            <div class="quick-value">1,024 KB</div>
+                            <div class="quick-desc">= 1 MB</div>
+                        </div>
+                        <div class="quick-item" onclick="setKBValue(5120)">
+                            <div class="quick-value">5,120 KB</div>
+                            <div class="quick-desc">= 5 MB</div>
+                        </div>
+                        <div class="quick-item" onclick="setKBValue(10240)">
+                            <div class="quick-value">10,240 KB</div>
+                            <div class="quick-desc">= 10 MB</div>
+                        </div>
+                        <div class="quick-item" onclick="setKBValue(102400)">
+                            <div class="quick-value">102,400 KB</div>
+                            <div class="quick-desc">= 100 MB</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="resultSection" class="result-section">
+                    <div class="result-simple">
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">변환 결과</div>
+                            <div id="conversionResult" class="result-value-simple highlight">값을 입력하세요</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">다른 단위로 표현</div>
+                            <div id="otherUnits" class="result-value-simple">-</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button onclick="copyResult()" class="btn btn-secondary" id="copyBtn">결과 복사</button>
+                        <button onclick="clearAll()" class="btn btn-secondary" style="margin-left: 10px;">초기화</button>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3 class="info-title">KB와 MB란?</h3>
+                    <div class="info-content">
+                        <p><strong>킬로바이트(KB)</strong>와 <strong>메가바이트(MB)</strong>는 컴퓨터에서 사용하는 데이터 용량 단위입니다.</p>
+                        
+                        <h4>단위 관계</h4>
+                        <ul>
+                            <li><strong>1 MB = 1,024 KB</strong> (이진법 기준)</li>
+                            <li><strong>1 MB = 1,000 KB</strong> (십진법 기준)</li>
+                            <li>컴퓨터에서는 주로 이진법(1024)을 사용합니다</li>
+                        </ul>
+                        
+                        <h4>실생활 예시</h4>
+                        <ul>
+                            <li><strong>텍스트 파일:</strong> 1-100 KB</li>
+                            <li><strong>고해상도 이미지:</strong> 1-10 MB</li>
+                            <li><strong>음악 파일 (MP3):</strong> 3-8 MB</li>
+                            <li><strong>동영상 (1분):</strong> 20-100 MB</li>
+                            <li><strong>앱 설치 파일:</strong> 10-500 MB</li>
+                        </ul>
+                        
+                        <h4>데이터 단위 체계</h4>
+                        <p>작은 것부터 큰 것 순서로:</p>
+                        <ul>
+                            <li>바이트(Byte, B)</li>
+                            <li>킬로바이트(Kilobyte, KB) = 1,024 B</li>
+                            <li>메가바이트(Megabyte, MB) = 1,024 KB</li>
+                            <li>기가바이트(Gigabyte, GB) = 1,024 MB</li>
+                            <li>테라바이트(Terabyte, TB) = 1,024 GB</li>
+                        </ul>
+                        
+                        <h4>활용 분야</h4>
+                        <ul>
+                            <li>파일 크기 확인 및 관리</li>
+                            <li>스토리지 용량 계산</li>
+                            <li>네트워크 대역폭 계산</li>
+                            <li>앱 개발시 용량 최적화</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function convertKBtoMB() {
+            const kbInput = document.getElementById('kbValue');
+            const mbInput = document.getElementById('mbValue');
+            const kbValue = parseFloat(kbInput.value) || 0;
+            
+            if (kbValue >= 0) {
+                const mbValue = kbValue / 1024;
+                mbInput.value = mbValue === 0 ? '' : mbValue.toFixed(6).replace(/\.?0+$/, '');
+                updateResult(kbValue, mbValue, 'kb-to-mb');
+            }
+        }
+        
+        function convertMBtoKB() {
+            const kbInput = document.getElementById('kbValue');
+            const mbInput = document.getElementById('mbValue');
+            const mbValue = parseFloat(mbInput.value) || 0;
+            
+            if (mbValue >= 0) {
+                const kbValue = mbValue * 1024;
+                kbInput.value = kbValue === 0 ? '' : kbValue.toFixed(6).replace(/\.?0+$/, '');
+                updateResult(kbValue, mbValue, 'mb-to-kb');
+            }
+        }
+        
+        function updateResult(kbValue, mbValue, direction) {
+            const resultElement = document.getElementById('conversionResult');
+            const otherUnitsElement = document.getElementById('otherUnits');
+            
+            if (kbValue === 0 && mbValue === 0) {
+                resultElement.textContent = '값을 입력하세요';
+                otherUnitsElement.textContent = '-';
+                return;
+            }
+            
+            // 결과 표시
+            if (direction === 'kb-to-mb') {
+                resultElement.textContent = `${formatNumberOnly(kbValue)} KB = ${formatNumberOnly(mbValue, 6)} MB`;
+            } else {
+                resultElement.textContent = `${formatNumberOnly(mbValue, 6)} MB = ${formatNumberOnly(kbValue)} KB`;
+            }
+            
+            // 다른 단위로 표현
+            const bytes = kbValue * 1024;
+            const gbValue = mbValue / 1024;
+            const tbValue = gbValue / 1024;
+            
+            let otherUnitsText = '';
+            if (bytes >= 1) {
+                otherUnitsText += `${formatNumberOnly(bytes)} Bytes`;
+            }
+            if (gbValue >= 0.001) {
+                if (otherUnitsText) otherUnitsText += ', ';
+                otherUnitsText += `${formatNumberOnly(gbValue, 6)} GB`;
+            }
+            if (tbValue >= 0.001) {
+                if (otherUnitsText) otherUnitsText += ', ';
+                otherUnitsText += `${formatNumberOnly(tbValue, 6)} TB`;
+            }
+            
+            otherUnitsElement.textContent = otherUnitsText || '-';
+        }
+        
+        function setKBValue(value) {
+            document.getElementById('kbValue').value = value;
+            convertKBtoMB();
+        }
+        
+        function swapValues() {
+            const kbInput = document.getElementById('kbValue');
+            const mbInput = document.getElementById('mbValue');
+            
+            const tempValue = kbInput.value;
+            kbInput.value = mbInput.value;
+            mbInput.value = tempValue;
+            
+            if (kbInput.value) {
+                convertKBtoMB();
+            } else if (mbInput.value) {
+                convertMBtoKB();
+            }
+        }
+        
+        function clearAll() {
+            document.getElementById('kbValue').value = '';
+            document.getElementById('mbValue').value = '';
+            document.getElementById('conversionResult').textContent = '값을 입력하세요';
+            document.getElementById('otherUnits').textContent = '-';
+        }
+        
+        function copyResult() {
+            const result = document.getElementById('conversionResult').textContent;
+            const otherUnits = document.getElementById('otherUnits').textContent;
+            
+            let copyText = `KB ↔ MB 변환 결과:\n${result}`;
+            if (otherUnits !== '-') {
+                copyText += `\n다른 단위: ${otherUnits}`;
+            }
+            
+            copyToClipboard(copyText, 'copyBtn');
+        }
+        
+        // 엔터키로 변환
+        bindEnterKey(['kbValue', 'mbValue'], () => {
+            const kbValue = document.getElementById('kbValue').value;
+            const mbValue = document.getElementById('mbValue').value;
+            
+            if (kbValue) {
+                convertKBtoMB();
+            } else if (mbValue) {
+                convertMBtoKB();
+            }
+        });
+        
+        // 초기 상태 설정
+        updateResult(0, 0, 'kb-to-mb');
+    </script>
+</body>
+</html>

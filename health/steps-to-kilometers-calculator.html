@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>걸음수 거리 계산기 - 걸음수를 킬로미터로 변환 | CalcHub</title>
+    <meta name="description" content="무료 걸음수 거리 계산기로 걸음수를 킬로미터, 미터로 변환하세요. 키와 성별을 고려하여 정확한 걸음 길이를 계산하고 걸은 거리를 측정합니다.">
+    <meta name="keywords" content="온라인계산기, 무료계산기, 걸음수거리계산기, 걸음수킬로미터변환, 걸음길이계산기, 걷기거리계산기, 만보기거리계산기, 건강계산기">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+</head>
+<body>
+    <!-- 공통 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header">
+                <h1 class="calculator-title">걸음수 거리 계산기</h1>
+                <p class="calculator-subtitle">걸음수를 킬로미터로 변환하세요</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">입력 정보</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="steps" class="input-label">걸음수</label>
+                            <input type="number" id="steps" class="input-field" placeholder="예: 10000, 만보">
+                        </div>
+                        <div class="input-group">
+                            <label for="height" class="input-label">키 (cm)</label>
+                            <input type="number" id="height" class="input-field" placeholder="예: 170" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="gender" class="input-label">성별</label>
+                            <select id="gender" class="input-field">
+                                <option value="male">남성</option>
+                                <option value="female">여성</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="customStride" class="input-label">걸음 길이 직접 입력 (선택사항)</label>
+                            <input type="number" id="customStride" class="input-field" placeholder="cm (비워두면 자동 계산)" step="0.1">
+                        </div>
+                    </div>
+                    
+                    <div class="quick-steps">
+                        <h3>자주 사용하는 걸음수</h3>
+                        <div class="steps-buttons">
+                            <button onclick="setSteps(5000)" class="btn btn-outline">5,000보</button>
+                            <button onclick="setSteps(10000)" class="btn btn-outline">10,000보</button>
+                            <button onclick="setSteps(15000)" class="btn btn-outline">15,000보</button>
+                            <button onclick="setSteps(20000)" class="btn btn-outline">20,000보</button>
+                        </div>
+                    </div>
+                    
+                    <button onclick="calculate()" class="btn btn-primary">계산하기</button>
+                    <button onclick="clearInputs()" class="btn btn-secondary">초기화</button>
+                </div>
+
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">계산 결과</h2>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">총 거리 (킬로미터)</div>
+                            <div id="kilometers" class="result-value highlight">- km</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">총 거리 (미터)</div>
+                            <div id="meters" class="result-value">- m</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">걸음 길이</div>
+                            <div id="strideLength" class="result-value">- cm</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">예상 소요 시간 (보통 속도)</div>
+                            <div id="estimatedTime" class="result-value">- 분</div>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-section">
+                        <h3>거리 비교</h3>
+                        <div id="distanceComparison" class="comparison-grid">
+                            <!-- 동적으로 생성됨 -->
+                        </div>
+                    </div>
+                    
+                    <button onclick="copyResults()" class="btn btn-secondary">결과 복사</button>
+                </div>
+
+                <div class="info-section">
+                    <h2 class="section-title">걸음수와 거리 변환</h2>
+                    <div class="info-content">
+                        <h3>걸음 길이 계산 공식:</h3>
+                        <ul>
+                            <li><strong>남성:</strong> 키(cm) × 0.45</li>
+                            <li><strong>여성:</strong> 키(cm) × 0.41</li>
+                        </ul>
+                        
+                        <h3>일반적인 걸음 길이:</h3>
+                        <ul>
+                            <li><strong>성인 남성 (170cm):</strong> 약 76.5cm</li>
+                            <li><strong>성인 여성 (160cm):</strong> 약 65.6cm</li>
+                            <li><strong>평균:</strong> 약 70cm</li>
+                        </ul>
+
+                        <h3>걸음수별 거리 (평균 걸음 길이 기준):</h3>
+                        <ul>
+                            <li><strong>1,000보:</strong> 약 0.7km</li>
+                            <li><strong>5,000보:</strong> 약 3.5km</li>
+                            <li><strong>10,000보:</strong> 약 7km</li>
+                            <li><strong>15,000보:</strong> 약 10.5km</li>
+                            <li><strong>20,000보:</strong> 약 14km</li>
+                        </ul>
+
+                        <h3>걸음수 목표:</h3>
+                        <ul>
+                            <li><strong>기본 활동:</strong> 5,000보/일</li>
+                            <li><strong>건강 유지:</strong> 8,000-10,000보/일</li>
+                            <li><strong>체중 감량:</strong> 12,000-15,000보/일</li>
+                            <li><strong>운동 선수:</strong> 20,000보 이상/일</li>
+                        </ul>
+
+                        <h3>정확한 걸음 길이 측정 방법:</h3>
+                        <ol>
+                            <li>20보를 자연스럽게 걸으며 거리를 측정</li>
+                            <li>총 거리를 20으로 나누어 평균 걸음 길이 계산</li>
+                            <li>여러 번 측정하여 평균값 사용</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .steps-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .quick-steps {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .quick-steps h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #374151;
+        }
+        
+        .comparison-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .comparison-item {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .comparison-item h4 {
+            margin: 0 0 10px 0;
+            color: #4f46e5;
+            font-size: 14px;
+        }
+        
+        .comparison-item p {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+        }
+    </style>
+
+    <script>
+        function setSteps(stepCount) {
+            document.getElementById('steps').value = stepCount;
+        }
+
+        function calculate() {
+            const steps = parseFloat(document.getElementById('steps').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const gender = document.getElementById('gender').value;
+            const customStride = parseFloat(document.getElementById('customStride').value) || null;
+            
+            if (!steps || !height) {
+                alert('걸음수와 키를 입력해주세요.');
+                return;
+            }
+            
+            // 걸음 길이 계산
+            let strideLength;
+            if (customStride) {
+                strideLength = customStride;
+            } else {
+                const factor = gender === 'male' ? 0.45 : 0.41;
+                strideLength = height * factor;
+            }
+            
+            // 거리 계산
+            const meters = (steps * strideLength) / 100; // cm를 m로 변환
+            const kilometers = meters / 1000;
+            
+            // 예상 소요 시간 계산 (보통 걸음 속도 5km/h 기준)
+            const estimatedTimeHours = kilometers / 5;
+            const estimatedTimeMinutes = estimatedTimeHours * 60;
+            
+            // 결과 표시
+            document.getElementById('kilometers').textContent = kilometers.toFixed(3) + ' km';
+            document.getElementById('meters').textContent = Math.round(meters) + ' m';
+            document.getElementById('strideLength').textContent = strideLength.toFixed(1) + ' cm';
+            document.getElementById('estimatedTime').textContent = Math.round(estimatedTimeMinutes) + ' 분';
+            
+            // 거리 비교 생성
+            createDistanceComparison(kilometers);
+            
+            document.getElementById('resultSection').classList.add('fade-in');
+        }
+        
+        function createDistanceComparison(km) {
+            const comparisons = [];
+            
+            // 운동장 트랙 (400m)
+            const trackRounds = km * 1000 / 400;
+            if (trackRounds >= 0.1) {
+                comparisons.push({
+                    title: '운동장 트랙',
+                    value: trackRounds.toFixed(1) + ' 바퀴'
+                });
+            }
+            
+            // 축구장 (100m)
+            const footballFields = km * 1000 / 100;
+            if (footballFields >= 1) {
+                comparisons.push({
+                    title: '축구장 길이',
+                    value: Math.round(footballFields) + ' 개'
+                });
+            }
+            
+            // 서울 시청에서 강남역까지 (약 9km)
+            if (km >= 1) {
+                const seoulDistance = (km / 9) * 100;
+                comparisons.push({
+                    title: '시청↔강남역',
+                    value: seoulDistance.toFixed(0) + '%'
+                });
+            }
+            
+            // 마라톤 (42.195km)
+            if (km >= 1) {
+                const marathonPercent = (km / 42.195) * 100;
+                comparisons.push({
+                    title: '마라톤 거리',
+                    value: marathonPercent.toFixed(1) + '%'
+                });
+            }
+            
+            const container = document.getElementById('distanceComparison');
+            container.innerHTML = '';
+            
+            comparisons.forEach(comp => {
+                const item = document.createElement('div');
+                item.className = 'comparison-item';
+                item.innerHTML = `
+                    <h4>${comp.title}</h4>
+                    <p>${comp.value}</p>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function clearInputs() {
+            document.getElementById('steps').value = '';
+            document.getElementById('height').value = '';
+            document.getElementById('gender').value = 'male';
+            document.getElementById('customStride').value = '';
+        }
+
+        function copyResults() {
+            const steps = document.getElementById('steps').value;
+            const kilometers = document.getElementById('kilometers').textContent;
+            const meters = document.getElementById('meters').textContent;
+            const strideLength = document.getElementById('strideLength').textContent;
+            const estimatedTime = document.getElementById('estimatedTime').textContent;
+            
+            const result = `걸음수 거리 계산 결과:
+걸음수: ${steps}보
+총 거리: ${kilometers}
+총 거리: ${meters}
+걸음 길이: ${strideLength}
+예상 소요 시간: ${estimatedTime}`;
+            
+            navigator.clipboard.writeText(result).then(() => {
+                alert('결과가 클립보드에 복사되었습니다!');
+            });
+        }
+
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+    </script>
+</body>
+</html>

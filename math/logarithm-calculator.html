@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그 계산기 - 자연로그, 상용로그, 임의의 밑 로그 계산</title>
+    <meta name="description" content="자연로그, 상용로그, 임의의 밑을 가진 로그를 계산하는 무료 온라인 계산기입니다. 로그 법칙과 공식도 함께 제공합니다.">
+    <meta name="keywords" content="로그 계산기, 자연로그, 상용로그, 로그 함수, 로그 법칙, ln, log, log10">
+    <meta name="author" content="calcforkr.com">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="로그 계산기 - 자연로그, 상용로그, 임의의 밑 로그 계산">
+    <meta property="og:description" content="자연로그, 상용로그, 임의의 밑을 가진 로그를 계산하는 무료 온라인 계산기입니다.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://calcforkr.com/math/logarithm-calculator.html">
+    <meta property="og:site_name" content="calcforkr.com">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191" crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="canonical" href="https://calcforkr.com/math/logarithm-calculator.html">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "로그 계산기",
+        "description": "자연로그, 상용로그, 임의의 밑을 가진 로그를 계산하는 온라인 수학 계산기",
+        "url": "https://calcforkr.com/math/logarithm-calculator.html",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "All",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "KRW"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>로그 계산기</h1>
+        <p class="description">자연로그(ln), 상용로그(log10), 그리고 임의의 밑을 가진 로그를 계산합니다. 로그 법칙과 공식도 함께 확인하세요.</p>
+        
+        <div class="calculator-container">
+            <div class="calculator-tabs">
+                <button class="tab-btn active" onclick="showTab('basic')">기본 로그</button>
+                <button class="tab-btn" onclick="showTab('custom')">임의 밑 로그</button>
+                <button class="tab-btn" onclick="showTab('laws')">로그 법칙</button>
+            </div>
+            
+            <div id="basic" class="tab-content active">
+                <div class="input-group">
+                    <label for="number">수 (x)</label>
+                    <input type="number" id="number" step="any" placeholder="예: 100">
+                </div>
+                
+                <div class="button-group">
+                    <button onclick="calculateNaturalLog()" class="calculate-btn">자연로그 (ln)</button>
+                    <button onclick="calculateCommonLog()" class="calculate-btn">상용로그 (log₁₀)</button>
+                    <button onclick="calculateLog2()" class="calculate-btn">이진로그 (log₂)</button>
+                </div>
+            </div>
+            
+            <div id="custom" class="tab-content">
+                <div class="input-group">
+                    <label for="base">밑 (b)</label>
+                    <input type="number" id="base" min="0.1" step="any" placeholder="예: 2">
+                </div>
+                
+                <div class="input-group">
+                    <label for="customNumber">수 (x)</label>
+                    <input type="number" id="customNumber" step="any" placeholder="예: 8">
+                </div>
+                
+                <button onclick="calculateCustomLog()" class="calculate-btn">logₓ 계산하기</button>
+            </div>
+            
+            <div id="laws" class="tab-content">
+                <div class="law-calculator">
+                    <h3>로그 법칙 계산기</h3>
+                    <div class="law-inputs">
+                        <div class="input-group">
+                            <label>log_b(x) + log_b(y)</label>
+                            <div class="law-input-row">
+                                <input type="number" id="lawB1" placeholder="밑 b" step="any">
+                                <input type="number" id="lawX1" placeholder="x" step="any">
+                                <input type="number" id="lawY1" placeholder="y" step="any">
+                                <button onclick="calculateProductLaw()" class="small-btn">계산</button>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>log_b(x) - log_b(y)</label>
+                            <div class="law-input-row">
+                                <input type="number" id="lawB2" placeholder="밑 b" step="any">
+                                <input type="number" id="lawX2" placeholder="x" step="any">
+                                <input type="number" id="lawY2" placeholder="y" step="any">
+                                <button onclick="calculateQuotientLaw()" class="small-btn">계산</button>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>log_b(x^n)</label>
+                            <div class="law-input-row">
+                                <input type="number" id="lawB3" placeholder="밑 b" step="any">
+                                <input type="number" id="lawX3" placeholder="x" step="any">
+                                <input type="number" id="lawN3" placeholder="지수 n" step="any">
+                                <button onclick="calculatePowerLaw()" class="small-btn">계산</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="result" class="result"></div>
+        </div>
+        
+        <div class="info-section">
+            <h2>로그 함수 개념</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>로그의 정의</h3>
+                    <p><strong>log_b(x) = y</strong></p>
+                    <p>b^y = x가 되는 y값</p>
+                    <p>밑이 b이고 진수가 x일 때의 지수</p>
+                </div>
+                
+                <div class="info-item">
+                    <h3>특수한 로그</h3>
+                    <ul>
+                        <li><strong>자연로그:</strong> ln(x) = log_e(x)</li>
+                        <li><strong>상용로그:</strong> log(x) = log₁₀(x)</li>
+                        <li><strong>이진로그:</strong> log₂(x)</li>
+                        <li><strong>e ≈ 2.71828...</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="info-item">
+                    <h3>로그의 성질</h3>
+                    <ul>
+                        <li>밑 b > 0, b ≠ 1</li>
+                        <li>진수 x > 0</li>
+                        <li>log_b(1) = 0</li>
+                        <li>log_b(b) = 1</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="laws-section">
+            <h2>로그 법칙</h2>
+            <div class="laws-grid">
+                <div class="law-item">
+                    <h3>곱의 법칙</h3>
+                    <p><strong>log_b(xy) = log_b(x) + log_b(y)</strong></p>
+                    <p class="example">예: log₂(8×4) = log₂(8) + log₂(4) = 3 + 2 = 5</p>
+                </div>
+                
+                <div class="law-item">
+                    <h3>나눗셈의 법칙</h3>
+                    <p><strong>log_b(x/y) = log_b(x) - log_b(y)</strong></p>
+                    <p class="example">예: log₂(8/4) = log₂(8) - log₂(4) = 3 - 2 = 1</p>
+                </div>
+                
+                <div class="law-item">
+                    <h3>거듭제곱의 법칙</h3>
+                    <p><strong>log_b(x^n) = n·log_b(x)</strong></p>
+                    <p class="example">예: log₂(8³) = 3·log₂(8) = 3×3 = 9</p>
+                </div>
+                
+                <div class="law-item">
+                    <h3>밑 변환 공식</h3>
+                    <p><strong>log_b(x) = log_c(x) / log_c(b)</strong></p>
+                    <p class="example">예: log₂(8) = ln(8) / ln(2) = 2.079 / 0.693 = 3</p>
+                </div>
+                
+                <div class="law-item">
+                    <h3>역함수 관계</h3>
+                    <p><strong>b^(log_b(x)) = x</strong></p>
+                    <p><strong>log_b(b^x) = x</strong></p>
+                </div>
+                
+                <div class="law-item">
+                    <h3>특수 값</h3>
+                    <p><strong>log_b(1) = 0</strong></p>
+                    <p><strong>log_b(b) = 1</strong></p>
+                    <p><strong>log_b(b^n) = n</strong></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="examples-section">
+            <h2>로그 계산 예시</h2>
+            <div class="example-grid">
+                <div class="example-item">
+                    <h3>자연로그 (ln)</h3>
+                    <p><strong>ln(1) = 0</strong></p>
+                    <p><strong>ln(e) ≈ 1</strong></p>
+                    <p><strong>ln(10) ≈ 2.303</strong></p>
+                    <p><strong>ln(100) ≈ 4.605</strong></p>
+                </div>
+                
+                <div class="example-item">
+                    <h3>상용로그 (log₁₀)</h3>
+                    <p><strong>log(1) = 0</strong></p>
+                    <p><strong>log(10) = 1</strong></p>
+                    <p><strong>log(100) = 2</strong></p>
+                    <p><strong>log(1000) = 3</strong></p>
+                </div>
+                
+                <div class="example-item">
+                    <h3>이진로그 (log₂)</h3>
+                    <p><strong>log₂(1) = 0</strong></p>
+                    <p><strong>log₂(2) = 1</strong></p>
+                    <p><strong>log₂(8) = 3</strong></p>
+                    <p><strong>log₂(16) = 4</strong></p>
+                </div>
+                
+                <div class="example-item">
+                    <h3>복합 계산</h3>
+                    <p><strong>log₃(27) = 3</strong> (3³ = 27)</p>
+                    <p><strong>log₅(125) = 3</strong> (5³ = 125)</p>
+                    <p><strong>log₄(0.25) = -1</strong> (4⁻¹ = 0.25)</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="applications-section">
+            <h2>로그의 응용 분야</h2>
+            <div class="application-grid">
+                <div class="app-item">
+                    <h3>과학 계산</h3>
+                    <ul>
+                        <li>pH 농도 계산</li>
+                        <li>지진 규모 (리히터 척도)</li>
+                        <li>데시벨(dB) 계산</li>
+                        <li>반감기 계산</li>
+                    </ul>
+                </div>
+                
+                <div class="app-item">
+                    <h3>공학 분야</h3>
+                    <ul>
+                        <li>신호 처리</li>
+                        <li>전자 회로 설계</li>
+                        <li>제어 시스템</li>
+                        <li>통신 시스템</li>
+                    </ul>
+                </div>
+                
+                <div class="app-item">
+                    <h3>컴퓨터 과학</h3>
+                    <ul>
+                        <li>알고리즘 복잡도</li>
+                        <li>정보 이론</li>
+                        <li>데이터 압축</li>
+                        <li>머신러닝</li>
+                    </ul>
+                </div>
+                
+                <div class="app-item">
+                    <h3>금융 분야</h3>
+                    <ul>
+                        <li>복리 계산</li>
+                        <li>성장률 분석</li>
+                        <li>리스크 모델링</li>
+                        <li>투자 수익률</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="faq-section">
+            <h2>자주 묻는 질문</h2>
+            <div class="faq-item">
+                <h3>로그의 밑이 1이나 음수일 수 없는 이유는?</h3>
+                <p>밑이 1이면 1^x는 항상 1이므로 유일한 해가 존재하지 않고, 음수 밑은 복소수 결과를 낳기 때문입니다.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>진수가 음수나 0일 수 없는 이유는?</h3>
+                <p>실수 범위에서 어떤 양수를 거듭제곱해도 음수나 0이 될 수 없기 때문입니다.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>자연로그와 상용로그의 차이점은?</h3>
+                <p>자연로그는 밑이 e(≈2.718)이고, 상용로그는 밑이 10입니다. 자연로그는 미적분학에서, 상용로그는 일반 계산에서 주로 사용됩니다.</p>
+            </div>
+        </div>
+        
+        <div class="related-calculators">
+            <h2>관련 계산기</h2>
+            <div class="calculator-links">
+                <a href="../science/scientific-calculator.html" class="calc-link">공학용 계산기</a>
+                <a href="quadratic-formula-calculator.html" class="calc-link">이차방정식 계산기</a>
+                <a href="trigonometry-calculator.html" class="calc-link">삼각함수 계산기</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    function showTab(tabName) {
+        // 모든 탭 숨기기
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // 선택된 탭 보이기
+        document.getElementById(tabName).classList.add('active');
+        event.target.classList.add('active');
+        
+        // 결과 초기화
+        document.getElementById('result').innerHTML = '';
+    }
+    
+    function calculateNaturalLog() {
+        const x = parseFloat(document.getElementById('number').value);
+        
+        if (!x || x <= 0) {
+            document.getElementById('result').innerHTML = 
+                '<div class="error">양수를 입력해주세요.</div>';
+            return;
+        }
+        
+        const result = Math.log(x);
+        const steps = generateLogSteps('ln', Math.E, x, result);
+        
+        displayLogResult('자연로그', 'ln', Math.E, x, result, steps);
+    }
+    
+    function calculateCommonLog() {
+        const x = parseFloat(document.getElementById('number').value);
+        
+        if (!x || x <= 0) {
+            document.getElementById('result').innerHTML = 
+                '<div class="error">양수를 입력해주세요.</div>';
+            return;
+        }
+        
+        const result = Math.log10(x);
+        const steps = generateLogSteps('log₁₀', 10, x, result);
+        
+        displayLogResult('상용로그', 'log₁₀', 10, x, result, steps);
+    }
+    
+    function calculateLog2() {
+        const x = parseFloat(document.getElementById('number').value);
+        
+        if (!x || x <= 0) {
+            document.getElementById('result').innerHTML = 
+                '<div class="error">양수를 입력해주세요.</div>';
+            return;
+        }
+        
+        const result = Math.log2(x);
+        const steps = generateLogSteps('log₂', 2, x, result);
+        
+        displayLogResult('이진로그', 'log₂', 2, x, result, steps);
+    }
+    
+    function calculateCustomLog() {
+        const base = parseFloat(document.getElementById('base').value);
+        const x = parseFloat(document.getElementById('customNumber').value);
+        
+        if (!base || base <= 0 || base === 1) {
+            document.getElementById('result').innerHTML = 
+                '<div class="error">밑은 0보다 크고 1이 아닌 수여야 합니다.</div>';
+            return;
+        }
+        
+        if (!x || x <= 0) {
+            document.getElementById('result').innerHTML = 
+                '<div class="error">진수는 양수여야 합니다.</div>';
+            return;
+        }
+        
+        const result = Math.log(x) / Math.log(base);
+        const steps = generateLogSteps(`log₍${base}₎`, base, x, result);
+        
+        displayLogResult(`밑이 ${base}인 로그`, `log₍${base}₎`, base, x, result, steps);
+    }
+    
+    function calculateProductLaw() {
+        const b = parseFloat(document.getElementById('lawB1').value);
+        const x = parseFloat(document.getElementById('lawX1').value);
+        const y = parseFloat(document.getElementById('lawY1').value);
+        
+        if (!b || b <= 0 || b === 1 || !x || x <= 0 || !y || y <= 0) {
+            document.getElementById('result').innerHTML = 
+                '<div class="error">모든 값은 양수여야 하고, 밑은 1이 아니어야 합니다.</div>';
+            return;
+        }
+        
+        const logX = Math.log(x) / Math.log(b);
+        const logY = Math.log(y) / Math.log(b);
+        const logXY = Math.log(x * y) / Math.log(b);
+        const sum = logX + logY;
+        
+        displayLawResult('곱의 법칙', `log₍${b}₎(${x} × ${y})`, logXY, `log₍${b}₎(${x}) + log₍${b}₎(${y})`, sum, logX, logY);
+    }
+    
+    function calculateQuotientLaw() {
+        const b = parseFloat(document.getElementById('lawB2').value);
+        const x = parseFloat(document.getElementById('lawX2').value);
+        const y = parseFloat(document.getElementById('lawY2').value);
+        
+        if (!b || b <= 0 || b === 1 || !x || x <= 0 || !y || y <= 0) {
+            document.getElementById('result').innerHTML = 
+                '<div class="error">모든 값은 양수여야 하고, 밑은 1이 아니어야 합니다.</div>';
+            return;
+        }
+        
+        const logX = Math.log(x) / Math.log(b);
+        const logY = Math.log(y) / Math.log(b);
+        const logXdivY = Math.log(x / y) / Math.log(b);
+        const diff = logX - logY;
+        
+        displayLawResult('나눗셈의 법칙', `log₍${b}₎(${x} ÷ ${y})`, logXdivY, `log₍${b}₎(${x}) - log₍${b}₎(${y})`, diff, logX, logY);
+    }
+    
+    function calculatePowerLaw() {
+        const b = parseFloat(document.getElementById('lawB3').value);
+        const x = parseFloat(document.getElementById('lawX3').value);
+        const n = parseFloat(document.getElementById('lawN3').value);
+        
+        if (!b || b <= 0 || b === 1 || !x || x <= 0 || !n) {
+            document.getElementById('result').innerHTML = 
+                '<div class="error">밑과 진수는 양수여야 하고, 밑은 1이 아니어야 합니다.</div>';
+            return;
+        }
+        
+        const logX = Math.log(x) / Math.log(b);
+        const logXpowN = Math.log(Math.pow(x, n)) / Math.log(b);
+        const product = n * logX;
+        
+        displayPowerLawResult('거듭제곱의 법칙', `log₍${b}₎(${x}^${n})`, logXpowN, `${n} × log₍${b}₎(${x})`, product, n, logX);
+    }
+    
+    function generateLogSteps(logSymbol, base, x, result) {
+        const steps = [];
+        
+        steps.push(`${logSymbol}(${x}) = ?`);
+        
+        if (base === Math.E) {
+            steps.push(`자연로그는 밑이 e(≈2.718)인 로그입니다.`);
+        } else if (base === 10) {
+            steps.push(`상용로그는 밑이 10인 로그입니다.`);
+        } else if (base === 2) {
+            steps.push(`이진로그는 밑이 2인 로그입니다.`);
+        }
+        
+        // 특수 값들 확인
+        if (x === 1) {
+            steps.push(`${logSymbol}(1) = 0 (모든 밑에 대해 성립)`);
+        } else if (x === base) {
+            steps.push(`${logSymbol}(${base}) = 1 (밑과 진수가 같을 때)`);
+        } else if (x === Math.pow(base, Math.round(result))) {
+            const exp = Math.round(result);
+            steps.push(`${base}^${exp} = ${Math.pow(base, exp)}`);
+            steps.push(`따라서 ${logSymbol}(${x}) = ${exp}`);
+        } else {
+            steps.push(`${base}^${result.toFixed(6)} = ${x}`);
+            steps.push(`따라서 ${logSymbol}(${x}) = ${result.toFixed(6)}`);
+        }
+        
+        return steps;
+    }
+    
+    function displayLogResult(title, symbol, base, x, result, steps) {
+        let resultHTML = `
+            <div class="log-result">
+                <h3>${title} 계산 결과</h3>
+                <div class="main-result">
+                    <p class="result-equation">${symbol}(${x}) = <span class="result-value">${result.toFixed(8)}</span></p>
+                </div>
+                
+                <div class="calculation-steps">
+                    <h4>계산 과정</h4>
+                    <ol>
+        `;
+        
+        steps.forEach(step => {
+            resultHTML += `<li>${step}</li>`;
+        });
+        
+        resultHTML += `
+                    </ol>
+                </div>
+                
+                <div class="verification">
+                    <h4>검증</h4>
+                    <p>${base === Math.E ? 'e' : base}^${result.toFixed(6)} = ${Math.pow(base, result).toFixed(6)}</p>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('result').innerHTML = resultHTML;
+    }
+    
+    function displayLawResult(lawName, leftSide, leftResult, rightSide, rightResult, logX, logY) {
+        const resultHTML = `
+            <div class="law-result">
+                <h3>${lawName} 계산 결과</h3>
+                <div class="law-comparison">
+                    <div class="law-side">
+                        <h4>직접 계산</h4>
+                        <p>${leftSide} = <span class="result-value">${leftResult.toFixed(6)}</span></p>
+                    </div>
+                    <div class="law-side">
+                        <h4>법칙 적용</h4>
+                        <p>${rightSide} = <span class="result-value">${rightResult.toFixed(6)}</span></p>
+                        <p class="detail">${logX.toFixed(6)} ${lawName.includes('나눗셈') ? '-' : '+'} ${logY.toFixed(6)} = ${rightResult.toFixed(6)}</p>
+                    </div>
+                </div>
+                <div class="verification">
+                    <p class="verify-text ${Math.abs(leftResult - rightResult) < 0.000001 ? 'correct' : 'incorrect'}">
+                        ${Math.abs(leftResult - rightResult) < 0.000001 ? '✓ 법칙이 올바르게 적용되었습니다!' : '✗ 계산을 다시 확인해주세요.'}
+                    </p>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('result').innerHTML = resultHTML;
+    }
+    
+    function displayPowerLawResult(lawName, leftSide, leftResult, rightSide, rightResult, n, logX) {
+        const resultHTML = `
+            <div class="law-result">
+                <h3>${lawName} 계산 결과</h3>
+                <div class="law-comparison">
+                    <div class="law-side">
+                        <h4>직접 계산</h4>
+                        <p>${leftSide} = <span class="result-value">${leftResult.toFixed(6)}</span></p>
+                    </div>
+                    <div class="law-side">
+                        <h4>법칙 적용</h4>
+                        <p>${rightSide} = <span class="result-value">${rightResult.toFixed(6)}</span></p>
+                        <p class="detail">${n} × ${logX.toFixed(6)} = ${rightResult.toFixed(6)}</p>
+                    </div>
+                </div>
+                <div class="verification">
+                    <p class="verify-text ${Math.abs(leftResult - rightResult) < 0.000001 ? 'correct' : 'incorrect'}">
+                        ${Math.abs(leftResult - rightResult) < 0.000001 ? '✓ 법칙이 올바르게 적용되었습니다!' : '✗ 계산을 다시 확인해주세요.'}
+                    </p>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('result').innerHTML = resultHTML;
+    }
+    
+    // 엔터키로 계산
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const activeTab = document.querySelector('.tab-content.active').id;
+            if (activeTab === 'basic') {
+                calculateNaturalLog();
+            } else if (activeTab === 'custom') {
+                calculateCustomLog();
+            }
+        }
+    });
+    </script>
+    
+    <style>
+    .calculator-tabs {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #eee;
+    }
+    
+    .tab-btn {
+        padding: 12px 20px;
+        border: none;
+        background: #f8f9fa;
+        cursor: pointer;
+        border-radius: 5px 5px 0 0;
+        transition: all 0.3s;
+    }
+    
+    .tab-btn:hover {
+        background: #e9ecef;
+    }
+    
+    .tab-btn.active {
+        background: #007bff;
+        color: white;
+    }
+    
+    .tab-content {
+        display: none;
+        padding: 20px 0;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    .button-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+    
+    .button-group .calculate-btn {
+        flex: 1;
+        min-width: 150px;
+    }
+    
+    .law-calculator {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+    }
+    
+    .law-inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin-top: 15px;
+    }
+    
+    .law-input-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .law-input-row input {
+        flex: 1;
+        min-width: 100px;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+    }
+    
+    .small-btn {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 3px;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+    
+    .small-btn:hover {
+        background: #218838;
+    }
+    
+    .laws-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+    
+    .law-item {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 4px solid #007bff;
+    }
+    
+    .law-item h3 {
+        color: #007bff;
+        margin-bottom: 10px;
+    }
+    
+    .law-item p {
+        margin: 10px 0;
+    }
+    
+    .example {
+        color: #666;
+        font-style: italic;
+        font-size: 14px;
+    }
+    
+    .log-result {
+        margin-top: 30px;
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 10px;
+    }
+    
+    .main-result {
+        text-align: center;
+        margin: 20px 0;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        border: 2px solid #007bff;
+    }
+    
+    .result-equation {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 0;
+    }
+    
+    .result-value {
+        color: #007bff;
+        background: #e7f3ff;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    
+    .calculation-steps, .verification {
+        margin: 20px 0;
+    }
+    
+    .calculation-steps ol {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+    }
+    
+    .calculation-steps li {
+        margin: 8px 0;
+        padding: 5px 0;
+    }
+    
+    .verification {
+        background: #e8f5e8;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+    }
+    
+    .law-result {
+        margin-top: 30px;
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 10px;
+    }
+    
+    .law-comparison {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin: 20px 0;
+    }
+    
+    .law-side {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+    }
+    
+    .law-side h4 {
+        color: #666;
+        margin-bottom: 15px;
+    }
+    
+    .detail {
+        font-size: 14px;
+        color: #666;
+        margin-top: 10px;
+    }
+    
+    .verify-text {
+        font-weight: bold;
+        font-size: 18px;
+        margin: 0;
+    }
+    
+    .verify-text.correct {
+        color: #28a745;
+    }
+    
+    .verify-text.incorrect {
+        color: #dc3545;
+    }
+    
+    .application-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+    
+    .app-item {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+    }
+    
+    .app-item h3 {
+        color: #007bff;
+        margin-bottom: 15px;
+    }
+    
+    .app-item ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    
+    .app-item li {
+        padding: 5px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .app-item li:last-child {
+        border-bottom: none;
+    }
+    
+    @media (max-width: 768px) {
+        .calculator-tabs {
+            flex-direction: column;
+        }
+        
+        .button-group {
+            flex-direction: column;
+        }
+        
+        .law-input-row {
+            flex-direction: column;
+        }
+        
+        .law-input-row input {
+            min-width: auto;
+        }
+        
+        .law-comparison {
+            grid-template-columns: 1fr;
+        }
+        
+        .result-equation {
+            font-size: 18px;
+        }
+    }
+    </style>
+</body>
+</html>

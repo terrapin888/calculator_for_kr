@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>향상된 이상적 체중 계산기 - 다양한 공식으로 이상 체중 계산 | CalcHub</title>
+    <meta name="description" content="무료 향상된 이상적 체중 계산기로 BMI, 브로카 공식, 로렌츠 공식, 밀러 공식 등 다양한 방법으로 이상적인 체중을 계산하세요. 연령과 골격 유형까지 고려한 정확한 계산.">
+    <meta name="keywords" content="온라인계산기, 무료계산기, 이상체중계산기, 표준체중계산기, BMI계산기, 브로카공식계산기, 건강체중계산기, 다이어트계산기">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+</head>
+<body>
+    <!-- 공통 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header">
+                <h1 class="calculator-title">향상된 이상적 체중 계산기</h1>
+                <p class="calculator-subtitle">다양한 공식으로 이상적인 체중을 계산하세요</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">개인 정보</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="height" class="input-label">키 (cm)</label>
+                            <input type="number" id="height" class="input-field" placeholder="예: 170" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="currentWeight" class="input-label">현재 체중 (kg)</label>
+                            <input type="number" id="currentWeight" class="input-field" placeholder="예: 70" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="age" class="input-label">나이</label>
+                            <input type="number" id="age" class="input-field" placeholder="예: 30">
+                        </div>
+                        <div class="input-group">
+                            <label for="gender" class="input-label">성별</label>
+                            <select id="gender" class="input-field">
+                                <option value="male">남성</option>
+                                <option value="female">여성</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="frameSize" class="input-label">골격 크기</label>
+                            <select id="frameSize" class="input-field">
+                                <option value="small">소골격</option>
+                                <option value="medium" selected>중골격</option>
+                                <option value="large">대골격</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="activityLevel" class="input-label">활동 수준</label>
+                            <select id="activityLevel" class="input-field">
+                                <option value="sedentary">좌식 생활</option>
+                                <option value="light" selected>가벼운 활동</option>
+                                <option value="moderate">보통 활동</option>
+                                <option value="active">활동적</option>
+                                <option value="very_active">매우 활동적</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button onclick="calculate()" class="btn btn-primary">계산하기</button>
+                    <button onclick="clearInputs()" class="btn btn-secondary">초기화</button>
+                </div>
+
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">계산 결과</h2>
+                    
+                    <div class="current-status">
+                        <h3>현재 상태</h3>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <div class="result-label">현재 BMI</div>
+                                <div id="currentBMI" class="result-value">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">BMI 상태</div>
+                                <div id="bmiStatus" class="result-value">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ideal-weights">
+                        <h3>이상적 체중 (다양한 공식)</h3>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <div class="result-label">BMI 기준 (18.5-24.9)</div>
+                                <div id="bmiRange" class="result-value highlight">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">브로카 공식</div>
+                                <div id="brocaWeight" class="result-value">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">로렌츠 공식</div>
+                                <div id="lorentzWeight" class="result-value">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">밀러 공식</div>
+                                <div id="millerWeight" class="result-value">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">해머위 공식</div>
+                                <div id="hamwiWeight" class="result-value">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">디바인 공식</div>
+                                <div id="devineWeight" class="result-value">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recommendations">
+                        <h3>체중 목표</h3>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <div class="result-label">권장 체중 범위</div>
+                                <div id="recommendedRange" class="result-value highlight">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">체중 변화 필요량</div>
+                                <div id="weightChange" class="result-value">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">일일 권장 칼로리</div>
+                                <div id="dailyCalories" class="result-value">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="copyResults()" class="btn btn-secondary">결과 복사</button>
+                </div>
+
+                <div class="info-section">
+                    <h2 class="section-title">이상적 체중 계산 공식</h2>
+                    <div class="info-content">
+                        <h3>1. BMI 기준 체중:</h3>
+                        <p><strong>정상 BMI 18.5-24.9 범위</strong>에 해당하는 체중</p>
+                        
+                        <h3>2. 브로카 공식:</h3>
+                        <p><strong>남성:</strong> (키-100) × 0.9</p>
+                        <p><strong>여성:</strong> (키-100) × 0.85</p>
+                        
+                        <h3>3. 로렌츠 공식:</h3>
+                        <p><strong>남성:</strong> 키-100-((키-150)/4)</p>
+                        <p><strong>여성:</strong> 키-100-((키-150)/2.5)</p>
+                        
+                        <h3>4. 밀러 공식:</h3>
+                        <p><strong>남성:</strong> 56.2 + 1.41×(키-152.4)</p>
+                        <p><strong>여성:</strong> 53.1 + 1.36×(키-152.4)</p>
+                        
+                        <h3>5. 해머위 공식:</h3>
+                        <p><strong>남성:</strong> 48 + 2.7×(키-152.4)/2.54</p>
+                        <p><strong>여성:</strong> 45.5 + 2.3×(키-152.4)/2.54</p>
+                        
+                        <h3>6. 디바인 공식:</h3>
+                        <p><strong>남성:</strong> 50 + 2.3×(키-152.4)/2.54</p>
+                        <p><strong>여성:</strong> 45.5 + 2.3×(키-152.4)/2.54</p>
+
+                        <h3>골격 크기별 조정:</h3>
+                        <ul>
+                            <li><strong>소골격:</strong> 기본 체중의 -10%</li>
+                            <li><strong>중골격:</strong> 기본 체중</li>
+                            <li><strong>대골격:</strong> 기본 체중의 +10%</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .current-status, .ideal-weights, .recommendations {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .current-status h3, .ideal-weights h3, .recommendations h3 {
+            margin-top: 0;
+            color: #374151;
+            border-bottom: 2px solid #4f46e5;
+            padding-bottom: 10px;
+        }
+    </style>
+
+    <script>
+        function calculate() {
+            const height = parseFloat(document.getElementById('height').value);
+            const currentWeight = parseFloat(document.getElementById('currentWeight').value);
+            const age = parseFloat(document.getElementById('age').value);
+            const gender = document.getElementById('gender').value;
+            const frameSize = document.getElementById('frameSize').value;
+            const activityLevel = document.getElementById('activityLevel').value;
+            
+            if (!height || !currentWeight || !age) {
+                alert('키, 현재 체중, 나이를 입력해주세요.');
+                return;
+            }
+            
+            // 현재 BMI 계산
+            const currentBMI = currentWeight / ((height / 100) ** 2);
+            const bmiStatus = getBMIStatus(currentBMI);
+            
+            // 다양한 공식으로 이상 체중 계산
+            const heightInMeters = height / 100;
+            const heightInInches = (height - 152.4) / 2.54;
+            
+            // BMI 기준 체중 범위 (18.5-24.9)
+            const bmiMinWeight = 18.5 * (heightInMeters ** 2);
+            const bmiMaxWeight = 24.9 * (heightInMeters ** 2);
+            
+            // 브로카 공식
+            const brocaWeight = gender === 'male' ? 
+                (height - 100) * 0.9 : (height - 100) * 0.85;
+            
+            // 로렌츠 공식
+            const lorentzWeight = gender === 'male' ? 
+                height - 100 - ((height - 150) / 4) : 
+                height - 100 - ((height - 150) / 2.5);
+            
+            // 밀러 공식
+            const millerWeight = gender === 'male' ? 
+                56.2 + 1.41 * heightInInches : 
+                53.1 + 1.36 * heightInInches;
+            
+            // 해머위 공식
+            const hamwiWeight = gender === 'male' ? 
+                48 + 2.7 * heightInInches : 
+                45.5 + 2.3 * heightInInches;
+            
+            // 디바인 공식
+            const devineWeight = gender === 'male' ? 
+                50 + 2.3 * heightInInches : 
+                45.5 + 2.3 * heightInInches;
+            
+            // 골격 크기 조정
+            const frameAdjustment = {
+                'small': 0.9,
+                'medium': 1.0,
+                'large': 1.1
+            };
+            const adjustment = frameAdjustment[frameSize];
+            
+            // 권장 체중 범위 (여러 공식의 평균)
+            const averageWeight = (brocaWeight + lorentzWeight + millerWeight) / 3 * adjustment;
+            const recommendedMin = averageWeight - 3;
+            const recommendedMax = averageWeight + 3;
+            
+            // 체중 변화 필요량
+            const weightChange = currentWeight - averageWeight;
+            
+            // 일일 권장 칼로리 (기초대사율 + 활동량)
+            const bmr = gender === 'male' ? 
+                88.362 + (13.397 * currentWeight) + (4.799 * height) - (5.677 * age) :
+                447.593 + (9.247 * currentWeight) + (3.098 * height) - (4.330 * age);
+            
+            const activityMultiplier = {
+                'sedentary': 1.2,
+                'light': 1.375,
+                'moderate': 1.55,
+                'active': 1.725,
+                'very_active': 1.9
+            };
+            
+            const dailyCalories = bmr * activityMultiplier[activityLevel];
+            
+            // 결과 표시
+            document.getElementById('currentBMI').textContent = currentBMI.toFixed(1);
+            document.getElementById('bmiStatus').textContent = bmiStatus;
+            document.getElementById('bmiRange').textContent = 
+                `${bmiMinWeight.toFixed(1)} - ${bmiMaxWeight.toFixed(1)} kg`;
+            document.getElementById('brocaWeight').textContent = 
+                `${(brocaWeight * adjustment).toFixed(1)} kg`;
+            document.getElementById('lorentzWeight').textContent = 
+                `${(lorentzWeight * adjustment).toFixed(1)} kg`;
+            document.getElementById('millerWeight').textContent = 
+                `${(Math.max(millerWeight, 0) * adjustment).toFixed(1)} kg`;
+            document.getElementById('hamwiWeight').textContent = 
+                `${(Math.max(hamwiWeight, 0) * adjustment).toFixed(1)} kg`;
+            document.getElementById('devineWeight').textContent = 
+                `${(Math.max(devineWeight, 0) * adjustment).toFixed(1)} kg`;
+            document.getElementById('recommendedRange').textContent = 
+                `${recommendedMin.toFixed(1)} - ${recommendedMax.toFixed(1)} kg`;
+            document.getElementById('weightChange').textContent = 
+                weightChange > 0 ? `${weightChange.toFixed(1)} kg 감량 필요` : 
+                weightChange < 0 ? `${Math.abs(weightChange).toFixed(1)} kg 증량 필요` : '적정 체중';
+            document.getElementById('dailyCalories').textContent = 
+                `${Math.round(dailyCalories)} kcal`;
+            
+            document.getElementById('resultSection').classList.add('fade-in');
+        }
+        
+        function getBMIStatus(bmi) {
+            if (bmi < 18.5) return '저체중';
+            if (bmi < 25) return '정상 체중';
+            if (bmi < 30) return '과체중';
+            return '비만';
+        }
+
+        function clearInputs() {
+            document.getElementById('height').value = '';
+            document.getElementById('currentWeight').value = '';
+            document.getElementById('age').value = '';
+            document.getElementById('gender').value = 'male';
+            document.getElementById('frameSize').value = 'medium';
+            document.getElementById('activityLevel').value = 'light';
+        }
+
+        function copyResults() {
+            const currentBMI = document.getElementById('currentBMI').textContent;
+            const bmiStatus = document.getElementById('bmiStatus').textContent;
+            const bmiRange = document.getElementById('bmiRange').textContent;
+            const recommendedRange = document.getElementById('recommendedRange').textContent;
+            const weightChange = document.getElementById('weightChange').textContent;
+            
+            const result = `향상된 이상적 체중 계산 결과:
+현재 BMI: ${currentBMI}
+BMI 상태: ${bmiStatus}
+BMI 기준 체중: ${bmiRange}
+권장 체중 범위: ${recommendedRange}
+체중 변화 필요량: ${weightChange}`;
+            
+            navigator.clipboard.writeText(result).then(() => {
+                alert('결과가 클립보드에 복사되었습니다!');
+            });
+        }
+
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+    </script>
+</body>
+</html>

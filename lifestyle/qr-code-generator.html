@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR 코드 생성기 - 무료 온라인 QR 코드 만들기 | CalcHub</title>
+    <meta name="description" content="무료 QR 코드 생성기로 URL, 텍스트, 전화번호, 이메일, WiFi 정보를 QR 코드로 변환하세요. 고품질 QR 코드를 즉시 생성하고 다운로드할 수 있습니다.">
+    <meta name="keywords" content="온라인계산기, 무료계산기, QR코드생성기, QR코드만들기, 바코드생성기, URL QR코드, 텍스트 QR코드, WiFi QR코드">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header">
+                <h1 class="calculator-title">QR 코드 생성기</h1>
+                <p class="calculator-subtitle">다양한 정보를 QR 코드로 변환하세요</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">QR 코드 정보</h2>
+                    <div class="input-group">
+                        <label class="input-label">QR 코드 유형</label>
+                        <select id="qrType" class="input-field" onchange="updateInputFields()">
+                            <option value="text">텍스트</option>
+                            <option value="url">URL/링크</option>
+                            <option value="email">이메일</option>
+                            <option value="phone">전화번호</option>
+                            <option value="sms">SMS</option>
+                            <option value="wifi">WiFi</option>
+                            <option value="vcard">연락처(vCard)</option>
+                        </select>
+                    </div>
+
+                    <!-- 텍스트 입력 -->
+                    <div id="textInputs" class="type-inputs">
+                        <div class="input-group">
+                            <label for="textContent" class="input-label">텍스트 내용</label>
+                            <textarea id="textContent" class="input-field" placeholder="QR 코드에 포함할 텍스트를 입력하세요" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- URL 입력 -->
+                    <div id="urlInputs" class="type-inputs" style="display: none;">
+                        <div class="input-group">
+                            <label for="urlContent" class="input-label">URL 주소</label>
+                            <input type="url" id="urlContent" class="input-field" placeholder="https://example.com">
+                        </div>
+                    </div>
+
+                    <!-- 이메일 입력 -->
+                    <div id="emailInputs" class="type-inputs" style="display: none;">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="emailAddress" class="input-label">이메일 주소</label>
+                                <input type="email" id="emailAddress" class="input-field" placeholder="example@email.com">
+                            </div>
+                            <div class="input-group">
+                                <label for="emailSubject" class="input-label">제목 (선택사항)</label>
+                                <input type="text" id="emailSubject" class="input-field" placeholder="이메일 제목">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="emailBody" class="input-label">내용 (선택사항)</label>
+                            <textarea id="emailBody" class="input-field" placeholder="이메일 내용" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- 전화번호 입력 -->
+                    <div id="phoneInputs" class="type-inputs" style="display: none;">
+                        <div class="input-group">
+                            <label for="phoneNumber" class="input-label">전화번호</label>
+                            <input type="tel" id="phoneNumber" class="input-field" placeholder="010-1234-5678">
+                        </div>
+                    </div>
+
+                    <!-- SMS 입력 -->
+                    <div id="smsInputs" class="type-inputs" style="display: none;">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="smsNumber" class="input-label">전화번호</label>
+                                <input type="tel" id="smsNumber" class="input-field" placeholder="010-1234-5678">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="smsMessage" class="input-label">메시지</label>
+                            <textarea id="smsMessage" class="input-field" placeholder="SMS 메시지 내용" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- WiFi 입력 -->
+                    <div id="wifiInputs" class="type-inputs" style="display: none;">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="wifiSSID" class="input-label">WiFi 이름 (SSID)</label>
+                                <input type="text" id="wifiSSID" class="input-field" placeholder="WiFi 네트워크 이름">
+                            </div>
+                            <div class="input-group">
+                                <label for="wifiPassword" class="input-label">비밀번호</label>
+                                <input type="text" id="wifiPassword" class="input-field" placeholder="WiFi 비밀번호">
+                            </div>
+                            <div class="input-group">
+                                <label for="wifiSecurity" class="input-label">보안 유형</label>
+                                <select id="wifiSecurity" class="input-field">
+                                    <option value="WPA">WPA/WPA2</option>
+                                    <option value="WEP">WEP</option>
+                                    <option value="">없음 (Open)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- vCard 입력 -->
+                    <div id="vcardInputs" class="type-inputs" style="display: none;">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="vcardName" class="input-label">이름</label>
+                                <input type="text" id="vcardName" class="input-field" placeholder="홍길동">
+                            </div>
+                            <div class="input-group">
+                                <label for="vcardOrg" class="input-label">회사/조직</label>
+                                <input type="text" id="vcardOrg" class="input-field" placeholder="회사명">
+                            </div>
+                            <div class="input-group">
+                                <label for="vcardPhone" class="input-label">전화번호</label>
+                                <input type="tel" id="vcardPhone" class="input-field" placeholder="010-1234-5678">
+                            </div>
+                            <div class="input-group">
+                                <label for="vcardEmail" class="input-label">이메일</label>
+                                <input type="email" id="vcardEmail" class="input-field" placeholder="example@email.com">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="qr-options">
+                        <h3>QR 코드 옵션</h3>
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="qrSize" class="input-label">크기</label>
+                                <select id="qrSize" class="input-field">
+                                    <option value="200">200x200</option>
+                                    <option value="300" selected>300x300</option>
+                                    <option value="400">400x400</option>
+                                    <option value="500">500x500</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="qrColor" class="input-label">색상</label>
+                                <input type="color" id="qrColor" class="input-field" value="#000000">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="generateQR()" class="btn btn-primary">QR 코드 생성</button>
+                    <button onclick="clearInputs()" class="btn btn-secondary">초기화</button>
+                </div>
+
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">생성된 QR 코드</h2>
+                    <div class="qr-display">
+                        <canvas id="qrCanvas" class="qr-canvas"></canvas>
+                        <div id="qrInfo" class="qr-info">
+                            <p><strong>데이터:</strong> <span id="qrData">-</span></p>
+                            <p><strong>크기:</strong> <span id="qrDimension">-</span></p>
+                        </div>
+                    </div>
+                    <div class="qr-actions">
+                        <button onclick="downloadQR()" class="btn btn-secondary">PNG로 다운로드</button>
+                        <button onclick="printQR()" class="btn btn-secondary">인쇄하기</button>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h2 class="section-title">QR 코드란?</h2>
+                    <div class="info-content">
+                        <p><strong>QR 코드(Quick Response Code)</strong>는 정보를 저장하는 2차원 바코드입니다.</p>
+                        
+                        <h3>QR 코드의 특징:</h3>
+                        <ul>
+                            <li><strong>빠른 인식:</strong> 스마트폰 카메라로 즉시 스캔 가능</li>
+                            <li><strong>대용량:</strong> 최대 4,296자의 숫자 또는 2,953자의 문자 저장</li>
+                            <li><strong>오류 복구:</strong> 손상되어도 30%까지 복구 가능</li>
+                            <li><strong>다양한 정보:</strong> URL, 텍스트, 연락처 등 저장 가능</li>
+                        </ul>
+
+                        <h3>활용 분야:</h3>
+                        <ul>
+                            <li><strong>마케팅:</strong> 웹사이트 링크, 쿠폰</li>
+                            <li><strong>결제:</strong> 모바일 결제 시스템</li>
+                            <li><strong>정보 공유:</strong> 연락처, WiFi 정보</li>
+                            <li><strong>출입 관리:</strong> 체크인, 티켓팅</li>
+                        </ul>
+
+                        <h3>사용 팁:</h3>
+                        <ul>
+                            <li>충분한 크기로 인쇄 (최소 2x2cm)</li>
+                            <li>선명한 대비 유지</li>
+                            <li>훼손되지 않는 곳에 부착</li>
+                            <li>테스트 후 배포</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .type-inputs {
+            margin: 20px 0;
+        }
+        
+        .qr-options {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .qr-options h3 {
+            margin-top: 0;
+            color: #374151;
+        }
+        
+        .qr-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .qr-canvas {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .qr-info {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: left;
+        }
+        
+        .qr-info p {
+            margin: 5px 0;
+        }
+        
+        .qr-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+    </style>
+
+    <script>
+        function updateInputFields() {
+            const qrType = document.getElementById('qrType').value;
+            const inputs = document.querySelectorAll('.type-inputs');
+            
+            inputs.forEach(input => input.style.display = 'none');
+            
+            switch(qrType) {
+                case 'text':
+                    document.getElementById('textInputs').style.display = 'block';
+                    break;
+                case 'url':
+                    document.getElementById('urlInputs').style.display = 'block';
+                    break;
+                case 'email':
+                    document.getElementById('emailInputs').style.display = 'block';
+                    break;
+                case 'phone':
+                    document.getElementById('phoneInputs').style.display = 'block';
+                    break;
+                case 'sms':
+                    document.getElementById('smsInputs').style.display = 'block';
+                    break;
+                case 'wifi':
+                    document.getElementById('wifiInputs').style.display = 'block';
+                    break;
+                case 'vcard':
+                    document.getElementById('vcardInputs').style.display = 'block';
+                    break;
+            }
+        }
+
+        function getQRContent() {
+            const qrType = document.getElementById('qrType').value;
+            let content = '';
+            
+            switch(qrType) {
+                case 'text':
+                    content = document.getElementById('textContent').value;
+                    break;
+                case 'url':
+                    content = document.getElementById('urlContent').value;
+                    break;
+                case 'email':
+                    const email = document.getElementById('emailAddress').value;
+                    const subject = document.getElementById('emailSubject').value;
+                    const body = document.getElementById('emailBody').value;
+                    content = `mailto:${email}`;
+                    if (subject || body) {
+                        const params = [];
+                        if (subject) params.push(`subject=${encodeURIComponent(subject)}`);
+                        if (body) params.push(`body=${encodeURIComponent(body)}`);
+                        content += '?' + params.join('&');
+                    }
+                    break;
+                case 'phone':
+                    content = `tel:${document.getElementById('phoneNumber').value}`;
+                    break;
+                case 'sms':
+                    const smsNumber = document.getElementById('smsNumber').value;
+                    const smsMessage = document.getElementById('smsMessage').value;
+                    content = `sms:${smsNumber}`;
+                    if (smsMessage) {
+                        content += `?body=${encodeURIComponent(smsMessage)}`;
+                    }
+                    break;
+                case 'wifi':
+                    const ssid = document.getElementById('wifiSSID').value;
+                    const password = document.getElementById('wifiPassword').value;
+                    const security = document.getElementById('wifiSecurity').value;
+                    content = `WIFI:T:${security};S:${ssid};P:${password};;`;
+                    break;
+                case 'vcard':
+                    const name = document.getElementById('vcardName').value;
+                    const org = document.getElementById('vcardOrg').value;
+                    const phone = document.getElementById('vcardPhone').value;
+                    const vcardEmail = document.getElementById('vcardEmail').value;
+                    content = `BEGIN:VCARD
+VERSION:3.0
+FN:${name}
+ORG:${org}
+TEL:${phone}
+EMAIL:${vcardEmail}
+END:VCARD`;
+                    break;
+            }
+            
+            return content;
+        }
+
+        function generateQR() {
+            const content = getQRContent();
+            
+            if (!content.trim()) {
+                alert('QR 코드에 포함할 내용을 입력해주세요.');
+                return;
+            }
+            
+            const canvas = document.getElementById('qrCanvas');
+            const size = parseInt(document.getElementById('qrSize').value);
+            const color = document.getElementById('qrColor').value;
+            
+            QRCode.toCanvas(canvas, content, {
+                width: size,
+                height: size,
+                color: {
+                    dark: color,
+                    light: '#FFFFFF'
+                }
+            }, function (error) {
+                if (error) {
+                    alert('QR 코드 생성 중 오류가 발생했습니다.');
+                    console.error(error);
+                } else {
+                    document.getElementById('qrData').textContent = content.length > 50 ? 
+                        content.substring(0, 50) + '...' : content;
+                    document.getElementById('qrDimension').textContent = `${size}x${size}`;
+                    document.getElementById('resultSection').classList.add('fade-in');
+                }
+            });
+        }
+
+        function downloadQR() {
+            const canvas = document.getElementById('qrCanvas');
+            const link = document.createElement('a');
+            link.download = 'qrcode.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function printQR() {
+            const canvas = document.getElementById('qrCanvas');
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head><title>QR 코드 인쇄</title></head>
+                <body style="text-align: center; font-family: Arial;">
+                    <h2>QR 코드</h2>
+                    <img src="${canvas.toDataURL()}" style="max-width: 100%;">
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function clearInputs() {
+            document.querySelectorAll('input, textarea, select').forEach(input => {
+                if (input.type === 'color') {
+                    input.value = '#000000';
+                } else if (input.id === 'qrSize') {
+                    input.value = '300';
+                } else if (input.id === 'qrType') {
+                    input.value = 'text';
+                } else if (input.id === 'wifiSecurity') {
+                    input.value = 'WPA';
+                } else {
+                    input.value = '';
+                }
+            });
+            
+            updateInputFields();
+            
+            const canvas = document.getElementById('qrCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // 초기화
+        updateInputFields();
+    </script>
+</body>
+</html>

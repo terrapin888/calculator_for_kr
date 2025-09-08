@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고급 단위 변환기 - 길이, 무게, 온도, 면적, 부피 | 유틸리티 도구</title>
+    <meta name="description" content="다양한 측정 단위를 정확하게 변환합니다. 길이, 무게, 온도, 면적, 부피, 압력, 에너지, 속도 등 50개 이상의 단위를 지원하는 종합 단위 변환 계산기입니다.">
+    <meta name="keywords" content="단위변환, 길이변환, 무게변환, 온도변환, 면적변환, 부피변환, 미터법, 야드파운드법">
+    <meta name="author" content="계산기 For 한국인">
+    <meta property="og:title" content="고급 단위 변환기 - 길이, 무게, 온도, 면적, 부피">
+    <meta property="og:description" content="50개 이상의 다양한 측정 단위를 정확하게 변환하는 종합 단위 변환 도구">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://calcforkr.com/utility/unit-converter-advanced.html">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+            crossorigin="anonymous"></script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "고급 단위 변환기",
+      "description": "다양한 측정 단위를 정확하게 변환하는 종합 단위 변환 도구",
+      "url": "https://calcforkr.com/utility/unit-converter-advanced.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+        .converter-main {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .converter-main {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .category-sidebar {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            height: fit-content;
+        }
+        
+        .category-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .category-item {
+            padding: 12px 15px;
+            margin: 5px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .category-item:hover {
+            background: #e9ecef;
+        }
+        
+        .category-item.active {
+            background: #007bff;
+            color: white;
+        }
+        
+        .converter-content {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .conversion-area {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 20px;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .conversion-area {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+        
+        .unit-input-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .unit-label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+        
+        .unit-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .unit-input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: monospace;
+        }
+        
+        .swap-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+            justify-self: center;
+        }
+        
+        .swap-button:hover {
+            background: #218838;
+            transform: rotate(180deg);
+        }
+        
+        .result-display {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #28a745;
+        }
+        
+        .result-text {
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            color: #155724;
+        }
+        
+        .conversion-formula {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .formula-text {
+            font-family: monospace;
+            font-size: 14px;
+            color: #856404;
+        }
+        
+        .quick-conversions {
+            margin: 25px 0;
+        }
+        
+        .conversion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .conversion-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+        
+        .common-conversions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #2196f3;
+        }
+        
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .example-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .tips-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .tip-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .precision-info {
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>고급 단위 변환기</h1>
+        <p class="description">다양한 측정 단위를 정확하게 변환합니다. 길이, 무게, 온도, 면적, 부피, 압력, 에너지, 속도 등 50개 이상의 단위를 지원합니다.</p>
+        
+        <div class="calculator-container">
+            <div class="converter-main">
+                <div class="category-sidebar">
+                    <h3>📏 변환 카테고리</h3>
+                    <ul class="category-list" id="categoryList">
+                        <li class="category-item active" onclick="selectCategory('length')" data-category="length">
+                            📐 길이
+                        </li>
+                        <li class="category-item" onclick="selectCategory('weight')" data-category="weight">
+                            ⚖️ 무게/질량
+                        </li>
+                        <li class="category-item" onclick="selectCategory('temperature')" data-category="temperature">
+                            🌡️ 온도
+                        </li>
+                        <li class="category-item" onclick="selectCategory('area')" data-category="area">
+                            📐 면적
+                        </li>
+                        <li class="category-item" onclick="selectCategory('volume')" data-category="volume">
+                            🫗 부피/용량
+                        </li>
+                        <li class="category-item" onclick="selectCategory('speed')" data-category="speed">
+                            🏃 속도
+                        </li>
+                        <li class="category-item" onclick="selectCategory('pressure')" data-category="pressure">
+                            💨 압력
+                        </li>
+                        <li class="category-item" onclick="selectCategory('energy')" data-category="energy">
+                            ⚡ 에너지/일률
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="converter-content">
+                    <div id="categoryTitle">
+                        <h3>📐 길이 변환</h3>
+                    </div>
+                    
+                    <div class="conversion-area">
+                        <div class="unit-input-section">
+                            <div class="unit-label">변환할 단위</div>
+                            <select class="unit-select" id="fromUnit">
+                                <!-- 옵션들이 JavaScript로 동적 생성됩니다 -->
+                            </select>
+                            <input type="number" class="unit-input" id="inputValue" 
+                                   placeholder="값을 입력하세요" oninput="performConversion()" step="any">
+                        </div>
+                        
+                        <button class="swap-button" onclick="swapUnits()" title="단위 교체">⇄</button>
+                        
+                        <div class="unit-input-section">
+                            <div class="unit-label">변환된 단위</div>
+                            <select class="unit-select" id="toUnit" onchange="performConversion()">
+                                <!-- 옵션들이 JavaScript로 동적 생성됩니다 -->
+                            </select>
+                            <input type="number" class="unit-input" id="outputValue" 
+                                   placeholder="변환 결과" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="result-display" id="resultDisplay" style="display: none;">
+                        <div class="result-text" id="resultText"></div>
+                    </div>
+                    
+                    <div class="conversion-formula" id="formulaDisplay" style="display: none;">
+                        <strong>변환 공식:</strong>
+                        <div class="formula-text" id="formulaText"></div>
+                    </div>
+                    
+                    <div class="quick-conversions" id="quickConversions">
+                        <h4>빠른 변환표</h4>
+                        <div class="conversion-grid" id="conversionGrid">
+                            <!-- 빠른 변환 목록이 여기에 생성됩니다 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>자주 사용하는 변환</h2>
+            <div class="common-conversions">
+                <h3>🔄 일상 생활 변환 예시</h3>
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <h4>🏠 부동산 단위</h4>
+                        <ul>
+                            <li>1평 = 3.3058㎡</li>
+                            <li>24평 아파트 = 79.3㎡</li>
+                            <li>32평 아파트 = 105.8㎡</li>
+                        </ul>
+                    </div>
+                    <div class="example-card">
+                        <h4>🚗 자동차 관련</h4>
+                        <ul>
+                            <li>1마일 = 1.6093km</li>
+                            <li>60mph = 96.56km/h</li>
+                            <li>1갤런 = 3.7854리터</li>
+                        </ul>
+                    </div>
+                    <div class="example-card">
+                        <h4>🍳 요리 단위</h4>
+                        <ul>
+                            <li>1컵 = 240ml</li>
+                            <li>1큰술 = 15ml</li>
+                            <li>1작은술 = 5ml</li>
+                        </ul>
+                    </div>
+                    <div class="example-card">
+                        <h4>🌡️ 온도 변환</h4>
+                        <ul>
+                            <li>0°C = 32°F</li>
+                            <li>100°C = 212°F</li>
+                            <li>37°C = 98.6°F (체온)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>단위 변환 가이드</h2>
+            <div class="tips-section">
+                <div class="tip-card">
+                    <h3>📏 길이 단위</h3>
+                    <ul>
+                        <li><strong>미터법:</strong> mm, cm, m, km</li>
+                        <li><strong>야드파운드법:</strong> inch, foot, yard, mile</li>
+                        <li><strong>한국 전통:</strong> 자, 간, 정, 리</li>
+                        <li><strong>특수 단위:</strong> 해리, 광년, 천문단위</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-card">
+                    <h3>⚖️ 무게 단위</h3>
+                    <ul>
+                        <li><strong>미터법:</strong> mg, g, kg, 톤</li>
+                        <li><strong>야드파운드법:</strong> ounce, pound, stone</li>
+                        <li><strong>한국 전통:</strong> 돈, 냥, 관</li>
+                        <li><strong>보석/귀금속:</strong> 캐럿, 트로이 온스</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-card">
+                    <h3>🌡️ 온도 단위</h3>
+                    <ul>
+                        <li><strong>섭씨 (°C):</strong> 물의 어는점 0°, 끓는점 100°</li>
+                        <li><strong>화씨 (°F):</strong> 미국에서 주로 사용</li>
+                        <li><strong>켈빈 (K):</strong> 과학적 절대온도</li>
+                        <li><strong>란킨 (°R):</strong> 화씨 기반 절대온도</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-card">
+                    <h3>📐 면적 단위</h3>
+                    <ul>
+                        <li><strong>미터법:</strong> ㎡, ㎢, 헥타르, 아르</li>
+                        <li><strong>야드파운드법:</strong> sq ft, sq yard, acre</li>
+                        <li><strong>한국:</strong> 평, 단보</li>
+                        <li><strong>농업:</strong> 마지기, 섬지기</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>정확도와 반올림</h2>
+            <div class="precision-info">
+                <h3>⚠️ 정확도 안내</h3>
+                <ul>
+                    <li>모든 변환은 소수점 8자리까지 계산됩니다</li>
+                    <li>과학적/공학적 용도의 경우 더 정밀한 값이 필요할 수 있습니다</li>
+                    <li>온도 변환은 정확한 공식을 사용합니다</li>
+                    <li>역사적 단위는 지역별로 차이가 있을 수 있습니다</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../js/calculator-common.js"></script>
+    <script>
+        // 단위 정의
+        const units = {
+            length: {
+                title: '📐 길이 변환',
+                units: {
+                    // 미터 기준
+                    'mm': { name: '밀리미터 (mm)', factor: 0.001 },
+                    'cm': { name: '센티미터 (cm)', factor: 0.01 },
+                    'm': { name: '미터 (m)', factor: 1 },
+                    'km': { name: '킬로미터 (km)', factor: 1000 },
+                    
+                    // 야드파운드법
+                    'in': { name: '인치 (in)', factor: 0.0254 },
+                    'ft': { name: '피트 (ft)', factor: 0.3048 },
+                    'yd': { name: '야드 (yd)', factor: 0.9144 },
+                    'mi': { name: '마일 (mi)', factor: 1609.344 },
+                    
+                    // 특수 단위
+                    'nm': { name: '해리 (nautical mile)', factor: 1852 },
+                    'ly': { name: '광년 (light year)', factor: 9.461e15 },
+                    'au': { name: '천문단위 (AU)', factor: 1.496e11 },
+                    
+                    // 한국 전통 단위
+                    'ja': { name: '자', factor: 0.303 },
+                    'gan': { name: '간', factor: 1.818 },
+                    'jung': { name: '정', factor: 109.1 },
+                    'ri': { name: '리', factor: 392.7 }
+                },
+                quickConversions: [
+                    { from: 1, unit: 'm', results: [{ value: 100, unit: 'cm' }, { value: 3.28, unit: 'ft' }, { value: 1.09, unit: 'yd' }] },
+                    { from: 1, unit: 'km', results: [{ value: 1000, unit: 'm' }, { value: 0.621, unit: 'mi' }, { value: 0.54, unit: 'nm' }] },
+                    { from: 1, unit: '평', results: [{ value: 3.31, unit: '㎡' }, { value: 35.6, unit: 'sq ft' }] }
+                ]
+            },
+            
+            weight: {
+                title: '⚖️ 무게/질량 변환',
+                units: {
+                    // 그램 기준
+                    'mg': { name: '밀리그램 (mg)', factor: 0.001 },
+                    'g': { name: '그램 (g)', factor: 1 },
+                    'kg': { name: '킬로그램 (kg)', factor: 1000 },
+                    'ton': { name: '톤 (ton)', factor: 1000000 },
+                    
+                    // 야드파운드법
+                    'oz': { name: '온스 (oz)', factor: 28.3495 },
+                    'lb': { name: '파운드 (lb)', factor: 453.592 },
+                    'st': { name: '스톤 (stone)', factor: 6350.29 },
+                    
+                    // 특수 단위
+                    'ct': { name: '캐럿 (carat)', factor: 0.2 },
+                    'ozt': { name: '트로이 온스', factor: 31.1035 },
+                    
+                    // 한국 전통 단위
+                    'don': { name: '돈', factor: 3.75 },
+                    'nyang': { name: '냥', factor: 37.5 },
+                    'gwan': { name: '관', factor: 3750 }
+                },
+                quickConversions: [
+                    { from: 1, unit: 'kg', results: [{ value: 1000, unit: 'g' }, { value: 2.20, unit: 'lb' }, { value: 35.3, unit: 'oz' }] },
+                    { from: 1, unit: 'lb', results: [{ value: 453.6, unit: 'g' }, { value: 16, unit: 'oz' }, { value: 0.45, unit: 'kg' }] }
+                ]
+            },
+            
+            temperature: {
+                title: '🌡️ 온도 변환',
+                units: {
+                    'C': { name: '섭씨 (°C)' },
+                    'F': { name: '화씨 (°F)' },
+                    'K': { name: '켈빈 (K)' },
+                    'R': { name: '란킨 (°R)' }
+                },
+                convert: function(value, from, to) {
+                    // 모든 온도를 섭씨로 변환
+                    let celsius;
+                    switch(from) {
+                        case 'C': celsius = value; break;
+                        case 'F': celsius = (value - 32) * 5/9; break;
+                        case 'K': celsius = value - 273.15; break;
+                        case 'R': celsius = (value - 491.67) * 5/9; break;
+                    }
+                    
+                    // 섭씨에서 목표 단위로 변환
+                    switch(to) {
+                        case 'C': return celsius;
+                        case 'F': return celsius * 9/5 + 32;
+                        case 'K': return celsius + 273.15;
+                        case 'R': return celsius * 9/5 + 491.67;
+                    }
+                },
+                quickConversions: [
+                    { from: 0, unit: 'C', results: [{ value: 32, unit: 'F' }, { value: 273.15, unit: 'K' }] },
+                    { from: 100, unit: 'C', results: [{ value: 212, unit: 'F' }, { value: 373.15, unit: 'K' }] },
+                    { from: 37, unit: 'C', results: [{ value: 98.6, unit: 'F' }, { value: 310.15, unit: 'K' }] }
+                ]
+            },
+            
+            area: {
+                title: '📐 면적 변환',
+                units: {
+                    // 제곱미터 기준
+                    'mm2': { name: '제곱밀리미터 (㎟)', factor: 0.000001 },
+                    'cm2': { name: '제곱센티미터 (㎠)', factor: 0.0001 },
+                    'm2': { name: '제곱미터 (㎡)', factor: 1 },
+                    'km2': { name: '제곱킬로미터 (㎢)', factor: 1000000 },
+                    'ha': { name: '헥타르 (ha)', factor: 10000 },
+                    'a': { name: '아르 (a)', factor: 100 },
+                    
+                    // 야드파운드법
+                    'in2': { name: '제곱인치 (sq in)', factor: 0.00064516 },
+                    'ft2': { name: '제곱피트 (sq ft)', factor: 0.092903 },
+                    'yd2': { name: '제곱야드 (sq yd)', factor: 0.836127 },
+                    'ac': { name: '에이커 (acre)', factor: 4046.86 },
+                    
+                    // 한국 단위
+                    'pyeong': { name: '평', factor: 3.30579 },
+                    'danbo': { name: '단보', factor: 991.74 }
+                },
+                quickConversions: [
+                    { from: 1, unit: 'pyeong', results: [{ value: 3.31, unit: '㎡' }, { value: 35.6, unit: 'sq ft' }] },
+                    { from: 100, unit: '㎡', results: [{ value: 30.3, unit: 'pyeong' }, { value: 1076, unit: 'sq ft' }] }
+                ]
+            },
+            
+            volume: {
+                title: '🫗 부피/용량 변환',
+                units: {
+                    // 리터 기준
+                    'ml': { name: '밀리리터 (ml)', factor: 0.001 },
+                    'cl': { name: '센티리터 (cl)', factor: 0.01 },
+                    'dl': { name: '데시리터 (dl)', factor: 0.1 },
+                    'l': { name: '리터 (l)', factor: 1 },
+                    
+                    // 야드파운드법
+                    'tsp': { name: '티스푼 (tsp)', factor: 0.00492892 },
+                    'tbsp': { name: '테이블스푼 (tbsp)', factor: 0.0147868 },
+                    'floz': { name: '플루이드 온스 (fl oz)', factor: 0.0295735 },
+                    'cup': { name: '컵 (cup)', factor: 0.236588 },
+                    'pt': { name: '파인트 (pint)', factor: 0.473176 },
+                    'qt': { name: '쿼트 (quart)', factor: 0.946353 },
+                    'gal': { name: '갤런 (gallon)', factor: 3.78541 },
+                    
+                    // 입방 단위
+                    'cm3': { name: '세제곱센티미터 (㎤)', factor: 0.001 },
+                    'm3': { name: '세제곱미터 (㎥)', factor: 1000 },
+                    
+                    // 한국 전통
+                    'doe': { name: '되', factor: 1.8039 },
+                    'mal': { name: '말', factor: 18.039 }
+                },
+                quickConversions: [
+                    { from: 1, unit: 'l', results: [{ value: 1000, unit: 'ml' }, { value: 4.23, unit: 'cup' }, { value: 0.26, unit: 'gal' }] },
+                    { from: 1, unit: 'cup', results: [{ value: 237, unit: 'ml' }, { value: 16, unit: 'tbsp' }, { value: 48, unit: 'tsp' }] }
+                ]
+            },
+            
+            speed: {
+                title: '🏃 속도 변환',
+                units: {
+                    // 초속미터 기준
+                    'mps': { name: '초속미터 (m/s)', factor: 1 },
+                    'kph': { name: '시속킬로미터 (km/h)', factor: 0.277778 },
+                    'mph': { name: '시속마일 (mph)', factor: 0.44704 },
+                    'fps': { name: '초속피트 (ft/s)', factor: 0.3048 },
+                    'kn': { name: '노트 (knot)', factor: 0.514444 },
+                    'c': { name: '광속 (c)', factor: 299792458 }
+                },
+                quickConversions: [
+                    { from: 100, unit: 'kph', results: [{ value: 27.8, unit: 'mps' }, { value: 62.1, unit: 'mph' }, { value: 54.0, unit: 'kn' }] },
+                    { from: 60, unit: 'mph', results: [{ value: 96.6, unit: 'kph' }, { value: 26.8, unit: 'mps' }, { value: 88, unit: 'fps' }] }
+                ]
+            },
+            
+            pressure: {
+                title: '💨 압력 변환',
+                units: {
+                    // 파스칼 기준
+                    'pa': { name: '파스칼 (Pa)', factor: 1 },
+                    'kpa': { name: '킬로파스칼 (kPa)', factor: 1000 },
+                    'mpa': { name: '메가파스칼 (MPa)', factor: 1000000 },
+                    'bar': { name: '바 (bar)', factor: 100000 },
+                    'atm': { name: '기압 (atm)', factor: 101325 },
+                    'mmhg': { name: '수은주밀리미터 (mmHg)', factor: 133.322 },
+                    'psi': { name: 'PSI', factor: 6894.76 },
+                    'torr': { name: '토르 (torr)', factor: 133.322 }
+                },
+                quickConversions: [
+                    { from: 1, unit: 'atm', results: [{ value: 101.3, unit: 'kpa' }, { value: 760, unit: 'mmhg' }, { value: 14.7, unit: 'psi' }] },
+                    { from: 1, unit: 'bar', results: [{ value: 100, unit: 'kpa' }, { value: 14.5, unit: 'psi' }, { value: 0.987, unit: 'atm' }] }
+                ]
+            },
+            
+            energy: {
+                title: '⚡ 에너지/일률 변환',
+                units: {
+                    // 줄 기준
+                    'j': { name: '줄 (J)', factor: 1 },
+                    'kj': { name: '킬로줄 (kJ)', factor: 1000 },
+                    'mj': { name: '메가줄 (MJ)', factor: 1000000 },
+                    'cal': { name: '칼로리 (cal)', factor: 4.184 },
+                    'kcal': { name: '킬로칼로리 (kcal)', factor: 4184 },
+                    'kwh': { name: '킬로와트시 (kWh)', factor: 3600000 },
+                    'wh': { name: '와트시 (Wh)', factor: 3600 },
+                    'btu': { name: 'BTU', factor: 1055.06 },
+                    'erg': { name: '에르그 (erg)', factor: 0.0000001 }
+                },
+                quickConversions: [
+                    { from: 1, unit: 'kwh', results: [{ value: 3600, unit: 'kj' }, { value: 860, unit: 'kcal' }, { value: 3412, unit: 'btu' }] },
+                    { from: 1, unit: 'kcal', results: [{ value: 4.18, unit: 'kj' }, { value: 3.97, unit: 'btu' }, { value: 0.00116, unit: 'kwh' }] }
+                ]
+            }
+        };
+        
+        let currentCategory = 'length';
+        
+        function selectCategory(category) {
+            currentCategory = category;
+            
+            // 카테고리 버튼 상태 업데이트
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-category="${category}"]`).classList.add('active');
+            
+            // 제목 업데이트
+            document.getElementById('categoryTitle').innerHTML = `<h3>${units[category].title}</h3>`;
+            
+            // 단위 옵션 업데이트
+            updateUnitOptions();
+            
+            // 빠른 변환표 업데이트
+            updateQuickConversions();
+            
+            // 결과 초기화
+            clearResults();
+        }
+        
+        function updateUnitOptions() {
+            const fromSelect = document.getElementById('fromUnit');
+            const toSelect = document.getElementById('toUnit');
+            
+            fromSelect.innerHTML = '';
+            toSelect.innerHTML = '';
+            
+            const categoryData = units[currentCategory];
+            
+            Object.keys(categoryData.units).forEach(unitKey => {
+                const unit = categoryData.units[unitKey];
+                const option1 = new Option(unit.name, unitKey);
+                const option2 = new Option(unit.name, unitKey);
+                
+                fromSelect.add(option1);
+                toSelect.add(option2);
+            });
+            
+            // 기본 선택값 설정
+            if (currentCategory === 'length') {
+                fromSelect.value = 'm';
+                toSelect.value = 'cm';
+            } else if (currentCategory === 'weight') {
+                fromSelect.value = 'kg';
+                toSelect.value = 'lb';
+            } else if (currentCategory === 'temperature') {
+                fromSelect.value = 'C';
+                toSelect.value = 'F';
+            }
+            
+            // 변환 실행
+            performConversion();
+        }
+        
+        function performConversion() {
+            const inputValue = parseFloat(document.getElementById('inputValue').value);
+            const fromUnit = document.getElementById('fromUnit').value;
+            const toUnit = document.getElementById('toUnit').value;
+            
+            if (isNaN(inputValue) || !inputValue) {
+                clearResults();
+                return;
+            }
+            
+            let result;
+            let formula = '';
+            
+            const categoryData = units[currentCategory];
+            
+            if (currentCategory === 'temperature') {
+                // 온도는 특별한 변환 공식 사용
+                result = categoryData.convert(inputValue, fromUnit, toUnit);
+                formula = getTemperatureFormula(inputValue, fromUnit, toUnit);
+            } else {
+                // 일반 단위는 기준 단위를 통한 변환
+                const fromFactor = categoryData.units[fromUnit].factor;
+                const toFactor = categoryData.units[toUnit].factor;
+                
+                result = (inputValue * fromFactor) / toFactor;
+                formula = `${inputValue} × ${fromFactor} ÷ ${toFactor} = ${result.toFixed(8)}`;
+            }
+            
+            // 결과 표시
+            document.getElementById('outputValue').value = result.toFixed(8);
+            
+            const resultDisplay = document.getElementById('resultDisplay');
+            const resultText = document.getElementById('resultText');
+            resultText.innerHTML = `${inputValue} ${categoryData.units[fromUnit].name} = ${result.toFixed(6)} ${categoryData.units[toUnit].name}`;
+            resultDisplay.style.display = 'block';
+            
+            // 공식 표시
+            const formulaDisplay = document.getElementById('formulaDisplay');
+            const formulaText = document.getElementById('formulaText');
+            formulaText.innerHTML = formula;
+            formulaDisplay.style.display = 'block';
+            
+            // Google Analytics 이벤트 추적
+            gtag('event', 'unit_conversion', {
+                'event_category': 'Utility Tool',
+                'event_label': `${currentCategory}_${fromUnit}_to_${toUnit}`
+            });
+        }
+        
+        function getTemperatureFormula(value, from, to) {
+            const conversions = {
+                'C_F': `(${value} × 9/5) + 32 = ${((value * 9/5) + 32).toFixed(2)}`,
+                'F_C': `(${value} - 32) × 5/9 = ${((value - 32) * 5/9).toFixed(2)}`,
+                'C_K': `${value} + 273.15 = ${(value + 273.15).toFixed(2)}`,
+                'K_C': `${value} - 273.15 = ${(value - 273.15).toFixed(2)}`,
+                'F_K': `(${value} - 32) × 5/9 + 273.15 = ${(((value - 32) * 5/9) + 273.15).toFixed(2)}`,
+                'K_F': `(${value} - 273.15) × 9/5 + 32 = ${(((value - 273.15) * 9/5) + 32).toFixed(2)}`,
+            };
+            
+            const key = `${from}_${to}`;
+            return conversions[key] || `${from}에서 ${to}로의 변환 공식`;
+        }
+        
+        function swapUnits() {
+            const fromSelect = document.getElementById('fromUnit');
+            const toSelect = document.getElementById('toUnit');
+            const inputValue = document.getElementById('inputValue');
+            const outputValue = document.getElementById('outputValue');
+            
+            // 단위 교체
+            const tempUnit = fromSelect.value;
+            fromSelect.value = toSelect.value;
+            toSelect.value = tempUnit;
+            
+            // 값 교체
+            const tempValue = inputValue.value;
+            inputValue.value = outputValue.value;
+            outputValue.value = tempValue;
+            
+            // 재계산
+            performConversion();
+        }
+        
+        function updateQuickConversions() {
+            const categoryData = units[currentCategory];
+            const conversionGrid = document.getElementById('conversionGrid');
+            
+            if (!categoryData.quickConversions) {
+                document.getElementById('quickConversions').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('quickConversions').style.display = 'block';
+            conversionGrid.innerHTML = '';
+            
+            categoryData.quickConversions.forEach(conversion => {
+                conversion.results.forEach(result => {
+                    const item = document.createElement('div');
+                    item.className = 'conversion-item';
+                    
+                    const fromUnitName = categoryData.units[conversion.unit]?.name || conversion.unit;
+                    const toUnitName = categoryData.units[result.unit]?.name || result.unit;
+                    
+                    item.innerHTML = `
+                        <strong>${conversion.from} ${fromUnitName}</strong><br>
+                        = ${result.value} ${toUnitName}
+                    `;
+                    
+                    conversionGrid.appendChild(item);
+                });
+            });
+        }
+        
+        function clearResults() {
+            document.getElementById('outputValue').value = '';
+            document.getElementById('resultDisplay').style.display = 'none';
+            document.getElementById('formulaDisplay').style.display = 'none';
+        }
+        
+        function setQuickExample(category, from, fromUnit, to, toUnit) {
+            selectCategory(category);
+            
+            setTimeout(() => {
+                document.getElementById('fromUnit').value = fromUnit;
+                document.getElementById('toUnit').value = toUnit;
+                document.getElementById('inputValue').value = from;
+                performConversion();
+            }, 100);
+        }
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            selectCategory('length');
+            
+            // 예시 버튼 추가
+            const exampleDiv = document.createElement('div');
+            exampleDiv.innerHTML = `
+                <div style="text-align: center; margin: 20px 0; padding: 15px; background: #e3f2fd; border-radius: 8px;">
+                    <strong>💡 빠른 예시:</strong><br>
+                    <button onclick="setQuickExample('length', 1, 'm', 'ft')" 
+                            style="margin: 3px; padding: 6px 12px; border: 1px solid #2196f3; border-radius: 4px; background: #f8f9fa; cursor: pointer;">1m → ft</button>
+                    <button onclick="setQuickExample('weight', 1, 'kg', 'lb')" 
+                            style="margin: 3px; padding: 6px 12px; border: 1px solid #2196f3; border-radius: 4px; background: #f8f9fa; cursor: pointer;">1kg → lb</button>
+                    <button onclick="setQuickExample('temperature', 100, 'C', 'F')" 
+                            style="margin: 3px; padding: 6px 12px; border: 1px solid #2196f3; border-radius: 4px; background: #f8f9fa; cursor: pointer;">100°C → °F</button>
+                    <button onclick="setQuickExample('area', 1, 'pyeong', 'm2')" 
+                            style="margin: 3px; padding: 6px 12px; border: 1px solid #2196f3; border-radius: 4px; background: #f8f9fa; cursor: pointer;">1평 → ㎡</button>
+                </div>
+            `;
+            document.querySelector('.calculator-container').appendChild(exampleDiv);
+        });
+        
+        // 단위 선택 변경 시 자동 변환
+        document.getElementById('fromUnit').addEventListener('change', performConversion);
+    </script>
+</body>
+</html>

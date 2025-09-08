@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>16진수 계산기 - 진법 변환 및 연산 | CalcHub</title>
+    <meta name="description" content="16진수와 10진수, 2진수, 8진수 간의 변환을 즉시 계산하세요. 16진수 연산도 지원합니다.">
+    <meta name="keywords" content="16진수, 헥사데시멀, 진법변환, 2진수, 8진수, 10진수, 수학계산기, 프로그래밍">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "16진수 계산기",
+      "description": "16진수와 10진수, 2진수, 8진수 간의 변환을 즉시 계산하세요. 16진수 연산도 지원합니다.",
+      "url": "https://www.calcforkr.com/math/hexadecimal-calculator.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header-simple">
+                <h1 class="calculator-title-simple">16진수 계산기</h1>
+                <p class="calculator-description">16진수 변환 및 연산을 수행합니다</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">진법 변환</h2>
+                    
+                    <div class="input-group">
+                        <label class="input-label">입력 진법</label>
+                        <select id="inputBase" class="input-field" onchange="updateInputPlaceholder()">
+                            <option value="10">10진수 (Decimal)</option>
+                            <option value="16">16진수 (Hexadecimal)</option>
+                            <option value="2">2진수 (Binary)</option>
+                            <option value="8">8진수 (Octal)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label" id="inputLabel">10진수 입력</label>
+                        <input type="text" id="inputNumber" class="input-field" placeholder="255" onchange="convertNumber()">
+                        <div class="input-unit" id="inputHint">0-9 숫자만 입력</div>
+                    </div>
+                    
+                    <button onclick="convertNumber()" class="btn btn-primary">변환하기</button>
+                </div>
+
+                <div id="conversionSection" class="result-section" style="display: none;">
+                    <h3 class="section-title">변환 결과</h3>
+                    <div class="result-simple">
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">10진수 (DEC)</div>
+                            <div id="decimal" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">16진수 (HEX)</div>
+                            <div id="hexadecimal" class="result-value-simple highlight">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">2진수 (BIN)</div>
+                            <div id="binary" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">8진수 (OCT)</div>
+                            <div id="octal" class="result-value-simple">-</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-section" style="margin-top: 30px;">
+                    <h2 class="section-title">16진수 연산</h2>
+                    
+                    <div class="input-group">
+                        <label class="input-label">첫 번째 16진수</label>
+                        <input type="text" id="hexNum1" class="input-field" placeholder="FF" onchange="calculateHex()">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">연산자</label>
+                        <select id="operator" class="input-field" onchange="calculateHex()">
+                            <option value="+">덧셈 (+)</option>
+                            <option value="-">뺄셈 (-)</option>
+                            <option value="*">곱셈 (×)</option>
+                            <option value="/">나눗셈 (÷)</option>
+                            <option value="&">AND (&)</option>
+                            <option value="|">OR (|)</option>
+                            <option value="^">XOR (^)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">두 번째 16진수</label>
+                        <input type="text" id="hexNum2" class="input-field" placeholder="A0" onchange="calculateHex()">
+                    </div>
+                    
+                    <button onclick="calculateHex()" class="btn btn-primary">계산하기</button>
+                </div>
+
+                <div id="calculationSection" class="result-section" style="display: none;">
+                    <h3 class="section-title">연산 결과</h3>
+                    <div class="result-simple">
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">16진수 결과</div>
+                            <div id="hexResult" class="result-value-simple highlight">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">10진수 결과</div>
+                            <div id="decResult" class="result-value-simple">-</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; text-align: center;">
+                    <button onclick="copyAllResults()" class="btn btn-secondary" id="copyBtn">결과 복사</button>
+                </div>
+                
+                <div class="info-section">
+                    <h3 class="info-title">16진수란?</h3>
+                    <div class="info-content">
+                        <p><strong>16진수 (Hexadecimal)</strong>는 16을 밑으로 하는 수 체계로, 컴퓨터에서 널리 사용됩니다.</p>
+                        
+                        <h4>16진수 표현</h4>
+                        <p>16진수는 0-9와 A-F를 사용합니다:</p>
+                        <ul>
+                            <li><strong>0-9</strong>: 0부터 9까지</li>
+                            <li><strong>A-F</strong>: 10부터 15까지 (A=10, B=11, C=12, D=13, E=14, F=15)</li>
+                        </ul>
+                        
+                        <h4>진법 변환 원리</h4>
+                        <ul>
+                            <li><strong>10진수 → 16진수</strong>: 16으로 나누며 나머지를 역순으로 배치</li>
+                            <li><strong>16진수 → 10진수</strong>: 각 자릿수에 16의 거듭제곱을 곱하여 합산</li>
+                            <li><strong>2진수 ↔ 16진수</strong>: 4비트씩 그룹화하여 변환</li>
+                        </ul>
+                        
+                        <h4>변환 예시</h4>
+                        <ul>
+                            <li>255₁₀ = FF₁₆ = 11111111₂</li>
+                            <li>160₁₀ = A0₁₆ = 10100000₂</li>
+                            <li>3840₁₀ = F00₁₆ = 111100000000₂</li>
+                        </ul>
+                        
+                        <h4>실생활 활용</h4>
+                        <ul>
+                            <li>프로그래밍 (메모리 주소, 색상 코드)</li>
+                            <li>웹 디자인 (HTML/CSS 색상: #FF0000)</li>
+                            <li>네트워크 (MAC 주소, IP 설정)</li>
+                            <li>컴퓨터 하드웨어 (레지스터, 메모리)</li>
+                            <li>암호화 및 해시 함수</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateInputPlaceholder() {
+            const base = document.getElementById('inputBase').value;
+            const label = document.getElementById('inputLabel');
+            const hint = document.getElementById('inputHint');
+            const input = document.getElementById('inputNumber');
+            
+            switch(base) {
+                case '10':
+                    label.textContent = '10진수 입력';
+                    hint.textContent = '0-9 숫자만 입력';
+                    input.placeholder = '255';
+                    break;
+                case '16':
+                    label.textContent = '16진수 입력';
+                    hint.textContent = '0-9, A-F 문자 입력';
+                    input.placeholder = 'FF';
+                    break;
+                case '2':
+                    label.textContent = '2진수 입력';
+                    hint.textContent = '0, 1만 입력';
+                    input.placeholder = '11111111';
+                    break;
+                case '8':
+                    label.textContent = '8진수 입력';
+                    hint.textContent = '0-7 숫자만 입력';
+                    input.placeholder = '377';
+                    break;
+            }
+        }
+        
+        function isValidInput(value, base) {
+            const patterns = {
+                '2': /^[01]+$/,
+                '8': /^[0-7]+$/,
+                '10': /^\d+$/,
+                '16': /^[0-9A-Fa-f]+$/
+            };
+            return patterns[base].test(value);
+        }
+        
+        function convertNumber() {
+            const inputValue = document.getElementById('inputNumber').value.toUpperCase();
+            const inputBase = document.getElementById('inputBase').value;
+            
+            if (!inputValue) {
+                showError('변환할 수를 입력해주세요.');
+                return;
+            }
+            
+            if (!isValidInput(inputValue, inputBase)) {
+                showError('입력한 진법에 맞는 올바른 값을 입력해주세요.');
+                return;
+            }
+            
+            try {
+                // 입력값을 10진수로 변환
+                const decimal = parseInt(inputValue, parseInt(inputBase));
+                
+                if (isNaN(decimal) || decimal < 0) {
+                    showError('올바른 양수를 입력해주세요.');
+                    return;
+                }
+                
+                // 각 진법으로 변환
+                const hexadecimal = decimal.toString(16).toUpperCase();
+                const binary = decimal.toString(2);
+                const octal = decimal.toString(8);
+                
+                // 결과 표시
+                document.getElementById('decimal').textContent = decimal.toString();
+                document.getElementById('hexadecimal').textContent = hexadecimal;
+                document.getElementById('binary').textContent = binary;
+                document.getElementById('octal').textContent = octal;
+                
+                document.getElementById('conversionSection').style.display = 'block';
+            } catch (error) {
+                showError('변환 중 오류가 발생했습니다.');
+            }
+        }
+        
+        function calculateHex() {
+            const hex1 = document.getElementById('hexNum1').value.toUpperCase();
+            const hex2 = document.getElementById('hexNum2').value.toUpperCase();
+            const operator = document.getElementById('operator').value;
+            
+            if (!hex1 || !hex2) {
+                return; // 값이 없으면 계산하지 않음
+            }
+            
+            if (!isValidInput(hex1, '16') || !isValidInput(hex2, '16')) {
+                showError('올바른 16진수 값을 입력해주세요. (0-9, A-F)');
+                return;
+            }
+            
+            try {
+                const num1 = parseInt(hex1, 16);
+                const num2 = parseInt(hex2, 16);
+                let result;
+                
+                switch(operator) {
+                    case '+':
+                        result = num1 + num2;
+                        break;
+                    case '-':
+                        result = num1 - num2;
+                        break;
+                    case '*':
+                        result = num1 * num2;
+                        break;
+                    case '/':
+                        if (num2 === 0) {
+                            showError('0으로 나눌 수 없습니다.');
+                            return;
+                        }
+                        result = Math.floor(num1 / num2);
+                        break;
+                    case '&':
+                        result = num1 & num2;
+                        break;
+                    case '|':
+                        result = num1 | num2;
+                        break;
+                    case '^':
+                        result = num1 ^ num2;
+                        break;
+                }
+                
+                if (result < 0) {
+                    showError('결과가 음수입니다. 양수 연산만 지원됩니다.');
+                    return;
+                }
+                
+                const hexResult = result.toString(16).toUpperCase();
+                const decResult = result.toString();
+                
+                document.getElementById('hexResult').textContent = hexResult;
+                document.getElementById('decResult').textContent = decResult;
+                
+                document.getElementById('calculationSection').style.display = 'block';
+            } catch (error) {
+                showError('계산 중 오류가 발생했습니다.');
+            }
+        }
+        
+        function copyAllResults() {
+            let result = '';
+            
+            // 변환 결과가 있으면 포함
+            if (document.getElementById('conversionSection').style.display !== 'none') {
+                const decimal = document.getElementById('decimal').textContent;
+                const hexadecimal = document.getElementById('hexadecimal').textContent;
+                const binary = document.getElementById('binary').textContent;
+                const octal = document.getElementById('octal').textContent;
+                
+                result += `진법 변환 결과:
+10진수: ${decimal}
+16진수: ${hexadecimal}
+2진수: ${binary}
+8진수: ${octal}`;
+            }
+            
+            // 연산 결과가 있으면 포함
+            if (document.getElementById('calculationSection').style.display !== 'none') {
+                const hexResult = document.getElementById('hexResult').textContent;
+                const decResult = document.getElementById('decResult').textContent;
+                
+                if (result) result += '\n\n';
+                result += `16진수 연산 결과:
+16진수: ${hexResult}
+10진수: ${decResult}`;
+            }
+            
+            if (result) {
+                copyToClipboard(result, 'copyBtn');
+            }
+        }
+        
+        // 엔터키로 변환
+        bindEnterKey(['inputNumber'], convertNumber);
+        
+        // 실시간 변환
+        bindRealtimeCalculation(['inputNumber'], () => {
+            const value = document.getElementById('inputNumber').value;
+            if (value) {
+                convertNumber();
+            }
+        }, 500);
+        
+        // 16진수 연산 실시간 계산
+        ['hexNum1', 'hexNum2'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                const hex1 = document.getElementById('hexNum1').value;
+                const hex2 = document.getElementById('hexNum2').value;
+                if (hex1 && hex2) {
+                    setTimeout(calculateHex, 300);
+                }
+            });
+        });
+        
+        // 입력 필드에서 소문자를 대문자로 자동 변환
+        ['inputNumber', 'hexNum1', 'hexNum2'].forEach(id => {
+            document.getElementById(id).addEventListener('input', (e) => {
+                e.target.value = e.target.value.toUpperCase();
+            });
+        });
+    </script>
+</body>
+</html>

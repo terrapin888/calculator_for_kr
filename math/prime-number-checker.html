@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>소수 판별기 - 소수 검사 및 인수분해 | 수학 도구</title>
+    <meta name="description" content="입력한 숫자가 소수인지 판별하고 인수분해를 수행합니다. 소수의 성질, 분포, 활용 사례와 함께 수학적 원리를 상세히 설명합니다.">
+    <meta name="keywords" content="소수판별, 인수분해, 소수검사, 수학계산기, 소수찾기, 에라토스테네스의체">
+    <meta name="author" content="계산기 For 한국인">
+    <meta property="og:title" content="소수 판별기 - 소수 검사 및 인수분해">
+    <meta property="og:description" content="숫자가 소수인지 판별하고 인수분해를 수행하는 수학 도구">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://calcforkr.com/math/prime-number-checker.html">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+            crossorigin="anonymous"></script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "소수 판별기",
+      "description": "입력한 숫자가 소수인지 판별하고 인수분해를 수행하는 수학 도구",
+      "url": "https://calcforkr.com/math/prime-number-checker.html",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+        .result-container {
+            margin-top: 20px;
+        }
+        
+        .prime-result {
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        
+        .is-prime {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+        
+        .is-composite {
+            background: linear-gradient(135deg, #FF9800, #f57c00);
+            color: white;
+        }
+        
+        .is-special {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+        }
+        
+        .factorization {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .prime-facts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .fact-card {
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .sieve-demo {
+            margin: 20px 0;
+        }
+        
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+            margin: 20px 0;
+            max-width: 500px;
+        }
+        
+        .number-cell {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .prime-cell {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .composite-cell {
+            background: #ffcdd2;
+            color: #666;
+        }
+        
+        .special-cell {
+            background: #e0e0e0;
+            color: #999;
+        }
+        
+        .algorithm-steps {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .applications {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .app-card {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>소수 판별기</h1>
+        <p class="description">입력한 숫자가 소수인지 판별하고 인수분해를 수행합니다. 소수의 성질과 활용 사례를 함께 알아보세요.</p>
+        
+        <div class="calculator-container">
+            <div class="input-group">
+                <label for="number">숫자를 입력하세요 (최대 15자리):</label>
+                <input type="number" id="number" min="1" max="999999999999999" placeholder="예: 17">
+                <small>1부터 999,999,999,999,999까지 입력 가능</small>
+            </div>
+            
+            <button onclick="checkPrime()" class="calculate-btn">소수 판별하기</button>
+            
+            <div id="result" class="result-container"></div>
+        </div>
+        
+        <div class="info-section">
+            <h2>소수란 무엇인가?</h2>
+            <p>소수(Prime Number)는 1과 자기 자신으로만 나누어지는 1보다 큰 자연수입니다. 예를 들어 2, 3, 5, 7, 11, 13, 17, 19, 23, 29... 등이 소수입니다.</p>
+            
+            <div class="prime-facts">
+                <div class="fact-card">
+                    <h3>🔢 기본 성질</h3>
+                    <ul>
+                        <li>2는 유일한 짝수 소수</li>
+                        <li>1은 소수가 아님</li>
+                        <li>모든 소수는 6n±1 형태 (2, 3 제외)</li>
+                    </ul>
+                </div>
+                <div class="fact-card">
+                    <h3>📊 분포</h3>
+                    <ul>
+                        <li>소수는 무한히 많음 (유클리드 증명)</li>
+                        <li>숫자가 클수록 소수 간격 증가</li>
+                        <li>소수 정리: π(x) ≈ x/ln(x)</li>
+                    </ul>
+                </div>
+                <div class="fact-card">
+                    <h3>🧮 특별한 소수</h3>
+                    <ul>
+                        <li>메르센 소수: 2^p - 1</li>
+                        <li>페르마 소수: 2^(2^n) + 1</li>
+                        <li>쌍둥이 소수: p와 p+2가 모두 소수</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>에라토스테네스의 체</h2>
+            <p>고대 그리스의 수학자 에라토스테네스가 고안한 소수 찾기 알고리즘입니다. 100까지의 소수를 찾아보세요.</p>
+            
+            <div class="sieve-demo">
+                <button onclick="demonstrateSieve()" class="calculate-btn">체 시연하기</button>
+                <div id="sieve-grid"></div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>소수 판별 알고리즘</h2>
+            <div class="algorithm-steps">
+                <h3>기본 판별법</h3>
+                <ol>
+                    <li><strong>특수 경우 처리:</strong> 1은 소수가 아님, 2는 소수</li>
+                    <li><strong>짝수 검사:</strong> 2 이외의 짝수는 모두 합성수</li>
+                    <li><strong>시행 착오법:</strong> 3부터 √n까지의 홀수로 나눠보기</li>
+                    <li><strong>최적화:</strong> 6k±1 형태의 수만 확인</li>
+                </ol>
+                
+                <h3>고급 알고리즘</h3>
+                <ul>
+                    <li><strong>밀러-라빈 검사:</strong> 확률적 소수 검사</li>
+                    <li><strong>AKS 검사:</strong> 결정론적 다항식 시간 알고리즘</li>
+                    <li><strong>페르마의 소정리:</strong> a^(p-1) ≡ 1 (mod p)</li>
+                    <li><strong>포클링턴 검사:</strong> 큰 소수 판별용</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>소수의 실생활 활용</h2>
+            <div class="applications">
+                <div class="app-card">
+                    <h3>🔐 암호학</h3>
+                    <p>RSA 암호화에서 매우 큰 소수의 곱을 이용합니다. 소인수분해의 어려움이 보안의 근간이 됩니다.</p>
+                    <ul>
+                        <li>공개키 암호화</li>
+                        <li>디지털 서명</li>
+                        <li>SSL/TLS 프로토콜</li>
+                    </ul>
+                </div>
+                <div class="app-card">
+                    <h3>🎵 음악과 예술</h3>
+                    <p>소수는 음계와 리듬에서 독특한 패턴을 만들어냅니다.</p>
+                    <ul>
+                        <li>비주기적 리듬 생성</li>
+                        <li>화성 분석</li>
+                        <li>작곡에서의 구조적 활용</li>
+                    </ul>
+                </div>
+                <div class="app-card">
+                    <h3>🔬 과학 연구</h3>
+                    <p>물리학과 생물학에서 소수 패턴이 발견됩니다.</p>
+                    <ul>
+                        <li>매미의 생애주기 (13년, 17년)</li>
+                        <li>결정학의 대칭성</li>
+                        <li>카오스 이론</li>
+                    </ul>
+                </div>
+                <div class="app-card">
+                    <h3>💻 컴퓨터 과학</h3>
+                    <p>알고리즘과 자료구조에서 소수를 활용합니다.</p>
+                    <ul>
+                        <li>해시 테이블 크기 설정</li>
+                        <li>의사난수 생성</li>
+                        <li>분산 시스템의 노드 분배</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>미해결 문제들</h2>
+            <div class="unsolved-problems">
+                <h3>수학계의 큰 난제들</h3>
+                <ul>
+                    <li><strong>리만 가설:</strong> 리만 제타 함수의 비자명한 영점들</li>
+                    <li><strong>골드바흐 추측:</strong> 모든 짝수는 두 소수의 합</li>
+                    <li><strong>쌍둥이 소수 추측:</strong> 쌍둥이 소수가 무한히 많은가?</li>
+                    <li><strong>크래머 추측:</strong> 연속하는 소수 사이의 최대 간격</li>
+                    <li><strong>콜라츠 추측:</strong> 3n+1 문제와 소수의 관련성</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="disclaimer">
+            <p><strong>참고:</strong> 매우 큰 수의 소수 판별은 시간이 오래 걸릴 수 있습니다. 실제 암호화에서는 확률적 알고리즘을 사용합니다.</p>
+        </div>
+    </div>
+    
+    <script src="../js/calculator-common.js"></script>
+    <script>
+        function isPrime(n) {
+            if (n <= 1) return false;
+            if (n <= 3) return true;
+            if (n % 2 === 0 || n % 3 === 0) return false;
+            
+            // 6k ± 1 최적화
+            for (let i = 5; i * i <= n; i += 6) {
+                if (n % i === 0 || n % (i + 2) === 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        function getPrimeFactorization(n) {
+            const factors = [];
+            let num = n;
+            
+            // 2로 나누기
+            while (num % 2 === 0) {
+                factors.push(2);
+                num /= 2;
+            }
+            
+            // 3부터 홀수로 나누기
+            for (let i = 3; i * i <= num; i += 2) {
+                while (num % i === 0) {
+                    factors.push(i);
+                    num /= i;
+                }
+            }
+            
+            // 남은 수가 소수인 경우
+            if (num > 2) {
+                factors.push(num);
+            }
+            
+            return factors;
+        }
+        
+        function groupFactors(factors) {
+            const grouped = {};
+            factors.forEach(factor => {
+                grouped[factor] = (grouped[factor] || 0) + 1;
+            });
+            return grouped;
+        }
+        
+        function checkPrime() {
+            const input = document.getElementById('number').value;
+            const num = parseInt(input);
+            
+            if (!input || num < 1) {
+                showError('1 이상의 자연수를 입력해주세요.');
+                return;
+            }
+            
+            if (num > 999999999999999) {
+                showError('999,999,999,999,999 이하의 수를 입력해주세요.');
+                return;
+            }
+            
+            const result = analyzePrime(num);
+            displayResult(result);
+            
+            // Google Analytics 이벤트 추적
+            gtag('event', 'prime_check', {
+                'event_category': 'Math Calculator',
+                'event_label': result.isPrime ? 'prime' : 'composite'
+            });
+        }
+        
+        function analyzePrime(num) {
+            const result = {
+                number: num,
+                isPrime: false,
+                factors: [],
+                factorization: '',
+                category: '',
+                advice: '',
+                properties: []
+            };
+            
+            if (num === 1) {
+                result.category = '특수';
+                result.advice = '1은 소수도 합성수도 아닌 특별한 수입니다.';
+                result.properties = ['소수의 정의에서 제외', '모든 수의 약수', '곱셈의 항등원'];
+            } else if (isPrime(num)) {
+                result.isPrime = true;
+                result.category = '소수';
+                result.advice = `${num}은 소수입니다! 1과 자기 자신(${num})으로만 나누어집니다.`;
+                result.factors = [1, num];
+                
+                // 특별한 소수 판별
+                if (num === 2) result.properties.push('유일한 짝수 소수');
+                if (num < 10) result.properties.push('한 자릿수 소수');
+                if (checkTwinPrime(num)) result.properties.push('쌍둥이 소수');
+                if (checkMersenneForm(num)) result.properties.push('메르센 형태의 수');
+                if (checkFermatForm(num)) result.properties.push('페르마 형태의 수');
+            } else {
+                result.category = '합성수';
+                result.advice = `${num}은 합성수입니다. 여러 소인수로 분해할 수 있습니다.`;
+                
+                const primeFactors = getPrimeFactorization(num);
+                result.factors = primeFactors;
+                result.factorization = formatFactorization(primeFactors);
+                
+                // 완전수, 부족수, 과잉수 판별
+                const sumOfDivisors = getSumOfDivisors(num);
+                if (sumOfDivisors === num * 2) result.properties.push('완전수');
+                else if (sumOfDivisors < num * 2) result.properties.push('부족수');
+                else result.properties.push('과잉수');
+            }
+            
+            return result;
+        }
+        
+        function checkTwinPrime(num) {
+            return (isPrime(num - 2) || isPrime(num + 2));
+        }
+        
+        function checkMersenneForm(num) {
+            // 2^p - 1 형태인지 확인
+            let temp = num + 1;
+            return temp > 0 && (temp & (temp - 1)) === 0;
+        }
+        
+        function checkFermatForm(num) {
+            // 2^(2^n) + 1 형태인지 확인 (작은 수만)
+            const fermatNumbers = [3, 5, 17, 257, 65537];
+            return fermatNumbers.includes(num);
+        }
+        
+        function getSumOfDivisors(num) {
+            let sum = 0;
+            for (let i = 1; i <= num; i++) {
+                if (num % i === 0) sum += i;
+            }
+            return sum;
+        }
+        
+        function formatFactorization(factors) {
+            const grouped = groupFactors(factors);
+            const parts = [];
+            
+            Object.keys(grouped).sort((a, b) => parseInt(a) - parseInt(b)).forEach(factor => {
+                const count = grouped[factor];
+                if (count === 1) {
+                    parts.push(factor);
+                } else {
+                    parts.push(`${factor}<sup>${count}</sup>`);
+                }
+            });
+            
+            return parts.join(' × ');
+        }
+        
+        function displayResult(result) {
+            let className, icon;
+            
+            if (result.category === '소수') {
+                className = 'is-prime';
+                icon = '🔢';
+            } else if (result.category === '합성수') {
+                className = 'is-composite';
+                icon = '🧮';
+            } else {
+                className = 'is-special';
+                icon = '⭐';
+            }
+            
+            let resultHTML = `
+                <div class="prime-result ${className}">
+                    <div>${icon} ${result.number}은 ${result.category}입니다</div>
+                </div>
+                <div class="detailed-info">
+                    <p><strong>설명:</strong> ${result.advice}</p>
+            `;
+            
+            if (result.factorization) {
+                resultHTML += `
+                    <div class="factorization">
+                        <h4>소인수분해</h4>
+                        <p style="font-size: 1.2em; font-family: 'Times New Roman', serif;">
+                            ${result.number} = ${result.factorization}
+                        </p>
+                    </div>
+                `;
+            }
+            
+            if (result.properties.length > 0) {
+                resultHTML += `
+                    <div class="properties">
+                        <h4>특별한 성질</h4>
+                        <ul>
+                            ${result.properties.map(prop => `<li>${prop}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // 소수인 경우 주변 소수 표시
+            if (result.isPrime && result.number > 2) {
+                const nearbyPrimes = findNearbyPrimes(result.number);
+                resultHTML += `
+                    <div class="nearby-primes">
+                        <h4>주변 소수</h4>
+                        <p>이전: ${nearbyPrimes.prev || '없음'} | 
+                           현재: <strong>${result.number}</strong> | 
+                           다음: ${nearbyPrimes.next || '계산 중...'}</p>
+                    </div>
+                `;
+            }
+            
+            resultHTML += '</div>';
+            document.getElementById('result').innerHTML = resultHTML;
+        }
+        
+        function findNearbyPrimes(num) {
+            let prev = null, next = null;
+            
+            // 이전 소수 찾기
+            for (let i = num - 1; i >= 2; i--) {
+                if (isPrime(i)) {
+                    prev = i;
+                    break;
+                }
+            }
+            
+            // 다음 소수 찾기 (제한적으로)
+            for (let i = num + 1; i <= num + 100; i++) {
+                if (isPrime(i)) {
+                    next = i;
+                    break;
+                }
+            }
+            
+            return { prev, next };
+        }
+        
+        function demonstrateSieve() {
+            const gridDiv = document.getElementById('sieve-grid');
+            const numbers = Array.from({length: 100}, (_, i) => i + 1);
+            
+            // 격자 생성
+            gridDiv.innerHTML = `
+                <p>에라토스테네스의 체로 100까지의 소수 찾기</p>
+                <div class="number-grid">
+                    ${numbers.map(n => `
+                        <div class="number-cell" id="cell-${n}">${n}</div>
+                    `).join('')}
+                </div>
+                <div id="sieve-progress"></div>
+            `;
+            
+            // 애니메이션으로 체 시연
+            setTimeout(() => {
+                simulateSieve();
+            }, 500);
+        }
+        
+        function simulateSieve() {
+            const progressDiv = document.getElementById('sieve-progress');
+            let step = 0;
+            const steps = [
+                { num: 1, action: 'remove', desc: '1은 소수가 아니므로 제외' },
+                { num: 2, action: 'mark', desc: '2는 소수, 2의 배수들을 제거' },
+                { num: 3, action: 'mark', desc: '3은 소수, 3의 배수들을 제거' },
+                { num: 5, action: 'mark', desc: '5는 소수, 5의 배수들을 제거' },
+                { num: 7, action: 'mark', desc: '7은 소수, 7의 배수들을 제거' }
+            ];
+            
+            function nextStep() {
+                if (step >= steps.length) {
+                    // 나머지 소수들 표시
+                    for (let i = 2; i <= 100; i++) {
+                        const cell = document.getElementById(`cell-${i}`);
+                        if (isPrime(i) && !cell.classList.contains('prime-cell')) {
+                            cell.classList.add('prime-cell');
+                        }
+                    }
+                    progressDiv.innerHTML = '<p><strong>완료!</strong> 녹색이 100 이하의 모든 소수입니다.</p>';
+                    return;
+                }
+                
+                const currentStep = steps[step];
+                progressDiv.innerHTML = `<p><strong>단계 ${step + 1}:</strong> ${currentStep.desc}</p>`;
+                
+                if (currentStep.action === 'remove') {
+                    document.getElementById(`cell-${currentStep.num}`).classList.add('special-cell');
+                } else if (currentStep.action === 'mark') {
+                    // 소수 표시
+                    document.getElementById(`cell-${currentStep.num}`).classList.add('prime-cell');
+                    
+                    // 배수들 제거
+                    for (let i = currentStep.num * 2; i <= 100; i += currentStep.num) {
+                        const cell = document.getElementById(`cell-${i}`);
+                        if (!cell.classList.contains('prime-cell')) {
+                            cell.classList.add('composite-cell');
+                        }
+                    }
+                }
+                
+                step++;
+                setTimeout(nextStep, 1500);
+            }
+            
+            // 1 제거
+            document.getElementById('cell-1').classList.add('special-cell');
+            setTimeout(nextStep, 1000);
+        }
+        
+        function showError(message) {
+            document.getElementById('result').innerHTML = 
+                `<div class="error-message">${message}</div>`;
+        }
+        
+        // 엔터 키로 계산 실행
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                checkPrime();
+            }
+        });
+        
+        // 예시 버튼들
+        function setExample(num) {
+            document.getElementById('number').value = num;
+            checkPrime();
+        }
+        
+        // 페이지 로드 시 예시 버튼 추가
+        document.addEventListener('DOMContentLoaded', function() {
+            const exampleDiv = document.createElement('div');
+            exampleDiv.innerHTML = `
+                <div style="margin: 10px 0;">
+                    <strong>예시:</strong>
+                    <button onclick="setExample(17)" style="margin: 2px; padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; background: #f8f9fa;">17</button>
+                    <button onclick="setExample(25)" style="margin: 2px; padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; background: #f8f9fa;">25</button>
+                    <button onclick="setExample(97)" style="margin: 2px; padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; background: #f8f9fa;">97</button>
+                    <button onclick="setExample(100)" style="margin: 2px; padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; background: #f8f9fa;">100</button>
+                    <button onclick="setExample(997)" style="margin: 2px; padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; background: #f8f9fa;">997</button>
+                </div>
+            `;
+            document.querySelector('.input-group').appendChild(exampleDiv);
+        });
+    </script>
+</body>
+</html>

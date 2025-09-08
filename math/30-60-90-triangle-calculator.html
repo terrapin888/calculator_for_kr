@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30-60-90 삼각형 계산기 - 특수 직각삼각형 | CalcHub</title>
+    <meta name="description" content="30-60-90도 특수 직각삼각형의 변의 길이를 즉시 계산하세요. 한 변만 알면 나머지 모든 변과 넓이를 구할 수 있습니다.">
+    <meta name="keywords" content="30-60-90삼각형, 특수삼각형, 직각삼각형, 삼각비, 사인코사인, 기하학계산기, 수학계산기">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "30-60-90 삼각형 계산기",
+      "description": "30-60-90도 특수 직각삼각형의 변의 길이를 즉시 계산하세요. 한 변만 알면 나머지 모든 변과 넓이를 구할 수 있습니다.",
+      "url": "https://www.calcforkr.com/math/30-60-90-triangle-calculator.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header-simple">
+                <h1 class="calculator-title-simple">30-60-90 삼각형 계산기</h1>
+                <p class="calculator-description">특수 직각삼각형의 모든 변과 넓이를 계산합니다</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">알고 있는 변 입력</h2>
+                    
+                    <div class="input-group">
+                        <label class="input-label">변의 종류</label>
+                        <select id="sideType" class="input-field" onchange="updateLabels()">
+                            <option value="short">짧은 변 (30° 맞은편)</option>
+                            <option value="long">긴 변 (60° 맞은편)</option>
+                            <option value="hypotenuse">빗변 (90° 맞은편)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label" id="lengthLabel">짧은 변의 길이</label>
+                        <input type="number" id="knownSide" class="input-field" placeholder="길이를 입력하세요" step="any" min="0">
+                    </div>
+                    
+                    <button onclick="calculateTriangle()" class="btn btn-primary">계산하기</button>
+                </div>
+
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <div class="result-simple">
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">짧은 변 (a)</div>
+                            <div id="shortSide" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">긴 변 (b)</div>
+                            <div id="longSide" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">빗변 (c)</div>
+                            <div id="hypotenuse" class="result-value-simple highlight">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">넓이</div>
+                            <div id="area" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">둘레</div>
+                            <div id="perimeter" class="result-value-simple">-</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button onclick="copyResult()" class="btn btn-secondary" id="copyBtn">결과 복사</button>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3 class="info-title">30-60-90 삼각형이란?</h3>
+                    <div class="info-content">
+                        <p><strong>30-60-90 삼각형</strong>은 각도가 30°, 60°, 90°인 특수한 직각삼각형입니다.</p>
+                        
+                        <h4>변의 비율</h4>
+                        <p>30-60-90 삼각형의 변의 비율은 항상 <strong>1 : √3 : 2</strong>입니다.</p>
+                        <ul>
+                            <li><strong>짧은 변 (30° 맞은편)</strong>: 1</li>
+                            <li><strong>긴 변 (60° 맞은편)</strong>: √3 ≈ 1.732</li>
+                            <li><strong>빗변 (90° 맞은편)</strong>: 2</li>
+                        </ul>
+                        
+                        <h4>계산 공식</h4>
+                        <p>짧은 변을 a라고 할 때:</p>
+                        <ul>
+                            <li>긴 변 = a × √3</li>
+                            <li>빗변 = a × 2</li>
+                            <li>넓이 = (a × a × √3) ÷ 2</li>
+                        </ul>
+                        
+                        <h4>실생활 활용</h4>
+                        <ul>
+                            <li>건축 설계 (지붕, 계단 설계)</li>
+                            <li>목공 작업 (각도 계산)</li>
+                            <li>측량 (높이, 거리 측정)</li>
+                            <li>그래픽 디자인 (레이아웃 설계)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateLabels() {
+            const sideType = document.getElementById('sideType').value;
+            const label = document.getElementById('lengthLabel');
+            
+            switch(sideType) {
+                case 'short':
+                    label.textContent = '짧은 변의 길이 (30° 맞은편)';
+                    break;
+                case 'long':
+                    label.textContent = '긴 변의 길이 (60° 맞은편)';
+                    break;
+                case 'hypotenuse':
+                    label.textContent = '빗변의 길이 (90° 맞은편)';
+                    break;
+            }
+        }
+        
+        function calculateTriangle() {
+            const knownLength = parseFloat(document.getElementById('knownSide').value);
+            const sideType = document.getElementById('sideType').value;
+            
+            if (isNaN(knownLength) || knownLength <= 0) {
+                showError('올바른 양수 길이를 입력해주세요.');
+                return;
+            }
+            
+            let shortSide, longSide, hypotenuse;
+            
+            // 30-60-90 삼각형의 비율: 1 : √3 : 2
+            const sqrt3 = Math.sqrt(3);
+            
+            switch(sideType) {
+                case 'short':
+                    shortSide = knownLength;
+                    longSide = knownLength * sqrt3;
+                    hypotenuse = knownLength * 2;
+                    break;
+                case 'long':
+                    shortSide = knownLength / sqrt3;
+                    longSide = knownLength;
+                    hypotenuse = (knownLength * 2) / sqrt3;
+                    break;
+                case 'hypotenuse':
+                    shortSide = knownLength / 2;
+                    longSide = (knownLength * sqrt3) / 2;
+                    hypotenuse = knownLength;
+                    break;
+            }
+            
+            // 넓이와 둘레 계산
+            const area = (shortSide * longSide) / 2;
+            const perimeter = shortSide + longSide + hypotenuse;
+            
+            // 결과 표시
+            document.getElementById('shortSide').textContent = formatNumberOnly(shortSide, 4);
+            document.getElementById('longSide').textContent = formatNumberOnly(longSide, 4);
+            document.getElementById('hypotenuse').textContent = formatNumberOnly(hypotenuse, 4);
+            document.getElementById('area').textContent = formatNumberOnly(area, 4);
+            document.getElementById('perimeter').textContent = formatNumberOnly(perimeter, 4);
+            
+            showResult('resultSection');
+        }
+        
+        function copyResult() {
+            const shortSide = document.getElementById('shortSide').textContent;
+            const longSide = document.getElementById('longSide').textContent;
+            const hypotenuse = document.getElementById('hypotenuse').textContent;
+            const area = document.getElementById('area').textContent;
+            const perimeter = document.getElementById('perimeter').textContent;
+            
+            const result = `30-60-90 삼각형 계산 결과:
+짧은 변: ${shortSide}
+긴 변: ${longSide}
+빗변: ${hypotenuse}
+넓이: ${area}
+둘레: ${perimeter}`;
+            
+            copyToClipboard(result, 'copyBtn');
+        }
+        
+        // 엔터키로 계산
+        bindEnterKey(['knownSide'], calculateTriangle);
+        
+        // 실시간 계산
+        bindRealtimeCalculation(['knownSide'], () => {
+            const value = document.getElementById('knownSide').value;
+            if (value && !isNaN(parseFloat(value)) && parseFloat(value) > 0) {
+                calculateTriangle();
+            }
+        }, 500);
+        
+        // 선택 변경시 자동 계산
+        document.getElementById('sideType').addEventListener('change', () => {
+            const value = document.getElementById('knownSide').value;
+            if (value && !isNaN(parseFloat(value)) && parseFloat(value) > 0) {
+                calculateTriangle();
+            }
+        });
+    </script>
+</body>
+</html>

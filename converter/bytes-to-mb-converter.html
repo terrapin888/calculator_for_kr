@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>바이트 단위 변환기 - B, KB, MB, GB, TB | CalcHub</title>
+    <meta name="description" content="바이트, 킬로바이트, 메가바이트, 기가바이트, 테라바이트 간의 변환을 즉시 계산하세요. 2진법과 10진법 변환을 모두 지원합니다.">
+    <meta name="keywords" content="바이트변환, 킬로바이트, 메가바이트, 기가바이트, 테라바이트, 용량변환, 데이터변환기">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "바이트 단위 변환기",
+      "description": "바이트, 킬로바이트, 메가바이트, 기가바이트, 테라바이트 간의 변환을 즉시 계산하세요. 2진법과 10진법 변환을 모두 지원합니다.",
+      "url": "https://www.calcforkr.com/converter/bytes-to-mb-converter.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header-simple">
+                <h1 class="calculator-title-simple">바이트 단위 변환기</h1>
+                <p class="calculator-description">다양한 데이터 저장 단위 간의 변환을 수행합니다</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">변환 설정</h2>
+                    
+                    <div class="input-group">
+                        <label class="input-label">변환 기준</label>
+                        <select id="conversionType" class="input-field" onchange="updateConversion()">
+                            <option value="binary">이진법 (1024 기준) - 컴퓨터</option>
+                            <option value="decimal">십진법 (1000 기준) - 통신/저장</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">입력 값</label>
+                        <input type="number" id="inputValue" class="input-field" placeholder="1024" step="any" min="0">
+                        <select id="inputUnit" class="input-field" style="width: auto; margin-left: 10px;" onchange="updateConversion()">
+                            <option value="byte">Byte (B)</option>
+                            <option value="kilobyte">Kilobyte (KB)</option>
+                            <option value="megabyte" selected>Megabyte (MB)</option>
+                            <option value="gigabyte">Gigabyte (GB)</option>
+                            <option value="terabyte">Terabyte (TB)</option>
+                            <option value="petabyte">Petabyte (PB)</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="convertBytes()" class="btn btn-primary">변환하기</button>
+                </div>
+
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <div class="result-simple">
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">Byte (B)</div>
+                            <div id="bytes" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">Kilobyte (KB)</div>
+                            <div id="kilobytes" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">Megabyte (MB)</div>
+                            <div id="megabytes" class="result-value-simple highlight">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">Gigabyte (GB)</div>
+                            <div id="gigabytes" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">Terabyte (TB)</div>
+                            <div id="terabytes" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">Petabyte (PB)</div>
+                            <div id="petabytes" class="result-value-simple">-</div>
+                        </div>
+                    </div>
+                    
+                    <div id="comparisonSection" style="margin-top: 30px;">
+                        <h3 class="section-title">이진법 vs 십진법 비교</h3>
+                        <div class="result-simple">
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">이진법 (1024 기준)</div>
+                                <div id="binaryResult" class="result-value-simple">-</div>
+                            </div>
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">십진법 (1000 기준)</div>
+                                <div id="decimalResult" class="result-value-simple">-</div>
+                            </div>
+                            <div class="result-item-simple">
+                                <div class="result-label-simple">차이</div>
+                                <div id="difference" class="result-value-simple">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button onclick="copyResult()" class="btn btn-secondary" id="copyBtn">결과 복사</button>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3 class="info-title">바이트 단위 변환</h3>
+                    <div class="info-content">
+                        <p><strong>바이트 단위 변환</strong>에는 이진법(1024 기준)과 십진법(1000 기준) 두 가지 방식이 있습니다.</p>
+                        
+                        <h4>이진법 (Binary) - 컴퓨터 시스템</h4>
+                        <ul>
+                            <li><strong>1 KB = 1,024 Bytes</strong></li>
+                            <li><strong>1 MB = 1,024 KB = 1,048,576 Bytes</strong></li>
+                            <li><strong>1 GB = 1,024 MB = 1,073,741,824 Bytes</strong></li>
+                            <li><strong>1 TB = 1,024 GB = 1,099,511,627,776 Bytes</strong></li>
+                        </ul>
+                        
+                        <h4>십진법 (Decimal) - 네트워크/저장장치</h4>
+                        <ul>
+                            <li><strong>1 KB = 1,000 Bytes</strong></li>
+                            <li><strong>1 MB = 1,000 KB = 1,000,000 Bytes</strong></li>
+                            <li><strong>1 GB = 1,000 MB = 1,000,000,000 Bytes</strong></li>
+                            <li><strong>1 TB = 1,000 GB = 1,000,000,000,000 Bytes</strong></li>
+                        </ul>
+                        
+                        <h4>언제 어떤 기준을 사용하나?</h4>
+                        <ul>
+                            <li><strong>이진법 (1024)</strong>: RAM 용량, CPU 캐시, 운영체제 표시</li>
+                            <li><strong>십진법 (1000)</strong>: 하드디스크, SSD, 네트워크 속도</li>
+                            <li><strong>혼재 사용</strong>: USB 메모리, SD 카드 등</li>
+                        </ul>
+                        
+                        <h4>실생활 예시</h4>
+                        <ul>
+                            <li><strong>1TB 하드디스크</strong>: 실제로는 약 931GB (운영체제 기준)</li>
+                            <li><strong>128GB SSD</strong>: 실제로는 약 119GB (운영체제 기준)</li>
+                            <li><strong>8GB RAM</strong>: 정확히 8,192MB (이진법 기준)</li>
+                            <li><strong>100Mbps 인터넷</strong>: 초당 최대 12.5MB 전송</li>
+                        </ul>
+                        
+                        <h4>파일 크기 참고</h4>
+                        <ul>
+                            <li><strong>텍스트 파일</strong>: 1~100 KB</li>
+                            <li><strong>사진 (JPEG)</strong>: 500 KB ~ 5 MB</li>
+                            <li><strong>음악 (MP3)</strong>: 3~10 MB</li>
+                            <li><strong>동영상 (720p)</strong>: 500 MB ~ 2 GB</li>
+                            <li><strong>게임</strong>: 5~100 GB</li>
+                        </ul>
+                        
+                        <h4>주의사항</h4>
+                        <ul>
+                            <li>제조업체와 운영체제 간 표시 방식 차이로 용량이 다르게 보일 수 있습니다</li>
+                            <li>정확한 계산을 위해 어떤 기준인지 확인하는 것이 중요합니다</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function convertToBytes(value, unit, isBinary) {
+            const multiplier = isBinary ? 1024 : 1000;
+            
+            switch(unit) {
+                case 'byte':
+                    return value;
+                case 'kilobyte':
+                    return value * multiplier;
+                case 'megabyte':
+                    return value * Math.pow(multiplier, 2);
+                case 'gigabyte':
+                    return value * Math.pow(multiplier, 3);
+                case 'terabyte':
+                    return value * Math.pow(multiplier, 4);
+                case 'petabyte':
+                    return value * Math.pow(multiplier, 5);
+                default:
+                    return value;
+            }
+        }
+        
+        function convertFromBytes(bytes, unit, isBinary) {
+            const multiplier = isBinary ? 1024 : 1000;
+            
+            switch(unit) {
+                case 'byte':
+                    return bytes;
+                case 'kilobyte':
+                    return bytes / multiplier;
+                case 'megabyte':
+                    return bytes / Math.pow(multiplier, 2);
+                case 'gigabyte':
+                    return bytes / Math.pow(multiplier, 3);
+                case 'terabyte':
+                    return bytes / Math.pow(multiplier, 4);
+                case 'petabyte':
+                    return bytes / Math.pow(multiplier, 5);
+                default:
+                    return bytes;
+            }
+        }
+        
+        function updateConversion() {
+            const value = document.getElementById('inputValue').value;
+            if (value && !isNaN(parseFloat(value)) && parseFloat(value) >= 0) {
+                convertBytes();
+            }
+        }
+        
+        function convertBytes() {
+            const inputValue = parseFloat(document.getElementById('inputValue').value);
+            const inputUnit = document.getElementById('inputUnit').value;
+            const conversionType = document.getElementById('conversionType').value;
+            
+            if (isNaN(inputValue) || inputValue < 0) {
+                showError('0 이상의 숫자를 입력해주세요.');
+                return;
+            }
+            
+            const isBinary = conversionType === 'binary';
+            
+            // 입력값을 바이트로 변환
+            const totalBytes = convertToBytes(inputValue, inputUnit, isBinary);
+            
+            // 각 단위로 변환
+            const bytes = totalBytes;
+            const kilobytes = convertFromBytes(totalBytes, 'kilobyte', isBinary);
+            const megabytes = convertFromBytes(totalBytes, 'megabyte', isBinary);
+            const gigabytes = convertFromBytes(totalBytes, 'gigabyte', isBinary);
+            const terabytes = convertFromBytes(totalBytes, 'terabyte', isBinary);
+            const petabytes = convertFromBytes(totalBytes, 'petabyte', isBinary);
+            
+            // 결과 표시
+            document.getElementById('bytes').textContent = formatNumberOnly(bytes, 0);
+            document.getElementById('kilobytes').textContent = formatNumberOnly(kilobytes, 6);
+            document.getElementById('megabytes').textContent = formatNumberOnly(megabytes, 6);
+            document.getElementById('gigabytes').textContent = formatNumberOnly(gigabytes, 6);
+            document.getElementById('terabytes').textContent = formatNumberOnly(terabytes, 9);
+            document.getElementById('petabytes').textContent = formatNumberOnly(petabytes, 12);
+            
+            // 이진법 vs 십진법 비교
+            const binaryBytes = convertToBytes(inputValue, inputUnit, true);
+            const decimalBytes = convertToBytes(inputValue, inputUnit, false);
+            
+            // MB 단위로 비교 표시
+            const binaryMB = convertFromBytes(binaryBytes, 'megabyte', true);
+            const decimalMB = convertFromBytes(decimalBytes, 'megabyte', false);
+            const difference = Math.abs(binaryMB - decimalMB);
+            const percentDiff = ((difference / Math.max(binaryMB, decimalMB)) * 100);
+            
+            document.getElementById('binaryResult').textContent = formatNumberOnly(binaryMB, 6) + ' MB';
+            document.getElementById('decimalResult').textContent = formatNumberOnly(decimalMB, 6) + ' MB';
+            document.getElementById('difference').textContent = formatNumberOnly(difference, 6) + ' MB (' + formatNumberOnly(percentDiff, 2) + '%)';
+            
+            showResult('resultSection');
+        }
+        
+        function copyResult() {
+            const bytes = document.getElementById('bytes').textContent;
+            const kilobytes = document.getElementById('kilobytes').textContent;
+            const megabytes = document.getElementById('megabytes').textContent;
+            const gigabytes = document.getElementById('gigabytes').textContent;
+            const terabytes = document.getElementById('terabytes').textContent;
+            const petabytes = document.getElementById('petabytes').textContent;
+            const conversionType = document.getElementById('conversionType').value === 'binary' ? '이진법' : '십진법';
+            const binaryResult = document.getElementById('binaryResult').textContent;
+            const decimalResult = document.getElementById('decimalResult').textContent;
+            const difference = document.getElementById('difference').textContent;
+            
+            const result = `바이트 단위 변환 결과 (${conversionType}):
+Bytes: ${bytes}
+KB: ${kilobytes}
+MB: ${megabytes}
+GB: ${gigabytes}
+TB: ${terabytes}
+PB: ${petabytes}
+
+비교:
+이진법: ${binaryResult}
+십진법: ${decimalResult}
+차이: ${difference}`;
+            
+            copyToClipboard(result, 'copyBtn');
+        }
+        
+        // 엔터키로 계산
+        bindEnterKey(['inputValue'], convertBytes);
+        
+        // 실시간 계산
+        bindRealtimeCalculation(['inputValue'], () => {
+            const value = document.getElementById('inputValue').value;
+            if (value && !isNaN(parseFloat(value)) && parseFloat(value) >= 0) {
+                convertBytes();
+            }
+        }, 500);
+    </script>
+</body>
+</html>

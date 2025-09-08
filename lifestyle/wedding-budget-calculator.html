@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결혼식 예산 계산기 - 황홀식 비용 | CalcHub</title>
+    <meta name="description" content="결혼식 예산을 항목별로 세분화해서 계산하세요. 예식장, 학함, 드레스, 촬영 등 결혼 준비 비용 관리.">
+    <meta name="keywords" content="결혼식예산, 혹핀식비용, 결혼준비, 예식장비용, 결혼식계산">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "결혼식 예산 계산기",
+      "description": "결혼식 예산을 항목별로 세분화해서 계산하세요. 예식장, 학함, 드레스, 촬영 등 결혼 준비 비용 관리.",
+      "url": "https://www.calcforkr.com/lifestyle/wedding-budget-calculator.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="calculator-container">
+            <div class="calculator-header">
+                <h1>결혼식 예산 계산기</h1>
+                <p>결혼식 준비 비용을 항목별로 상세히 계산합니다</p>
+            </div>
+            
+            <div class="calculator-wrapper">
+                <div class="input-section">
+                    <h2>결혼식 기본 정보</h2>
+                    <div class="input-group">
+                        <label for="guest-count">하객 수</label>
+                        <input type="number" id="guest-count" min="1" placeholder="초대 하객 수 입력">
+                        <span class="unit-text">단위: 명</span>
+                    </div>
+                    
+                    <h2>예식장 비용</h2>
+                    <div class="input-group">
+                        <label for="venue-rental">예식장 대여</label>
+                        <input type="number" id="venue-rental" min="0" placeholder="예식장 대여비">
+                        <span class="unit-text">단위: 만원</span>
+                    </div>
+                    <div class="input-group">
+                        <label for="food-cost">식대 단가</label>
+                        <input type="number" id="food-cost" min="0" placeholder="1인당 식대 비용">
+                        <span class="unit-text">단위: 만원</span>
+                    </div>
+                    
+                    <h2>의상 비용</h2>
+                    <div class="input-group">
+                        <label for="bride-dress">신부 드레스</label>
+                        <input type="number" id="bride-dress" min="0" placeholder="신부 드레스 비용">
+                        <span class="unit-text">단위: 만원</span>
+                    </div>
+                    <div class="input-group">
+                        <label for="groom-suit">신랑 정장</label>
+                        <input type="number" id="groom-suit" min="0" placeholder="신랑 정장 비용">
+                        <span class="unit-text">단위: 만원</span>
+                    </div>
+                    
+                    <h2>촬영 및 영상</h2>
+                    <div class="input-group">
+                        <label for="photography">스냅 및 본식 촬영</label>
+                        <input type="number" id="photography" min="0" placeholder="촬영 비용">
+                        <span class="unit-text">단위: 만원</span>
+                    </div>
+                    <div class="input-group">
+                        <label for="videography">영상 제작</label>
+                        <input type="number" id="videography" min="0" placeholder="영상 제작 비용">
+                        <span class="unit-text">단위: 만원</span>
+                    </div>
+                    
+                    <h2>꽃과 장식</h2>
+                    <div class="input-group">
+                        <label for="flowers">부케 및 장식</label>
+                        <input type="number" id="flowers" min="0" placeholder="꽃과 장식 비용">
+                        <span class="unit-text">단위: 만원</span>
+                    </div>
+                    
+                    <h2>기타 비용</h2>
+                    <div class="input-group">
+                        <label for="music">음향 및 DJ</label>
+                        <input type="number" id="music" min="0" placeholder="음향 비용">
+                        <span class="unit-text">단위: 만원</span>
+                    </div>
+                    <div class="input-group">
+                        <label for="transportation">차량 대여</label>
+                        <input type="number" id="transportation" min="0" placeholder="차량 비용">
+                        <span class="unit-text">단위: 만원</span>
+                    </div>
+                    <div class="input-group">
+                        <label for="etc">기타 비용</label>
+                        <input type="number" id="etc" min="0" placeholder="기타 비용">
+                        <span class="unit-text">단위: 만원</span>
+                    </div>
+                    
+                    <button onclick="calculateWeddingBudget()" class="calculate-btn">결혼식 예산 계산</button>
+                </div>
+                
+                <div class="result-section" id="result" style="display:none;">
+                    <h3>결혼식 예산 계산 결과</h3>
+                    <div id="total-budget"></div>
+                    <div id="budget-breakdown"></div>
+                    <div id="per-guest-cost"></div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3>결혼식 예산 가이드</h3>
+                <div class="info-content">
+                    <h4>한국 결혼식 평균 비용 (2024)</h4>
+                    <ul>
+                        <li><strong>예식장 비용</strong>: 3,000-8,000만원</li>
+                        <li><strong>식대 비용</strong>: 인당 7-15만원</li>
+                        <li><strong>신부 드레스</strong>: 200-800만원</li>
+                        <li><strong>신랑 정장</strong>: 150-500만원</li>
+                        <li><strong>촬영</strong>: 300-800만원</li>
+                    </ul>
+                    
+                    <h4>예산 비율 가이드</h4>
+                    <ul>
+                        <li><strong>예식장 및 식대</strong>: 전체 예산의 50-60%</li>
+                        <li><strong>의상 및 미용</strong>: 15-20%</li>
+                        <li><strong>촬영 및 영상</strong>: 10-15%</li>
+                        <li><strong>꽃과 장식</strong>: 5-8%</li>
+                        <li><strong>기타 비용</strong>: 10-15%</li>
+                    </ul>
+                    
+                    <h4>비용 절약 팁</h4>
+                    <ul>
+                        <li>성수기 및 주말 피하기</li>
+                        <li>소규모 예식장 고려</li>
+                        <li>DIY 장식 및 부케 준비</li>
+                        <li>촬영사 비교 검토</li>
+                        <li>패키지 상품 활용</li>
+                    </ul>
+                    
+                    <h4>결혼식 체크리스트</h4>
+                    <ul>
+                        <li>예식장 예약 및 계약</li>
+                        <li>하객 명단 작성 및 초대장 발송</li>
+                        <li>드레스 및 정장 렌탈 또는 구매</li>
+                        <li>촬영사 및 영상 업체 예약</li>
+                        <li>꽃과 장식 주문</li>
+                        <li>음향 및 DJ 예약</li>
+                        <li>신혼여행 계획</li>
+                        <li>결혼식 리허설 및 최종 점검</li>
+                    </ul>
+                    
+                    <h4>예산 관리 팁</h4>
+                    <ul>
+                        <li>예산 10-15% 여유분 확보</li>
+                        <li>주요 대금은 결혼식 1-2개월 전에 지불</li>
+                        <li>결혼식 대금은 당일 지불</li>
+                        <li>결혼 축의금을 고려한 실제 비용 계산</li>
+                        <li>계약서 및 영수증 보관 철저</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+    function calculateWeddingBudget() {
+        const guestCount = parseInt(document.getElementById('guest-count').value) || 0;
+        const venueRental = parseFloat(document.getElementById('venue-rental').value) || 0;
+        const foodCost = parseFloat(document.getElementById('food-cost').value) || 0;
+        const brideDress = parseFloat(document.getElementById('bride-dress').value) || 0;
+        const groomSuit = parseFloat(document.getElementById('groom-suit').value) || 0;
+        const photography = parseFloat(document.getElementById('photography').value) || 0;
+        const videography = parseFloat(document.getElementById('videography').value) || 0;
+        const flowers = parseFloat(document.getElementById('flowers').value) || 0;
+        const music = parseFloat(document.getElementById('music').value) || 0;
+        const transportation = parseFloat(document.getElementById('transportation').value) || 0;
+        const etc = parseFloat(document.getElementById('etc').value) || 0;
+        
+        if (guestCount <= 0) {
+            alert('하객 수를 입력해주세요.');
+            return;
+        }
+        
+        // 총 식대 비용 계산
+        const totalFoodCost = foodCost * guestCount;
+        
+        // 항목별 비용 계산
+        const costs = {
+            '예식장 비용': venueRental + totalFoodCost,
+            '의상 비용': brideDress + groomSuit,
+            '촬영 비용': photography + videography,
+            '꽃과 장식': flowers,
+            '음향 비용': music,
+            '교통 비용': transportation,
+            '기타 비용': etc
+        };
+        
+        const totalBudget = Object.values(costs).reduce((sum, cost) => sum + cost, 0);
+        
+        // 총 예산 표시
+        document.getElementById('total-budget').innerHTML = `
+            <div class="total-budget-result">
+                <h4>총 결혼식 비용</h4>
+                <div class="total-amount">${totalBudget.toLocaleString()}만원</div>
+                <div class="guest-info">하객 ${guestCount}명 기준</div>
+            </div>
+        `;
+        
+        // 항목별 내역 표시
+        let breakdownHtml = '<h4>항목별 비용 내역</h4><div class="breakdown-list">';
+        
+        Object.entries(costs).forEach(([category, amount]) => {
+            if (amount > 0) {
+                const percentage = ((amount / totalBudget) * 100).toFixed(1);
+                breakdownHtml += `
+                    <div class="breakdown-item">
+                        <span class="category">${category}</span>
+                        <span class="amount">${amount.toLocaleString()}만원</span>
+                        <span class="percentage">(${percentage}%)</span>
+                    </div>
+                `;
+            }
+        });
+        
+        breakdownHtml += '</div>';
+        document.getElementById('budget-breakdown').innerHTML = breakdownHtml;
+        
+        // 1인당 비용
+        const perGuestCost = totalBudget / guestCount;
+        const expectedGift = perGuestCost * 0.7; // 일반적으로 식대비의 70% 정도 축의금
+        const actualCost = totalBudget - (expectedGift * guestCount);
+        
+        document.getElementById('per-guest-cost').innerHTML = `
+            <h4>하객 1인당 분석</h4>
+            <div class="per-guest-analysis">
+                <div class="analysis-item">
+                    <span class="label">하객 1인당 비용:</span>
+                    <span class="value">${perGuestCost.toFixed(1)}만원</span>
+                </div>
+                <div class="analysis-item">
+                    <span class="label">예상 축의금 (인당):</span>
+                    <span class="value">${expectedGift.toFixed(1)}만원</span>
+                </div>
+                <div class="analysis-item">
+                    <span class="label">총 예상 축의금:</span>
+                    <span class="value">${(expectedGift * guestCount).toFixed(0)}만원</span>
+                </div>
+                <div class="analysis-item highlight">
+                    <span class="label">예상 실비용:</span>
+                    <span class="value">${actualCost.toFixed(0)}만원</span>
+                </div>
+            </div>
+            <div class="note">
+                <small>※ 축의금은 지역과 관계에 따라 다를 수 있습니다.</small>
+            </div>
+        `;
+        
+        document.getElementById('result').style.display = 'block';
+    }
+    </script>
+    
+    <style>
+    .total-budget-result {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .total-amount {
+        font-size: 2.5em;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+    
+    .guest-info {
+        opacity: 0.9;
+        font-size: 1.1em;
+    }
+    
+    .breakdown-list {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 10px 0;
+    }
+    
+    .breakdown-item {
+        display: grid;
+        grid-template-columns: 2fr 1fr 0.7fr;
+        gap: 10px;
+        padding: 12px 0;
+        border-bottom: 1px solid #e9ecef;
+        align-items: center;
+    }
+    
+    .breakdown-item:last-child {
+        border-bottom: none;
+    }
+    
+    .category {
+        font-weight: 500;
+    }
+    
+    .amount {
+        text-align: right;
+        font-weight: bold;
+        color: #495057;
+    }
+    
+    .percentage {
+        text-align: right;
+        color: #6c757d;
+        font-size: 0.9em;
+    }
+    
+    .per-guest-analysis {
+        background: #fff;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 10px 0;
+    }
+    
+    .analysis-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f1f3f4;
+    }
+    
+    .analysis-item:last-child {
+        border-bottom: none;
+    }
+    
+    .analysis-item.highlight {
+        background: #f8f9fa;
+        margin: 10px -15px -15px;
+        padding: 15px;
+        font-weight: bold;
+        color: #0066cc;
+    }
+    
+    .label {
+        color: #495057;
+    }
+    
+    .value {
+        font-weight: bold;
+        color: #212529;
+    }
+    
+    .note {
+        text-align: center;
+        margin-top: 15px;
+        color: #6c757d;
+    }
+    </style>
+</body>
+</html>

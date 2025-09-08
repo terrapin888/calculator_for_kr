@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>팩토리얼 계산기 - n! 계승, 순열 | CalcHub</title>
+    <meta name="description" content="팩토리얼(n!)을 빠르게 계산하세요. 순열과 조합 계산에 필수인 팩토리얼 계산기입니다.">
+    <meta name="keywords" content="팩토리얼, n!, 계승, 순열, 조합, 수학계산">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "팩토리얼 계산기",
+      "description": "팩토리얼(n!)을 빠르게 계산하세요. 순열과 조합 계산에 필수인 팩토리얼 계산기입니다.",
+      "url": "https://www.calcforkr.com/math/factorial-calculator.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="calculator-container">
+            <div class="calculator-header">
+                <h1>팩토리얼 계산기</h1>
+                <p>n! = n × (n-1) × (n-2) × ... × 2 × 1 계산</p>
+            </div>
+            
+            <div class="calculator-wrapper">
+                <div class="input-section">
+                    <h2>수 입력</h2>
+                    <div class="input-group">
+                        <label for="number">n 값</label>
+                        <input type="number" id="number" min="0" max="170" step="1" placeholder="0 이상의 정수 입력">
+                        <span class="unit-text">최대 170까지 계산 가능</span>
+                    </div>
+                    <button onclick="calculateFactorial()" class="calculate-btn">팩토리얼 계산</button>
+                </div>
+                
+                <div class="result-section" id="result" style="display:none;">
+                    <h3>계산 결과</h3>
+                    <div id="factorial-result"></div>
+                    <div id="calculation-steps"></div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3>팩토리얼이란?</h3>
+                <div class="info-content">
+                    <p><strong>팩토리얼</strong>은 1부터 n까지의 모든 양의 정수를 곱한 값입니다.</p>
+                    <h4>기본 개념</h4>
+                    <ul>
+                        <li><strong>n! = n × (n-1) × (n-2) × ... × 2 × 1</strong></li>
+                        <li><strong>0! = 1</strong> (정의에 의해)</li>
+                        <li><strong>1! = 1</strong></li>
+                    </ul>
+                    <h4>예시</h4>
+                    <ul>
+                        <li>3! = 3 × 2 × 1 = 6</li>
+                        <li>4! = 4 × 3 × 2 × 1 = 24</li>
+                        <li>5! = 5 × 4 × 3 × 2 × 1 = 120</li>
+                    </ul>
+                    <h4>실생활 활용</h4>
+                    <ul>
+                        <li>순열 계산 (nPr = n!/(n-r)!)</li>
+                        <li>조합 계산 (nCr = n!/(r!(n-r)!))</li>
+                        <li>확률 및 통계학</li>
+                        <li>암호학 및 보안</li>
+                        <li>컴퓨터 알고리즘</li>
+                    </ul>
+                    <h4>주의사항</h4>
+                    <ul>
+                        <li>팩토리얼은 매우 빠르게 커지므로 170! 이후는 계산이 어려움</li>
+                        <li>n이 클수록 계산 시간이 오래 걸림</li>
+                        <li>10! = 3,628,800</li>
+                        <li>20! = 2,432,902,008,176,640,000</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+    function calculateFactorial() {
+        const n = parseInt(document.getElementById('number').value);
+        
+        if (isNaN(n) || n < 0) {
+            alert('0 이상의 정수를 입력해주세요.');
+            return;
+        }
+        
+        if (n > 170) {
+            alert('너무 큰 수입니다. 170 이하의 수를 입력해주세요.');
+            return;
+        }
+        
+        let result = 1;
+        let steps = [];
+        
+        if (n === 0) {
+            result = 1;
+            steps.push('0! = 1 (정의에 의해)');
+        } else if (n === 1) {
+            result = 1;
+            steps.push('1! = 1');
+        } else {
+            let calculation = n + '! = ';
+            let factors = [];
+            
+            for (let i = n; i >= 1; i--) {
+                result *= i;
+                factors.push(i.toString());
+            }
+            
+            calculation += factors.join(' × ');
+            steps.push(calculation);
+            steps.push(`= ${result.toLocaleString()}`);
+        }
+        
+        document.getElementById('factorial-result').innerHTML = 
+            `<strong>${n}! = ${result.toLocaleString()}</strong>`;
+        
+        document.getElementById('calculation-steps').innerHTML = 
+            `<strong>계산 과정:</strong><br>${steps.join('<br>')}`;
+        
+        document.getElementById('result').style.display = 'block';
+    }
+    
+    // Enter 키 지원
+    document.getElementById('number').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            calculateFactorial();
+        }
+    });
+    </script>
+</body>
+</html>

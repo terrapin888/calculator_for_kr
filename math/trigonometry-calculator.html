@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>삼각함수 계산기 - sin, cos, tan 계산 | CalcHub</title>
+    <meta name="description" content="무료 삼각함수 계산기로 sin, cos, tan, csc, sec, cot 함수를 계산하세요. 도(degree)와 라디안(radian) 단위 모두 지원. 역삼각함수와 특수각 계산 포함.">
+    <meta name="keywords" content="온라인계산기, 무료계산기, 삼각함수계산기, sin계산기, cos계산기, tan계산기, 삼각법계산기, 라디안계산기, 도계산기, 수학계산기">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+</head>
+<body>
+    <!-- 공통 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <!-- 계산기 헤더 -->
+            <div class="calculator-header">
+                <h1 class="calculator-title">삼각함수 계산기</h1>
+                <p class="calculator-subtitle">sin, cos, tan 등 삼각함수를 계산하세요</p>
+            </div>
+
+            <!-- 계산기 본문 -->
+            <div class="calculator-body">
+                <!-- 입력 섹션 -->
+                <div class="input-section">
+                    <h2 class="section-title">각도 입력</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="angle" class="input-label">각도</label>
+                            <input type="number" id="angle" class="input-field" placeholder="예: 30, 45, 60" step="any">
+                        </div>
+                        <div class="input-group">
+                            <label for="unit" class="input-label">단위</label>
+                            <select id="unit" class="input-field">
+                                <option value="degree">도 (Degree)</option>
+                                <option value="radian">라디안 (Radian)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-angles">
+                        <h3>자주 사용하는 각도</h3>
+                        <div class="angle-buttons">
+                            <button onclick="setAngle(0)" class="btn btn-outline">0°</button>
+                            <button onclick="setAngle(30)" class="btn btn-outline">30°</button>
+                            <button onclick="setAngle(45)" class="btn btn-outline">45°</button>
+                            <button onclick="setAngle(60)" class="btn btn-outline">60°</button>
+                            <button onclick="setAngle(90)" class="btn btn-outline">90°</button>
+                            <button onclick="setAngle(180)" class="btn btn-outline">180°</button>
+                            <button onclick="setAngle(270)" class="btn btn-outline">270°</button>
+                            <button onclick="setAngle(360)" class="btn btn-outline">360°</button>
+                        </div>
+                    </div>
+                    
+                    <button onclick="calculate()" class="btn btn-primary">계산하기</button>
+                    <button onclick="clearInputs()" class="btn btn-secondary">초기화</button>
+                </div>
+
+                <!-- 결과 섹션 -->
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">계산 결과</h2>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">sin</div>
+                            <div id="sinResult" class="result-value highlight">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">cos</div>
+                            <div id="cosResult" class="result-value highlight">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">tan</div>
+                            <div id="tanResult" class="result-value highlight">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">csc</div>
+                            <div id="cscResult" class="result-value">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">sec</div>
+                            <div id="secResult" class="result-value">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">cot</div>
+                            <div id="cotResult" class="result-value">-</div>
+                        </div>
+                    </div>
+                    
+                    <div class="angle-info">
+                        <h3>각도 정보</h3>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <div class="result-label">입력 각도 (도)</div>
+                                <div id="degreesResult" class="result-value">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">입력 각도 (라디안)</div>
+                                <div id="radiansResult" class="result-value">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">사분면</div>
+                                <div id="quadrantResult" class="result-value">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">참조각</div>
+                                <div id="referenceAngle" class="result-value">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="copyResults()" class="btn btn-secondary">결과 복사</button>
+                </div>
+
+                <!-- 정보 섹션 -->
+                <div class="info-section">
+                    <h2 class="section-title">삼각함수에 대해</h2>
+                    <div class="info-content">
+                        <h3>기본 삼각함수:</h3>
+                        <ul>
+                            <li><strong>sin θ (사인):</strong> 대변 / 빗변</li>
+                            <li><strong>cos θ (코사인):</strong> 인접변 / 빗변</li>
+                            <li><strong>tan θ (탄젠트):</strong> 대변 / 인접변 = sin θ / cos θ</li>
+                        </ul>
+
+                        <h3>역함수 (상호함수):</h3>
+                        <ul>
+                            <li><strong>csc θ (코시컨트):</strong> 1 / sin θ</li>
+                            <li><strong>sec θ (시컨트):</strong> 1 / cos θ</li>
+                            <li><strong>cot θ (코탄젠트):</strong> 1 / tan θ = cos θ / sin θ</li>
+                        </ul>
+
+                        <h3>특수각 값:</h3>
+                        <div class="special-angles">
+                            <table>
+                                <tr><th>각도</th><th>sin</th><th>cos</th><th>tan</th></tr>
+                                <tr><td>0°</td><td>0</td><td>1</td><td>0</td></tr>
+                                <tr><td>30°</td><td>1/2</td><td>√3/2</td><td>√3/3</td></tr>
+                                <tr><td>45°</td><td>√2/2</td><td>√2/2</td><td>1</td></tr>
+                                <tr><td>60°</td><td>√3/2</td><td>1/2</td><td>√3</td></tr>
+                                <tr><td>90°</td><td>1</td><td>0</td><td>∞</td></tr>
+                            </table>
+                        </div>
+
+                        <h3>사분면별 부호:</h3>
+                        <ul>
+                            <li><strong>1사분면 (0°~90°):</strong> 모든 함수 양수</li>
+                            <li><strong>2사분면 (90°~180°):</strong> sin만 양수</li>
+                            <li><strong>3사분면 (180°~270°):</strong> tan만 양수</li>
+                            <li><strong>4사분면 (270°~360°):</strong> cos만 양수</li>
+                        </ul>
+
+                        <h3>단위 변환:</h3>
+                        <ul>
+                            <li><strong>도 → 라디안:</strong> 라디안 = 도 × π / 180</li>
+                            <li><strong>라디안 → 도:</strong> 도 = 라디안 × 180 / π</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .angle-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .angle-buttons .btn {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        
+        .angle-info {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .special-angles table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .special-angles th,
+        .special-angles td {
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .special-angles th {
+            background: #f8fafc;
+            font-weight: 600;
+        }
+        
+        .quick-angles {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .quick-angles h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #374151;
+        }
+    </style>
+
+    <script>
+        function setAngle(degrees) {
+            document.getElementById('angle').value = degrees;
+            document.getElementById('unit').value = 'degree';
+            calculate();
+        }
+
+        function calculate() {
+            const angleInput = parseFloat(document.getElementById('angle').value);
+            const unit = document.getElementById('unit').value;
+            
+            if (isNaN(angleInput)) {
+                alert('각도를 입력해주세요.');
+                return;
+            }
+            
+            let angleInRadians;
+            let angleInDegrees;
+            
+            if (unit === 'degree') {
+                angleInDegrees = angleInput;
+                angleInRadians = angleInput * Math.PI / 180;
+            } else {
+                angleInRadians = angleInput;
+                angleInDegrees = angleInput * 180 / Math.PI;
+            }
+            
+            // 삼각함수 계산
+            const sinValue = Math.sin(angleInRadians);
+            const cosValue = Math.cos(angleInRadians);
+            const tanValue = Math.tan(angleInRadians);
+            
+            // 역함수 계산
+            const cscValue = Math.abs(sinValue) < 1e-15 ? 'undefined' : (1 / sinValue);
+            const secValue = Math.abs(cosValue) < 1e-15 ? 'undefined' : (1 / cosValue);
+            const cotValue = Math.abs(tanValue) < 1e-15 ? 'undefined' : (1 / tanValue);
+            
+            // 사분면 판별
+            const normalizedAngle = ((angleInDegrees % 360) + 360) % 360;
+            let quadrant;
+            if (normalizedAngle >= 0 && normalizedAngle < 90) {
+                quadrant = '1사분면';
+            } else if (normalizedAngle >= 90 && normalizedAngle < 180) {
+                quadrant = '2사분면';
+            } else if (normalizedAngle >= 180 && normalizedAngle < 270) {
+                quadrant = '3사분면';
+            } else {
+                quadrant = '4사분면';
+            }
+            
+            // 참조각 계산
+            let referenceAngle;
+            if (normalizedAngle <= 90) {
+                referenceAngle = normalizedAngle;
+            } else if (normalizedAngle <= 180) {
+                referenceAngle = 180 - normalizedAngle;
+            } else if (normalizedAngle <= 270) {
+                referenceAngle = normalizedAngle - 180;
+            } else {
+                referenceAngle = 360 - normalizedAngle;
+            }
+            
+            // 결과 표시
+            document.getElementById('sinResult').textContent = formatResult(sinValue);
+            document.getElementById('cosResult').textContent = formatResult(cosValue);
+            document.getElementById('tanResult').textContent = formatResult(tanValue);
+            document.getElementById('cscResult').textContent = cscValue === 'undefined' ? '∞' : formatResult(cscValue);
+            document.getElementById('secResult').textContent = secValue === 'undefined' ? '∞' : formatResult(secValue);
+            document.getElementById('cotResult').textContent = cotValue === 'undefined' ? '∞' : formatResult(cotValue);
+            
+            document.getElementById('degreesResult').textContent = angleInDegrees.toFixed(4) + '°';
+            document.getElementById('radiansResult').textContent = angleInRadians.toFixed(6) + ' rad';
+            document.getElementById('quadrantResult').textContent = quadrant;
+            document.getElementById('referenceAngle').textContent = referenceAngle.toFixed(2) + '°';
+            
+            document.getElementById('resultSection').classList.add('fade-in');
+        }
+        
+        function formatResult(value) {
+            if (Math.abs(value) < 1e-15) return '0';
+            if (Math.abs(value - 1) < 1e-15) return '1';
+            if (Math.abs(value + 1) < 1e-15) return '-1';
+            if (Math.abs(value) > 1e15) return '∞';
+            return value.toFixed(6);
+        }
+
+        function clearInputs() {
+            document.getElementById('angle').value = '';
+            document.getElementById('unit').value = 'degree';
+        }
+
+        function copyResults() {
+            const angle = document.getElementById('angle').value;
+            const unit = document.getElementById('unit').value;
+            const sinResult = document.getElementById('sinResult').textContent;
+            const cosResult = document.getElementById('cosResult').textContent;
+            const tanResult = document.getElementById('tanResult').textContent;
+            const quadrant = document.getElementById('quadrantResult').textContent;
+            
+            const result = `삼각함수 계산 결과:
+입력 각도: ${angle}${unit === 'degree' ? '°' : ' rad'}
+sin: ${sinResult}
+cos: ${cosResult}
+tan: ${tanResult}
+사분면: ${quadrant}`;
+            
+            navigator.clipboard.writeText(result).then(() => {
+                alert('결과가 클립보드에 복사되었습니다!');
+            });
+        }
+
+        // 엔터키로 계산
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+    </script>
+</body>
+</html>

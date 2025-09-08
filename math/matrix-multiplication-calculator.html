@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>행렬 곱셈 계산기 - 2x2, 3x3 행렬 곱셈 계산 | CalcHub</title>
+    <meta name="description" content="무료 행렬 곱셈 계산기로 2x2, 3x3 행렬의 곱셈을 즉시 계산하세요. 행렬의 각 원소를 입력하면 행렬 곱셈 결과를 자동으로 계산합니다. 선형대수 학습에 최적.">
+    <meta name="keywords" content="온라인계산기, 무료계산기, 행렬곱셈계산기, 행렬계산기, 선형대수계산기, 2x2행렬곱셈, 3x3행렬곱셈, 수학계산기, 행렬연산계산기">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+</head>
+<body>
+    <!-- 공통 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <!-- 계산기 헤더 -->
+            <div class="calculator-header">
+                <h1 class="calculator-title">행렬 곱셈 계산기</h1>
+                <p class="calculator-subtitle">2x2, 3x3 행렬의 곱셈을 계산하세요</p>
+            </div>
+
+            <!-- 계산기 본문 -->
+            <div class="calculator-body">
+                <!-- 입력 섹션 -->
+                <div class="input-section">
+                    <h2 class="section-title">행렬 크기 선택</h2>
+                    <div class="input-group">
+                        <label class="input-label">행렬 크기</label>
+                        <select id="matrixSize" class="input-field" onchange="updateMatrixInputs()">
+                            <option value="2">2x2 행렬</option>
+                            <option value="3">3x3 행렬</option>
+                        </select>
+                    </div>
+
+                    <div class="matrices-container">
+                        <!-- 행렬 A -->
+                        <div class="matrix-input">
+                            <h3>행렬 A</h3>
+                            <div id="matrixA" class="matrix-grid">
+                                <!-- 동적으로 생성됨 -->
+                            </div>
+                        </div>
+
+                        <div class="multiplication-sign">×</div>
+
+                        <!-- 행렬 B -->
+                        <div class="matrix-input">
+                            <h3>행렬 B</h3>
+                            <div id="matrixB" class="matrix-grid">
+                                <!-- 동적으로 생성됨 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="matrix-examples">
+                        <h3>빠른 예제</h3>
+                        <div class="example-buttons">
+                            <button onclick="loadExample('identity')" class="btn btn-outline">단위행렬</button>
+                            <button onclick="loadExample('simple')" class="btn btn-outline">간단한 예제</button>
+                            <button onclick="loadExample('random')" class="btn btn-outline">랜덤 행렬</button>
+                        </div>
+                    </div>
+                    
+                    <button onclick="calculate()" class="btn btn-primary">곱셈 계산</button>
+                    <button onclick="clearInputs()" class="btn btn-secondary">초기화</button>
+                </div>
+
+                <!-- 결과 섹션 -->
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">계산 결과</h2>
+                    <div class="result-matrix-container">
+                        <div class="matrix-display">
+                            <h3>행렬 A × 행렬 B = 결과 행렬</h3>
+                            <div id="resultMatrix" class="matrix-result">
+                                <!-- 결과 행렬이 표시됨 -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calculation-steps">
+                        <h3>계산 과정</h3>
+                        <div id="calculationSteps"></div>
+                    </div>
+                    <button onclick="copyResults()" class="btn btn-secondary">결과 복사</button>
+                </div>
+
+                <!-- 정보 섹션 -->
+                <div class="info-section">
+                    <h2 class="section-title">행렬 곱셈이란?</h2>
+                    <div class="info-content">
+                        <p><strong>행렬 곱셈</strong>은 두 행렬을 곱하여 새로운 행렬을 만드는 연산입니다.</p>
+                        
+                        <h3>행렬 곱셈 조건:</h3>
+                        <ul>
+                            <li>첫 번째 행렬의 <strong>열의 개수</strong> = 두 번째 행렬의 <strong>행의 개수</strong></li>
+                            <li>결과 행렬의 크기: (m×n) × (n×p) = (m×p)</li>
+                        </ul>
+
+                        <h3>2×2 행렬 곱셈 공식:</h3>
+                        <div class="formula-example">
+                            <div class="matrix-formula">
+                                [a₁₁ a₁₂] × [b₁₁ b₁₂] = [c₁₁ c₁₂]<br>
+                                [a₂₁ a₂₂]   [b₂₁ b₂₂]   [c₂₁ c₂₂]
+                            </div>
+                            <div class="formula-calculation">
+                                <p>여기서:</p>
+                                <ul>
+                                    <li>c₁₁ = a₁₁×b₁₁ + a₁₂×b₂₁</li>
+                                    <li>c₁₂ = a₁₁×b₁₂ + a₁₂×b₂₂</li>
+                                    <li>c₂₁ = a₂₁×b₁₁ + a₂₂×b₂₁</li>
+                                    <li>c₂₂ = a₂₁×b₁₂ + a₂₂×b₂₂</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3>행렬 곱셈 특징:</h3>
+                        <ul>
+                            <li><strong>교환법칙 성립 안함:</strong> A × B ≠ B × A (일반적으로)</li>
+                            <li><strong>결합법칙 성립:</strong> (A × B) × C = A × (B × C)</li>
+                            <li><strong>분배법칙 성립:</strong> A × (B + C) = A × B + A × C</li>
+                            <li><strong>단위행렬:</strong> A × I = I × A = A</li>
+                        </ul>
+
+                        <h3>활용 분야:</h3>
+                        <ul>
+                            <li><strong>컴퓨터 그래픽스:</strong> 좌표 변환, 회전, 확대/축소</li>
+                            <li><strong>머신러닝:</strong> 신경망, 데이터 변환</li>
+                            <li><strong>물리학:</strong> 양자역학, 진동 분석</li>
+                            <li><strong>경제학:</strong> 연립방정식, 최적화 문제</li>
+                            <li><strong>공학:</strong> 시스템 분석, 제어 이론</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .matrices-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .matrix-input h3 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #374151;
+        }
+        
+        .matrix-grid {
+            display: grid;
+            gap: 5px;
+            justify-items: center;
+        }
+        
+        .matrix-grid.size-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .matrix-grid.size-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .matrix-grid input {
+            width: 60px;
+            height: 40px;
+            text-align: center;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .multiplication-sign {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+        
+        .matrix-examples {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .example-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .result-matrix-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .matrix-result {
+            display: inline-block;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #4f46e5;
+            margin: 10px 0;
+        }
+        
+        .matrix-display h3 {
+            color: #374151;
+            margin-bottom: 15px;
+        }
+        
+        .formula-example {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .matrix-formula {
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #4f46e5;
+        }
+        
+        .formula-calculation ul {
+            margin: 10px 0;
+        }
+        
+        .calculation-steps {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .calculation-steps h3 {
+            margin-top: 0;
+            color: #374151;
+        }
+        
+        .step {
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #6b7280;
+        }
+    </style>
+
+    <script>
+        function updateMatrixInputs() {
+            const size = parseInt(document.getElementById('matrixSize').value);
+            createMatrixInputs('matrixA', size);
+            createMatrixInputs('matrixB', size);
+        }
+
+        function createMatrixInputs(matrixId, size) {
+            const matrixDiv = document.getElementById(matrixId);
+            matrixDiv.innerHTML = '';
+            matrixDiv.className = `matrix-grid size-${size}`;
+            
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.step = 'any';
+                    input.id = `${matrixId}_${i}_${j}`;
+                    input.placeholder = '0';
+                    matrixDiv.appendChild(input);
+                }
+            }
+        }
+
+        function loadExample(type) {
+            const size = parseInt(document.getElementById('matrixSize').value);
+            
+            if (type === 'identity') {
+                // 단위행렬 예제
+                loadIdentityMatrix(size);
+            } else if (type === 'simple') {
+                // 간단한 예제
+                loadSimpleExample(size);
+            } else if (type === 'random') {
+                // 랜덤 행렬
+                loadRandomMatrix(size);
+            }
+        }
+        
+        function loadIdentityMatrix(size) {
+            // 행렬 A를 단위행렬로
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    document.getElementById(`matrixA_${i}_${j}`).value = i === j ? 1 : 0;
+                }
+            }
+            // 행렬 B는 간단한 값들로
+            const values = size === 2 ? [2, 3, 1, 4] : [1, 2, 3, 0, 1, 2, 0, 0, 1];
+            let index = 0;
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    document.getElementById(`matrixB_${i}_${j}`).value = values[index++];
+                }
+            }
+        }
+        
+        function loadSimpleExample(size) {
+            const exampleA = size === 2 ? [1, 2, 3, 4] : [1, 2, 0, 0, 1, 2, 1, 0, 1];
+            const exampleB = size === 2 ? [2, 0, 1, 2] : [1, 0, 1, 2, 1, 0, 0, 1, 1];
+            
+            let index = 0;
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    document.getElementById(`matrixA_${i}_${j}`).value = exampleA[index];
+                    document.getElementById(`matrixB_${i}_${j}`).value = exampleB[index];
+                    index++;
+                }
+            }
+        }
+        
+        function loadRandomMatrix(size) {
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    document.getElementById(`matrixA_${i}_${j}`).value = Math.floor(Math.random() * 10);
+                    document.getElementById(`matrixB_${i}_${j}`).value = Math.floor(Math.random() * 10);
+                }
+            }
+        }
+
+        function getMatrixValues(matrixId, size) {
+            const matrix = [];
+            for (let i = 0; i < size; i++) {
+                matrix[i] = [];
+                for (let j = 0; j < size; j++) {
+                    const value = parseFloat(document.getElementById(`${matrixId}_${i}_${j}`).value) || 0;
+                    matrix[i][j] = value;
+                }
+            }
+            return matrix;
+        }
+
+        function multiplyMatrices(matrixA, matrixB, size) {
+            const result = [];
+            const steps = [];
+            
+            for (let i = 0; i < size; i++) {
+                result[i] = [];
+                for (let j = 0; j < size; j++) {
+                    let sum = 0;
+                    let stepCalculation = '';
+                    
+                    for (let k = 0; k < size; k++) {
+                        sum += matrixA[i][k] * matrixB[k][j];
+                        if (k > 0) stepCalculation += ' + ';
+                        stepCalculation += `${matrixA[i][k]}×${matrixB[k][j]}`;
+                    }
+                    
+                    result[i][j] = sum;
+                    steps.push(`result[${i}][${j}] = ${stepCalculation} = ${sum}`);
+                }
+            }
+            
+            return { result, steps };
+        }
+
+        function displayMatrix(matrix, containerId) {
+            const container = document.getElementById(containerId);
+            let html = '<table style="border-collapse: collapse; margin: 0 auto;">';
+            
+            for (let i = 0; i < matrix.length; i++) {
+                html += '<tr>';
+                for (let j = 0; j < matrix[i].length; j++) {
+                    html += `<td style="padding: 8px 12px; border: 1px solid #d1d5db; text-align: center; min-width: 50px;">${matrix[i][j]}</td>`;
+                }
+                html += '</tr>';
+            }
+            html += '</table>';
+            container.innerHTML = html;
+        }
+
+        function calculate() {
+            const size = parseInt(document.getElementById('matrixSize').value);
+            const matrixA = getMatrixValues('matrixA', size);
+            const matrixB = getMatrixValues('matrixB', size);
+            
+            const { result, steps } = multiplyMatrices(matrixA, matrixB, size);
+            
+            displayMatrix(result, 'resultMatrix');
+            
+            // 계산 과정 표시
+            const stepsContainer = document.getElementById('calculationSteps');
+            let stepsHtml = '';
+            steps.forEach((step, index) => {
+                stepsHtml += `<div class="step">${step}</div>`;
+            });
+            stepsContainer.innerHTML = stepsHtml;
+            
+            document.getElementById('resultSection').classList.add('fade-in');
+        }
+
+        function clearInputs() {
+            const size = parseInt(document.getElementById('matrixSize').value);
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    document.getElementById(`matrixA_${i}_${j}`).value = '';
+                    document.getElementById(`matrixB_${i}_${j}`).value = '';
+                }
+            }
+        }
+
+        function copyResults() {
+            const size = parseInt(document.getElementById('matrixSize').value);
+            const matrixA = getMatrixValues('matrixA', size);
+            const matrixB = getMatrixValues('matrixB', size);
+            const { result } = multiplyMatrices(matrixA, matrixB, size);
+            
+            let resultText = '행렬 곱셈 결과:\n\n행렬 A × 행렬 B =\n';
+            for (let i = 0; i < size; i++) {
+                let row = '';
+                for (let j = 0; j < size; j++) {
+                    row += result[i][j].toString().padStart(8);
+                }
+                resultText += row + '\n';
+            }
+            
+            navigator.clipboard.writeText(resultText).then(() => {
+                alert('결과가 클립보드에 복사되었습니다!');
+            });
+        }
+
+        // 초기화
+        updateMatrixInputs();
+
+        // 엔터키로 계산
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+    </script>
+</body>
+</html>

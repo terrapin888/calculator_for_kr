@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시간대 변환기 - 세계시간 변환 | CalcHub</title>
+    <meta name="description" content="전 세계 주요 도시의 시간대를 빠르게 변환하세요. UTC, GMT, KST, EST, PST 등 다양한 시간대 지원.">
+    <meta name="keywords" content="시간대변환, 세계시간, UTC, GMT, KST, 시간변환기, 타임존">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "시간대 변환기",
+      "description": "전 세계 주요 도시의 시간대를 빠르게 변환하세요. UTC, GMT, KST, EST, PST 등 다양한 시간대 지원.",
+      "url": "https://www.calcforkr.com/converter/time-zone-converter.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="calculator-container">
+            <div class="calculator-header">
+                <h1>시간대 변환기</h1>
+                <p>전 세계 주요 도시의 시간대를 변환합니다</p>
+            </div>
+            
+            <div class="calculator-wrapper">
+                <div class="input-section">
+                    <h2>시간 입력</h2>
+                    <div class="input-group">
+                        <label for="input-time">변환할 시간</label>
+                        <input type="datetime-local" id="input-time">
+                    </div>
+                    <div class="input-group">
+                        <label for="from-timezone">기준 시간대</label>
+                        <select id="from-timezone">
+                            <option value="Asia/Seoul">KST - 한국 표준시 (Seoul)</option>
+                            <option value="UTC">UTC - 협정 세계시</option>
+                            <option value="America/New_York">EST/EDT - 뉴욕 (New York)</option>
+                            <option value="America/Los_Angeles">PST/PDT - 로스엔젤레스 (LA)</option>
+                            <option value="Europe/London">GMT/BST - 런던 (London)</option>
+                            <option value="Europe/Paris">CET/CEST - 파리 (Paris)</option>
+                            <option value="Asia/Tokyo">JST - 도쿄 (Tokyo)</option>
+                            <option value="Asia/Hong_Kong">HKT - 홍콩 (Hong Kong)</option>
+                            <option value="Asia/Shanghai">CST - 상하이 (Shanghai)</option>
+                            <option value="Asia/Dubai">GST - 두바이 (Dubai)</option>
+                            <option value="Australia/Sydney">AEDT/AEST - 시드니 (Sydney)</option>
+                            <option value="America/Chicago">CST/CDT - 시카고 (Chicago)</option>
+                        </select>
+                    </div>
+                    <button onclick="convertTime()" class="calculate-btn">시간 변환</button>
+                </div>
+                
+                <div class="result-section" id="result" style="display:none;">
+                    <h3>변환 결과</h3>
+                    <div id="conversion-results"></div>
+                    <div id="current-times"></div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3>시간대에 대해</h3>
+                <div class="info-content">
+                    <h4>주요 시간대</h4>
+                    <ul>
+                        <li><strong>UTC</strong>: 협정 세계시, 기준 시간</li>
+                        <li><strong>KST</strong>: 한국 표준시 (UTC+9)</li>
+                        <li><strong>JST</strong>: 일본 표준시 (UTC+9)</li>
+                        <li><strong>EST/EDT</strong>: 미국 동부 시간 (UTC-5/-4)</li>
+                        <li><strong>PST/PDT</strong>: 미국 서부 시간 (UTC-8/-7)</li>
+                        <li><strong>GMT/BST</strong>: 그리니치 표준시 (UTC+0/+1)</li>
+                    </ul>
+                    
+                    <h4>일광 절약 시간제 (DST)</h4>
+                    <ul>
+                        <li>여름철에 시계를 1시간 앞당기는 제도</li>
+                        <li>미국, 유럽 등에서 사용 (한국, 일본은 미사용)</li>
+                        <li>3월-11월 사이에 적용 (지역마다 다름)</li>
+                    </ul>
+                    
+                    <h4>비즈니스 활용</h4>
+                    <ul>
+                        <li>국제 화상회의 시간 조율</li>
+                        <li>해외 주식 시장 거래 시간</li>
+                        <li>글로벌 프로젝트 일정 관리</li>
+                        <li>온라인 게임 서버 시간</li>
+                        <li>여행 일정 계획</li>
+                    </ul>
+                    
+                    <h4>주의사항</h4>
+                    <ul>
+                        <li>일광절약시간제 시작/종료 시점에 주의</li>
+                        <li>각 국의 DST 적용 기간이 다름</li>
+                        <li>일부 지역은 30분 또는 45분 단위 오프셋 사용</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+    const timezones = {
+        'UTC': { name: 'UTC', offset: 0, dst: false },
+        'Asia/Seoul': { name: 'KST', offset: 9, dst: false },
+        'Asia/Tokyo': { name: 'JST', offset: 9, dst: false },
+        'Asia/Shanghai': { name: 'CST', offset: 8, dst: false },
+        'Asia/Hong_Kong': { name: 'HKT', offset: 8, dst: false },
+        'Asia/Dubai': { name: 'GST', offset: 4, dst: false },
+        'Europe/London': { name: 'GMT/BST', offset: 0, dst: true, dstOffset: 1 },
+        'Europe/Paris': { name: 'CET/CEST', offset: 1, dst: true, dstOffset: 1 },
+        'America/New_York': { name: 'EST/EDT', offset: -5, dst: true, dstOffset: 1 },
+        'America/Chicago': { name: 'CST/CDT', offset: -6, dst: true, dstOffset: 1 },
+        'America/Los_Angeles': { name: 'PST/PDT', offset: -8, dst: true, dstOffset: 1 },
+        'Australia/Sydney': { name: 'AEST/AEDT', offset: 10, dst: true, dstOffset: 1 }
+    };
+    
+    function isDST(date, timezone) {
+        if (!timezone.dst) return false;
+        
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        
+        // 간단한 DST 판단 (3월-10월)
+        if (timezone.name.includes('America')) {
+            return month >= 2 && month <= 9; // 3월-10월
+        } else if (timezone.name.includes('Europe')) {
+            return month >= 2 && month <= 9; // 3월-10월
+        } else if (timezone.name.includes('Australia')) {
+            return month >= 9 || month <= 2; // 10월-3월 (남반구)
+        }
+        return false;
+    }
+    
+    function getTimezoneOffset(timezone, date) {
+        let offset = timezone.offset;
+        if (timezone.dst && isDST(date, timezone)) {
+            offset += timezone.dstOffset;
+        }
+        return offset;
+    }
+    
+    function convertTime() {
+        const inputTime = document.getElementById('input-time').value;
+        const fromTimezone = document.getElementById('from-timezone').value;
+        
+        if (!inputTime) {
+            alert('변환할 시간을 입력해주세요.');
+            return;
+        }
+        
+        const inputDate = new Date(inputTime);
+        const fromTz = timezones[fromTimezone];
+        
+        // UTC로 변환
+        const fromOffset = getTimezoneOffset(fromTz, inputDate);
+        const utcTime = new Date(inputDate.getTime() - (fromOffset * 60 * 60 * 1000));
+        
+        let resultsHtml = `<div class="conversion-item"><strong>기준 시간:</strong> ${inputDate.toLocaleString('ko-KR')} (${fromTz.name})</div>`;
+        resultsHtml += `<div class="conversion-item"><strong>UTC:</strong> ${utcTime.toLocaleString('ko-KR')}</div>`;
+        
+        // 모든 시간대로 변환
+        Object.entries(timezones).forEach(([tzKey, tz]) => {
+            if (tzKey !== fromTimezone) {
+                const offset = getTimezoneOffset(tz, utcTime);
+                const convertedTime = new Date(utcTime.getTime() + (offset * 60 * 60 * 1000));
+                resultsHtml += `<div class="conversion-item"><strong>${tz.name}:</strong> ${convertedTime.toLocaleString('ko-KR')}</div>`;
+            }
+        });
+        
+        document.getElementById('conversion-results').innerHTML = resultsHtml;
+        
+        // 현재 시간 표시
+        const now = new Date();
+        let currentTimesHtml = '<h4>현재 시간</h4>';
+        Object.entries(timezones).forEach(([tzKey, tz]) => {
+            const offset = getTimezoneOffset(tz, now);
+            const currentTime = new Date(now.getTime() + ((offset * 60 - now.getTimezoneOffset()) * 60 * 1000));
+            currentTimesHtml += `<div class="current-time-item">${tz.name}: ${currentTime.toLocaleString('ko-KR')}</div>`;
+        });
+        
+        document.getElementById('current-times').innerHTML = currentTimesHtml;
+        document.getElementById('result').style.display = 'block';
+    }
+    
+    // 현재 시간으로 초기설정
+    document.addEventListener('DOMContentLoaded', function() {
+        const now = new Date();
+        const isoString = now.toISOString().slice(0, 16);
+        document.getElementById('input-time').value = isoString;
+    });
+    </script>
+
+    <style>
+    .conversion-item, .current-time-item {
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .conversion-item:last-child, .current-time-item:last-child {
+        border-bottom: none;
+    }
+    </style>
+</body>
+</html>

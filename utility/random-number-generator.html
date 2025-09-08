@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>난수 생성기 - 랜덤 숫자, 주사위, 로또 번호 생성 | CalcHub</title>
+    <meta name="description" content="무료 난수 생성기로 랜덤 숫자, 주사위, 로또 번호, 비밀번호를 생성하세요. 정수, 소수, 범위 지정, 중복 제거 등 다양한 옵션을 지원합니다.">
+    <meta name="keywords" content="온라인계산기, 무료계산기, 난수생성기, 랜덤숫자생성기, 주사위굴리기, 로또번호생성기, 랜덤비밀번호생성기, 무작위숫자생성기">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header">
+                <h1 class="calculator-title">난수 생성기</h1>
+                <p class="calculator-subtitle">다양한 종류의 랜덤 숫자를 생성하세요</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">생성 유형 선택</h2>
+                    <div class="input-group">
+                        <label class="input-label">생성 유형</label>
+                        <select id="generatorType" class="input-field" onchange="updateInputFields()">
+                            <option value="basic">기본 난수</option>
+                            <option value="dice">주사위</option>
+                            <option value="lottery">로또 번호</option>
+                            <option value="password">랜덤 비밀번호</option>
+                            <option value="coin">동전 던지기</option>
+                            <option value="list">리스트 셔플</option>
+                        </select>
+                    </div>
+
+                    <!-- 기본 난수 -->
+                    <div id="basicInputs" class="generator-inputs">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="minValue" class="input-label">최솟값</label>
+                                <input type="number" id="minValue" class="input-field" value="1">
+                            </div>
+                            <div class="input-group">
+                                <label for="maxValue" class="input-label">최댓값</label>
+                                <input type="number" id="maxValue" class="input-field" value="100">
+                            </div>
+                            <div class="input-group">
+                                <label for="count" class="input-label">개수</label>
+                                <input type="number" id="count" class="input-field" value="1" min="1" max="1000">
+                            </div>
+                        </div>
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label class="input-label">옵션</label>
+                                <div class="checkbox-group">
+                                    <label><input type="checkbox" id="allowDuplicates"> 중복 허용</label>
+                                    <label><input type="checkbox" id="allowDecimals"> 소수점 허용</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 주사위 -->
+                    <div id="diceInputs" class="generator-inputs" style="display: none;">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="diceType" class="input-label">주사위 종류</label>
+                                <select id="diceType" class="input-field">
+                                    <option value="6">6면체 (1-6)</option>
+                                    <option value="4">4면체 (1-4)</option>
+                                    <option value="8">8면체 (1-8)</option>
+                                    <option value="10">10면체 (1-10)</option>
+                                    <option value="12">12면체 (1-12)</option>
+                                    <option value="20">20면체 (1-20)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="diceCount" class="input-label">주사위 개수</label>
+                                <input type="number" id="diceCount" class="input-field" value="2" min="1" max="10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 로또 번호 -->
+                    <div id="lotteryInputs" class="generator-inputs" style="display: none;">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="lotteryType" class="input-label">로또 종류</label>
+                                <select id="lotteryType" class="input-field">
+                                    <option value="645">로또 6/45 (1-45 중 6개)</option>
+                                    <option value="720">연금복권 720+ (1-28 중 7개)</option>
+                                    <option value="custom">사용자 정의</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="lotteryGames" class="input-label">게임 수</label>
+                                <input type="number" id="lotteryGames" class="input-field" value="5" min="1" max="20">
+                            </div>
+                        </div>
+                        <div id="customLotteryInputs" style="display: none;">
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label for="customMin" class="input-label">범위 시작</label>
+                                    <input type="number" id="customMin" class="input-field" value="1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="customMax" class="input-label">범위 끝</label>
+                                    <input type="number" id="customMax" class="input-field" value="45">
+                                </div>
+                                <div class="input-group">
+                                    <label for="customPick" class="input-label">선택 개수</label>
+                                    <input type="number" id="customPick" class="input-field" value="6">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 랜덤 비밀번호 -->
+                    <div id="passwordInputs" class="generator-inputs" style="display: none;">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="passwordLength" class="input-label">길이</label>
+                                <input type="number" id="passwordLength" class="input-field" value="12" min="4" max="128">
+                            </div>
+                            <div class="input-group">
+                                <label for="passwordCount" class="input-label">개수</label>
+                                <input type="number" id="passwordCount" class="input-field" value="5" min="1" max="50">
+                            </div>
+                        </div>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" id="includeUppercase" checked> 대문자 (A-Z)</label>
+                            <label><input type="checkbox" id="includeLowercase" checked> 소문자 (a-z)</label>
+                            <label><input type="checkbox" id="includeNumbers" checked> 숫자 (0-9)</label>
+                            <label><input type="checkbox" id="includeSymbols"> 특수문자 (!@#$%^&*)</label>
+                        </div>
+                    </div>
+
+                    <!-- 동전 던지기 -->
+                    <div id="coinInputs" class="generator-inputs" style="display: none;">
+                        <div class="input-group">
+                            <label for="coinCount" class="input-label">동전 개수</label>
+                            <input type="number" id="coinCount" class="input-field" value="1" min="1" max="100">
+                        </div>
+                    </div>
+
+                    <!-- 리스트 셔플 -->
+                    <div id="listInputs" class="generator-inputs" style="display: none;">
+                        <div class="input-group">
+                            <label for="listItems" class="input-label">항목 입력 (줄바꿈으로 구분)</label>
+                            <textarea id="listItems" class="input-field" rows="5" placeholder="사과&#10;바나나&#10;오렌지&#10;포도&#10;딸기"></textarea>
+                        </div>
+                    </div>
+                    
+                    <button onclick="generate()" class="btn btn-primary">생성하기</button>
+                    <button onclick="clearInputs()" class="btn btn-secondary">초기화</button>
+                </div>
+
+                <div id="resultSection" class="result-section">
+                    <h2 class="result-title">생성 결과</h2>
+                    <div id="generatedResults" class="generated-results">
+                        <!-- 동적으로 생성됨 -->
+                    </div>
+                    <div class="result-actions">
+                        <button onclick="copyResults()" class="btn btn-secondary">결과 복사</button>
+                        <button onclick="generate()" class="btn btn-outline">다시 생성</button>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h2 class="section-title">난수 생성기 정보</h2>
+                    <div class="info-content">
+                        <h3>난수(Random Number)란?</h3>
+                        <p>예측할 수 없고 일정한 패턴이 없는 수열입니다. 컴퓨터에서는 의사난수(Pseudo-random number)를 생성합니다.</p>
+                        
+                        <h3>활용 분야:</h3>
+                        <ul>
+                            <li><strong>게임:</strong> 주사위, 카드 섞기, 랜덤 이벤트</li>
+                            <li><strong>통계:</strong> 표본 추출, 시뮬레이션</li>
+                            <li><strong>암호화:</strong> 보안 키 생성</li>
+                            <li><strong>연구:</strong> 실험 설계, A/B 테스트</li>
+                            <li><strong>일상:</strong> 결정 도구, 추첨</li>
+                        </ul>
+
+                        <h3>생성기 종류별 특징:</h3>
+                        <ul>
+                            <li><strong>기본 난수:</strong> 지정된 범위 내의 숫자 생성</li>
+                            <li><strong>주사위:</strong> 다양한 면체 주사위 시뮬레이션</li>
+                            <li><strong>로또:</strong> 중복 없는 번호 조합 생성</li>
+                            <li><strong>비밀번호:</strong> 보안성을 고려한 문자 조합</li>
+                            <li><strong>동전:</strong> 이진 선택을 위한 앞/뒤 결정</li>
+                            <li><strong>리스트 셔플:</strong> 순서 무작위 배열</li>
+                        </ul>
+
+                        <h3>사용 팁:</h3>
+                        <ul>
+                            <li>중요한 결정에는 여러 번 생성해보세요</li>
+                            <li>보안이 중요한 곳에는 전용 도구를 사용하세요</li>
+                            <li>통계적 용도로는 충분한 표본을 생성하세요</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .generator-inputs {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .generated-results {
+            min-height: 100px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            background: #f8fafc;
+        }
+        
+        .result-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .result-item.highlight {
+            background: #dbeafe;
+            border-color: #3b82f6;
+        }
+        
+        .result-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .dice-visual {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 2px solid #374151;
+            border-radius: 8px;
+            margin: 0 5px;
+            text-align: center;
+            line-height: 36px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .lottery-game {
+            margin: 10px 0;
+            padding: 15px;
+            background: #fff7ed;
+            border-radius: 8px;
+            border: 1px solid #fb923c;
+        }
+        
+        .lottery-numbers {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        
+        .lottery-number {
+            width: 35px;
+            height: 35px;
+            background: #f59e0b;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+    </style>
+
+    <script>
+        function updateInputFields() {
+            const generatorType = document.getElementById('generatorType').value;
+            const inputs = document.querySelectorAll('.generator-inputs');
+            
+            inputs.forEach(input => input.style.display = 'none');
+            
+            switch(generatorType) {
+                case 'basic':
+                    document.getElementById('basicInputs').style.display = 'block';
+                    break;
+                case 'dice':
+                    document.getElementById('diceInputs').style.display = 'block';
+                    break;
+                case 'lottery':
+                    document.getElementById('lotteryInputs').style.display = 'block';
+                    updateLotteryInputs();
+                    break;
+                case 'password':
+                    document.getElementById('passwordInputs').style.display = 'block';
+                    break;
+                case 'coin':
+                    document.getElementById('coinInputs').style.display = 'block';
+                    break;
+                case 'list':
+                    document.getElementById('listInputs').style.display = 'block';
+                    break;
+            }
+        }
+
+        function updateLotteryInputs() {
+            const lotteryType = document.getElementById('lotteryType').value;
+            const customInputs = document.getElementById('customLotteryInputs');
+            
+            if (lotteryType === 'custom') {
+                customInputs.style.display = 'block';
+            } else {
+                customInputs.style.display = 'none';
+            }
+        }
+
+        function generate() {
+            const generatorType = document.getElementById('generatorType').value;
+            let results = '';
+            
+            switch(generatorType) {
+                case 'basic':
+                    results = generateBasicNumbers();
+                    break;
+                case 'dice':
+                    results = generateDice();
+                    break;
+                case 'lottery':
+                    results = generateLottery();
+                    break;
+                case 'password':
+                    results = generatePasswords();
+                    break;
+                case 'coin':
+                    results = generateCoins();
+                    break;
+                case 'list':
+                    results = shuffleList();
+                    break;
+            }
+            
+            document.getElementById('generatedResults').innerHTML = results;
+            document.getElementById('resultSection').classList.add('fade-in');
+        }
+
+        function generateBasicNumbers() {
+            const min = parseInt(document.getElementById('minValue').value);
+            const max = parseInt(document.getElementById('maxValue').value);
+            const count = parseInt(document.getElementById('count').value);
+            const allowDuplicates = document.getElementById('allowDuplicates').checked;
+            const allowDecimals = document.getElementById('allowDecimals').checked;
+            
+            if (min >= max) {
+                return '<div class="result-item">오류: 최솟값은 최댓값보다 작아야 합니다.</div>';
+            }
+            
+            const numbers = new Set();
+            const results = [];
+            
+            while (results.length < count) {
+                let num;
+                if (allowDecimals) {
+                    num = Math.random() * (max - min) + min;
+                    num = Math.round(num * 100) / 100;
+                } else {
+                    num = Math.floor(Math.random() * (max - min + 1)) + min;
+                }
+                
+                if (allowDuplicates || !numbers.has(num)) {
+                    numbers.add(num);
+                    results.push(num);
+                }
+                
+                if (!allowDuplicates && numbers.size >= (max - min + 1)) break;
+            }
+            
+            return `<div class="result-item highlight">
+                <h3>생성된 숫자 (${results.length}개)</h3>
+                <p style="font-size: 24px; font-weight: bold; color: #1f2937;">${results.join(', ')}</p>
+            </div>`;
+        }
+
+        function generateDice() {
+            const diceType = parseInt(document.getElementById('diceType').value);
+            const diceCount = parseInt(document.getElementById('diceCount').value);
+            
+            const results = [];
+            let total = 0;
+            
+            for (let i = 0; i < diceCount; i++) {
+                const roll = Math.floor(Math.random() * diceType) + 1;
+                results.push(roll);
+                total += roll;
+            }
+            
+            let diceVisual = results.map(roll => 
+                `<span class="dice-visual">${roll}</span>`
+            ).join('');
+            
+            return `<div class="result-item highlight">
+                <h3>주사위 결과 (${diceType}면체 × ${diceCount}개)</h3>
+                <div style="text-align: center; margin: 20px 0;">
+                    ${diceVisual}
+                </div>
+                <p><strong>각각의 결과:</strong> ${results.join(', ')}</p>
+                <p><strong>총합:</strong> ${total}</p>
+                <p><strong>평균:</strong> ${(total / diceCount).toFixed(2)}</p>
+            </div>`;
+        }
+
+        function generateLottery() {
+            const lotteryType = document.getElementById('lotteryType').value;
+            const games = parseInt(document.getElementById('lotteryGames').value);
+            
+            let min, max, pick, title;
+            
+            if (lotteryType === '645') {
+                min = 1; max = 45; pick = 6; title = '로또 6/45';
+            } else if (lotteryType === '720') {
+                min = 1; max = 28; pick = 7; title = '연금복권 720+';
+            } else {
+                min = parseInt(document.getElementById('customMin').value);
+                max = parseInt(document.getElementById('customMax').value);
+                pick = parseInt(document.getElementById('customPick').value);
+                title = '사용자 정의 로또';
+            }
+            
+            let results = `<div class="result-item highlight"><h3>${title} (${games}게임)</h3>`;
+            
+            for (let game = 1; game <= games; game++) {
+                const numbers = [];
+                while (numbers.length < pick) {
+                    const num = Math.floor(Math.random() * (max - min + 1)) + min;
+                    if (!numbers.includes(num)) {
+                        numbers.push(num);
+                    }
+                }
+                numbers.sort((a, b) => a - b);
+                
+                const numberElements = numbers.map(num => 
+                    `<span class="lottery-number">${num}</span>`
+                ).join('');
+                
+                results += `<div class="lottery-game">
+                    <strong>게임 ${game}:</strong>
+                    <div class="lottery-numbers">${numberElements}</div>
+                </div>`;
+            }
+            
+            results += '</div>';
+            return results;
+        }
+
+        function generatePasswords() {
+            const length = parseInt(document.getElementById('passwordLength').value);
+            const count = parseInt(document.getElementById('passwordCount').value);
+            const includeUppercase = document.getElementById('includeUppercase').checked;
+            const includeLowercase = document.getElementById('includeLowercase').checked;
+            const includeNumbers = document.getElementById('includeNumbers').checked;
+            const includeSymbols = document.getElementById('includeSymbols').checked;
+            
+            if (!includeUppercase && !includeLowercase && !includeNumbers && !includeSymbols) {
+                return '<div class="result-item">오류: 최소 하나의 문자 유형을 선택해야 합니다.</div>';
+            }
+            
+            let charset = '';
+            if (includeUppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (includeLowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
+            if (includeNumbers) charset += '0123456789';
+            if (includeSymbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            const passwords = [];
+            for (let i = 0; i < count; i++) {
+                let password = '';
+                for (let j = 0; j < length; j++) {
+                    password += charset.charAt(Math.floor(Math.random() * charset.length));
+                }
+                passwords.push(password);
+            }
+            
+            const passwordList = passwords.map((password, index) => 
+                `<div class="result-item">
+                    <strong>비밀번호 ${index + 1}:</strong> 
+                    <code style="background: #f3f4f6; padding: 5px; font-size: 16px;">${password}</code>
+                </div>`
+            ).join('');
+            
+            return `<div class="result-item highlight">
+                <h3>생성된 비밀번호 (${count}개, 길이 ${length})</h3>
+            </div>${passwordList}`;
+        }
+
+        function generateCoins() {
+            const count = parseInt(document.getElementById('coinCount').value);
+            const results = [];
+            let heads = 0, tails = 0;
+            
+            for (let i = 0; i < count; i++) {
+                const result = Math.random() < 0.5 ? '앞면' : '뒷면';
+                results.push(result);
+                if (result === '앞면') heads++;
+                else tails++;
+            }
+            
+            return `<div class="result-item highlight">
+                <h3>동전 던지기 결과 (${count}개)</h3>
+                <p style="font-size: 18px; margin: 15px 0;">
+                    ${results.map((result, index) => 
+                        `<span style="display: inline-block; margin: 5px; padding: 8px 12px; background: ${result === '앞면' ? '#10b981' : '#ef4444'}; color: white; border-radius: 6px;">
+                            ${index + 1}. ${result}
+                        </span>`
+                    ).join('')}
+                </p>
+                <p><strong>앞면:</strong> ${heads}번 (${(heads/count*100).toFixed(1)}%)</p>
+                <p><strong>뒷면:</strong> ${tails}번 (${(tails/count*100).toFixed(1)}%)</p>
+            </div>`;
+        }
+
+        function shuffleList() {
+            const listItems = document.getElementById('listItems').value.trim();
+            
+            if (!listItems) {
+                return '<div class="result-item">항목을 입력해주세요.</div>';
+            }
+            
+            const items = listItems.split('\n').filter(item => item.trim());
+            
+            if (items.length < 2) {
+                return '<div class="result-item">최소 2개 이상의 항목을 입력해주세요.</div>';
+            }
+            
+            // Fisher-Yates 셔플 알고리즘
+            const shuffled = [...items];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            
+            const shuffledList = shuffled.map((item, index) => 
+                `<div style="padding: 8px; margin: 5px 0; background: white; border: 1px solid #e5e7eb; border-radius: 4px;">
+                    <strong>${index + 1}.</strong> ${item.trim()}
+                </div>`
+            ).join('');
+            
+            return `<div class="result-item highlight">
+                <h3>셔플 결과 (${shuffled.length}개 항목)</h3>
+                ${shuffledList}
+            </div>`;
+        }
+
+        function copyResults() {
+            const results = document.getElementById('generatedResults');
+            const text = results.innerText || results.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                alert('결과가 클립보드에 복사되었습니다!');
+            });
+        }
+
+        function clearInputs() {
+            // 기본값으로 리셋
+            document.getElementById('generatorType').value = 'basic';
+            document.getElementById('minValue').value = '1';
+            document.getElementById('maxValue').value = '100';
+            document.getElementById('count').value = '1';
+            document.getElementById('allowDuplicates').checked = false;
+            document.getElementById('allowDecimals').checked = false;
+            document.getElementById('diceType').value = '6';
+            document.getElementById('diceCount').value = '2';
+            document.getElementById('lotteryType').value = '645';
+            document.getElementById('lotteryGames').value = '5';
+            document.getElementById('passwordLength').value = '12';
+            document.getElementById('passwordCount').value = '5';
+            document.getElementById('includeUppercase').checked = true;
+            document.getElementById('includeLowercase').checked = true;
+            document.getElementById('includeNumbers').checked = true;
+            document.getElementById('includeSymbols').checked = false;
+            document.getElementById('coinCount').value = '1';
+            document.getElementById('listItems').value = '';
+            
+            updateInputFields();
+            document.getElementById('generatedResults').innerHTML = '<p>생성 버튼을 클릭하면 결과가 여기에 표시됩니다.</p>';
+        }
+
+        // 이벤트 리스너
+        document.getElementById('lotteryType').addEventListener('change', updateLotteryInputs);
+
+        // 초기화
+        updateInputFields();
+        document.getElementById('generatedResults').innerHTML = '<p style="text-align: center; color: #6b7280; padding: 40px;">생성 버튼을 클릭하면 결과가 여기에 표시됩니다.</p>';
+    </script>
+</body>
+</html>

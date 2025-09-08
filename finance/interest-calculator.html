@@ -106,6 +106,93 @@
         </div>
     </div>
 
+    <!-- 정보 섹션 -->
+    <div class="container">
+        <div class="info-section">
+            <div class="info-card">
+                <h2>📖 이자계산기 사용 메뉴얼</h2>
+                <ul>
+                    <li><strong>원금 입력:</strong> 예금하거나 투자할 원금을 입력하세요 (예: 1000만원, 10000000)</li>
+                    <li><strong>연이율 입력:</strong> 은행이나 금융기관에서 제시하는 연 이자율을 입력하세요 (예: 3.5%)</li>
+                    <li><strong>기간 설정:</strong> 예금 또는 투자 기간을 년 단위로 입력하세요 (예: 3년)</li>
+                    <li><strong>복리 계산:</strong> 이자가 원금에 더해져 다음 기간의 이자 계산 기준이 되는 복리로 계산됩니다</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h2>💡 실제 이자 계산 예시</h2>
+                <div class="example-box">
+                    <h3>🏦 정기예금 3년 만기 예시</h3>
+                    <p><strong>상황:</strong> 1,000만원을 연 4.0% 정기예금에 3년 예치</p>
+                    <p><strong>계산:</strong></p>
+                    <ul>
+                        <li>원금: 10,000,000원</li>
+                        <li>연이율: 4.0%</li>
+                        <li>예금기간: 3년</li>
+                        <li>만기금액: 11,248,640원</li>
+                        <li>이자수익: 1,248,640원</li>
+                        <li>세후수익(15.4% 세금): 1,056,445원</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h3>💰 정기적금 5년 예시</h3>
+                    <p><strong>상황:</strong> 매월 50만원씩 5년간 적금 (연 3.5%)</p>
+                    <p><strong>계산:</strong></p>
+                    <ul>
+                        <li>월 납입액: 500,000원</li>
+                        <li>연이율: 3.5%</li>
+                        <li>적금기간: 5년(60개월)</li>
+                        <li>총 납입원금: 30,000,000원</li>
+                        <li>만기수령액: 약 32,800,000원</li>
+                        <li>이자수익: 약 2,800,000원</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h2>🔥 이자 투자 생활 꿀팁</h2>
+                <ul>
+                    <li><strong>고금리 예금 찾기:</strong> 카카오뱅크, 토스뱅크 등 인터넷은행이 일반적으로 높은 이자율 제공</li>
+                    <li><strong>세금 고려:</strong> 이자소득세 15.4%(소득세 14% + 지방세 1.4%)를 차감한 실수익 계산 필요</li>
+                    <li><strong>복리 효과:</strong> 장기 투자일수록 복리 효과가 커지므로 가능한 한 긴 기간 투자 고려</li>
+                    <li><strong>분할 투자:</strong> 한 번에 목돈보다 적금으로 분할 투자하면 평균 투자비용 절감 가능</li>
+                    <li><strong>예금자보호:</strong> 은행당 5천만원까지 예금자보호법 적용되므로 분산 예치 고려</li>
+                    <li><strong>CMA 활용:</strong> 당분간 사용하지 않을 자금은 CMA 계좌로 기본 이자 수익 추구</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h2>📚 이자 관련 용어 정리</h2>
+                <div class="term-grid">
+                    <div class="term-item">
+                        <h3>단리</h3>
+                        <p>원금에만 이자가 붙는 계산 방식으로, 매년 동일한 이자 수익 발생</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>복리</h3>
+                        <p>이자가 원금에 더해져 다음 기간 이자 계산 기준이 되는 방식</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>연이율</h3>
+                        <p>1년 동안 적용되는 이자율로, 대부분의 금융상품 기준 금리</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>월복리</h3>
+                        <p>매월 이자가 원금에 더해져 다음 달 이자 계산 기준이 되는 방식</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>정기예금</h3>
+                        <p>일정 기간 목돈을 맡겨두고 만기에 원금과 이자를 함께 받는 상품</p>
+                    </div>
+                    <div class="term-item">
+                        <h3>정기적금</h3>
+                        <p>매월 일정 금액을 납입하여 만기에 원금과 이자를 받는 상품</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // 숫자 파싱 함수 (한국어 단위 및 다양한 형식 지원)
         function parseNumber(input) {

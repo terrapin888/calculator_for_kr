@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>원의 둘레 계산기 - 원둘레, 지름, 반지름 | CalcHub</title>
+    <meta name="description" content="원의 둘레, 지름, 반지름, 넓이를 즉시 계산하세요. 하나의 값만 알면 나머지 모든 값을 구할 수 있습니다.">
+    <meta name="keywords" content="원둘레, 원의둘레, 원주, 지름, 반지름, 원넓이, 기하학계산기, 수학계산기">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "원의 둘레 계산기",
+      "description": "원의 둘레, 지름, 반지름, 넓이를 즉시 계산하세요. 하나의 값만 알면 나머지 모든 값을 구할 수 있습니다.",
+      "url": "https://www.calcforkr.com/math/circle-circumference-calculator.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header-simple">
+                <h1 class="calculator-title-simple">원의 둘레 계산기</h1>
+                <p class="calculator-description">원의 둘레, 지름, 반지름, 넓이를 계산합니다</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">알고 있는 값 입력</h2>
+                    
+                    <div class="input-group">
+                        <label class="input-label">입력 방법</label>
+                        <select id="inputType" class="input-field" onchange="updateInputLabel()">
+                            <option value="radius">반지름 (r)</option>
+                            <option value="diameter">지름 (d)</option>
+                            <option value="circumference">둘레 (C)</option>
+                            <option value="area">넓이 (A)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label" id="inputLabel">반지름 (r)</label>
+                        <input type="number" id="inputValue" class="input-field" placeholder="값을 입력하세요" step="any" min="0">
+                        <div class="input-unit">단위: cm, m, km 등</div>
+                    </div>
+                    
+                    <button onclick="calculateCircle()" class="btn btn-primary">계산하기</button>
+                </div>
+
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <div class="result-simple">
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">반지름 (r)</div>
+                            <div id="radius" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">지름 (d)</div>
+                            <div id="diameter" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">둘레 (C)</div>
+                            <div id="circumference" class="result-value-simple highlight">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">넓이 (A)</div>
+                            <div id="area" class="result-value-simple">-</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button onclick="copyResult()" class="btn btn-secondary" id="copyBtn">결과 복사</button>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3 class="info-title">원의 둘레와 넓이</h3>
+                    <div class="info-content">
+                        <p><strong>원의 둘레</strong>는 원주라고도 하며, 원의 가장자리를 한 바퀴 도는 길이입니다.</p>
+                        
+                        <h4>기본 공식</h4>
+                        <ul>
+                            <li><strong>둘레 (원주)</strong>: C = 2πr = πd</li>
+                            <li><strong>넓이</strong>: A = πr²</li>
+                            <li><strong>지름</strong>: d = 2r</li>
+                            <li><strong>π (파이)</strong> ≈ 3.14159...</li>
+                        </ul>
+                        
+                        <h4>역계산 공식</h4>
+                        <ul>
+                            <li><strong>둘레로부터 반지름</strong>: r = C / (2π)</li>
+                            <li><strong>넓이로부터 반지름</strong>: r = √(A / π)</li>
+                            <li><strong>지름으로부터 반지름</strong>: r = d / 2</li>
+                        </ul>
+                        
+                        <h4>실생활 활용</h4>
+                        <ul>
+                            <li>건축 설계 (원형 건물, 아치)</li>
+                            <li>제조업 (파이프, 튜브 길이 계산)</li>
+                            <li>토목 공학 (터널, 배관 설계)</li>
+                            <li>스포츠 (육상 트랙, 경기장 설계)</li>
+                            <li>일상생활 (바퀴, 시계, 피자 크기)</li>
+                        </ul>
+                        
+                        <h4>π (파이)에 대해</h4>
+                        <p>파이는 원주율로, 어떤 원이든 둘레와 지름의 비는 항상 π입니다. 무리수이며 소수점 이하로 무한히 계속되는 수입니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateInputLabel() {
+            const inputType = document.getElementById('inputType').value;
+            const label = document.getElementById('inputLabel');
+            
+            switch(inputType) {
+                case 'radius':
+                    label.textContent = '반지름 (r)';
+                    break;
+                case 'diameter':
+                    label.textContent = '지름 (d)';
+                    break;
+                case 'circumference':
+                    label.textContent = '둘레 (C)';
+                    break;
+                case 'area':
+                    label.textContent = '넓이 (A)';
+                    break;
+            }
+        }
+        
+        function calculateCircle() {
+            const inputValue = parseFloat(document.getElementById('inputValue').value);
+            const inputType = document.getElementById('inputType').value;
+            
+            if (isNaN(inputValue) || inputValue <= 0) {
+                showError('올바른 양수 값을 입력해주세요.');
+                return;
+            }
+            
+            let radius;
+            const PI = Math.PI;
+            
+            // 입력값에 따라 반지름 계산
+            switch(inputType) {
+                case 'radius':
+                    radius = inputValue;
+                    break;
+                case 'diameter':
+                    radius = inputValue / 2;
+                    break;
+                case 'circumference':
+                    radius = inputValue / (2 * PI);
+                    break;
+                case 'area':
+                    radius = Math.sqrt(inputValue / PI);
+                    break;
+            }
+            
+            // 다른 값들 계산
+            const diameter = radius * 2;
+            const circumference = 2 * PI * radius;
+            const area = PI * radius * radius;
+            
+            // 결과 표시
+            document.getElementById('radius').textContent = formatNumberOnly(radius, 6);
+            document.getElementById('diameter').textContent = formatNumberOnly(diameter, 6);
+            document.getElementById('circumference').textContent = formatNumberOnly(circumference, 6);
+            document.getElementById('area').textContent = formatNumberOnly(area, 6);
+            
+            showResult('resultSection');
+        }
+        
+        function copyResult() {
+            const radius = document.getElementById('radius').textContent;
+            const diameter = document.getElementById('diameter').textContent;
+            const circumference = document.getElementById('circumference').textContent;
+            const area = document.getElementById('area').textContent;
+            
+            const result = `원의 둘레 계산 결과:
+반지름: ${radius}
+지름: ${diameter}
+둘레: ${circumference}
+넓이: ${area}`;
+            
+            copyToClipboard(result, 'copyBtn');
+        }
+        
+        // 엔터키로 계산
+        bindEnterKey(['inputValue'], calculateCircle);
+        
+        // 실시간 계산
+        bindRealtimeCalculation(['inputValue'], () => {
+            const value = document.getElementById('inputValue').value;
+            if (value && !isNaN(parseFloat(value)) && parseFloat(value) > 0) {
+                calculateCircle();
+            }
+        }, 500);
+        
+        // 선택 변경시 자동 계산
+        document.getElementById('inputType').addEventListener('change', () => {
+            const value = document.getElementById('inputValue').value;
+            if (value && !isNaN(parseFloat(value)) && parseFloat(value) > 0) {
+                calculateCircle();
+            }
+        });
+    </script>
+</body>
+</html>

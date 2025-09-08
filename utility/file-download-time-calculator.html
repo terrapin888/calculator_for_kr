@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-68VLJL7XXD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-68VLJL7XXD');
+    </script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2277280131930191"
+         crossorigin="anonymous"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>파일 다운로드 시간 계산기 - 인터넷 속도별 | CalcHub</title>
+    <meta name="description" content="파일 크기와 인터넷 속도에 따른 다운로드 시간을 즉시 계산하세요. 다양한 연결 속도별로 예상 시간을 제공합니다.">
+    <meta name="keywords" content="다운로드시간, 파일다운로드, 인터넷속도, 네트워크속도, 대역폭계산, 유틸리티계산기">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "파일 다운로드 시간 계산기",
+      "description": "파일 크기와 인터넷 속도에 따른 다운로드 시간을 즉시 계산하세요. 다양한 연결 속도별로 예상 시간을 제공합니다.",
+      "url": "https://www.calcforkr.com/utility/file-download-time-calculator.html",
+      "applicationCategory": "CalculatorApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+    </script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../common/calculator-common.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                CalcHub
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html#calculators" class="nav-link">계산기</a>
+                <a href="../about.html" class="nav-link">소개</a>
+                <a href="../contact.html" class="nav-link">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="calculator-card">
+            <div class="calculator-header-simple">
+                <h1 class="calculator-title-simple">파일 다운로드 시간 계산기</h1>
+                <p class="calculator-description">파일 크기와 네트워크 속도별 다운로드 시간을 계산합니다</p>
+            </div>
+
+            <div class="calculator-body">
+                <div class="input-section">
+                    <h2 class="section-title">파일 정보</h2>
+                    
+                    <div class="input-group">
+                        <label class="input-label">파일 크기</label>
+                        <input type="number" id="fileSize" class="input-field" placeholder="100" step="any" min="0">
+                        <select id="fileSizeUnit" class="input-field" style="width: auto; margin-left: 10px;">
+                            <option value="MB">MB</option>
+                            <option value="KB">KB</option>
+                            <option value="GB">GB</option>
+                            <option value="TB">TB</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">연결 속도 입력 방식</label>
+                        <select id="speedInputType" class="input-field" onchange="updateSpeedInput()">
+                            <option value="preset">기본 속도 선택</option>
+                            <option value="custom">직접 입력</option>
+                        </select>
+                    </div>
+                    
+                    <div id="presetSpeed" class="input-group">
+                        <label class="input-label">인터넷 연결 속도</label>
+                        <select id="connectionSpeed" class="input-field">
+                            <option value="0.056">56K 모뎀 (56 Kbps)</option>
+                            <option value="0.512">ADSL (512 Kbps)</option>
+                            <option value="1">ADSL (1 Mbps)</option>
+                            <option value="3">ADSL (3 Mbps)</option>
+                            <option value="10">케이블/VDSL (10 Mbps)</option>
+                            <option value="25">광랜 (25 Mbps)</option>
+                            <option value="50">광랜 (50 Mbps)</option>
+                            <option value="100" selected>기가랜 (100 Mbps)</option>
+                            <option value="500">초고속 (500 Mbps)</option>
+                            <option value="1000">기가급 (1 Gbps)</option>
+                            <option value="10000">10기가 (10 Gbps)</option>
+                        </select>
+                    </div>
+                    
+                    <div id="customSpeed" class="input-group" style="display: none;">
+                        <label class="input-label">연결 속도</label>
+                        <input type="number" id="customSpeedValue" class="input-field" placeholder="100" step="any" min="0">
+                        <select id="speedUnit" class="input-field" style="width: auto; margin-left: 10px;">
+                            <option value="Kbps">Kbps</option>
+                            <option value="Mbps" selected>Mbps</option>
+                            <option value="Gbps">Gbps</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">효율성 (실제 속도)</label>
+                        <input type="number" id="efficiency" class="input-field" placeholder="80" step="1" min="1" max="100" value="80">
+                        <div class="input-unit">%</div>
+                    </div>
+                    
+                    <button onclick="calculateDownloadTime()" class="btn btn-primary">계산하기</button>
+                </div>
+
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <div class="result-simple">
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">파일 크기 (바이트)</div>
+                            <div id="fileSizeBytes" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">실제 속도</div>
+                            <div id="actualSpeed" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">예상 시간</div>
+                            <div id="downloadTime" class="result-value-simple highlight">-</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="section-title" style="margin-top: 30px;">다양한 속도별 비교</h3>
+                    <div class="result-simple">
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">ADSL (1 Mbps)</div>
+                            <div id="adsl1" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">케이블 (10 Mbps)</div>
+                            <div id="cable10" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">광랜 (50 Mbps)</div>
+                            <div id="fiber50" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">기가랜 (100 Mbps)</div>
+                            <div id="giga100" class="result-value-simple">-</div>
+                        </div>
+                        <div class="result-item-simple">
+                            <div class="result-label-simple">기가급 (1 Gbps)</div>
+                            <div id="giga1000" class="result-value-simple">-</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button onclick="copyResult()" class="btn btn-secondary" id="copyBtn">결과 복사</button>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3 class="info-title">다운로드 시간 계산 방법</h3>
+                    <div class="info-content">
+                        <p><strong>다운로드 시간</strong>은 파일 크기와 인터넷 연결 속도에 따라 결정됩니다.</p>
+                        
+                        <h4>기본 계산 공식</h4>
+                        <p>다운로드 시간 = 파일 크기 (바이트) ÷ 연결 속도 (바이트/초)</p>
+                        <ul>
+                            <li><strong>연결 속도</strong>: 명목 속도 × 효율성</li>
+                            <li><strong>단위 변환</strong>: 1 Mbps = 125,000 바이트/초</li>
+                            <li><strong>효율성</strong>: 실제 속도는 명목 속도의 70-90%</li>
+                        </ul>
+                        
+                        <h4>단위 설명</h4>
+                        <ul>
+                            <li><strong>bps (bits per second)</strong>: 비트/초</li>
+                            <li><strong>Bps (Bytes per second)</strong>: 바이트/초 = bps ÷ 8</li>
+                            <li><strong>1 MB = 1,024 KB = 1,048,576 바이트</strong></li>
+                            <li><strong>1 GB = 1,024 MB = 1,073,741,824 바이트</strong></li>
+                        </ul>
+                        
+                        <h4>속도에 영향을 주는 요인</h4>
+                        <ul>
+                            <li><strong>네트워크 혼잡</strong>: 시간대별 이용자 수</li>
+                            <li><strong>서버 성능</strong>: 파일을 제공하는 서버의 처리 능력</li>
+                            <li><strong>프로토콜 오버헤드</strong>: TCP/IP 헤더 정보</li>
+                            <li><strong>물리적 거리</strong>: 서버와의 지리적 거리</li>
+                            <li><strong>네트워크 장비</strong>: 공유기, 랜선 등의 성능</li>
+                        </ul>
+                        
+                        <h4>실생활 예시</h4>
+                        <ul>
+                            <li><strong>음악 파일 (5MB)</strong>: 기가랜에서 약 0.4초</li>
+                            <li><strong>영화 파일 (4GB)</strong>: 기가랜에서 약 5-6분</li>
+                            <li><strong>게임 파일 (50GB)</strong>: 기가랜에서 약 1시간</li>
+                            <li><strong>OS 업데이트 (5GB)</strong>: 기가랜에서 약 7-8분</li>
+                        </ul>
+                        
+                        <h4>다운로드 최적화 팁</h4>
+                        <ul>
+                            <li>다운로드 관리 프로그램 사용</li>
+                            <li>피크 시간대 피하기</li>
+                            <li>유선 연결 사용 (Wi-Fi보다 안정적)</li>
+                            <li>다른 네트워크 사용 중단</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateSpeedInput() {
+            const speedInputType = document.getElementById('speedInputType').value;
+            const presetSpeed = document.getElementById('presetSpeed');
+            const customSpeed = document.getElementById('customSpeed');
+            
+            if (speedInputType === 'preset') {
+                presetSpeed.style.display = 'block';
+                customSpeed.style.display = 'none';
+            } else {
+                presetSpeed.style.display = 'none';
+                customSpeed.style.display = 'block';
+            }
+        }
+        
+        function convertToBytes(size, unit) {
+            switch(unit) {
+                case 'KB':
+                    return size * 1024;
+                case 'MB':
+                    return size * 1024 * 1024;
+                case 'GB':
+                    return size * 1024 * 1024 * 1024;
+                case 'TB':
+                    return size * 1024 * 1024 * 1024 * 1024;
+                default:
+                    return size;
+            }
+        }
+        
+        function convertToMbps(speed, unit) {
+            switch(unit) {
+                case 'Kbps':
+                    return speed / 1000;
+                case 'Mbps':
+                    return speed;
+                case 'Gbps':
+                    return speed * 1000;
+                default:
+                    return speed;
+            }
+        }
+        
+        function formatTime(seconds) {
+            if (seconds < 1) {
+                return (seconds * 1000).toFixed(0) + 'ms';
+            } else if (seconds < 60) {
+                return seconds.toFixed(1) + '초';
+            } else if (seconds < 3600) {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = Math.floor(seconds % 60);
+                return `${minutes}분 ${remainingSeconds}초`;
+            } else if (seconds < 86400) {
+                const hours = Math.floor(seconds / 3600);
+                const minutes = Math.floor((seconds % 3600) / 60);
+                return `${hours}시간 ${minutes}분`;
+            } else {
+                const days = Math.floor(seconds / 86400);
+                const hours = Math.floor((seconds % 86400) / 3600);
+                return `${days}일 ${hours}시간`;
+            }
+        }
+        
+        function calculateDownloadTimeForSpeed(fileSizeBytes, speedMbps, efficiency) {
+            // Mbps를 바이트/초로 변환 (1 Mbps = 125,000 bytes/sec)
+            const bytesPerSecond = (speedMbps * 125000) * (efficiency / 100);
+            return fileSizeBytes / bytesPerSecond;
+        }
+        
+        function calculateDownloadTime() {
+            const fileSize = parseFloat(document.getElementById('fileSize').value);
+            const fileSizeUnit = document.getElementById('fileSizeUnit').value;
+            const speedInputType = document.getElementById('speedInputType').value;
+            const efficiency = parseFloat(document.getElementById('efficiency').value) || 80;
+            
+            if (isNaN(fileSize) || fileSize <= 0) {
+                showError('파일 크기를 올바르게 입력해주세요.');
+                return;
+            }
+            
+            if (efficiency < 1 || efficiency > 100) {
+                showError('효율성은 1-100% 사이의 값을 입력해주세요.');
+                return;
+            }
+            
+            // 파일 크기를 바이트로 변환
+            const fileSizeBytes = convertToBytes(fileSize, fileSizeUnit);
+            
+            // 연결 속도 가져오기
+            let speedMbps;
+            if (speedInputType === 'preset') {
+                speedMbps = parseFloat(document.getElementById('connectionSpeed').value);
+            } else {
+                const customSpeedValue = parseFloat(document.getElementById('customSpeedValue').value);
+                const speedUnit = document.getElementById('speedUnit').value;
+                
+                if (isNaN(customSpeedValue) || customSpeedValue <= 0) {
+                    showError('연결 속도를 올바르게 입력해주세요.');
+                    return;
+                }
+                
+                speedMbps = convertToMbps(customSpeedValue, speedUnit);
+            }
+            
+            // 다운로드 시간 계산
+            const downloadTimeSeconds = calculateDownloadTimeForSpeed(fileSizeBytes, speedMbps, efficiency);
+            const actualSpeedMbps = speedMbps * (efficiency / 100);
+            
+            // 결과 표시
+            document.getElementById('fileSizeBytes').textContent = formatNumberOnly(fileSizeBytes, 0) + ' bytes';
+            document.getElementById('actualSpeed').textContent = formatNumberOnly(actualSpeedMbps, 2) + ' Mbps';
+            document.getElementById('downloadTime').textContent = formatTime(downloadTimeSeconds);
+            
+            // 다양한 속도별 비교
+            document.getElementById('adsl1').textContent = formatTime(calculateDownloadTimeForSpeed(fileSizeBytes, 1, efficiency));
+            document.getElementById('cable10').textContent = formatTime(calculateDownloadTimeForSpeed(fileSizeBytes, 10, efficiency));
+            document.getElementById('fiber50').textContent = formatTime(calculateDownloadTimeForSpeed(fileSizeBytes, 50, efficiency));
+            document.getElementById('giga100').textContent = formatTime(calculateDownloadTimeForSpeed(fileSizeBytes, 100, efficiency));
+            document.getElementById('giga1000').textContent = formatTime(calculateDownloadTimeForSpeed(fileSizeBytes, 1000, efficiency));
+            
+            showResult('resultSection');
+        }
+        
+        function copyResult() {
+            const fileSizeBytes = document.getElementById('fileSizeBytes').textContent;
+            const actualSpeed = document.getElementById('actualSpeed').textContent;
+            const downloadTime = document.getElementById('downloadTime').textContent;
+            const adsl1 = document.getElementById('adsl1').textContent;
+            const cable10 = document.getElementById('cable10').textContent;
+            const fiber50 = document.getElementById('fiber50').textContent;
+            const giga100 = document.getElementById('giga100').textContent;
+            const giga1000 = document.getElementById('giga1000').textContent;
+            
+            const result = `파일 다운로드 시간 계산 결과:
+파일 크기: ${fileSizeBytes}
+실제 속도: ${actualSpeed}
+예상 시간: ${downloadTime}
+
+다양한 속도별 비교:
+- ADSL (1 Mbps): ${adsl1}
+- 케이블 (10 Mbps): ${cable10}
+- 광랜 (50 Mbps): ${fiber50}
+- 기가랜 (100 Mbps): ${giga100}
+- 기가급 (1 Gbps): ${giga1000}`;
+            
+            copyToClipboard(result, 'copyBtn');
+        }
+        
+        // 엔터키로 계산
+        bindEnterKey(['fileSize', 'customSpeedValue', 'efficiency'], calculateDownloadTime);
+        
+        // 실시간 계산
+        bindRealtimeCalculation(['fileSize', 'customSpeedValue', 'efficiency'], () => {
+            const fileSize = document.getElementById('fileSize').value;
+            const speedInputType = document.getElementById('speedInputType').value;
+            
+            let hasValidInput = false;
+            if (fileSize && !isNaN(parseFloat(fileSize)) && parseFloat(fileSize) > 0) {
+                if (speedInputType === 'preset') {
+                    hasValidInput = true;
+                } else {
+                    const customSpeed = document.getElementById('customSpeedValue').value;
+                    hasValidInput = customSpeed && !isNaN(parseFloat(customSpeed)) && parseFloat(customSpeed) > 0;
+                }
+            }
+            
+            if (hasValidInput) {
+                calculateDownloadTime();
+            }
+        }, 500);
+        
+        // 선택 변경시 자동 계산
+        ['fileSizeUnit', 'connectionSpeed', 'speedUnit'].forEach(id => {
+            document.getElementById(id).addEventListener('change', () => {
+                const fileSize = document.getElementById('fileSize').value;
+                if (fileSize && !isNaN(parseFloat(fileSize)) && parseFloat(fileSize) > 0) {
+                    calculateDownloadTime();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
