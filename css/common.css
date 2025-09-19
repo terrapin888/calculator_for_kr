@@ -70,11 +70,117 @@ body {
     color: #2563eb;
 }
 
+/* 레이아웃 컨테이너 */
+.main-wrapper {
+    display: flex;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 24px;
+    padding: 24px;
+}
+
+/* 사이드바 */
+.sidebar {
+    width: 300px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    padding: 24px;
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+.sidebar-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sidebar-category {
+    margin-bottom: 20px;
+}
+
+.sidebar-category-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sidebar-links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #64748b;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.sidebar-link:hover {
+    background: #f1f5f9;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.sidebar-link.active {
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 500;
+}
+
+.sidebar-icon {
+    font-size: 12px;
+    width: 16px;
+    text-align: center;
+}
+
 /* 계산기 컨테이너 */
 .container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 0 24px;
+    flex: 1;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* 모바일에서 사이드바 숨김 */
+@media (max-width: 1024px) {
+    .main-wrapper {
+        flex-direction: column;
+        padding: 16px;
+    }
+    
+    .sidebar {
+        width: 100%;
+        position: static;
+        max-height: none;
+        order: 2;
+        margin-top: 24px;
+    }
+    
+    .container {
+        order: 1;
+    }
 }
 
 /* 계산기 카드 */
